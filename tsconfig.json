@@ -1,0 +1,20 @@
+{
+  "files": [
+    "src/launch.ts"
+  ],
+  "include": [
+    "src/launch.ts"
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "outDir": "dist",
+    "lib": [
+      "dom",
+      "es2017",
+      "esnext.asynciterable"
+    ]
+  }
+}
