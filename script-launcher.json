@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "lint": "tslint --config tslint.json 'src/**/*.ts'",
+    "build": [
+      "echo Building node package...",
+      "rm -rf ./dist",
+      "tsc --build",
+      "cp ./src/package.json ./dist/",
+      "cp ./src/README.md ./dist",
+      "mkdir ./dist/bin",
+      "cp ./src/bin/launch.js ./dist/bin/launch.js",
+      "echo Done..."
+    ]
+  },
+  "configurations": {
+    "logLevel": 0,
+    "script": {
+      "scriptShell": "cross-env-shell"
+    },
+    "menu": {
+      "default": ""
+    }
+  }
+}

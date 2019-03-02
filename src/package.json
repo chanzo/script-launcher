@@ -1,0 +1,25 @@
+{
+  "name": "script-launcher",
+  "version": "0.0.0-alpha.3",
+  "description": "Script Launcher",
+  "main": "launch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "launch": "bin/launch.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chanzo/script-launcher.git"
+  },
+  "author": "Bas Heerschop",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "cross-spawn": "^6.0.5",
+    "deepmerge": "^3.2.0",
+    "inquirer": "^6.2.2",
+    "string-argv": "^0.1.1"
+  }
+}
