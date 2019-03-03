@@ -1,5 +1,5 @@
 {
-  "name": "script-launcher/source",
+  "name": "script-launcher-source",
   "version": "0.0.0",
   "description": "Script launcher repo root package.json, used mainly to execute build scripts. This package is not published to npm.",
   "main": "",
