@@ -7,6 +7,7 @@
       "tsc --build",
       "cp ./src/package.json ./dist/",
       "cp ./src/README.md ./dist",
+      "cp ./src/LICENSE.md ./dist",
       "mkdir ./dist/bin",
       "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
