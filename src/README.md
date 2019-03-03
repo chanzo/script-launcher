@@ -12,11 +12,11 @@
 
 Script Launcher provides a more flexible way to manage your 'package.json' scripts. The following list, is a summary of some of these extra features:
 
-* Start scripts sequentially specified in an array.
-* Start scripts in parallel specified in an array.
+* Use an array to start scripts sequentially.
+* Use an array to start  scripts in parallel.
 * Use the environment values on Linux, Mac and Windows in a consistent manner.
+* Use script functions with arguments.
 * Use an interactive landing menu, so a new developer get can start on your project more easily.
-
 
 ## Installation
 
@@ -25,7 +25,7 @@ Install `script-launcher` as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use launcher init to create the `script-launcher.json`
+Use `launch init` to create an example `script-launcher.json` file.
 ``` bash
 ./node_modules/.bin/launch init
 ```
@@ -56,3 +56,86 @@ npm start build:myProject1:tst
 npm start deploy:myProject2:acc
 ```
 Basically you can now use `start` instead of `run`.
+
+
+## **Example** : Array to start scripts sequentially.
+To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Build step 1",
+      "echo Build step 2",
+      "echo Build step 3",
+    ]
+  }
+}
+```
+
+## **Example** : Array to start  scripts in parallel.
+To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Build step 1",
+      "echo Build step 2",
+      "echo Build step 3",
+    ]
+  }
+}
+```
+
+## **Example** : Environment values on Linux, Mac and Windows in a consistent manner.
+To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "concurrent": [
+        "echo Long background job 1 && sleep 10",
+        "echo Long background job 2 && sleep 10"
+      ],
+      "sequential": [
+        "echo Sequential 1 && sleep 1",
+        "echo Sequential 2 && sleep 1",
+      ]
+    }
+  }
+}
+```
+
+## **Example** : Script functions with arguments.
+To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build:myProject:production`
+``` JSON
+{
+  "scripts": {
+    "build:$PROJECT:$CONFIGURATION":"echo build project=$PROJECT configuration=$CONFIGURATION"
+  }
+}
+```
+
+## **Example** : Interactive landing menu.
+To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start`
+``` JSON
+{
+  "menu": {
+    "description": "action",
+    "build": {
+      "description": "environment",
+      "development": "echo building development environment...",
+      "test": "echo building test environment...",
+      "acceptance": "echo building acceptance environment...",
+      "production": "echo building production environment..."
+    },
+    "deploy": {
+      "description": "environment",
+      "development": "echo deploying development environment...",
+      "test": "echo deploying test environment...",
+      "acceptance": "echo deploying acceptance environment...",
+      "production": "echo deploying production environment..."
+    }
+  }
+}
+```
+
