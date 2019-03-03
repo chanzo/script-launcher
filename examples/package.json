@@ -1,0 +1,10 @@
+{
+  "name": "script-launcher-examples",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "../node_modules/.bin/launch"
+  },
+  "author": "Bas Heerschop",
+  "license": "MIT"
+}

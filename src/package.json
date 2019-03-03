@@ -1,11 +1,17 @@
 {
   "name": "script-launcher",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Script Launcher",
   "main": "launch.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "keywords": [
+    "script",
+    "build",
+    "environment",
+    "windows",
+    "concurrent",
+    "parallel",
+    "menu"
+  ],
   "bin": {
     "launch": "bin/launch.js"
   },

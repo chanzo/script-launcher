@@ -1,0 +1,65 @@
+{
+  "scripts": {
+    "serve:$PROJECT:dev": {
+      "concurrent": [
+        "endpoint:start",
+        "serve:$PROJECT:dev"
+      ]
+    },
+    "serve:$PROJECT:dev2": {
+      "sequential": [
+        "endpoint:start",
+        "serve:$PROJECT:dev"
+      ]
+    },
+    "serve:$PROJECT:$CONFIGURATION": "echo ng serve --project=$PROJECT --configuration=$CONFIGURATION",
+    "build2:  $PROJECT  :$CONFIGURATION": [
+      "echo 1 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 2",
+      "echo 2 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 2"
+    ],
+    "build:  $PROJECT  :all": [
+      "echo aa $0 $1 $2",
+      "echo set"
+    ],
+    "build:  $PROJECT  :$CONFIGURATION": {
+      "constraints": {
+        "PROJECT": "uva|hva",
+        "CONFIGURATION": "dev|tst|acc|prd"
+      },
+      "concurrent": [
+        "echo 1 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 4",
+        "echo 2 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 4"
+      ],
+      "sequential": [
+        "echo sequential 1 && sleep 1",
+        "echo sequential 2 && sleep 1",
+        "echo sequential 3 && sleep 1"
+      ]
+    }
+  },
+  "menu": {
+    "description": "target organization",
+    "uva": {
+      "description": "organization environment",
+      "development:all": "build:uva:all",
+      "test": "serve:uva:tst",
+      "acceptance": "serve:uva:acc",
+      "production": "serve:uva:prd"
+    },
+    "hva": {
+      "description": "organization environment",
+      "production": "serve:aws:prd",
+      "test": "serve:uva:tst"
+    }
+  },
+  "configurations": {
+    "logLevel": 0,
+    "script": {
+      "scriptShell": "../node_modules/.bin/cross-env-shell",
+      "nestedShell": "npm start --silent"
+    },
+    "menu": {
+      "default": "hva:test"
+    }
+  }
+}
