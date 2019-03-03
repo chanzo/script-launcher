@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "0.0.0-alpha.3",
+  "version": "1.0.0-beta.0",
   "description": "Script Launcher",
   "main": "launch.js",
   "scripts": {
