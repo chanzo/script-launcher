@@ -31,7 +31,6 @@ interface IConfig {
   platforms: IMenu;
 }
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 export async function launchMenu(): Promise<number> {
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
   const config = Config.load();
@@ -79,7 +78,6 @@ export async function launchMenu(): Promise<number> {
   return await command.execute(scriptShell, launchCommand);
 }
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 function loadConfig(configFile: string): IConfig {
   try {
     const absolutePath = path.resolve(configFile);
@@ -110,7 +108,6 @@ function loadConfig(configFile: string): IConfig {
   }
 }
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 function saveConfig(configFile: string, config: IConfig): void {
   const jsonData = JSON.stringify(config, null, 4);
 
@@ -119,7 +116,6 @@ function saveConfig(configFile: string, config: IConfig): void {
   });
 }
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 function selectMenuEntry(menu: IMenu): Promise<{ platform: string }> {
   const choices = Object.entries(menu).filter(([entry, subMenu]) => entry !== 'description' && Object.keys(subMenu).length !== 0).map(([choice]) => choice);
 
@@ -146,7 +142,6 @@ function selectMenuEntry(menu: IMenu): Promise<{ platform: string }> {
     ]);
 }
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- //
 function promptMenu(menu: IMenu): Promise<ISelection> {
 
   return new Promise<ISelection>((resolve, reject) => {
