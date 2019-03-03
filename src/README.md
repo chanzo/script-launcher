@@ -59,7 +59,7 @@ Basically you can now use `start` instead of `run`.
 
 
 ## **Example** : Array to start scripts sequentially.
-To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff`
 ``` JSON
 {
   "scripts": {
@@ -73,7 +73,7 @@ To test this example copy the json content below to the a file named `script-lau
 ```
 
 ## **Example** : Array to start  scripts in parallel.
-To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff`
 ``` JSON
 {
   "scripts": {
@@ -87,7 +87,7 @@ To test this example copy the json content below to the a file named `script-lau
 ```
 
 ## **Example** : Environment values on Linux, Mac and Windows in a consistent manner.
-To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build-stuff`
+To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff`
 ``` JSON
 {
   "scripts": {
@@ -106,7 +106,7 @@ To test this example copy the json content below to the a file named `script-lau
 ```
 
 ## **Example** : Script functions with arguments.
-To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start build:myProject:production`
+To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build:myProject:production`
 ``` JSON
 {
   "scripts": {
@@ -116,7 +116,7 @@ To test this example copy the json content below to the a file named `script-lau
 ```
 
 ## **Example** : Interactive landing menu.
-To test this example copy the json content below to the a file named `script-launcher.json` and run `npm start`
+To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start`
 ``` JSON
 {
   "menu": {
