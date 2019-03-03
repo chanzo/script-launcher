@@ -3,7 +3,7 @@
 [![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
 [![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
 
-[![License](https://img.shields.io/npm/l/chanzo/script-launcher.svg)](/LICENSE) 
+[![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
 
 [![GitHub forks](https://img.shields.io/github/forks/chanzo/script-launcher.svg?style=social&label=Fork)](https://github.com/chanzo/script-launcher/fork)
 [![GitHub stars](https://img.shields.io/github/stars/chanzo/script-launcher.svg?style=social&label=Star)](https://github.com/chanzo/script-launcher) 
