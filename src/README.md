@@ -66,7 +66,7 @@ To test this example copy the json content below to the a file named `script-lau
     "build-stuff": [
       "echo Build step 1",
       "echo Build step 2",
-      "echo Build step 3",
+      "echo Build step 3"
     ]
   }
 }
@@ -80,7 +80,7 @@ To test this example copy the json content below to the a file named `script-lau
     "build-stuff": [
       "echo Build step 1",
       "echo Build step 2",
-      "echo Build step 3",
+      "echo Build step 3"
     ]
   }
 }
@@ -98,7 +98,7 @@ To test this example copy the json content below to the a file named `script-lau
       ],
       "sequential": [
         "echo Sequential 1 && sleep 1",
-        "echo Sequential 2 && sleep 1",
+        "echo Sequential 2 && sleep 1"
       ]
     }
   }
