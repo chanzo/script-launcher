@@ -57,9 +57,11 @@ npm start deploy:myProject2:acc
 ```
 Basically you can now use `start` instead of `run`.
 
+## Feature examples
+To test an example, copy the json content from the example to the file named `script-launcher.json` and run the script.
 
-## **Example** : Array to start scripts sequentially.
-To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff`
+### Array to start scripts sequentially.
+Run `npm start build-stuff` to test this example.
 ``` JSON
 {
   "scripts": {
@@ -72,8 +74,8 @@ To test this example, copy the json content below to the file named `script-laun
 }
 ```
 
-## **Example** : Array to start scripts concurrently.
-To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff`
+### Array to start scripts concurrently.
+Run `npm start build-stuff` to test this example.
 ``` JSON
 {
   "scripts": {
@@ -91,8 +93,8 @@ To test this example, copy the json content below to the file named `script-laun
 }
 ```
 
-## **Example** : Environment values on Linux, Mac and Windows in a consistent manner.
-To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build-stuff my-arg-1 my-arg-2`
+### Environment values on Linux, Mac and Windows in a consistent manner.
+Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 ``` JSON
 {
   "scripts": {
@@ -105,8 +107,8 @@ To test this example, copy the json content below to the file named `script-laun
 }
 ```
 
-## **Example** : Script functions with arguments.
-To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start build:myProject:production`
+### Script functions with arguments.
+Run `npm start build:myProject:production` to test this example.
 ``` JSON
 {
   "scripts": {
@@ -115,8 +117,8 @@ To test this example, copy the json content below to the file named `script-laun
 }
 ```
 
-## **Example** : Interactive landing menu.
-To test this example, copy the json content below to the file named `script-launcher.json` and run `npm start`
+### Interactive landing menu.
+Run `npm start` to test this example.
 ``` JSON
 {
   "menu": {
