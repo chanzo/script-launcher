@@ -3,7 +3,10 @@
     "lookup01": "echo Lookup 01",
     "lookup02:$param1": "echo Lookup 02 param1=$param1",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
-    "lookup04:$param1:$param2": "lookup03:$param1:$param2",
+    "lookup04:$param1:$param2": [
+      "lookup03:$param1:1$param2",
+      "lookup03:$param1:2$param2"
+    ],
     "lookup": [
       "echo lookup",
       "lookup01",
@@ -37,8 +40,8 @@
         "CONFIGURATION": "dev|tst|acc|prd"
       },
       "concurrent": [
-        "echo 1 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 4",
-        "echo 2 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 4"
+        "echo 1 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 4 && echo done 1",
+        "echo 2 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 5 && echo done 2"
       ],
       "sequential": [
         "echo sequential 1 && sleep 1",
@@ -59,11 +62,11 @@
     "hva": {
       "description": "organization environment",
       "production": "serve:aws:prd",
-      "test": "serve:uva:tst"
+      "test": "serve:hva:tst"
     }
   },
   "configurations": {
-    "logLevel": 3,
+    "logLevel": 0,
     "script": {
       "scriptShell": "../node_modules/.bin/cross-env-shell",
       "nestedShell": "npm start --silent"

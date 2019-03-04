@@ -27,7 +27,6 @@ interface IConfigurations {
   logLevel: number;
   script: {
     scriptShell: string;
-    nestedShell: string;
   };
   menu: { default: string; };
 }
@@ -49,7 +48,6 @@ export class Config {
       logLevel: 0,
       script: {
         scriptShell: 'cross-env-shell',
-        nestedShell: 'npm start --silent',
       },
       menu: {
         default: '',

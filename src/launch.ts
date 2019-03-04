@@ -44,19 +44,21 @@ async function main(): Promise<void> {
       return;
     }
 
+
+    const scriptShell = config.configurations.script.scriptShell;
+    const command = new Command(commandArgs, process.env, config.scripts);
     const script = config.scripts.find(launchScript);
 
     if (!script) throw new Error('Missing launch script: ' + launchScript);
 
-    const scriptShell = config.configurations.script.scriptShell;
-    const nestedShell = config.configurations.script.nestedShell;
-    const environment = { ...process.env, ...script.parameters };
-    const command = new Command(nestedShell, commandArgs, environment, config.scripts);
-
     Logger.info('Selected script:', script.name);
     Logger.info('Parameters:', script.parameters);
 
-    exitCode = await command.execute(scriptShell, script.command);
+    const commands = command.prepare(script);
+
+    Logger.log('Prepared commands: ', commands);
+
+    exitCode = await command.execute(scriptShell, commands);
 
     Logger.info('ExitCode:', exitCode);
   } catch (error) {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "../node_modules/.bin//ts-node ../src/launch.ts"
+    "start": "../node_modules/.bin/ts-node ../src/launch.ts"
   },
   "author": "Bas Heerschop",
   "license": "MIT"
