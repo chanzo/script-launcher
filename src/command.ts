@@ -1,24 +1,11 @@
-import { resolve } from 'path';
-import { existsSync } from 'fs';
 import { ICommand } from './config-loader';
-import { ExecOptions, SpawnOptions } from 'child_process';
+import { Scripts } from "./scripts";
+import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
 import { Logger } from './logger';
 
 export class Command {
-  private static loadScriptLabels(): string[] {
-    const absolutePath = resolve('package.json');
-
-    if (existsSync(absolutePath)) {
-      const result = require(absolutePath);
-
-      if (result.scripts) return Object.keys(result.scripts);
-    }
-
-    return [];
-  }
-
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
       const regexp = new RegExp('\\$' + index, 'g');
@@ -71,13 +58,13 @@ export class Command {
     return processes;
   }
 
-  private readonly packageScripts: string[];
+  private readonly scripts: Scripts;
   private readonly nestedShell: string;
   private readonly args: string[];
   private readonly environment: { [name: string]: string };
 
-  public constructor(nestedShell: string, args: string[], environment: { [name: string]: string }) {
-    this.packageScripts = Command.loadScriptLabels();
+  public constructor(nestedShell: string, args: string[], environment: { [name: string]: string }, scripts: Scripts) {
+    this.scripts = scripts;
     this.nestedShell = nestedShell;
     this.args = args;
     this.environment = environment;
@@ -90,6 +77,8 @@ export class Command {
     };
 
     const commands = this.prepareCommands(command);
+
+    Logger.debug('Prepared commands: ', commands);
 
     if (commands.concurrent.length === 0 && commands.sequential.length === 0) throw new Error('missing script');
 
@@ -129,6 +118,15 @@ export class Command {
     };
   }
 
+  private static expandReferences(command: string, scripts: Scripts): string {
+
+    //scripts.
+
+
+
+    return command;
+  }
+
   private resolveReferences(commands: string[]): string[] {
     const result = [...commands];
 
@@ -136,9 +134,10 @@ export class Command {
       let command = Command.expandArguments(commands[index], this.args);
 
       command = Command.expandEnvironment(command, this.environment);
+      command = Command.expandReferences(command, this.scripts);
 
       // if (this.packageScripts.includes(command)) command = this.nestedShell + ' ' + command;
-      if (command.match(/^((\w+\:\w+)+$)/) != null) command = this.nestedShell + ' ' + command;
+      //if (command.match(/^((\w+\:\w+)+$)/) != null) command = this.nestedShell + ' ' + command;
 
       result[index] = command;
     }

@@ -19,11 +19,12 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const commandArgs = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : '';
     const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
-    const scriptPattern = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+    const launchScript = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info('Lifecycle event:', lifecycleEvent);
     Logger.info('Command arguments:', commandArgs);
     Logger.info('Script arguments:', scriptArgs);
+    Logger.info('Launch script:', launchScript);
 
     if (`${scriptArgs}` === 'init') {
       const targetFile = 'script-launcher.json';
@@ -38,16 +39,16 @@ async function main(): Promise<void> {
       return;
     }
 
-    if (scriptPattern === undefined) {
+    if (launchScript === undefined) {
       exitCode = await launchMenu();
       return;
     }
 
-    const script = config.findScript(scriptPattern);
+    const script = config.scripts.find(launchScript);
     const scriptShell = config.configurations.script.scriptShell;
     const nestedShell = config.configurations.script.nestedShell;
     const environment = { ...process.env, ...script.parameters };
-    const command = new Command(nestedShell, commandArgs, environment);
+    const command = new Command(nestedShell, commandArgs, environment, config.scripts);
 
     Logger.info('Selected script:', script.name);
     Logger.info('Parameters:', script.parameters);

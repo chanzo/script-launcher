@@ -69,7 +69,7 @@ export async function launchMenu(): Promise<number> {
   const scriptShell = config.configurations.script.scriptShell;
   const nestedShell = config.configurations.script.nestedShell;
   const environment = { ...process.env };
-  const command = new Command(nestedShell, args, environment);
+  const command = new Command(nestedShell, args, environment, config.scripts);
 
   // Logger.info('Lifecycle event: ', lifecycleEvent);
   Logger.info('Arguments: ', args);
