@@ -135,7 +135,7 @@ export class Config {
   public readonly configurations: IConfigurations;
 
   private constructor(config: IConfig) {
-    //Object.entries(config).map(([key, value]) => this[key] = value);
+    // Object.entries(config).map(([key, value]) => this[key] = value);
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
     this.configurations = config.configurations;

@@ -93,21 +93,21 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Environment values on Linux, Mac and Windows in a consistent manner.
+### Environment and argument values on Linux, Mac and Windows in a consistent manner.
 Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 ``` JSON
 {
   "scripts": {
     "build-stuff": [
       "echo Node version: $npm_config_node_version",
-      "echo Argument 1 :$1",
-      "echo Argument 2 :$2"
+      "echo Argument 1 : $1",
+      "echo Argument 2 : $2"
     ]
   }
 }
 ```
 
-### Script functions with arguments.
+### Script functions with parameters.
 Run `npm start build:myProject:production` to test this example.
 ``` JSON
 {

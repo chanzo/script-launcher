@@ -45,6 +45,9 @@ async function main(): Promise<void> {
     }
 
     const script = config.scripts.find(launchScript);
+
+    if (!script) throw new Error('Missing launch script: ' + launchScript);
+
     const scriptShell = config.configurations.script.scriptShell;
     const nestedShell = config.configurations.script.nestedShell;
     const environment = { ...process.env, ...script.parameters };

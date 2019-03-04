@@ -1,4 +1,4 @@
-import { IScripts, IScript } from './config-loader';
+import { IScript, IScripts } from './config-loader';
 
 export class Scripts {
   private static getParameters(patternA: string, patternB: string): { [name: string]: string } {
@@ -32,6 +32,10 @@ export class Scripts {
 
   private readonly scripts: IScripts;
 
+  public constructor(scripts: IScripts) {
+    this.scripts = scripts;
+  }
+
   public find(pattern: string): IScript | null {
     for (const [key, command] of Object.entries(this.scripts)) {
       const parameters = Scripts.getParameters(key, pattern);
@@ -39,10 +43,6 @@ export class Scripts {
       if (parameters !== null) return { name: key, parameters, command };
     }
 
-    throw new Error('Missing launch script: ' + pattern);
-  }
-
-  constructor(scripts: IScripts) {
-    this.scripts = scripts;
+    return null;
   }
 }

@@ -1,8 +1,9 @@
 {
   "scripts": {
     "lookup01": "echo Lookup 01",
-    "lookup02:$arg1": "echo Lookup 02 arg1=$arg1",
-    "lookup03:$arg1:$arg2": "echo Lookup 03 arg1=$arg1  arg2=$arg2",
+    "lookup02:$param1": "echo Lookup 02 param1=$param1",
+    "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
+    "lookup04:$param1:$param2": "lookup03:$param1:$param2",
     "lookup": [
       "echo lookup",
       "lookup01",
