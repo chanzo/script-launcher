@@ -62,14 +62,13 @@
     "hva": {
       "description": "organization environment",
       "production": "serve:aws:prd",
-      "test": "serve:hva:tst"
+      "test": "echo serve:hva:tst"
     }
   },
   "configurations": {
     "logLevel": 0,
     "script": {
-      "scriptShell": "../node_modules/.bin/cross-env-shell",
-      "nestedShell": "npm start --silent"
+      "scriptShell": "../node_modules/.bin/cross-env-shell"
     },
     "menu": {
       "default": "hva:test"

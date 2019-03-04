@@ -3,7 +3,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ICommand, IMenu } from './config-loader';
+import { Config, ICommand, IMenu, IScript } from './config-loader';
 import { Logger } from './logger';
 import { Command } from './command';
 
@@ -69,9 +69,15 @@ export async function launchMenu(): Promise<number> {
   const scriptShell = config.configurations.script.scriptShell;
   const environment = { ...process.env };
   const command = new Command(args, environment, config.scripts);
-  const script = config.scripts.find(launchCommand);
+  let script = config.scripts.find(launchCommand);
 
-  if (!script) throw new Error('Missing launch script: ' + launchCommand);
+  if (!script) {
+    script = <IScript>{
+      name: '',
+      parameters: {},
+      command: launchCommand,
+    }
+  }
 
   // Logger.info('Lifecycle event: ', lifecycleEvent);
   Logger.info('Arguments: ', args);
