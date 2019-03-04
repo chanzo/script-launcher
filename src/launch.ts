@@ -44,7 +44,6 @@ async function main(): Promise<void> {
       return;
     }
 
-
     const scriptShell = config.configurations.script.scriptShell;
     const command = new Command(commandArgs, process.env, config.scripts);
     const script = config.scripts.find(launchScript);

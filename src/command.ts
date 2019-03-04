@@ -143,19 +143,7 @@ export class Command {
         result.sequential.push(command);
       }
     }
-    // // scripts.
-    // Logger.log('expandReferences.command: ', command);
-    // const script = scripts.find(command);
 
-    // if (script) {
-    //   // return prepareCommands(command);
-
-    // }
-
-    // Logger.log('expandReferences.script: ', script);
-
-    // return command;
-    //return { concurrent, sequential };
     return result;
   }
 
@@ -164,49 +152,17 @@ export class Command {
     sequential = [...sequential];
 
     for (let index = 0; index < concurrent.length; index++) {
-      let command = Command.expandArguments(concurrent[index], this.args);
+      const command = Command.expandArguments(concurrent[index], this.args);
 
       concurrent[index] = Command.expandEnvironment(command, environment);
     }
 
     for (let index = 0; index < sequential.length; index++) {
-      let command = Command.expandArguments(sequential[index], this.args);
+      const command = Command.expandArguments(sequential[index], this.args);
 
       sequential[index] = Command.expandEnvironment(command, environment);
     }
 
     return this.expandReferences(concurrent, sequential, this.scripts);
-
-    // let commands: ICommand;
-
-    // if ((commands = this.expandReferences(concurrent, this.scripts))) {
-    //   concurrent = commands.concurrent;
-    //   sequential.push(...commands.sequential);
-    // }
-
-    // if ((commands = this.expandReferences(sequential, this.scripts))) {
-    //   concurrent.push(...commands.concurrent);
-    //   sequential = commands.sequential;
-    // }
-
-    // return { concurrent, sequential };
   }
-
-  // private resolveReferencesOld(commands: string[]): string[] {
-  //   const result = [...commands];
-
-  //   for (let index = 0; index < commands.length; index++) {
-  //     let command = Command.expandArguments(commands[index], this.args);
-
-  //     command = Command.expandEnvironment(command, this.environment);
-  //     command = Command.expandReferences(command, this.scripts);
-
-  //     // if (this.packageScripts.includes(command)) command = this.nestedShell + ' ' + command;
-  //     // if (command.match(/^((\w+\:\w+)+$)/) != null) command = this.nestedShell + ' ' + command;
-
-  //     result[index] = command;
-  //   }
-
-  //   return result;
-  // }
 }
