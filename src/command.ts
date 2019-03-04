@@ -1,24 +1,11 @@
-import { resolve } from 'path';
-import { existsSync } from 'fs';
-import { ICommand } from './config-loader';
-import { ExecOptions, SpawnOptions } from 'child_process';
+import { ICommand, IScript } from './config-loader';
+import { Scripts } from './scripts';
+import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
 import { Logger } from './logger';
 
 export class Command {
-  private static loadScriptLabels(): string[] {
-    const absolutePath = resolve('package.json');
-
-    if (existsSync(absolutePath)) {
-      const result = require(absolutePath);
-
-      if (result.scripts) return Object.keys(result.scripts);
-    }
-
-    return [];
-  }
-
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
       const regexp = new RegExp('\\$' + index, 'g');
@@ -71,25 +58,21 @@ export class Command {
     return processes;
   }
 
-  private readonly packageScripts: string[];
-  private readonly nestedShell: string;
+  private readonly scripts: Scripts;
   private readonly args: string[];
   private readonly environment: { [name: string]: string };
 
-  public constructor(nestedShell: string, args: string[], environment: { [name: string]: string }) {
-    this.packageScripts = Command.loadScriptLabels();
-    this.nestedShell = nestedShell;
+  public constructor(args: string[], environment: { [name: string]: string }, scripts: Scripts) {
+    this.scripts = scripts;
     this.args = args;
     this.environment = environment;
   }
 
-  public async execute(scriptShell: string, command: string | string[] | ICommand): Promise<number> {
+  public async execute(scriptShell: string, commands: ICommand): Promise<number> {
     const options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
     };
-
-    const commands = this.prepareCommands(command);
 
     if (commands.concurrent.length === 0 && commands.sequential.length === 0) throw new Error('missing script');
 
@@ -112,9 +95,10 @@ export class Command {
     return exitCode;
   }
 
-  private prepareCommands(command: string | string[] | ICommand): { concurrent: string[], sequential: string[] } {
+  public prepare(script: IScript): ICommand {
     const concurrent: string[] = [];
     const sequential: string[] = [];
+    const command = script.command;
 
     if (command instanceof Array) sequential.push(...command);
     if (typeof command === 'string') sequential.push(command);
@@ -123,26 +107,62 @@ export class Command {
     if ((command as ICommand).concurrent) concurrent.push(...(command as ICommand).concurrent);
     if ((command as ICommand).sequential) sequential.push(...(command as ICommand).sequential);
 
-    return {
-      concurrent: this.resolveReferences(concurrent),
-      sequential: this.resolveReferences(sequential),
-    };
+    const environment = { ...this.environment, ...script.parameters };
+
+    return this.resolveReferences(concurrent, sequential, environment);
   }
 
-  private resolveReferences(commands: string[]): string[] {
-    const result = [...commands];
+  private expandReferences(concurrent: string[], sequential: string[], scripts: Scripts): ICommand {
+    const result: ICommand = {
+      concurrent: [],
+      sequential: [],
+    };
 
-    for (let index = 0; index < commands.length; index++) {
-      let command = Command.expandArguments(commands[index], this.args);
+    for (const command of concurrent) {
+      const script = scripts.find(command);
 
-      command = Command.expandEnvironment(command, this.environment);
+      if (script) {
+        const commands = this.prepare(script);
 
-      // if (this.packageScripts.includes(command)) command = this.nestedShell + ' ' + command;
-      if (command.match(/^((\w+\:\w+)+$)/) != null) command = this.nestedShell + ' ' + command;
+        result.sequential.push(...commands.sequential);
+        result.concurrent.push(...commands.concurrent);
+      } else {
+        result.concurrent.push(command);
+      }
+    }
 
-      result[index] = command;
+    for (const command of sequential) {
+      const script = scripts.find(command);
+
+      if (script) {
+        const commands = this.prepare(script);
+
+        result.sequential.push(...commands.sequential);
+        result.concurrent.push(...commands.concurrent);
+      } else {
+        result.sequential.push(command);
+      }
     }
 
     return result;
+  }
+
+  private resolveReferences(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommand {
+    concurrent = [...concurrent];
+    sequential = [...sequential];
+
+    for (let index = 0; index < concurrent.length; index++) {
+      const command = Command.expandArguments(concurrent[index], this.args);
+
+      concurrent[index] = Command.expandEnvironment(command, environment);
+    }
+
+    for (let index = 0; index < sequential.length; index++) {
+      const command = Command.expandArguments(sequential[index], this.args);
+
+      sequential[index] = Command.expandEnvironment(command, environment);
+    }
+
+    return this.expandReferences(concurrent, sequential, this.scripts);
   }
 }

@@ -1,6 +1,7 @@
 import { existsSync } from 'fs';
 import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
+import { Scripts } from './scripts';
 
 export interface IScript {
   name: string;
@@ -18,7 +19,7 @@ export interface IMenu {
   [entry: string]: IMenu | string;
 }
 
-interface IScripts {
+export interface IScripts {
   [key: string]: string | ICommand;
 }
 
@@ -26,7 +27,6 @@ interface IConfigurations {
   logLevel: number;
   script: {
     scriptShell: string;
-    nestedShell: string;
   };
   menu: { default: string; };
 }
@@ -37,7 +37,8 @@ interface IConfig {
   configurations: IConfigurations;
 }
 
-export class Config implements IConfig {
+export class Config {
+
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
@@ -47,7 +48,6 @@ export class Config implements IConfig {
       logLevel: 0,
       script: {
         scriptShell: 'cross-env-shell',
-        nestedShell: 'npm start --silent',
       },
       menu: {
         default: '',
@@ -128,76 +128,14 @@ export class Config implements IConfig {
     return {} as IConfig;
   }
 
-  private static getParameters(patternA: string, patternB: string): { [name: string]: string } {
-    const columnsA = patternA.split(':');
-    const columnsB = patternB.split(':');
-    const parameters: { [name: string]: string } = {};
-
-    if (columnsA.length !== columnsB.length) return null;
-
-    for (let index = 0; index < columnsA.length; index++) {
-      const itemA = columnsA[index];
-      const itemB = columnsB[index];
-
-      if (itemB.trim().startsWith('$')) {
-        parameters[itemB.trim().substr(1)] = itemA;
-
-        continue;
-      }
-
-      if (itemA.trim().startsWith('$')) {
-        parameters[itemA.trim().substr(1)] = itemB;
-
-        continue;
-      }
-
-      if (itemA !== itemB) return null;
-    }
-
-    return parameters;
-  }
-
-  public readonly scripts: IScripts;
+  public readonly scripts: Scripts;
   public readonly menu: IMenu;
   public readonly configurations: IConfigurations;
 
   private constructor(config: IConfig) {
-    Object.entries(config).map(([key, value]) => this[key] = value);
-  }
-
-  public findScript(pattern: string): IScript | null {
-
-    for (const [key, command] of Object.entries(this.scripts)) {
-      const parameters = Config.getParameters(key, pattern);
-
-      if (parameters !== null) return { name: pattern, parameters, command };
-    }
-
-    throw new Error('Missing launch script: ' + pattern);
-  }
-
-  public findScriptOld(pattern: string): IScript | null {
-
-    for (const [key, command] of Object.entries(this.scripts)) {
-      const parameters = Config.getParameters(key, pattern);
-
-      if (parameters !== null) return { name: '', parameters, command };
-    }
-
-    throw new Error('Missing launch script: ' + pattern);
-  }
-
-  public findScript2(pattern: string, args: string[]): IScript | null {
-
-    for (const [key, command] of Object.entries(this.scripts)) {
-      for (let index = 0; index < args.length; index++) {
-        const name = [pattern, ...args.slice(0, args.length - index)].join(':');
-        const parameters = Config.getParameters(key, name);
-
-        if (parameters !== null) return { name, parameters, command };
-      }
-    }
-
-    throw new Error('Missing launch script: ' + pattern);
+    // Object.entries(config).map(([key, value]) => this[key] = value);
+    this.scripts = new Scripts(config.scripts);
+    this.menu = config.menu;
+    this.configurations = config.configurations;
   }
 }

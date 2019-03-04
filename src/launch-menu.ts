@@ -3,7 +3,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ICommand, IMenu } from './config-loader';
+import { Config, ICommand, IMenu, IScript } from './config-loader';
 import { Logger } from './logger';
 import { Command } from './command';
 
@@ -27,7 +27,7 @@ interface ISelection {
 }
 
 interface IConfig {
-  default: string | string[] | ICommand;
+  default: string;
   platforms: IMenu;
 }
 
@@ -36,7 +36,7 @@ export async function launchMenu(): Promise<number> {
   const config = Config.load();
   const customConfig = loadConfig(configFile);
   const platforms = config.menu;
-  let launchCommand = customConfig.default;
+  let launchCommand = customConfig.default as string;
 
   Logger.level = config.configurations.logLevel;
 
@@ -67,15 +67,25 @@ export async function launchMenu(): Promise<number> {
 
   const args = process.argv.slice(2);
   const scriptShell = config.configurations.script.scriptShell;
-  const nestedShell = config.configurations.script.nestedShell;
   const environment = { ...process.env };
-  const command = new Command(nestedShell, args, environment);
+  const command = new Command(args, environment, config.scripts);
+  let script = config.scripts.find(launchCommand);
+
+  if (!script) {
+    script = {
+      name: '',
+      parameters: {},
+      command: launchCommand,
+    } as IScript;
+  }
 
   // Logger.info('Lifecycle event: ', lifecycleEvent);
   Logger.info('Arguments: ', args);
   // Logger.info('Environment:', script.environment);
 
-  return await command.execute(scriptShell, launchCommand);
+  const commands = command.prepare(script);
+
+  return await command.execute(scriptShell, commands);
 }
 
 function loadConfig(configFile: string): IConfig {
@@ -109,7 +119,7 @@ function loadConfig(configFile: string): IConfig {
 }
 
 function saveConfig(configFile: string, config: IConfig): void {
-  const jsonData = JSON.stringify(config, null, 4);
+  const jsonData = JSON.stringify(config, null, 2);
 
   fs.writeFile(configFile, jsonData, (err) => {
     if (err) console.log(err);
