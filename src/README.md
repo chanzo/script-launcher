@@ -112,7 +112,7 @@ Run `npm start build:myProject:production` to test this example.
 ``` JSON
 {
   "scripts": {
-    "build:$PROJECT:$CONFIGURATION":"echo build project=$PROJECT configuration=$CONFIGURATION"
+    "build:$PROJECT:$CONFIGURATION": "echo build project=$PROJECT configuration=$CONFIGURATION"
   }
 }
 ```
