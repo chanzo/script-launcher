@@ -72,11 +72,11 @@ export async function launchMenu(): Promise<number> {
   let script = config.scripts.find(launchCommand);
 
   if (!script) {
-    script = <IScript>{
+    script = {
       name: '',
       parameters: {},
       command: launchCommand,
-    }
+    } as IScript;
   }
 
   // Logger.info('Lifecycle event: ', lifecycleEvent);
