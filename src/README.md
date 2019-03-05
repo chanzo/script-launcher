@@ -10,13 +10,18 @@
 
 # Script Launcher
 
-Script Launcher provides a more flexible way to manage your 'package.json' scripts. The following list, is a summary of some of these extra features:
+Script Launcher is a tool, to manage your 'package.json' scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
-* Use an array to start scripts sequentially.
-* Use an array to start  scripts concurrently.
-* Use the environment and argument values on Linux, Mac and Windows in a consistent manner.
-* Use script functions with arguments.
-* Use an interactive landing menu, so a new developer get can start on your project more easily.
+## Table of Contents
+* [Installation](#Installation)
+* [Usage examples](#Usage-examples)
+* [Implementation examples](#Implementation-examples)
+  * [Use array's to start multiple scripts sequentially.](#Array-sequential-scripts)
+  * [Use array's to start multiple scripts concurrently.](#Array-concurrent-scripts)
+  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#Environment-and-argument-values-on-Linux-Mac-and-Windows)
+  * [Pass arguments to script, use them like functions.](#Script-functions-with-parameters)
+  * Gain the possibility to reference your scripts from other scripts.
+  * [Use an interactive landing menu, so a new developer get can start on your project more easily.](#interactive-landing-menu)
 
 ## Installation
 
@@ -27,7 +32,10 @@ npm install script-launcher --save-dev
 
 Use `launch init` to create an example `script-launcher.json` file.
 ``` bash
+# Linux and Mac
 ./node_modules/.bin/launch init
+# Windows
+.\node_modules\.bin\launch init
 ```
 
 For easy usage, change your `package.json` start script to use script launcher as the default.
@@ -41,7 +49,7 @@ For easy usage, change your `package.json` start script to use script launcher a
     ...
 }
 ```
-Now you are ready to use Script Launcher.
+You are now ready to start use Script Launcher.
 
 ## Usage examples
 
@@ -50,17 +58,17 @@ Show menu
 npm start
 ```
 
-Run launch script directly
+Start a launch script
 ```
 npm start build:myProject1:tst
 npm start deploy:myProject2:acc
 ```
 Basically you can now use `start` instead of `run`.
 
-## Feature examples
+## Implementation examples
 To test an example, copy the json content from the example to the file named `script-launcher.json` and run the script.
 
-### Array to start scripts sequentially.
+### Array sequential scripts.
 Run `npm start build-stuff` to test this example.
 ``` JSON
 {
@@ -74,8 +82,10 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Array to start scripts concurrently.
+### Array concurrent scripts.
 Run `npm start build-stuff` to test this example.
+
+**Linux and Macos example using sleep**
 ``` JSON
 {
   "scripts": {
@@ -93,7 +103,25 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Environment and argument values on Linux, Mac and Windows in a consistent manner.
+**Windows example using timeout**
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "concurrent": [
+        "echo Long background job 1 && (timeout 4 > nul) && echo Job 1 done.",
+        "echo Long background job 2 && (timeout 6 > nul) && echo Job 2 done."
+      ],
+      "sequential": [
+        "echo Sequential 1 && (timeout 1 > nul)",
+        "echo Sequential 2 && (timeout 1 > nul)"
+      ]
+    }
+  }
+}
+```
+
+### Environment and argument values on Linux, Mac and Windows.
 Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 ``` JSON
 {

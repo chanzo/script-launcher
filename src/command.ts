@@ -5,6 +5,11 @@ import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
 import { Logger } from './logger';
 
+interface ISpawnHandler {
+  (shell: string, args: string[]): Promise<Process>;
+};
+
+
 export class Command {
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
@@ -30,9 +35,36 @@ export class Command {
     return text.replace(/\$\w+/g, '');
   }
 
-  private static async spawnCommands(commands: string[], shell: string, args: string[], options: SpawnOptions, concurrent: boolean): Promise<Process[]> {
+  private static async spawnConcurrent(commands: string[], shell: string, args: string[], options: SpawnOptions): Promise<Process[]> {
+    return Command.spawnCommands(commands, shell, args, options, async (scriptShell, spawnArgs) => {
+      Logger.log('Spawn concurrent', scriptShell, spawnArgs);
+
+      const process = Process.spawn(scriptShell, spawnArgs, options);
+      // const process = Process.exec(scriptShell, spawnArgs, options as ExecOptions);
+
+      Logger.debug(`Process ${process.pid} started.`);
+
+      return process;
+    });
+  }
+
+  private static async spawnSequential(commands: string[], shell: string, args: string[], options: SpawnOptions): Promise<Process[]> {
+    return Command.spawnCommands(commands, shell, args, options, async (scriptShell, spawnArgs) => {
+      Logger.log('Spawn sequential: ', scriptShell, spawnArgs);
+
+      const process = Process.spawn(scriptShell, spawnArgs, options);
+      // const process = Process.exec(scriptShell, spawnArgs, options as ExecOptions);
+
+      Logger.debug(`Process ${process.pid} started.`);
+
+      await process.wait();
+
+      return process;
+    });
+  }
+
+  private static async spawnCommands(commands: string[], shell: string, args: string[], options: SpawnOptions, spawnHandler: ISpawnHandler): Promise<Process[]> {
     const processes: Process[] = [];
-    const message = concurrent ? 'Spawn concurrent: ' : 'Spawn sequential: ';
 
     for (const command of commands) {
       const spawnArgs = [...args, ...stringArgv(command)];
@@ -43,14 +75,7 @@ export class Command {
         spawnArgs.shift();
       }
 
-      Logger.log(message, scriptShell, spawnArgs);
-
-      const process = Process.spawn(scriptShell, spawnArgs, options);
-      // const process = Process.exec(scriptShell, spawnArgs, options as ExecOptions);
-
-      Logger.debug(`Process ${process.pid} started.`);
-
-      if (!concurrent) await process.wait();
+      const process = await spawnHandler(scriptShell, spawnArgs);
 
       processes.push(process);
     }
@@ -83,8 +108,8 @@ export class Command {
 
     args.shift();
 
-    processes.push(...await Command.spawnCommands(commands.concurrent, scriptShell, args, options, true));
-    processes.push(...await Command.spawnCommands(commands.sequential, scriptShell, args, options, false));
+    processes.push(...await Command.spawnConcurrent(commands.concurrent, scriptShell, args, options));
+    processes.push(...await Command.spawnSequential(commands.sequential, scriptShell, args, options));
 
     let exitCode = 0;
 
