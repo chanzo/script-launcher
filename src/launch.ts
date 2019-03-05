@@ -17,7 +17,7 @@ async function main(): Promise<void> {
     Logger.debug('Config: ', config);
 
     const lifecycleEvent = process.env.npm_lifecycle_event;
-    const commandArgs = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : '';
+    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
     const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
     const launchScript = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
