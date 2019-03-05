@@ -68,7 +68,7 @@
   "configurations": {
     "logLevel": 0,
     "script": {
-      "scriptShell": "../node_modules/.bin/cross-env-shell"
+      "shell": "../node_modules/.bin/cross-env-shell"
     },
     "menu": {
       "default": "hva:test"
