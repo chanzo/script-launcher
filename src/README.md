@@ -32,7 +32,10 @@ npm install script-launcher --save-dev
 
 Use `launch init` to create an example `script-launcher.json` file.
 ``` bash
+# Linux and Mac
 ./node_modules/.bin/launch init
+# Windows
+.\node_modules\.bin\launch init
 ```
 
 For easy usage, change your `package.json` start script to use script launcher as the default.
@@ -81,6 +84,8 @@ Run `npm start build-stuff` to test this example.
 
 ### Array concurrent scripts.
 Run `npm start build-stuff` to test this example.
+
+**Linux and Macos example using sleep**
 ``` JSON
 {
   "scripts": {
@@ -92,6 +97,24 @@ Run `npm start build-stuff` to test this example.
       "sequential": [
         "echo Sequential 1 && sleep 1",
         "echo Sequential 2 && sleep 1"
+      ]
+    }
+  }
+}
+```
+
+**Windows example using timeout**
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "concurrent": [
+        "echo Long background job 1 && (timeout 4 > nul) && echo Job 1 done.",
+        "echo Long background job 2 && (timeout 6 > nul) && echo Job 2 done."
+      ],
+      "sequential": [
+        "echo Sequential 1 && (timeout 1 > nul)",
+        "echo Sequential 2 && (timeout 1 > nul)"
       ]
     }
   }
