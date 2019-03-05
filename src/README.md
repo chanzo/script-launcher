@@ -63,7 +63,7 @@ Start a launch script
 npm start build:myProject1:tst
 npm start deploy:myProject2:acc
 ```
-Basically you can now use `start` instead of `run`.
+Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
 To test an example, copy the json content from the example to the file named `script-launcher.json` and run the script.
