@@ -8,7 +8,8 @@ const spawnOptions: SpawnOptions = {
 const execOptions: ExecOptions = {
 };
 
-// Process.spawn('sh', ['-c', 'cd src'], spawnOptions).wait();
+Process.spawn('sh', ['-c', 'echo hallo'], spawnOptions).wait();
 // Process.spawn('pwd', [], options).wait();
 
-Process.exec('echo hallo', [], execOptions);
+// Process.exec('echo hallo', [], execOptions);
+// Process.spawn('echo', ['hallo', 'daar'], spawnOptions);

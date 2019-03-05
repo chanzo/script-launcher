@@ -1,4 +1,4 @@
 node_modules
 custom-launcher.json
 dist
-
+.vscode

@@ -66,7 +66,7 @@ export async function launchMenu(): Promise<number> {
   }
 
   const args = process.argv.slice(2);
-  const scriptShell = config.configurations.script.scriptShell;
+  const shell = config.configurations.script.shell;
   const environment = { ...process.env };
   const command = new Command(args, environment, config.scripts);
   let script = config.scripts.find(launchCommand);
@@ -85,7 +85,7 @@ export async function launchMenu(): Promise<number> {
 
   const commands = command.prepare(script);
 
-  return await command.execute(scriptShell, commands);
+  return await command.execute(commands, shell);
 }
 
 function loadConfig(configFile: string): IConfig {

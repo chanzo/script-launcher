@@ -10,45 +10,49 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your 'package.json' scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
+Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
-In a traditional package json you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
+In a traditional `package.json` you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
 
 ```JSON
-    "scripts": {
-        ...
-        "build:uva:dev": "ng build --prod --no-progress --project=uva --configuration=dev",
-        "build:uva:tst": "ng build --prod --no-progress --project=uva --configuration=tst",
-        "build:uva:acc": "ng build --prod --no-progress --project=uva --configuration=acc",
-        "build:uva:prd": "ng build --prod --no-progress --project=uva --configuration=prd",
-        "build:hva:dev": "ng build --prod --no-progress --project=hva --configuration=dev",
-        "build:hva:tst": "ng build --prod --no-progress --project=hva --configuration=tst",
-        "build:hva:acc": "ng build --prod --no-progress --project=hva --configuration=acc",
-        "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
-        ...
+{
+  "scripts": {
+    ...
+    "build:uva:dev": "ng build --prod --no-progress --project=uva --configuration=dev",
+    "build:uva:tst": "ng build --prod --no-progress --project=uva --configuration=tst",
+    "build:uva:acc": "ng build --prod --no-progress --project=uva --configuration=acc",
+    "build:uva:prd": "ng build --prod --no-progress --project=uva --configuration=prd",
+    "build:hva:dev": "ng build --prod --no-progress --project=hva --configuration=dev",
+    "build:hva:tst": "ng build --prod --no-progress --project=hva --configuration=tst",
+    "build:hva:acc": "ng build --prod --no-progress --project=hva --configuration=acc",
+    "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
+    ...
   }        
+}
 ```
 
-With script-launcher you have the benefits of using variables and make the above example a one liner:
-
+With script-launcher you have the benefits of using variables and make the above example easier to maintain:
 ``` JSON
-"scripts": {
- ...
-       "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION"
-  ...
+{
+  "scripts": {
+    ...
+    "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION",
+    ...
+  }
 }
 ```
 To start the above example you would run: `npm start build:uva:tst` or `npm start build:hva:prd` etc. 
 
 
+
 ## Table of Contents
-* [Installation](#Installation)
-* [Usage examples](#Usage-examples)
-* [Implementation examples](#Implementation-examples)
-  * [Use array's to start multiple scripts sequentially.](#Array-sequential-scripts)
-  * [Use array's to start multiple scripts concurrently.](#Array-concurrent-scripts)
-  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#Environment-and-argument-values-on-Linux-Mac-and-Windows)
-  * [Pass arguments to script, use them like functions.](#Script-functions-with-parameters)
+* [Installation](#installation)
+* [Usage examples](#usage-examples)
+* [Implementation examples](#implementation-examples)
+  * [Use array's to start multiple scripts sequentially.](#array-sequential-scripts)
+  * [Use array's to start multiple scripts concurrently.](#array-concurrent-scripts)
+  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#environment-and-argument-values-on-linux-mac-and-windows)
+  * [Pass arguments to script, use them like functions.](#script-functions-with-parameters)
   * Gain the possibility to reference your scripts from other scripts.
   * [Use an interactive landing menu, so a new developer get can start on your project more easily.](#interactive-landing-menu)
 

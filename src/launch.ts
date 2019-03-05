@@ -44,7 +44,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    const scriptShell = config.configurations.script.scriptShell;
+    const shell = config.configurations.script.shell;
     const command = new Command(commandArgs, process.env, config.scripts);
     const script = config.scripts.find(launchScript);
 
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
 
     Logger.log('Prepared commands: ', commands);
 
-    exitCode = await command.execute(scriptShell, commands);
+    exitCode = await command.execute(commands, shell);
 
     Logger.info('ExitCode:', exitCode);
   } catch (error) {
