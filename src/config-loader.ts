@@ -47,10 +47,10 @@ export class Config {
     configurations: {
       logLevel: 0,
       script: {
-        shell: '',
+        shell: 'cross-env-shell',
       },
       menu: {
-        default: 'cross-env-shell',
+        default: '',
       },
     },
   };
