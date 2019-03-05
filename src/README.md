@@ -31,13 +31,12 @@ In a traditional package json you can add run commands on a per line basis. With
 }
 ```
 
-With script-launcher you have the benefits of using variables and make the above example a one liner:
-
+With script-launcher you have the benefits of using variables and make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
     ...
-    "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION"
+    "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION",
     ...
   }
 }
