@@ -10,9 +10,9 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your 'package.json' scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
+Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
-In a traditional package json you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
+In a traditional `package.json` you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
 
 ```JSON
 {
