@@ -42,13 +42,13 @@ To start the above example you would run: `npm start build:uva:tst` or `npm star
 
 
 ## Table of Contents
-* [Installation](#Installation)
-* [Usage examples](#Usage-examples)
-* [Implementation examples](#Implementation-examples)
-  * [Use array's to start multiple scripts sequentially.](#Array-sequential-scripts)
-  * [Use array's to start multiple scripts concurrently.](#Array-concurrent-scripts)
-  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#Environment-and-argument-values-on-Linux-Mac-and-Windows)
-  * [Pass arguments to script, use them like functions.](#Script-functions-with-parameters)
+* [Installation](#installation)
+* [Usage examples](#usage-examples)
+* [Implementation examples](#implementation-examples)
+  * [Use array's to start multiple scripts sequentially.](#array-sequential-scripts)
+  * [Use array's to start multiple scripts concurrently.](#array-concurrent-scripts)
+  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#environment-and-argument-values-on-linux-mac-and-windows)
+  * [Pass arguments to script, use them like functions.](#script-functions-with-parameters)
   * Gain the possibility to reference your scripts from other scripts.
   * [Use an interactive landing menu, so a new developer get can start on your project more easily.](#interactive-landing-menu)
 
