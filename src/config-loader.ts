@@ -50,7 +50,7 @@ export class Config {
         shell: '',
       },
       menu: {
-        default: '',
+        default: 'cross-env-shell',
       },
     },
   };
