@@ -12,6 +12,35 @@
 
 Script Launcher is a tool, to manage your 'package.json' scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
+In a traditional package json you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
+
+```JSON
+    "scripts": {
+        ...
+        "build:uva:dev": "ng build --prod --no-progress --project=uva --configuration=dev",
+        "build:uva:tst": "ng build --prod --no-progress --project=uva --configuration=tst",
+        "build:uva:acc": "ng build --prod --no-progress --project=uva --configuration=acc",
+        "build:uva:prd": "ng build --prod --no-progress --project=uva --configuration=prd",
+        "build:hva:dev": "ng build --prod --no-progress --project=hva --configuration=dev",
+        "build:hva:tst": "ng build --prod --no-progress --project=hva --configuration=tst",
+        "build:hva:acc": "ng build --prod --no-progress --project=hva --configuration=acc",
+        "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
+        ...
+  }        
+```
+
+With script-launcher you have the benefits of using variables and make the above example a one liner:
+
+``` JSON
+"scripts": {
+ ...
+       "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION"
+  ...
+}
+```
+To start the above example you would run: `npm start build:uva:tst` or `npm start build:hva:prd` etc. 
+
+
 ## Table of Contents
 * [Installation](#Installation)
 * [Usage examples](#Usage-examples)
@@ -63,7 +92,7 @@ Start a launch script
 npm start build:myProject1:tst
 npm start deploy:myProject2:acc
 ```
-Basically you can now use `start` instead of `run`.
+Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
 To test an example, copy the json content from the example to the file named `script-launcher.json` and run the script.
