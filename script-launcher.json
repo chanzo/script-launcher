@@ -28,7 +28,7 @@
   "configurations": {
     "logLevel": 0,
     "script": {
-      "scriptShell": "cross-env-shell"
+      "shell": ""
     },
     "menu": {
       "default": "build:package"
