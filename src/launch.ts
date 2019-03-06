@@ -17,7 +17,7 @@ async function main(): Promise<void> {
     Logger.debug('Config: ', config);
 
     const lifecycleEvent = process.env.npm_lifecycle_event;
-    const commandArgs = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : '';
+    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
     const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
     const launchScript = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
@@ -44,7 +44,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    const scriptShell = config.configurations.script.scriptShell;
+    const shell = config.configurations.script.shell;
     const command = new Command(commandArgs, process.env, config.scripts);
     const script = config.scripts.find(launchScript);
 
@@ -57,7 +57,7 @@ async function main(): Promise<void> {
 
     Logger.log('Prepared commands: ', commands);
 
-    exitCode = await command.execute(scriptShell, commands);
+    exitCode = await command.execute(commands, shell);
 
     Logger.info('ExitCode:', exitCode);
   } catch (error) {

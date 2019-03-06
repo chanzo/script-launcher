@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.6",
   "description": "Script Launcher",
   "main": "launch.js",
   "keywords": [
@@ -22,7 +22,6 @@
   "author": "Bas Heerschop",
   "license": "MIT",
   "dependencies": {
-    "cross-env": "^5.2.0",
     "cross-spawn": "^6.0.5",
     "deepmerge": "^3.2.0",
     "inquirer": "^6.2.2",

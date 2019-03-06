@@ -26,7 +26,7 @@ export interface IScripts {
 interface IConfigurations {
   logLevel: number;
   script: {
-    scriptShell: string;
+    shell: boolean | string;
   };
   menu: { default: string; };
 }
@@ -47,7 +47,7 @@ export class Config {
     configurations: {
       logLevel: 0,
       script: {
-        scriptShell: 'cross-env-shell',
+        shell: true,
       },
       menu: {
         default: '',
@@ -82,14 +82,10 @@ export class Config {
       },
     },
     configurations: {
-      logLevel: 0,
-      script: {
-        scriptShell: 'cross-env-shell',
-      } as any,
       menu: {
-        default: '',
+        default: 'myProject2:test',
       },
-    },
+    } as IConfigurations,
   };
 
   public static load(): Config {
