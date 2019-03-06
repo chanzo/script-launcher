@@ -26,7 +26,7 @@ export interface IScripts {
 interface IConfigurations {
   logLevel: number;
   script: {
-    shell: string;
+    shell: boolean | string;
   };
   menu: { default: string; };
 }
@@ -47,7 +47,7 @@ export class Config {
     configurations: {
       logLevel: 0,
       script: {
-        shell: 'cross-env-shell',
+        shell: true,
       },
       menu: {
         default: '',

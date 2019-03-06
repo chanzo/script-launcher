@@ -32,12 +32,11 @@ export class Command {
     return text.replace(/\$\w+/g, '');
   }
 
-  private static async spawnConcurrent(commands: string[], shell: string, args: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, shell, args, options, async (command, commandArgs) => {
-      Logger.log('Spawn concurrent', command, commandArgs);
+  private static async spawnConcurrent(commands: string[], options: SpawnOptions): Promise<Process[]> {
+    return Command.spawnCommands(commands, options.shell, async (command, args) => {
+      Logger.log('Spawn concurrent: ', '\'' + command + '\'', args);
 
-      const process = Process.spawn(command, commandArgs, options);
-      // const process = Process.exec(scriptShell, spawnArgs, options as ExecOptions);
+      const process = Process.spawn(command, args, options);
 
       Logger.debug(`Process ${process.pid} started.`);
 
@@ -45,12 +44,11 @@ export class Command {
     });
   }
 
-  private static async spawnSequential(commands: string[], shell: string, args: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, shell, args, options, async (command, commandArgs) => {
-      Logger.log('Spawn sequential: ', command, commandArgs);
+  private static async spawnSequential(commands: string[], options: SpawnOptions): Promise<Process[]> {
+    return Command.spawnCommands(commands, options.shell, async (command, args) => {
+      Logger.log('Spawn sequential: ', '\'' + command + '\'', args);
 
-      const process = Process.spawn(command, commandArgs, options);
-      // const process = Process.exec(scriptShell, spawnArgs, options as ExecOptions);
+      const process = Process.spawn(command, args, options);
 
       Logger.debug(`Process ${process.pid} started.`);
 
@@ -60,20 +58,19 @@ export class Command {
     });
   }
 
-  private static async spawnCommands(commands: string[], shell: string, args: string[], options: SpawnOptions, spawnHandler: ISpawnHandler): Promise<Process[]> {
+  private static async spawnCommands(commands: string[], shell: boolean | string, spawnHandler: ISpawnHandler): Promise<Process[]> {
     const processes: Process[] = [];
 
     for (let command of commands) {
-      const spawnArgs = [...args, ...stringArgv(command)];
+      let args = [];
 
-      command = shell;
-
-      if (!command) {
-        command = spawnArgs[0];
-        spawnArgs.shift();
+      if (!shell) {
+        args = stringArgv(command);
+        command = args[0];
+        args.shift();
       }
 
-      const process = await spawnHandler(command, spawnArgs);
+      const process = await spawnHandler(command, args);
 
       processes.push(process);
     }
@@ -91,23 +88,19 @@ export class Command {
     this.environment = environment;
   }
 
-  public async execute(commands: ICommand, shell: string): Promise<number> {
+  public async execute(commands: ICommand, shell: boolean | string): Promise<number> {
     const options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
+      shell: shell,
     };
 
     if (commands.concurrent.length === 0 && commands.sequential.length === 0) throw new Error('missing script');
 
     const processes: Process[] = [];
-    const args = stringArgv(shell);
 
-    shell = args[0];
-
-    args.shift();
-
-    processes.push(...await Command.spawnConcurrent(commands.concurrent, shell, args, options));
-    processes.push(...await Command.spawnSequential(commands.sequential, shell, args, options));
+    processes.push(...await Command.spawnConcurrent(commands.concurrent, options));
+    processes.push(...await Command.spawnSequential(commands.sequential, options));
 
     let exitCode = 0;
 

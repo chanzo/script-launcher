@@ -9,16 +9,6 @@ export class Process {
     return new Process(process);
   }
 
-  public static exec(command: string, args?: string[], options?: ExecOptions): Process {
-    if (!args) args = [];
-
-    command += ' ' + args.join(' ');
-
-    const process = exec(command, options);
-
-    return new Process(process);
-  }
-
   public readonly pid: number;
 
   private readonly exitPromise: Promise<number>;
