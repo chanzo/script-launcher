@@ -12,20 +12,20 @@
 
 Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
-In a traditional `package.json` you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
+In a traditional `package.json` you can add run commands on a per line basis. With multiple environments this can quickly become a hassle like the example below:
 
 ```JSON
 {
   "scripts": {
     ...
-    "build:uva:dev": "ng build --prod --no-progress --project=uva --configuration=dev",
-    "build:uva:tst": "ng build --prod --no-progress --project=uva --configuration=tst",
-    "build:uva:acc": "ng build --prod --no-progress --project=uva --configuration=acc",
-    "build:uva:prd": "ng build --prod --no-progress --project=uva --configuration=prd",
-    "build:hva:dev": "ng build --prod --no-progress --project=hva --configuration=dev",
-    "build:hva:tst": "ng build --prod --no-progress --project=hva --configuration=tst",
-    "build:hva:acc": "ng build --prod --no-progress --project=hva --configuration=acc",
-    "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
+    "build:uva:dev": "ng build uva --prod --configuration=dev",
+    "build:uva:tst": "ng build uva --prod --configuration=tst",
+    "build:uva:acc": "ng build uva --prod --configuration=acc",
+    "build:uva:prd": "ng build uva --prod --configuration=prd",
+    "build:hva:dev": "ng build hva --prod --configuration=dev",
+    "build:hva:tst": "ng build hva --prod --configuration=tst",
+    "build:hva:acc": "ng build hva --prod --configuration=acc",
+    "build:hva:prd": "ng build hva --prod --configuration=prd",
     ...
   }        
 }
@@ -36,7 +36,8 @@ With script-launcher you have the benefits of using variables and make the above
 {
   "scripts": {
     ...
-    "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION",
+    "build:$project:$config": "ng build $project -configuration=$config",
+    "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
     ...
   }
 }
