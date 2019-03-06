@@ -66,9 +66,10 @@
     }
   },
   "configurations": {
-    "logLevel": 2,
+    "logLevel": 20,
     "script": {
-      "shell": "../node_modules/.bin/cross-env-shell",
+      "shell": true,
+      "shell1": "../node_modules/.bin/cross-env-shell",
       "shell3": "sh -c"
     },
     "menu": {
