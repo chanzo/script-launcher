@@ -30,12 +30,14 @@ const execOptions: ExecOptions = {
 
 // crossEnv(command, { shell: true });
 
-Process.spawn('../node_modules/.bin/cross-env-shell', ['echo', 'hallo 1', '&&', 'echo', 'hallo 2', '&&', 'echo', '$0'], {
+// Process.spawn('../node_modules/.bin/cross-env-shell', ['echo', 'hallo 1', '&&', 'echo', 'hallo 2', '&&', 'echo', '$0'], {
+//   stdio: 'inherit',
+//   shell: 'bash',
+// });
+Process.spawn('echo test', ['echo', 'hallo 1', '&&', 'echo', 'hallo 2', '&&', 'echo', '$0'], {
   stdio: 'inherit',
-  shell: 'bash',
+  shell: '/bin/bash',
 });
-
-
 
 /*
 Process.spawn('../node_modules/.bin/cross-env-shell', ['echo', 'hallo 1', '&&', 'echo', 'hallo 2'], {

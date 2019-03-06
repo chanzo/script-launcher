@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "lookup01": "echo Lookup 01 && echo Lookup 02",
+    "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
     "lookup04:$param1:$param2": [
@@ -68,9 +68,9 @@
   "configurations": {
     "logLevel": 20,
     "script": {
-      "shell": true,
+      "shell0": true,
       "shell1": "../node_modules/.bin/cross-env-shell",
-      "shell3": "sh -c"
+      "shell": true
     },
     "menu": {
       "default": "hva:test"
