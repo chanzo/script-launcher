@@ -22,9 +22,9 @@
   "author": "Bas Heerschop",
   "license": "MIT",
   "dependencies": {
-    "cross-spawn": "^6.0.5",
-    "deepmerge": "^3.2.0",
-    "inquirer": "^6.2.2",
-    "string-argv": "^0.1.1"
+    "cross-spawn": "6.0.5",
+    "deepmerge": "3.2.0",
+    "inquirer": "6.2.2",
+    "string-argv": "0.1.1"
   }
 }
