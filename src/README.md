@@ -12,36 +12,48 @@
 
 Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
 
-In a traditional `package.json` you can add run commands on a per line basis. With multiple environments this can become a hassle like the example below:
+In a traditional `package.json` you can only run commands on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
 ```JSON
 {
   "scripts": {
     ...
-    "build:uva:dev": "ng build --prod --no-progress --project=uva --configuration=dev",
-    "build:uva:tst": "ng build --prod --no-progress --project=uva --configuration=tst",
-    "build:uva:acc": "ng build --prod --no-progress --project=uva --configuration=acc",
-    "build:uva:prd": "ng build --prod --no-progress --project=uva --configuration=prd",
-    "build:hva:dev": "ng build --prod --no-progress --project=hva --configuration=dev",
-    "build:hva:tst": "ng build --prod --no-progress --project=hva --configuration=tst",
-    "build:hva:acc": "ng build --prod --no-progress --project=hva --configuration=acc",
-    "build:hva:prd": "ng build --prod --no-progress --project=hva --configuration=prd",
+    "build:uva:dev": "ng build uva --prod --configuration=dev",
+    "build:uva:tst": "ng build uva --prod --configuration=tst",
+    "build:uva:acc": "ng build uva --prod --configuration=acc",
+    "build:uva:prd": "ng build uva --prod --configuration=prd",
+    "build:hva:dev": "ng build hva --prod --configuration=dev",
+    "build:hva:tst": "ng build hva --prod --configuration=tst",
+    "build:hva:acc": "ng build hva --prod --configuration=acc",
+    "build:hva:prd": "ng build hva --prod --configuration=prd",
+    "deploy:dev": "npm run build:uva:dev && npm run build:hva:dev && firebase deploy --public dist/uva --project status-uva-dev && firebase deploy --public dist/hva --project status-hva-dev",
+    "deploy:tst": "npm run build:uva:tst && npm run build:hva:tst && firebase deploy --public dist/uva --project status-uva-tst && firebase deploy --public dist/hva --project status-hva-tst",
+    "deploy:acc": "npm run build:uva:acc && npm run build:hva:acc && firebase deploy --public dist/uva --project status-uva-acc && firebase deploy --public dist/hva --project status-hva-acc",
+    "deploy:prd": "npm run build:uva:prd && npm run build:hva:prd && firebase deploy --public dist/uva --project status-uva-prd && firebase deploy --public dist/hva --project status-hva-prd",
     ...
   }        
 }
 ```
 
-With script-launcher you have the benefits of using variables and make the above example easier to maintain:
+With script-launcher you have the benefits of using variables and references, so you can make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
     ...
-    "build:$PROJECT:$CONFIGURATION": "ng build --project=$PROJECT --configuration=$CONFIGURATION",
+    "build:$project:$config": "ng build $project -configuration=$config",
+    "deploy:$project:$config":[
+      "build:$project:$config",
+      "firebase deploy --public dist/$project --project $project-$config"
+    ],
+    "deploy:$config":[
+      "deploy:uva:$config",
+      "deploy:hva:$config"
+    ]
     ...
   }
 }
 ```
-To start the above example you would run: `npm start build:uva:tst` or `npm start build:hva:prd` etc. 
+To start the above example you would run: `npm start build:uva:tst` or `npm start deploy:prd` etc. 
 
 
 

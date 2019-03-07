@@ -3,7 +3,7 @@
     "lint": "tslint --config tslint.json 'src/**/*.ts'",
     "build": [
       "echo Building node package...",
-      "npm start lint",
+      "npm --silent start lint",
       "rm -rf ./dist",
       "tsc --build",
       "cp ./src/package.json ./dist/",
@@ -20,18 +20,9 @@
   "menu": {
     "": {
       "description": "action",
-      "package": "npm --silent start build",
-      "publish": "npm --silent start publish",
+      "package build": "build",
+      "package publish": "publish",
       "help": "echo Not implemented."
-    }
-  },
-  "configurations": {
-    "logLevel": 0,
-    "script": {
-      "shell": ""
-    },
-    "menu": {
-      "default": "build:package"
     }
   }
 }
