@@ -1,5 +1,11 @@
 {
   "scripts": {
+    "dir": [
+      "../../../",
+      "pwd",
+      "echo hallo",
+      "echo test: $(pwd)"
+    ],
     "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
