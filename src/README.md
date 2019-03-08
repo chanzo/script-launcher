@@ -63,6 +63,7 @@ To start the above example you would run: `npm start build:uva:tst` or `npm star
 * [Implementation examples](#implementation-examples)
   * [Use array's to start multiple scripts sequentially.](#array-sequential-scripts)
   * [Use array's to start multiple scripts concurrently.](#array-concurrent-scripts)
+  * [Change directory in a separate script line](#change-directory)
   * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#environment-and-argument-values-on-linux-mac-and-windows)
   * [Pass arguments to script, use them like functions.](#script-functions-with-parameters)
   * Gain the possibility to reference your scripts from other scripts.
@@ -162,6 +163,19 @@ Run `npm start build-stuff` to test this example.
         "echo Sequential 2 && (timeout 1 > nul)"
       ]
     }
+  }
+}
+```
+
+### Change directory
+Run `npm start build-stuff` to test this example.
+```
+{
+  "scripts": {
+    "build-stuff": [
+      "node_modules/script-launcher",
+      "dir"
+    ]
   }
 }
 ```
