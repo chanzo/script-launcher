@@ -1,5 +1,17 @@
 {
   "scripts": {
+    "error": [
+      "echo \"1: $(pwd)\"",
+      "..",
+      "echo \"2: $(pwd)\"",
+      "..",
+      "echo \"3: $(pwd)\"",
+      "..",
+      "echo \"4: $(pwd)\"",
+      "..",
+      "sdfgsdg",
+      "echo \"5: $(pwd)\""
+    ],
     "dir": [
       "../../../",
       "pwd",
@@ -72,7 +84,7 @@
     }
   },
   "configurations": {
-    "logLevel": 20,
+    "logLevel": 0,
     "script": {
       "shell0": true
     },

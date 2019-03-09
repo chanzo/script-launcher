@@ -3,7 +3,7 @@
     "lint": "tslint --config tslint.json 'src/**/*.ts'",
     "build": [
       "echo Building node package...",
-      "npm --silent start lint",
+      "lint",
       "rm -rf ./dist",
       "tsc --build",
       "cp ./src/package.json ./dist/",
