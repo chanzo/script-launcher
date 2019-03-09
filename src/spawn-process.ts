@@ -1,5 +1,5 @@
 import * as spawn from 'cross-spawn';
-import { exec, ChildProcess, ExecOptions, SpawnOptions } from 'child_process';
+import { ChildProcess, SpawnOptions } from 'child_process';
 import { Logger } from './logger';
 
 export class Process {

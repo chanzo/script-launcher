@@ -4,8 +4,10 @@ import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
 import { Logger } from './logger';
+import * as Fs from 'fs';
+import * as Path from 'path';
 
-type ISpawnHandler = (command: string, args: string[]) => Promise<Process>;
+type ISpawnHandler = (command: string, args: string[], options: SpawnOptions) => Promise<Process>;
 
 export class Command {
   private static expandArguments(text: string, args: string[]): string {
@@ -33,7 +35,7 @@ export class Command {
   }
 
   private static async spawnConcurrent(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, options.shell, async (command, args) => {
+    return Command.spawnCommands(commands, options, async (command, args, options) => {
       Logger.log('Spawn concurrent: ', '\'' + command + '\'', args);
 
       const process = Process.spawn(command, args, options);
@@ -45,7 +47,7 @@ export class Command {
   }
 
   private static async spawnSequential(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, options.shell, async (command, args) => {
+    return Command.spawnCommands(commands, options, async (command, args, options) => {
       Logger.log('Spawn sequential: ', '\'' + command + '\'', args);
 
       const process = Process.spawn(command, args, options);
@@ -58,19 +60,35 @@ export class Command {
     });
   }
 
-  private static async spawnCommands(commands: string[], shell: boolean | string, spawnHandler: ISpawnHandler): Promise<Process[]> {
+  private static async spawnCommands(commands: string[], options: SpawnOptions, spawnHandler: ISpawnHandler): Promise<Process[]> {
     const processes: Process[] = [];
+
+    options = { ...options };
+
+    if (!options.cwd) options.cwd = '';
 
     for (let command of commands) {
       let args = [];
 
-      if (!shell) {
+      if (!options.shell) {
         args = stringArgv(command);
         command = args[0];
         args.shift();
       }
 
-      const process = await spawnHandler(command, args);
+      const path = Path.join(Path.resolve(options.cwd), command);
+
+      if (Fs.existsSync(path)) {
+        Logger.debug('Detected path: ', path);
+        options.cwd = path;
+        continue;
+      } else {
+        Logger.debug('Detected action: ', path);
+      }
+
+      Logger.info('Spawn directory: ', options.cwd);
+
+      const process = await spawnHandler(command, args, options);
 
       processes.push(process);
     }
