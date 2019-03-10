@@ -35,65 +35,70 @@ export class Command {
   }
 
   private static async spawnConcurrent(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, options, async (command, args, options) => {
-      Logger.log('Spawn concurrent: ', '\'' + command + '\'', args);
-
-      const process = Process.spawn(command, args, options);
-
-      Logger.debug(`Process ${process.pid} started.`);
-
-      return process;
-    });
-  }
-
-  private static async spawnSequential(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    return Command.spawnCommands(commands, options, async (command, args, options) => {
-      Logger.log('Spawn sequential: ', '\'' + command + '\'', args);
-
-      const process = Process.spawn(command, args, options);
-
-      Logger.debug(`Process ${process.pid} started.`);
-
-      await process.wait();
-
-      return process;
-    });
-  }
-
-  private static async spawnCommands(commands: string[], options: SpawnOptions, spawnHandler: ISpawnHandler): Promise<Process[]> {
     const processes: Process[] = [];
 
     options = { ...options };
 
-    if (!options.cwd) options.cwd = '';
+    for (const command of commands) {
+      const process = await Command.executeCommand(command, options);
 
-    for (let command of commands) {
-      let args = [];
+      if (process) {
+        Logger.log('Concurrent process pid:' + process.pid);
 
-      if (!options.shell) {
-        args = stringArgv(command);
-        command = args[0];
-        args.shift();
+        processes.push(process);
       }
-
-      const path = Path.join(Path.resolve(options.cwd), command);
-
-      if (Fs.existsSync(path)) {
-        Logger.debug('Detected path: ', path);
-        options.cwd = path;
-        continue;
-      } else {
-        Logger.debug('Detected action: ', path);
-      }
-
-      Logger.info('Spawn directory: ', options.cwd);
-
-      const process = await spawnHandler(command, args, options);
-
-      processes.push(process);
     }
 
     return processes;
+  }
+
+  private static async spawnSequential(commands: string[], options: SpawnOptions): Promise<Process[]> {
+    const processes: Process[] = [];
+
+    options = { ...options };
+
+    for (const command of commands) {
+      const process = await Command.executeCommand(command, options);
+
+      if (process) {
+        Logger.log('Sequential process pid:' + process.pid);
+
+        const code = await process.wait();
+
+        processes.push(process);
+
+        if (code !== 0) break;
+      }
+    }
+
+    return processes;
+  }
+
+  private static async executeCommand(command: string, options: SpawnOptions): Promise<Process> {
+    if (!options.cwd) options.cwd = '';
+
+    let args = [];
+
+    if (!options.shell) {
+      args = stringArgv(command);
+      command = args[0];
+      args.shift();
+    }
+
+    const path = Path.join(Path.resolve(options.cwd), command);
+
+    if (Fs.existsSync(path)) {
+      options.cwd = path;
+      return null;
+    }
+
+    Logger.info('Spawn directory: ', options.cwd);
+
+    const process = Process.spawn(command, args, options);
+
+    Logger.log('Spawn Process: ' + '\'' + command + '\'' + args);
+
+    return process;
   }
 
   private readonly scripts: Scripts;
