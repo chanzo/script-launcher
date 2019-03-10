@@ -2,20 +2,21 @@
   "scripts": {
     "sequential": {
       "sequential": [
-        "echo Sequential 1 && sleep 1",
-        "echo Sequential 2 && sleep 1"
+        "echo Sequential 1 && sleep 10",
+        "echo Sequential 2 && sleep 10"
       ]
     },
     "concurrent": {
       "concurrent": [
-        "echo Concurrent 1 && sleep 1",
-        "echo Concurrent 2 && sleep 1"
+        "echo Concurrent 1 && sleep 10",
+        "echo Concurrent 2 && sleep 10"
       ]
     },
     "bug": {
       "concurrent": [
         "sequential",
-        "sequential"
+        "sequential",
+        "echo 1"
       ]
     },
     "error": [
@@ -102,7 +103,7 @@
     }
   },
   "configurations": {
-    "logLevel": 2,
+    "logLevel": 0,
     "script": {
       "shell0": true
     },

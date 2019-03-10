@@ -55,7 +55,7 @@ async function main(): Promise<void> {
 
     const commands = command.prepare(script);
 
-    Logger.log('Prepared commands: ', commands);
+    Logger.log('Prepared commands: ', JSON.stringify(commands, null, 2));
 
     exitCode = await command.execute(commands, shell);
 
