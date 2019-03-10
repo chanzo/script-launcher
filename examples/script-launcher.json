@@ -1,5 +1,23 @@
 {
   "scripts": {
+    "sequential": {
+      "sequential": [
+        "echo Sequential 1 && sleep 1",
+        "echo Sequential 2 && sleep 1"
+      ]
+    },
+    "concurrent": {
+      "concurrent": [
+        "echo Concurrent 1 && sleep 1",
+        "echo Concurrent 2 && sleep 1"
+      ]
+    },
+    "bug": {
+      "concurrent": [
+        "sequential",
+        "sequential"
+      ]
+    },
     "error": [
       "echo \"1: $(pwd)\"",
       "..",
@@ -84,7 +102,7 @@
     }
   },
   "configurations": {
-    "logLevel": 0,
+    "logLevel": 2,
     "script": {
       "shell0": true
     },

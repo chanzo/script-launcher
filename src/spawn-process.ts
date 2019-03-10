@@ -19,15 +19,16 @@ export class Process {
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
         childProcess.on('exit', (code, signal) => {
-          Logger.debug(`Process ${childProcess.pid} exited with code ${code} and signal ${signal}.`);
+          Logger.debug('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal);
+
           resolve(code);
         });
         childProcess.on('error', (error) => {
-          Logger.debug(`Process ${childProcess.pid} terminated with an error, ${error}.`);
+          Logger.debug('Process error   : pid=' + childProcess.pid + `  code=${error}`);
           reject(error);
         });
       } catch (error) {
-        Logger.error(`Process ${childProcess.pid} failed to attach event emitters, ${error}.`);
+        Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
         reject(error);
       }
     });

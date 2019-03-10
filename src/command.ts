@@ -43,7 +43,7 @@ export class Command {
       const process = await Command.executeCommand(command, options);
 
       if (process) {
-        Logger.log('Concurrent process pid:' + process.pid);
+        Logger.debug('Concurrent pid  :', process.pid);
 
         processes.push(process);
       }
@@ -61,7 +61,7 @@ export class Command {
       const process = await Command.executeCommand(command, options);
 
       if (process) {
-        Logger.log('Sequential process pid:' + process.pid);
+        Logger.debug('Sequential pid  :', process.pid);
 
         const code = await process.wait();
 
@@ -92,11 +92,10 @@ export class Command {
       return null;
     }
 
-    Logger.info('Spawn directory: ', options.cwd);
+    Logger.log('Spawn process   :', '\'' + command + '\'', args);
+    Logger.info('Spawn directory : "' + options.cwd + '"');
 
     const process = Process.spawn(command, args, options);
-
-    Logger.log('Spawn Process: ' + '\'' + command + '\'' + args);
 
     return process;
   }
