@@ -73,7 +73,7 @@ export class Command {
   }
 
   public async execute(commands: ICommands, shell: boolean | string): Promise<number> {
-    const processes = await this.executeHenk(commands, shell);
+    const processes = await this.executeCommands(commands, shell);
 
     let exitCode = 0;
 
@@ -82,41 +82,6 @@ export class Command {
     }
 
     return exitCode;
-  }
-
-  public async executeHenk(commands: ICommands, shell: boolean | string): Promise<Process[]> {
-    const options: SpawnOptions = {
-      stdio: 'inherit',
-      env: this.environment,
-      shell: shell,
-    };
-
-    const processes: Process[] = [];
-
-    for (const command of commands.concurrent) {
-      if (typeof command === 'string') {
-        const process = Command.executeCommand(command, options);
-
-        processes.push(process);
-      } else {
-        processes.push(...await this.executeHenk(command, shell));
-      }
-    }
-
-    for (const command of commands.sequential) {
-      if (typeof command === 'string') {
-        const process = Command.executeCommand(command, options);
-        const code = await process.wait();
-
-        if (code !== 0) break;
-
-        processes.push(process);
-      } else {
-        processes.push(...await this.executeHenk(command, shell));
-      }
-    }
-
-    return processes;
   }
 
   public prepare(script: IScript): ICommands {
@@ -134,6 +99,41 @@ export class Command {
     const environment = { ...this.environment, ...script.parameters };
 
     return this.resolveReferences(concurrent, sequential, environment);
+  }
+
+  private async executeCommands(commands: ICommands, shell: boolean | string): Promise<Process[]> {
+    const options: SpawnOptions = {
+      stdio: 'inherit',
+      env: this.environment,
+      shell: shell,
+    };
+
+    const processes: Process[] = [];
+
+    for (const command of commands.concurrent) {
+      if (typeof command === 'string') {
+        const process = Command.executeCommand(command, options);
+
+        processes.push(process);
+      } else {
+        processes.push(...await this.executeCommands(command, shell));
+      }
+    }
+
+    for (const command of commands.sequential) {
+      if (typeof command === 'string') {
+        const process = Command.executeCommand(command, options);
+        const code = await process.wait();
+
+        if (code !== 0) break;
+
+        processes.push(process);
+      } else {
+        processes.push(...await this.executeCommands(command, shell));
+      }
+    }
+
+    return processes;
   }
 
   private expandReferences(concurrent: string[], sequential: string[], scripts: Scripts): ICommands {

@@ -58,6 +58,7 @@ async function main(): Promise<void> {
     Logger.log('Prepared commands: ', JSON.stringify(commands, null, 2));
 
     exitCode = await command.execute(commands, shell);
+    // exitCode = 0;
 
     Logger.info('ExitCode:', exitCode);
   } catch (error) {
