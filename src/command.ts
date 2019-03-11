@@ -7,7 +7,7 @@ import { Logger } from './logger';
 import * as Fs from 'fs';
 import * as Path from 'path';
 
-export interface ICommands {
+interface ICommands {
   concurrent: Array<ICommands | string>;
   sequential: Array<ICommands | string>;
 }
@@ -54,10 +54,11 @@ export class Command {
       return null;
     }
 
-    Logger.log('Spawn process   :', '\'' + command + '\'', args);
-    Logger.info('Spawn directory : "' + options.cwd + '"');
-
     const process = Process.spawn(command, args, options);
+
+    Logger.log('Spawn process   :', '"' + command + '"', args);
+    Logger.info('Process dir     : "' + options.cwd + '"');
+    Logger.debug('Process pid     :', process.pid);
 
     return process;
   }
