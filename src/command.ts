@@ -73,10 +73,7 @@ export class Command {
   }
 
   public async execute(commands: ICommands, shell: boolean | string): Promise<number> {
-    const processes: Array<Promise<Process[]>> = [];
-
-    processes.push(...this.executeConcurrent(commands.concurrent, shell));
-    processes.push(...this.executeSequential(commands.sequential, shell));
+    const processes = await this.executeCommands([commands], shell);
 
     let exitCode = 0;
 
@@ -85,7 +82,6 @@ export class Command {
         exitCode += await process.wait();
       }
     }
-
     return exitCode;
   }
 
@@ -106,56 +102,58 @@ export class Command {
     return this.resolveReferences(concurrent, sequential, environment);
   }
 
-  private executeConcurrent(commands: Array<ICommands | string>, shell: boolean | string): Array<Promise<Process[]>> {
+  private executeCommands(commands: ICommands[], shell: boolean | string): Array<Promise<Process[]>> {
+    const processes: Array<Promise<Process[]>> = [];
+
+    for (const command of commands) {
+      processes.push(this.executeConcurrent(command.concurrent.filter((command) => typeof command === 'string') as string[], shell));
+      processes.push(this.executeSequential(command.sequential.filter((command) => typeof command === 'string') as string[], shell));
+
+      processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[], shell));
+      processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[], shell));
+    }
+
+    return processes;
+
+  }
+
+  private async executeConcurrent(commands: string[], shell: boolean | string): Promise<Process[]> {
     const options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
       shell: shell,
     };
 
-    const processes: Array<Promise<Process[]>> = [];
+    const processes: Process[] = [];
 
     for (const command of commands) {
-      if (typeof command === 'string') {
-        const process = Command.executeCommand(command, options);
+      const process = Command.executeCommand(command, options);
 
-        processes.push((async () => [process])());
-      } else {
-        processes.push(...this.executeConcurrent((command as ICommands).concurrent, shell));
-        processes.push(...this.executeSequential((command as ICommands).sequential, shell));
+      if (process) {
+        processes.push(process);
       }
     }
 
     return processes;
   }
 
-  private executeSequential(commands: Array<ICommands | string>, shell: boolean | string): Array<Promise<Process[]>> {
+  private async executeSequential(commands: string[], shell: boolean | string): Promise<Process[]> {
     const options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
       shell: shell,
     };
 
-    const processes: Array<Promise<Process[]>> = [];
+    const processes: Process[] = [];
 
-    processes.push((async () => {
-      const processes: Process[] = [];
+    for (const command of commands) {
+      const process = Command.executeCommand(command, options);
 
-      for (const command of commands.filter((command) => typeof command === 'string')) {
-        const process = Command.executeCommand(command as string, options);
-        const code = await process.wait();
-
-        if (code !== 0) break;
-
+      if (process) {
         processes.push(process);
+
+        if (await process.wait() !== 0) break;
       }
-
-      return processes;
-    })());
-
-    for (const command of commands.filter((command) => typeof command !== 'string')) {
-      processes.push(...this.executeConcurrent((command as ICommands).concurrent, shell));
-      processes.push(...this.executeSequential((command as ICommands).sequential, shell));
     }
 
     return processes;
