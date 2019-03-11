@@ -103,7 +103,7 @@
     }
   },
   "configurations": {
-    "logLevel": 20,
+    "logLevel": 0,
     "script": {
       "shell0": true
     },
