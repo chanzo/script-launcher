@@ -6,6 +6,10 @@ export class Process {
   public static spawn(command: string, args?: string[], options?: SpawnOptions): Process {
     const process = spawn(command, args, options);
 
+    Logger.log('Spawn process   :', '"' + command + '"', args);
+    Logger.info('Process dir     : "' + options.cwd + '"');
+    Logger.debug('Process pid     :', process.pid);
+
     return new Process(process);
   }
 

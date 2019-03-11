@@ -3,13 +3,17 @@ import { Scripts } from './scripts';
 import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
-import { Logger } from './logger';
 import * as Fs from 'fs';
 import * as Path from 'path';
 
 interface ICommands {
   concurrent: Array<ICommands | string>;
   sequential: Array<ICommands | string>;
+}
+
+enum Order {
+  concurrent,
+  sequential,
 }
 
 export class Command {
@@ -36,7 +40,9 @@ export class Command {
     return text.replace(/\$\w+/g, '');
   }
 
-  private static executeCommand(command: string, options: SpawnOptions): Process {
+  private static getCommandParams(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
+    options = { ...options };
+
     if (!options.cwd) options.cwd = '';
 
     let args = [];
@@ -51,16 +57,10 @@ export class Command {
 
     if (Fs.existsSync(path)) {
       options.cwd = path;
-      return null;
+      command = null;
     }
 
-    const process = Process.spawn(command, args, options);
-
-    Logger.log('Spawn process   :', '"' + command + '"', args);
-    Logger.info('Process dir     : "' + options.cwd + '"');
-    Logger.debug('Process pid     :', process.pid);
-
-    return process;
+    return { command, args, options };
   }
 
   private readonly scripts: Scripts;
@@ -107,19 +107,18 @@ export class Command {
     const processes: Array<Promise<Process[]>> = [];
 
     for (const command of commands) {
-      processes.push(this.executeConcurrent(command.concurrent.filter((command) => typeof command === 'string') as string[], shell));
-      processes.push(this.executeSequential(command.sequential.filter((command) => typeof command === 'string') as string[], shell));
+      processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], shell, Order.concurrent));
+      processes.push(this.executeCommand(command.sequential.filter((command) => typeof command === 'string') as string[], shell, Order.sequential));
 
       processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[], shell));
       processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[], shell));
     }
 
     return processes;
-
   }
 
-  private async executeConcurrent(commands: string[], shell: boolean | string): Promise<Process[]> {
-    const options: SpawnOptions = {
+  private async executeCommand(commands: string[], shell: boolean | string, order: Order): Promise<Process[]> {
+    let options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
       shell: shell,
@@ -128,32 +127,16 @@ export class Command {
     const processes: Process[] = [];
 
     for (const command of commands) {
-      const process = Command.executeCommand(command, options);
+      const params = Command.getCommandParams(command, options);
 
-      if (process) {
-        processes.push(process);
-      }
-    }
+      options = params.options;
 
-    return processes;
-  }
+      if (params.command) {
+        const process = Process.spawn(params.command, params.args, params.options);
 
-  private async executeSequential(commands: string[], shell: boolean | string): Promise<Process[]> {
-    const options: SpawnOptions = {
-      stdio: 'inherit',
-      env: this.environment,
-      shell: shell,
-    };
-
-    const processes: Process[] = [];
-
-    for (const command of commands) {
-      const process = Command.executeCommand(command, options);
-
-      if (process) {
         processes.push(process);
 
-        if (await process.wait() !== 0) break;
+        if (order === Order.sequential && await process.wait() !== 0) break;
       }
     }
 
