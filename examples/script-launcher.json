@@ -1,5 +1,42 @@
 {
   "scripts": {
+    "sequential": {
+      "sequential": [
+        "echo Sequential 1 && sleep 10",
+        "echo Sequential 2 && sleep 10"
+      ]
+    },
+    "concurrent": {
+      "concurrent": [
+        "echo Concurrent 1 && sleep 10",
+        "echo Concurrent 2 && sleep 10"
+      ]
+    },
+    "bug": {
+      "concurrent": [
+        "sequential",
+        "sequential",
+        "echo 1"
+      ]
+    },
+    "error": [
+      "echo \"1: $(pwd)\"",
+      "..",
+      "echo \"2: $(pwd)\"",
+      "..",
+      "echo \"3: $(pwd)\"",
+      "..",
+      "echo \"4: $(pwd)\"",
+      "..",
+      "sdfgsdg",
+      "echo \"5: $(pwd)\""
+    ],
+    "dir": [
+      "../../../",
+      "pwd",
+      "echo hallo",
+      "echo test: $(pwd)"
+    ],
     "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
@@ -66,7 +103,7 @@
     }
   },
   "configurations": {
-    "logLevel": 20,
+    "logLevel": 10,
     "script": {
       "shell0": true
     },
