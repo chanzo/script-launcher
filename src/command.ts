@@ -73,7 +73,12 @@ export class Command {
   }
 
   public async execute(commands: ICommands, shell: boolean | string): Promise<number> {
-    const processes = await this.executeCommands(commands, shell);
+    // const processes = await this.executeCommands(commands, shell);
+
+    const processes: Array<Promise<Process[]>> = [];
+
+    processes.push(...this.executeConcurrent(commands.concurrent, shell));
+    processes.push(...this.executeSequential(commands.sequential, shell));
 
     let exitCode = 0;
 
@@ -118,7 +123,10 @@ export class Command {
 
         processes.push((async () => [process])());
       } else {
-        processes.push(...this.executeCommands(command, shell));
+        // processes.push(...this.executeCommands(command, shell));
+        processes.push(...this.executeConcurrent((command as ICommands).concurrent, shell));
+        processes.push(...this.executeSequential((command as ICommands).sequential, shell));
+
       }
     }
 
@@ -150,7 +158,9 @@ export class Command {
     })());
 
     for (const command of commands.filter((command) => typeof command !== 'string')) {
-      processes.push(...this.executeCommands(command as ICommands, shell));
+      // processes.push(...this.executeCommands(command as ICommands, shell));
+      processes.push(...this.executeConcurrent((command as ICommands).concurrent, shell));
+      processes.push(...this.executeSequential((command as ICommands).sequential, shell));
     }
 
     return processes;
