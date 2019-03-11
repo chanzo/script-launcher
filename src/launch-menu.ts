@@ -3,12 +3,10 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, ICommand, IMenu, IScript } from './config-loader';
+import { Config, ICommand, IConfig, IMenu, IScript } from './config-loader';
 import { Logger } from './logger';
 import { Command } from './command';
-
-let defaultPlatform = '';
-let defaultEnvironment = '';
+import deepmerge = require('deepmerge');
 
 enum Colors {
   Bold = '\x1b[1m',
@@ -17,173 +15,124 @@ enum Colors {
   Cyan = '\x1b[36m',
 }
 
-const configFile = 'custom-launcher.json';
-
-interface ISelection {
-  platform: string;
-  environment: string;
-  autostart: string;
-  command: string;
-}
-
-interface IConfig {
-  default: string;
-  platforms: IMenu;
-}
-
 export async function launchMenu(): Promise<number> {
-  const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
   const config = Config.load();
-  const customConfig = loadConfig(configFile);
-  const platforms = config.menu;
-  let launchCommand = customConfig.default as string;
 
   Logger.level = config.configurations.logLevel;
 
-  const columns = config.configurations.menu.default.split(':');
+  const customConfig = loadCustomConfig(config.configurations.menu.customConfig);
+  const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
+  let script: IScript = {
+    name: 'custom launch',
+    parameters: {},
+    command: customConfig.configurations.menu.defaultScript,
+  };
 
-  if (columns.length > 0) defaultPlatform = columns[0];
-  if (columns.length > 1) defaultEnvironment = columns[1];
+  const command = new Command(config.configurations.script.shell, process.argv, process.env, config.scripts);
 
-  if (interactive || !launchCommand) {
-    const combinedPlatforms = { ...platforms, ...customConfig.platforms };
-    const selection = await promptMenu(combinedPlatforms);
+  if (interactive || !script.command) {
+    const defaultChoice = (customConfig.configurations.menu.defaultChoice ? customConfig.configurations.menu.defaultChoice : config.configurations.menu.defaultChoice).split(':');
+    const menu = deepmerge(customConfig.menu, config.menu);
 
-    if (selection.autostart) {
-      console.log();
-      console.log('Saving selection in: ' + configFile);
+    script = await promptMenu(menu, defaultChoice);
 
-      customConfig.default = selection.command;
-      customConfig.platforms = combinedPlatforms;
-
-      saveConfig(configFile, customConfig);
+    if (await saveChoiceMenu()) {
+      saveCustomConfig(config.configurations.menu.customConfig, {
+        menu: {} as IMenu,
+        configurations: {
+          menu: {
+            defaultScript: script.command,
+            defaultChoice: '',
+          },
+        },
+      } as IConfig);
     }
-    console.log();
-
-    launchCommand = selection.command;
-
-    Logger.log('Selected command: ', launchCommand);
   }
 
-  const args = process.argv.slice(2);
-  const shell = config.configurations.script.shell;
-  const environment = { ...process.env };
-  const command = new Command(args, environment, config.scripts);
-  let script = config.scripts.find(launchCommand);
+  console.log();
 
-  if (!script) {
-    script = {
-      name: '',
+  return await command.execute(script);
+}
+
+async function saveChoiceMenu(): Promise<boolean> {
+  const choice = await inquirer.prompt<{ value: boolean }>([
+    {
+      type: 'confirm',
+      name: 'value',
+      default: false,
+      message: 'Save selection:',
+    },
+  ]);
+
+  return choice.value;
+}
+
+async function promptMenu(menu: IMenu, defaults: string[]): Promise<IScript> {
+  const choices = Object.keys(menu).filter((item) => item !== 'description');
+
+  if (choices.length === 0) throw new Error('No menu entries available.');
+
+  const choice = await inquirer.prompt<{ value: string }>([
+    {
+      type: 'list',
+      name: 'value',
+      message: 'Select ' + menu.description + ':',
+      default: defaults[0],
+      choices: choices,
+    },
+  ]);
+
+  const command = menu[choice.value];
+
+  defaults.shift();
+
+  if (!isMenuObject(command)) {
+    return {
+      name: 'menu selection',
       parameters: {},
-      command: launchCommand,
+      command: command,
     } as IScript;
   }
 
-  // Logger.info('Lifecycle event: ', lifecycleEvent);
-  Logger.info('Arguments: ', args);
-  // Logger.info('Environment:', script.environment);
-
-  const commands = command.prepare(script);
-
-  return await command.execute(commands, shell);
+  return promptMenu(command as IMenu, defaults);
 }
 
-function loadConfig(configFile: string): IConfig {
+function isMenuObject(object: any) {
+  if (object instanceof Array) return false;
+  if (typeof object === 'string') return false;
+  if ((object as ICommand).concurrent && (object as ICommand).concurrent instanceof Array) return false;
+  if ((object as ICommand).sequential && (object as ICommand).sequential instanceof Array) return false;
+
+  return true;
+}
+
+function saveCustomConfig(configFile: string, config: IConfig): void {
+  const jsonData = JSON.stringify(config, null, 2);
+
+  fs.writeFileSync(configFile, jsonData);
+}
+
+function loadCustomConfig(configFile: string): IConfig {
   try {
     const absolutePath = path.resolve(configFile);
 
     if (fs.existsSync(absolutePath)) {
       console.log(`${Colors.Bold}Loading custom launch configuration from:${Colors.ResetAll} ${configFile}`);
-      console.log();
 
       return require(absolutePath);
     }
-
-    return {
-      default: '',
-      platforms: {
-        // description: 'main',
-      } as IMenu,
-    };
   } catch (error) {
     console.error(`${error}`);
     console.error();
-
-    return {
-      default: '',
-      platforms: {
-        // description: 'main',
-      } as IMenu,
-    };
-  }
-}
-
-function saveConfig(configFile: string, config: IConfig): void {
-  const jsonData = JSON.stringify(config, null, 2);
-
-  fs.writeFile(configFile, jsonData, (err) => {
-    if (err) console.log(err);
-  });
-}
-
-function selectMenuEntry(menu: IMenu): Promise<{ platform: string }> {
-  const choices = Object.entries(menu).filter(([entry, subMenu]) => entry !== 'description' && Object.keys(subMenu).length !== 0).map(([choice]) => choice);
-
-  if (choices.length === 0) throw new Error('No menu entries available.');
-
-  if (choices.length === 1) {
-    console.log(`${Colors.Green}?${Colors.ResetAll} ${Colors.Bold}Select ${menu.description}:${Colors.ResetAll} ${Colors.Cyan}${choices[0]}${Colors.ResetAll}`);
-    return new Promise<{ platform: string }>((resolve, reject) => {
-      resolve({
-        platform: choices[0],
-      });
-    });
   }
 
-  return inquirer
-    .prompt<{ platform: string }>([
-      {
-        type: 'list',
-        name: 'platform',
-        message: `Select ${menu.description}:`,
-        default: defaultPlatform,
-        choices: choices,
+  return {
+    menu: {},
+    configurations: {
+      menu: {
+        defaultChoice: '',
+        defaultScript: '',
       },
-    ]);
-}
-
-function promptMenu(menu: IMenu): Promise<ISelection> {
-
-  return new Promise<ISelection>((resolve, reject) => {
-    selectMenuEntry(menu)
-      .then((answers) => {
-        const environments = menu[answers.platform];
-        const platform = answers.platform;
-
-        inquirer
-          .prompt<{ environment: string, autostart: string }>([
-            {
-              type: 'list',
-              name: 'environment',
-              message: `Select ${(environments as IMenu).description}:`,
-              default: defaultEnvironment,
-              choices: Object.entries(environments).map(([environment]) => environment).filter((entry) => entry !== 'description'),
-            },
-            {
-              type: 'confirm',
-              name: 'autostart',
-              default: false,
-              message: 'Save selection:',
-            },
-          ])
-          .then((answers) => {
-            resolve({
-              platform: platform,
-              environment: answers.environment,
-              autostart: answers.autostart,
-              command: environments[answers.environment],
-            });
-          });
-      });
-  });
+    },
+  } as IConfig;
 }

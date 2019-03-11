@@ -6,7 +6,7 @@ import { Scripts } from './scripts';
 export interface IScript {
   name: string;
   parameters: { [name: string]: string };
-  command: string | ICommand;
+  command: string | string[] | ICommand;
 }
 
 export interface ICommand {
@@ -28,10 +28,14 @@ interface IConfigurations {
   script: {
     shell: boolean | string;
   };
-  menu: { default: string; };
+  menu: {
+    defaultScript: string | string[] | ICommand;
+    defaultChoice: string;
+    customConfig?: string;
+  };
 }
 
-interface IConfig {
+export interface IConfig {
   scripts: IScripts;
   menu: IMenu;
   configurations: IConfigurations;
@@ -50,7 +54,9 @@ export class Config {
         shell: true,
       },
       menu: {
-        default: '',
+        defaultChoice: '',
+        defaultScript: '',
+        customConfig: 'custom-launcher.json',
       },
     },
   };
@@ -83,7 +89,7 @@ export class Config {
     },
     configurations: {
       menu: {
-        default: 'myProject2:test',
+        defaultChoice: 'myProject2:test',
       },
     } as IConfigurations,
   };

@@ -45,25 +45,13 @@ async function main(): Promise<void> {
     }
 
     const shell = config.configurations.script.shell;
-    const command = new Command(commandArgs, process.env, config.scripts);
-    const script = config.scripts.find(launchScript);
+    const command = new Command(shell, commandArgs, process.env, config.scripts);
 
-    if (!script) throw new Error('Missing launch script: ' + launchScript);
-
-    Logger.info('Selected script:', script.name);
-    Logger.info('Parameters:', script.parameters);
-
-    const commands = command.prepare(script);
-
-    Logger.log('Prepared commands: ', JSON.stringify(commands, null, 2));
-
-    exitCode = await command.execute(commands, shell);
-    // exitCode = 0;
-
-    Logger.info('ExitCode:', exitCode);
+    exitCode = await command.execute(launchScript);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
+    Logger.info('ExitCode:', exitCode);
     process.exit(exitCode);
   }
 }

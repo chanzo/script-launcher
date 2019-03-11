@@ -67,11 +67,13 @@
       "echo 1 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 2",
       "echo 2 ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION && sleep 2"
     ],
+    "deploy:  $PROJECT  :$CONFIGURATION": "echo Deploying: PROJECT=$PROJECT  CONFIGURATION=$CONFIGURATION",
+    "build:  $PROJECT  :$CONFIGURATION": "echo Building: PROJECT=$PROJECT  CONFIGURATION=$CONFIGURATION",
     "build:  $PROJECT  :all": [
       "echo aa $0 $1 $2",
       "echo set"
     ],
-    "build:  $PROJECT  :$CONFIGURATION": {
+    "build3:  $PROJECT  :$CONFIGURATION": {
       "constraints": {
         "PROJECT": "uva|hva",
         "CONFIGURATION": "dev|tst|acc|prd"
@@ -88,27 +90,64 @@
     }
   },
   "menu": {
-    "description": "target organization",
-    "uva": {
-      "description": "organization environment",
-      "development:all": "build:uva:all",
-      "test": "serve:uva:tst",
-      "acceptance": "serve:uva:acc",
-      "production": "serve:uva:prd"
+    "description": "action",
+    "build": {
+      "description": "organization",
+      "uva": {
+        "description": "environment",
+        "development": "build:uva:dev",
+        "test": "build:uva:tst",
+        "acceptance": "build:uva:acc",
+        "production": "build:uva:prd"
+      },
+      "hva": {
+        "description": "environment",
+        "development": "build:hva:dev",
+        "test": "build:hva:tst",
+        "acceptance": "build:hva:acc",
+        "production": "build:hva:prd"
+      }
     },
-    "hva": {
-      "description": "organization environment",
-      "production": "serve:aws:prd",
-      "test": "echo serve:hva:tst"
+    "deploy": {
+      "description": "organization",
+      "uva": {
+        "description": "environment",
+        "development": "deploy:uva:dev",
+        "test": "deploy:uva:tst",
+        "acceptance": {
+          "concurrent": [
+            "deploy:uva:acc"
+          ],
+          "sequential": [
+            "deploy:uva:acc"
+          ]
+        },
+        "acceptance2": [
+          "deploy:uva:acc",
+          "deploy:uva:acc",
+          "deploy:uva:acc",
+          "deploy:uva:acc"
+        ],
+        "acceptance3": {},
+        "production": "deploy:uva:prd"
+      },
+      "hva": {
+        "description": "environment",
+        "development": "deploy:hva:dev",
+        "test": "deploy:hva:tst",
+        "acceptance": "deploy:hva:acc",
+        "production": "deploy:hva:prd"
+      }
     }
   },
   "configurations": {
-    "logLevel": 10,
+    "logLevel": 0,
     "script": {
       "shell0": true
     },
     "menu": {
-      "default": "hva:test"
+      "default": "deploy:uva:acceptance",
+      "customConfig": "../custom-launcher.json"
     }
   }
 }
