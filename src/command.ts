@@ -77,8 +77,10 @@ export class Command {
 
     let exitCode = 0;
 
-    for (const process of processes) {
-      exitCode += await process.wait();
+    for (const promis of processes) {
+      for (const process of await promis) {
+        exitCode += await process.wait();
+      }
     }
 
     return exitCode;
@@ -116,7 +118,10 @@ export class Command {
 
         processes.push(process);
       } else {
-        processes.push(...await this.executeCommands(command, shell));
+        for (const item of this.executeCommands(command, shell)) {
+          processes.push(...await item);
+        }
+        // processes.push(...await this.executeCommands(command, shell));
       }
     }
 
@@ -141,18 +146,21 @@ export class Command {
 
         processes.push(process);
       } else {
-        processes.push(...await this.executeCommands(command, shell));
+        for (const item of this.executeCommands(command, shell)) {
+          processes.push(...await item);
+        }
+        // processes.push(...await this.executeCommands(command, shell));
       }
     }
 
     return processes;
   }
 
-  private async executeCommands(commands: ICommands, shell: boolean | string): Promise<Process[]> {
-    const processes: Process[] = [];
+  private executeCommands(commands: ICommands, shell: boolean | string): Array<Promise<Process[]>> {
+    const processes: Array<Promise<Process[]>> = [];
 
-    processes.push(...await this.executeConcurrent(commands.concurrent, shell));
-    processes.push(...await this.executeSequential(commands.sequential, shell));
+    processes.push(this.executeConcurrent(commands.concurrent, shell));
+    processes.push(this.executeSequential(commands.sequential, shell));
     // this.executeConcurrent(commands.concurrent, shell);
     // this.executeSequential(commands.sequential, shell);
 
