@@ -34,7 +34,7 @@ export async function launchMenu(): Promise<number> {
     const defaultChoice = (customConfig.configurations.menu.defaultChoice ? customConfig.configurations.menu.defaultChoice : config.configurations.menu.defaultChoice).split(':');
     const menu = deepmerge(customConfig.menu, config.menu);
 
-    script = await promptMenu(menu, defaultChoice);
+    script = await promptMenu(menu, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
       saveCustomConfig(config.configurations.menu.customConfig, {
@@ -42,7 +42,7 @@ export async function launchMenu(): Promise<number> {
         configurations: {
           menu: {
             defaultScript: script.command,
-            defaultChoice: '',
+            defaultChoice: script.name,
           },
         },
       } as IConfig);
@@ -67,12 +67,12 @@ async function saveChoiceMenu(): Promise<boolean> {
   return choice.value;
 }
 
-async function promptMenu(menu: IMenu, defaults: string[]): Promise<IScript> {
+async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScript> {
   const choices = Object.keys(menu).filter((item) => item !== 'description');
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  const choice = await inquirer.prompt<{ value: string }>([
+  const answer = await inquirer.prompt<{ value: string }>([
     {
       type: 'list',
       name: 'value',
@@ -82,19 +82,21 @@ async function promptMenu(menu: IMenu, defaults: string[]): Promise<IScript> {
     },
   ]);
 
-  const command = menu[choice.value];
+  const command = menu[answer.value];
+
+  choice.push(answer.value);
 
   defaults.shift();
 
   if (!isMenuObject(command)) {
     return {
-      name: 'menu selection',
+      name: choice.join(':'),
       parameters: {},
       command: command,
     } as IScript;
   }
 
-  return promptMenu(command as IMenu, defaults);
+  return promptMenu(command as IMenu, defaults, choice);
 }
 
 function isMenuObject(object: any) {
