@@ -1,5 +1,4 @@
-import { ICommand, IScript } from './config-loader';
-import { Scripts } from './scripts';
+import { IScriptInfo, IScriptSequence, Scripts } from './scripts';
 import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
@@ -76,7 +75,7 @@ export class Command {
     this.scripts = scripts;
   }
 
-  public async execute(script: string | IScript): Promise<number> {
+  public async execute(script: string | IScriptInfo): Promise<number> {
     if (typeof script === 'string') {
       const scriptName = script;
 
@@ -104,17 +103,17 @@ export class Command {
     return exitCode;
   }
 
-  private prepare(script: IScript): ICommands {
+  private prepare(script: IScriptInfo): ICommands {
     const concurrent: string[] = [];
     const sequential: string[] = [];
-    const command = script.command;
+    const command = script.script;
 
     if (command instanceof Array) sequential.push(...command);
     if (typeof command === 'string') sequential.push(command);
     if (command instanceof String) sequential.push(command.toString());
 
-    if ((command as ICommand).concurrent) concurrent.push(...(command as ICommand).concurrent);
-    if ((command as ICommand).sequential) sequential.push(...(command as ICommand).sequential);
+    if ((command as IScriptSequence).concurrent) concurrent.push(...(command as IScriptSequence).concurrent);
+    if ((command as IScriptSequence).sequential) sequential.push(...(command as IScriptSequence).sequential);
 
     const environment = { ...this.environment, ...script.parameters };
 

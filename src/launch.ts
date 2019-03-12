@@ -7,6 +7,19 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 
+function showLoadedFiles(files: string[]) {
+  for (const file of files) {
+    if (file) {
+      const absolutePath = path.resolve(file);
+
+      if (fs.existsSync(absolutePath)) {
+        Logger.info('Loaded config: ', absolutePath);
+      }
+    }
+  }
+  Logger.info();
+}
+
 async function main(): Promise<void> {
   let exitCode = 1;
 
@@ -17,16 +30,7 @@ async function main(): Promise<void> {
 
     Logger.debug('Config: ', config);
 
-    for (const file of config.options.files) {
-      if (file) {
-        const absolutePath = path.resolve(file);
-
-        if (fs.existsSync(absolutePath)) {
-          Logger.info('Loaded config: ', absolutePath);
-        }
-      }
-    }
-    Logger.info();
+    showLoadedFiles(config.options.files);
 
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
@@ -40,7 +44,7 @@ async function main(): Promise<void> {
     Logger.info();
 
     if (`${scriptArgs}` === 'init') {
-      const targetFile = 'script-launcher.json';
+      const targetFile = 'launcher-config.json';
 
       if (fs.existsSync(targetFile)) {
         Logger.error('The file "' + targetFile + '" already exists.');

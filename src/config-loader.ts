@@ -1,26 +1,11 @@
 import { existsSync } from 'fs';
 import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
-import { Scripts } from './scripts';
-
-export interface IScript {
-  name: string;
-  parameters: { [name: string]: string };
-  command: string | string[] | ICommand;
-}
-
-export interface ICommand {
-  concurrent: string[];
-  sequential: string[];
-}
+import { IScript, IScripts, Scripts } from './scripts';
 
 export interface IMenu {
   description: string;
-  [entry: string]: IMenu | string;
-}
-
-export interface IScripts {
-  [key: string]: string | ICommand;
+  [entry: string]: IScript | IMenu;
 }
 
 interface IOptions {
@@ -30,7 +15,7 @@ interface IOptions {
     shell: boolean | string;
   };
   menu: {
-    defaultScript: string | string[] | ICommand;
+    defaultScript: IScript;
     defaultChoice: string;
   };
 }
@@ -54,7 +39,7 @@ export class Config {
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
-      description: 'entry',
+      description: '',
     },
     options: {
       files: [
@@ -80,11 +65,11 @@ export class Config {
       'upload:$PROJECT:$CONFIGURATION': [
         'echo Example upload: step 1 - $PROJECT:$CONFIGURATION',
         'echo Example upload: step 2 - $PROJECT:$CONFIGURATION',
-      ] as any,
+      ],
       'deploy:$PROJECT:$CONFIGURATION': [
         'build:$PROJECT:$CONFIGURATION',
         'upload:$PROJECT:$CONFIGURATION',
-      ] as any,
+      ],
     },
     menu: {
       description: 'project',

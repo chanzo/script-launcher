@@ -1,12 +1,8 @@
-#!./node_modules/.bin/ts-node --skip-project
-
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
-import * as path from 'path';
-import { Config, ICommand, IConfig, IMenu, IScript } from './config-loader';
-import { Logger } from './logger';
+import { Config, IConfig, IMenu } from './config-loader';
 import { Command } from './command';
-import deepmerge = require('deepmerge');
+import { IScript, IScriptInfo, IScriptSequence } from './scripts';
 
 enum Colors {
   Bold = '\x1b[1m',
@@ -17,32 +13,32 @@ enum Colors {
 
 export async function launchMenu(config: Config): Promise<number> {
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
-  let script: IScript = {
-    name: 'custom launch',
+  let script: IScriptInfo = {
+    name: config.options.menu.defaultChoice,
     parameters: {},
-    command: config.options.menu.defaultScript,
+    script: config.options.menu.defaultScript,
   };
 
   const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
 
-  if (interactive || !script.command) {
+  if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
 
     script = await promptMenu(config.menu, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
-        menu: {} as IMenu,
+        menu: {},
         options: {
           menu: {
-            defaultScript: script.command,
             defaultChoice: script.name,
+            defaultScript: script.script,
           },
         },
       } as IConfig);
     }
   } else {
-    console.log(`${Colors.Bold}Loading custom launch configuration from:${Colors.ResetAll} ${config.customFile}`);
+    console.log(Colors.Bold + 'Auto launching: ' + Colors.ResetAll + script.name);
   }
 
   console.log();
@@ -63,7 +59,7 @@ async function saveChoiceMenu(): Promise<boolean> {
   return choice.value;
 }
 
-async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScript> {
+async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
   const choices = Object.keys(menu).filter((item) => item !== 'description');
 
   if (choices.length === 0) throw new Error('No menu entries available.');
@@ -88,8 +84,8 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     return {
       name: choice.join(':'),
       parameters: {},
-      command: command,
-    } as IScript;
+      script: command as IScript,
+    };
   }
 
   return promptMenu(command as IMenu, defaults, choice);
@@ -98,8 +94,8 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
 function isMenuObject(object: any) {
   if (object instanceof Array) return false;
   if (typeof object === 'string') return false;
-  if ((object as ICommand).concurrent && (object as ICommand).concurrent instanceof Array) return false;
-  if ((object as ICommand).sequential && (object as ICommand).sequential instanceof Array) return false;
+  if ((object as IScriptSequence).concurrent && (object as IScriptSequence).concurrent instanceof Array) return false;
+  if ((object as IScriptSequence).sequential && (object as IScriptSequence).sequential instanceof Array) return false;
 
   return true;
 }
@@ -108,29 +104,4 @@ function saveCustomConfig(configFile: string, config: IConfig): void {
   const jsonData = JSON.stringify(config, null, 2);
 
   fs.writeFileSync(configFile, jsonData);
-}
-
-function loadCustomConfig(configFile: string): IConfig {
-  try {
-    const absolutePath = path.resolve(configFile);
-
-    if (fs.existsSync(absolutePath)) {
-      console.log(`${Colors.Bold}Loading custom launch configuration from:${Colors.ResetAll} ${configFile}`);
-
-      return require(absolutePath);
-    }
-  } catch (error) {
-    console.error(`${error}`);
-    console.error();
-  }
-
-  return {
-    menu: {},
-    options: {
-      menu: {
-        defaultChoice: '',
-        defaultScript: '',
-      },
-    },
-  } as IConfig;
 }
