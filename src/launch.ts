@@ -12,7 +12,7 @@ async function main(): Promise<void> {
   try {
     const config = Config.load();
 
-    Logger.level = config.configurations.logLevel;
+    Logger.level = config.options.logLevel;
 
     Logger.debug('Config: ', config);
 
@@ -44,7 +44,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    const shell = config.configurations.script.shell;
+    const shell = config.options.script.shell;
     const command = new Command(shell, commandArgs, process.env, config.scripts);
 
     exitCode = await command.execute(launchScript);

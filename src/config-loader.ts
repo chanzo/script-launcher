@@ -23,22 +23,22 @@ export interface IScripts {
   [key: string]: string | ICommand;
 }
 
-interface IConfigurations {
+interface IOptions {
   logLevel: number;
+  files: string[];
   script: {
     shell: boolean | string;
   };
   menu: {
     defaultScript: string | string[] | ICommand;
     defaultChoice: string;
-    customConfig?: string;
   };
 }
 
 export interface IConfig {
   scripts: IScripts;
   menu: IMenu;
-  configurations: IConfigurations;
+  options: IOptions;
 }
 
 export class Config {
@@ -48,7 +48,13 @@ export class Config {
     menu: {
       description: 'entry',
     },
-    configurations: {
+    options: {
+      files: [
+        'launcher-config.json',
+        'launcher-scripts.json',
+        'launcher-menu.json',
+        'launcher-custom.json',
+      ],
       logLevel: 0,
       script: {
         shell: true,
@@ -56,7 +62,6 @@ export class Config {
       menu: {
         defaultChoice: '',
         defaultScript: '',
-        customConfig: 'custom-launcher.json',
       },
     },
   };
@@ -87,11 +92,11 @@ export class Config {
         production: 'deploy:myProject2:prd',
       },
     },
-    configurations: {
+    options: {
       menu: {
         defaultChoice: 'myProject2:test',
       },
-    } as IConfigurations,
+    } as IOptions,
   };
 
   public static load(): Config {
@@ -132,12 +137,12 @@ export class Config {
 
   public readonly scripts: Scripts;
   public readonly menu: IMenu;
-  public readonly configurations: IConfigurations;
+  public readonly options: IOptions;
 
   private constructor(config: IConfig) {
     // Object.entries(config).map(([key, value]) => this[key] = value);
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
-    this.configurations = config.configurations;
+    this.options = config.options;
   }
 }

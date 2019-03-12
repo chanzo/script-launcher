@@ -18,28 +18,28 @@ enum Colors {
 export async function launchMenu(): Promise<number> {
   const config = Config.load();
 
-  Logger.level = config.configurations.logLevel;
+  Logger.level = config.options.logLevel;
 
-  const customConfig = loadCustomConfig(config.configurations.menu.customConfig);
+  const customConfig = loadCustomConfig('launcher-custom.json');
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
   let script: IScript = {
     name: 'custom launch',
     parameters: {},
-    command: customConfig.configurations.menu.defaultScript,
+    command: customConfig.options.menu.defaultScript,
   };
 
-  const command = new Command(config.configurations.script.shell, process.argv, process.env, config.scripts);
+  const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
 
   if (interactive || !script.command) {
-    const defaultChoice = (customConfig.configurations.menu.defaultChoice ? customConfig.configurations.menu.defaultChoice : config.configurations.menu.defaultChoice).split(':');
+    const defaultChoice = (customConfig.options.menu.defaultChoice ? customConfig.options.menu.defaultChoice : config.options.menu.defaultChoice).split(':');
     const menu = deepmerge(customConfig.menu, config.menu);
 
     script = await promptMenu(menu, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
-      saveCustomConfig(config.configurations.menu.customConfig, {
+      saveCustomConfig('launcher-custom.json', {
         menu: {} as IMenu,
-        configurations: {
+        options: {
           menu: {
             defaultScript: script.command,
             defaultChoice: script.name,
@@ -130,7 +130,7 @@ function loadCustomConfig(configFile: string): IConfig {
 
   return {
     menu: {},
-    configurations: {
+    options: {
       menu: {
         defaultChoice: '',
         defaultScript: '',
