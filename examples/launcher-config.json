@@ -140,14 +140,17 @@
       }
     }
   },
-  "configurations": {
-    "logLevel": 0,
+  "options": {
+    "logLevel": 1,
+    "files": [
+      "../launcher-menu.json",
+      "../launcher-custom.json"
+    ],
     "script": {
       "shell0": true
     },
     "menu": {
-      "default": "deploy:uva:acceptance",
-      "customConfig": "../custom-launcher.json"
+      "default": "deploy:uva:acceptance"
     }
   }
 }

@@ -43,6 +43,14 @@ export interface IConfig {
 
 export class Config {
 
+  get customFile(): string {
+    const match = this.options.files.reverse().find((item) => basename(item) === 'launcher-custom.json');
+
+    if (match) return match;
+
+    return 'launcher-custom.json';
+  }
+
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
@@ -65,6 +73,7 @@ export class Config {
       },
     },
   };
+
   public static readonly init: IConfig = {
     scripts: {
       'build:$PROJECT:$CONFIGURATION': 'echo Example build: ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION',
@@ -100,36 +109,48 @@ export class Config {
   };
 
   public static load(): Config {
-    let config = deepmerge<IConfig>(Config.default, Config.loadConfig('script-launcher.json'));
+    const hash = new Set<string>();
+    let config = Config.default;
+    let files = Config.default.options.files;
+    let loaded: number;
 
-    config = deepmerge(config, Config.loadConfig('package.json'));
+    do {
+      loaded = 0;
 
+      for (const file of files) {
+        if (file && !hash.has(file)) {
+          config = deepmerge<IConfig>(config, Config.loadConfig(file));
+
+          hash.add(file);
+
+          loaded++;
+        }
+      }
+      files = config.options.files;
+    } while (loaded > 0);
+
+    Config.verifyScriptNames(config.scripts);
+
+    return new Config(config);
+  }
+
+  private static verifyScriptNames(scripts: IScripts) {
     const hash = new Set<string>();
 
-    for (const key of Object.keys(config.scripts)) {
+    for (const key of Object.keys(scripts)) {
       const value = key.replace(/\$\w+(\:|$)/g, '$1');
 
       if (hash.has(value)) throw new Error('Duplicate object key: "' + key + '"');
 
       hash.add(value);
     }
-
-    return new Config(config);
   }
 
   private static loadConfig(file: string): IConfig {
     const absolutePath = resolve(file);
 
     if (existsSync(absolutePath)) {
-      const result = require(absolutePath);
-
-      if (basename(file).localeCompare('package.json', [], { sensitivity: 'base' }) === 0) {
-        if (!result.launcher) result.launcher = {};
-
-        return result.launcher;
-      }
-
-      return result;
+      return require(absolutePath);
     }
 
     return {} as IConfig;
@@ -140,7 +161,6 @@ export class Config {
   public readonly options: IOptions;
 
   private constructor(config: IConfig) {
-    // Object.entries(config).map(([key, value]) => this[key] = value);
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
     this.options = config.options;

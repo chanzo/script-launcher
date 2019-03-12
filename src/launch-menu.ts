@@ -15,29 +15,23 @@ enum Colors {
   Cyan = '\x1b[36m',
 }
 
-export async function launchMenu(): Promise<number> {
-  const config = Config.load();
-
-  Logger.level = config.options.logLevel;
-
-  const customConfig = loadCustomConfig('launcher-custom.json');
+export async function launchMenu(config: Config): Promise<number> {
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
   let script: IScript = {
     name: 'custom launch',
     parameters: {},
-    command: customConfig.options.menu.defaultScript,
+    command: config.options.menu.defaultScript,
   };
 
   const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
 
   if (interactive || !script.command) {
-    const defaultChoice = (customConfig.options.menu.defaultChoice ? customConfig.options.menu.defaultChoice : config.options.menu.defaultChoice).split(':');
-    const menu = deepmerge(customConfig.menu, config.menu);
+    const defaultChoice = config.options.menu.defaultChoice.split(':');
 
-    script = await promptMenu(menu, defaultChoice, []);
+    script = await promptMenu(config.menu, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
-      saveCustomConfig('launcher-custom.json', {
+      saveCustomConfig(config.customFile, {
         menu: {} as IMenu,
         options: {
           menu: {
@@ -47,6 +41,8 @@ export async function launchMenu(): Promise<number> {
         },
       } as IConfig);
     }
+  } else {
+    console.log(`${Colors.Bold}Loading custom launch configuration from:${Colors.ResetAll} ${config.customFile}`);
   }
 
   console.log();
