@@ -20,9 +20,10 @@
       ]
     },
     "bug1": [
+      "echo 0",
       "sequential",
-      "sequential",
-      "echo 1"
+      "echo 1",
+      "echo 2"
     ],
     "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
