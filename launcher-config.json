@@ -18,11 +18,9 @@
     ]
   },
   "menu": {
-    "": {
-      "description": "action",
-      "package build": "build",
-      "package publish": "publish",
-      "help": "echo Not implemented."
-    }
+    "description": "action",
+    "build package": "build",
+    "publish package": "publish",
+    "help": "echo Not implemented."
   }
 }
