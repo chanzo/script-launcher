@@ -187,7 +187,7 @@ export class Command {
       if (script) {
         const commands = this.prepare(script);
 
-        result.concurrent.push({
+        result.sequential.push({
           sequential: commands.sequential,
           concurrent: commands.concurrent,
         });
