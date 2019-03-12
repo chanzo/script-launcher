@@ -1,70 +1,75 @@
 import { existsSync } from 'fs';
 import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
-import { Scripts } from './scripts';
-
-export interface IScript {
-  name: string;
-  parameters: { [name: string]: string };
-  command: string | ICommand;
-}
-
-export interface ICommand {
-  concurrent: string[];
-  sequential: string[];
-}
+import { IScript, IScripts, Scripts } from './scripts';
 
 export interface IMenu {
   description: string;
-  [entry: string]: IMenu | string;
+  [entry: string]: IScript | IMenu;
 }
 
-export interface IScripts {
-  [key: string]: string | ICommand;
-}
-
-interface IConfigurations {
+interface IOptions {
   logLevel: number;
+  files: string[];
   script: {
     shell: boolean | string;
   };
-  menu: { default: string; };
+  menu: {
+    defaultScript: IScript;
+    defaultChoice: string;
+  };
 }
 
-interface IConfig {
+export interface IConfig {
   scripts: IScripts;
   menu: IMenu;
-  configurations: IConfigurations;
+  options: IOptions;
 }
 
 export class Config {
 
+  get customFile(): string {
+    const match = this.options.files.reverse().find((item) => basename(item) === 'launcher-custom.json');
+
+    if (match) return match;
+
+    return 'launcher-custom.json';
+  }
+
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
-      description: 'entry',
+      description: '',
     },
-    configurations: {
+    options: {
+      files: [
+        'launcher-config.json',
+        'launcher-scripts.json',
+        'launcher-menu.json',
+        'launcher-custom.json',
+      ],
       logLevel: 0,
       script: {
         shell: true,
       },
       menu: {
-        default: '',
+        defaultChoice: '',
+        defaultScript: '',
       },
     },
   };
+
   public static readonly init: IConfig = {
     scripts: {
       'build:$PROJECT:$CONFIGURATION': 'echo Example build: ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION',
       'upload:$PROJECT:$CONFIGURATION': [
         'echo Example upload: step 1 - $PROJECT:$CONFIGURATION',
         'echo Example upload: step 2 - $PROJECT:$CONFIGURATION',
-      ] as any,
+      ],
       'deploy:$PROJECT:$CONFIGURATION': [
         'build:$PROJECT:$CONFIGURATION',
         'upload:$PROJECT:$CONFIGURATION',
-      ] as any,
+      ],
     },
     menu: {
       description: 'project',
@@ -81,44 +86,56 @@ export class Config {
         production: 'deploy:myProject2:prd',
       },
     },
-    configurations: {
+    options: {
       menu: {
-        default: 'myProject2:test',
+        defaultChoice: 'myProject2:test',
       },
-    } as IConfigurations,
+    } as IOptions,
   };
 
   public static load(): Config {
-    let config = deepmerge<IConfig>(Config.default, Config.loadConfig('script-launcher.json'));
+    const hash = new Set<string>();
+    let config = Config.default;
+    let files = Config.default.options.files;
+    let loaded: number;
 
-    config = deepmerge(config, Config.loadConfig('package.json'));
+    do {
+      loaded = 0;
 
+      for (const file of files) {
+        if (file && !hash.has(file)) {
+          config = deepmerge<IConfig>(config, Config.loadConfig(file));
+
+          hash.add(file);
+
+          loaded++;
+        }
+      }
+      files = config.options.files;
+    } while (loaded > 0);
+
+    Config.verifyScriptNames(config.scripts);
+
+    return new Config(config);
+  }
+
+  private static verifyScriptNames(scripts: IScripts) {
     const hash = new Set<string>();
 
-    for (const key of Object.keys(config.scripts)) {
+    for (const key of Object.keys(scripts)) {
       const value = key.replace(/\$\w+(\:|$)/g, '$1');
 
       if (hash.has(value)) throw new Error('Duplicate object key: "' + key + '"');
 
       hash.add(value);
     }
-
-    return new Config(config);
   }
 
   private static loadConfig(file: string): IConfig {
     const absolutePath = resolve(file);
 
     if (existsSync(absolutePath)) {
-      const result = require(absolutePath);
-
-      if (basename(file).localeCompare('package.json', [], { sensitivity: 'base' }) === 0) {
-        if (!result.launcher) result.launcher = {};
-
-        return result.launcher;
-      }
-
-      return result;
+      return require(absolutePath);
     }
 
     return {} as IConfig;
@@ -126,12 +143,11 @@ export class Config {
 
   public readonly scripts: Scripts;
   public readonly menu: IMenu;
-  public readonly configurations: IConfigurations;
+  public readonly options: IOptions;
 
   private constructor(config: IConfig) {
-    // Object.entries(config).map(([key, value]) => this[key] = value);
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
-    this.configurations = config.configurations;
+    this.options = config.options;
   }
 }

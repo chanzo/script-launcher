@@ -76,7 +76,7 @@ Install `script-launcher` as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use `launch init` to create an example `script-launcher.json` file.
+Use `launch init` to create an example `launcher-config.json` file.
 ``` bash
 # Linux and Mac
 ./node_modules/.bin/launch init
@@ -112,7 +112,7 @@ npm start deploy:myProject2:acc
 Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
-To test an example, copy the json content from the example to the file named `script-launcher.json` and run the script.
+To test an example, copy the json content from the example to the file named `launcher-config.json` and run the script.
 
 ### Array sequential scripts.
 Run `npm start build-stuff` to test this example.

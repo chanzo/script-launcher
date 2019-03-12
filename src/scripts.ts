@@ -1,4 +1,19 @@
-import { IScript, IScripts } from './config-loader';
+export interface IScriptSequence {
+  concurrent: string[];
+  sequential: string[];
+}
+
+export type IScript = string | string[] | IScriptSequence;
+
+export interface IScripts {
+  [key: string]: IScript;
+}
+
+export interface IScriptInfo {
+  name: string;
+  parameters: { [name: string]: string };
+  script: IScript;
+}
 
 export class Scripts {
   private static getParameters(patternA: string, patternB: string): { [name: string]: string } {
@@ -36,11 +51,11 @@ export class Scripts {
     this.scripts = scripts;
   }
 
-  public find(pattern: string): IScript | null {
+  public find(pattern: string): IScriptInfo | null {
     for (const [key, command] of Object.entries(this.scripts)) {
       const parameters = Scripts.getParameters(key, pattern);
 
-      if (parameters !== null) return { name: key, parameters, command };
+      if (parameters !== null) return { name: key, parameters, script: command };
     }
 
     return null;
