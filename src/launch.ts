@@ -5,6 +5,20 @@ import { Logger } from './logger';
 import { Command } from './command';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
+import * as path from 'path';
+
+function showLoadedFiles(files: string[]) {
+  for (const file of files) {
+    if (file) {
+      const absolutePath = path.resolve(file);
+
+      if (fs.existsSync(absolutePath)) {
+        Logger.info('Loaded config: ', absolutePath);
+      }
+    }
+  }
+  Logger.info();
+}
 
 async function main(): Promise<void> {
   let exitCode = 1;
@@ -12,9 +26,11 @@ async function main(): Promise<void> {
   try {
     const config = Config.load();
 
-    Logger.level = config.configurations.logLevel;
+    Logger.level = config.options.logLevel;
 
     Logger.debug('Config: ', config);
+
+    showLoadedFiles(config.options.files);
 
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
@@ -25,9 +41,10 @@ async function main(): Promise<void> {
     Logger.info('Command arguments:', commandArgs);
     Logger.info('Script arguments:', scriptArgs);
     Logger.info('Launch script:', launchScript);
+    Logger.info();
 
     if (`${scriptArgs}` === 'init') {
-      const targetFile = 'script-launcher.json';
+      const targetFile = 'launcher-config.json';
 
       if (fs.existsSync(targetFile)) {
         Logger.error('The file "' + targetFile + '" already exists.');
@@ -40,29 +57,18 @@ async function main(): Promise<void> {
     }
 
     if (launchScript === undefined) {
-      exitCode = await launchMenu();
+      exitCode = await launchMenu(config);
       return;
     }
 
-    const shell = config.configurations.script.shell;
-    const command = new Command(commandArgs, process.env, config.scripts);
-    const script = config.scripts.find(launchScript);
+    const shell = config.options.script.shell;
+    const command = new Command(shell, commandArgs, process.env, config.scripts);
 
-    if (!script) throw new Error('Missing launch script: ' + launchScript);
-
-    Logger.info('Selected script:', script.name);
-    Logger.info('Parameters:', script.parameters);
-
-    const commands = command.prepare(script);
-
-    Logger.log('Prepared commands: ', commands);
-
-    exitCode = await command.execute(commands, shell);
-
-    Logger.info('ExitCode:', exitCode);
+    exitCode = await command.execute(launchScript);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
+    Logger.info('ExitCode:', exitCode);
     process.exit(exitCode);
   }
 }

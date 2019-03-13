@@ -1,13 +1,20 @@
-import { ICommand, IScript } from './config-loader';
-import { Scripts } from './scripts';
+import { IScriptInfo, IScriptSequence, Scripts } from './scripts';
 import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
-import { Logger } from './logger';
 import * as Fs from 'fs';
 import * as Path from 'path';
+import { Logger } from './logger';
 
-type ISpawnHandler = (command: string, args: string[], options: SpawnOptions) => Promise<Process>;
+interface ICommands {
+  concurrent: Array<ICommands | string>;
+  sequential: Array<ICommands | string>;
+}
+
+enum Order {
+  concurrent,
+  sequential,
+}
 
 export class Command {
   private static expandArguments(text: string, args: string[]): string {
@@ -21,7 +28,6 @@ export class Command {
 
     return text;
   }
-
   private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
     for (const [key, value] of Object.entries(environment)) {
       const regexp = new RegExp('\\$' + key + '([^\\w]|$)', 'g');
@@ -34,47 +40,9 @@ export class Command {
     return text.replace(/\$\w+/g, '');
   }
 
-  private static async spawnConcurrent(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    const processes: Process[] = [];
-
+  private static getCommandParams(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
     options = { ...options };
 
-    for (const command of commands) {
-      const process = await Command.executeCommand(command, options);
-
-      if (process) {
-        Logger.log('Concurrent process pid:' + process.pid);
-
-        processes.push(process);
-      }
-    }
-
-    return processes;
-  }
-
-  private static async spawnSequential(commands: string[], options: SpawnOptions): Promise<Process[]> {
-    const processes: Process[] = [];
-
-    options = { ...options };
-
-    for (const command of commands) {
-      const process = await Command.executeCommand(command, options);
-
-      if (process) {
-        Logger.log('Sequential process pid:' + process.pid);
-
-        const code = await process.wait();
-
-        processes.push(process);
-
-        if (code !== 0) break;
-      }
-    }
-
-    return processes;
-  }
-
-  private static async executeCommand(command: string, options: SpawnOptions): Promise<Process> {
     if (!options.cwd) options.cwd = '';
 
     let args = [];
@@ -89,70 +57,111 @@ export class Command {
 
     if (Fs.existsSync(path)) {
       options.cwd = path;
-      return null;
+      command = null;
     }
 
-    Logger.info('Spawn directory: ', options.cwd);
-
-    const process = Process.spawn(command, args, options);
-
-    Logger.log('Spawn Process: ' + '\'' + command + '\'' + args);
-
-    return process;
+    return { command, args, options };
   }
 
-  private readonly scripts: Scripts;
+  private readonly shell: boolean | string;
   private readonly args: string[];
   private readonly environment: { [name: string]: string };
+  private readonly scripts: Scripts;
 
-  public constructor(args: string[], environment: { [name: string]: string }, scripts: Scripts) {
-    this.scripts = scripts;
+  public constructor(shell: boolean | string, args: string[], environment: { [name: string]: string }, scripts: Scripts) {
+    this.shell = shell;
     this.args = args;
     this.environment = environment;
+    this.scripts = scripts;
   }
 
-  public async execute(commands: ICommand, shell: boolean | string): Promise<number> {
-    const options: SpawnOptions = {
-      stdio: 'inherit',
-      env: this.environment,
-      shell: shell,
-    };
+  public async execute(script: string | IScriptInfo): Promise<number> {
+    if (typeof script === 'string') {
+      const scriptName = script;
 
-    if (commands.concurrent.length === 0 && commands.sequential.length === 0) throw new Error('missing script');
+      script = this.scripts.find(scriptName);
 
-    const processes: Process[] = [];
+      if (!script) throw new Error('Missing launch script: ' + scriptName);
+    }
 
-    processes.push(...await Command.spawnConcurrent(commands.concurrent, options));
-    processes.push(...await Command.spawnSequential(commands.sequential, options));
+    const commands = this.prepare(script);
+
+    Logger.info('Selected script:', script.name);
+    Logger.info('Parameters:', script.parameters);
+    Logger.log('Prepared commands: ', JSON.stringify(commands, null, 2));
+
+    const processes = await this.executeCommands([commands]);
 
     let exitCode = 0;
 
-    for (const process of processes) {
-      exitCode += await process.wait();
+    for (const promis of processes) {
+      for (const process of await promis) {
+        exitCode += await process.wait();
+      }
     }
 
     return exitCode;
   }
 
-  public prepare(script: IScript): ICommand {
+  private prepare(script: IScriptInfo): ICommands {
     const concurrent: string[] = [];
     const sequential: string[] = [];
-    const command = script.command;
+    const command = script.script;
 
     if (command instanceof Array) sequential.push(...command);
     if (typeof command === 'string') sequential.push(command);
     if (command instanceof String) sequential.push(command.toString());
 
-    if ((command as ICommand).concurrent) concurrent.push(...(command as ICommand).concurrent);
-    if ((command as ICommand).sequential) sequential.push(...(command as ICommand).sequential);
+    if ((command as IScriptSequence).concurrent) concurrent.push(...(command as IScriptSequence).concurrent);
+    if ((command as IScriptSequence).sequential) sequential.push(...(command as IScriptSequence).sequential);
 
     const environment = { ...this.environment, ...script.parameters };
 
     return this.resolveReferences(concurrent, sequential, environment);
   }
 
-  private expandReferences(concurrent: string[], sequential: string[], scripts: Scripts): ICommand {
-    const result: ICommand = {
+  private executeCommands(commands: ICommands[]): Array<Promise<Process[]>> {
+    const processes: Array<Promise<Process[]>> = [];
+
+    for (const command of commands) {
+      processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], Order.concurrent));
+      processes.push(this.executeCommand(command.sequential.filter((command) => typeof command === 'string') as string[], Order.sequential));
+
+      processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[]));
+      processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[]));
+    }
+
+    return processes;
+  }
+
+  private async executeCommand(commands: string[], order: Order): Promise<Process[]> {
+    let options: SpawnOptions = {
+      stdio: 'inherit',
+      env: this.environment,
+      shell: this.shell,
+    };
+
+    const processes: Process[] = [];
+
+    for (const command of commands) {
+      const params = Command.getCommandParams(command, options);
+
+      options = params.options;
+
+      if (params.command) {
+        const process = Process.spawn(params.command, params.args, params.options);
+
+        processes.push(process);
+
+        if (order === Order.sequential && await process.wait() !== 0) break;
+      }
+    }
+
+    return processes;
+  }
+
+  private expandReferences(concurrent: string[], sequential: string[], scripts: Scripts): ICommands {
+    const result: ICommands = {
       concurrent: [],
       sequential: [],
     };
@@ -163,8 +172,10 @@ export class Command {
       if (script) {
         const commands = this.prepare(script);
 
-        result.sequential.push(...commands.sequential);
-        result.concurrent.push(...commands.concurrent);
+        result.concurrent.push({
+          sequential: commands.sequential,
+          concurrent: commands.concurrent,
+        });
       } else {
         result.concurrent.push(command);
       }
@@ -176,8 +187,10 @@ export class Command {
       if (script) {
         const commands = this.prepare(script);
 
-        result.sequential.push(...commands.sequential);
-        result.concurrent.push(...commands.concurrent);
+        result.sequential.push({
+          sequential: commands.sequential,
+          concurrent: commands.concurrent,
+        });
       } else {
         result.sequential.push(command);
       }
@@ -186,7 +199,7 @@ export class Command {
     return result;
   }
 
-  private resolveReferences(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommand {
+  private resolveReferences(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
     concurrent = [...concurrent];
     sequential = [...sequential];
 

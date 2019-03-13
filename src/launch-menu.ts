@@ -1,14 +1,8 @@
-#!./node_modules/.bin/ts-node --skip-project
-
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
-import * as path from 'path';
-import { Config, ICommand, IMenu, IScript } from './config-loader';
-import { Logger } from './logger';
+import { Config, IConfig, IMenu } from './config-loader';
 import { Command } from './command';
-
-let defaultPlatform = '';
-let defaultEnvironment = '';
+import { IScript, IScriptInfo, IScriptSequence } from './scripts';
 
 enum Colors {
   Bold = '\x1b[1m',
@@ -17,173 +11,97 @@ enum Colors {
   Cyan = '\x1b[36m',
 }
 
-const configFile = 'custom-launcher.json';
-
-interface ISelection {
-  platform: string;
-  environment: string;
-  autostart: string;
-  command: string;
-}
-
-interface IConfig {
-  default: string;
-  platforms: IMenu;
-}
-
-export async function launchMenu(): Promise<number> {
+export async function launchMenu(config: Config): Promise<number> {
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
-  const config = Config.load();
-  const customConfig = loadConfig(configFile);
-  const platforms = config.menu;
-  let launchCommand = customConfig.default as string;
+  let script: IScriptInfo = {
+    name: config.options.menu.defaultChoice,
+    parameters: {},
+    script: config.options.menu.defaultScript,
+  };
 
-  Logger.level = config.configurations.logLevel;
+  const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
 
-  const columns = config.configurations.menu.default.split(':');
+  if (interactive || !script.script) {
+    const defaultChoice = config.options.menu.defaultChoice.split(':');
 
-  if (columns.length > 0) defaultPlatform = columns[0];
-  if (columns.length > 1) defaultEnvironment = columns[1];
+    script = await promptMenu(config.menu, defaultChoice, []);
 
-  if (interactive || !launchCommand) {
-    const combinedPlatforms = { ...platforms, ...customConfig.platforms };
-    const selection = await promptMenu(combinedPlatforms);
-
-    if (selection.autostart) {
-      console.log();
-      console.log('Saving selection in: ' + configFile);
-
-      customConfig.default = selection.command;
-      customConfig.platforms = combinedPlatforms;
-
-      saveConfig(configFile, customConfig);
+    if (await saveChoiceMenu()) {
+      saveCustomConfig(config.customFile, {
+        menu: {},
+        options: {
+          menu: {
+            defaultChoice: script.name,
+            defaultScript: script.script,
+          },
+        },
+      } as IConfig);
     }
-    console.log();
-
-    launchCommand = selection.command;
-
-    Logger.log('Selected command: ', launchCommand);
+  } else {
+    console.log(Colors.Bold + 'Auto launching: ' + Colors.ResetAll + script.name);
   }
 
-  const args = process.argv.slice(2);
-  const shell = config.configurations.script.shell;
-  const environment = { ...process.env };
-  const command = new Command(args, environment, config.scripts);
-  let script = config.scripts.find(launchCommand);
+  console.log();
 
-  if (!script) {
-    script = {
-      name: '',
-      parameters: {},
-      command: launchCommand,
-    } as IScript;
-  }
-
-  // Logger.info('Lifecycle event: ', lifecycleEvent);
-  Logger.info('Arguments: ', args);
-  // Logger.info('Environment:', script.environment);
-
-  const commands = command.prepare(script);
-
-  return await command.execute(commands, shell);
+  return await command.execute(script);
 }
 
-function loadConfig(configFile: string): IConfig {
-  try {
-    const absolutePath = path.resolve(configFile);
+async function saveChoiceMenu(): Promise<boolean> {
+  const choice = await inquirer.prompt<{ value: boolean }>([
+    {
+      type: 'confirm',
+      name: 'value',
+      default: false,
+      message: 'Save selection:',
+    },
+  ]);
 
-    if (fs.existsSync(absolutePath)) {
-      console.log(`${Colors.Bold}Loading custom launch configuration from:${Colors.ResetAll} ${configFile}`);
-      console.log();
-
-      return require(absolutePath);
-    }
-
-    return {
-      default: '',
-      platforms: {
-        // description: 'main',
-      } as IMenu,
-    };
-  } catch (error) {
-    console.error(`${error}`);
-    console.error();
-
-    return {
-      default: '',
-      platforms: {
-        // description: 'main',
-      } as IMenu,
-    };
-  }
+  return choice.value;
 }
 
-function saveConfig(configFile: string, config: IConfig): void {
-  const jsonData = JSON.stringify(config, null, 2);
-
-  fs.writeFile(configFile, jsonData, (err) => {
-    if (err) console.log(err);
-  });
-}
-
-function selectMenuEntry(menu: IMenu): Promise<{ platform: string }> {
-  const choices = Object.entries(menu).filter(([entry, subMenu]) => entry !== 'description' && Object.keys(subMenu).length !== 0).map(([choice]) => choice);
+async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+  const choices = Object.keys(menu).filter((item) => item !== 'description');
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  if (choices.length === 1) {
-    console.log(`${Colors.Green}?${Colors.ResetAll} ${Colors.Bold}Select ${menu.description}:${Colors.ResetAll} ${Colors.Cyan}${choices[0]}${Colors.ResetAll}`);
-    return new Promise<{ platform: string }>((resolve, reject) => {
-      resolve({
-        platform: choices[0],
-      });
-    });
+  const answer = await inquirer.prompt<{ value: string }>([
+    {
+      type: 'list',
+      name: 'value',
+      message: 'Select ' + menu.description + ':',
+      default: defaults[0],
+      choices: choices,
+    },
+  ]);
+
+  const command = menu[answer.value];
+
+  choice.push(answer.value);
+
+  defaults.shift();
+
+  if (!isMenuObject(command)) {
+    return {
+      name: choice.join(':'),
+      parameters: {},
+      script: command as IScript,
+    };
   }
 
-  return inquirer
-    .prompt<{ platform: string }>([
-      {
-        type: 'list',
-        name: 'platform',
-        message: `Select ${menu.description}:`,
-        default: defaultPlatform,
-        choices: choices,
-      },
-    ]);
+  return promptMenu(command as IMenu, defaults, choice);
 }
 
-function promptMenu(menu: IMenu): Promise<ISelection> {
+function isMenuObject(object: any) {
+  if (object instanceof Array) return false;
+  if (typeof object === 'string') return false;
+  if ((object as IScriptSequence).concurrent && (object as IScriptSequence).concurrent instanceof Array) return false;
+  if ((object as IScriptSequence).sequential && (object as IScriptSequence).sequential instanceof Array) return false;
 
-  return new Promise<ISelection>((resolve, reject) => {
-    selectMenuEntry(menu)
-      .then((answers) => {
-        const environments = menu[answers.platform];
-        const platform = answers.platform;
+  return true;
+}
 
-        inquirer
-          .prompt<{ environment: string, autostart: string }>([
-            {
-              type: 'list',
-              name: 'environment',
-              message: `Select ${(environments as IMenu).description}:`,
-              default: defaultEnvironment,
-              choices: Object.entries(environments).map(([environment]) => environment).filter((entry) => entry !== 'description'),
-            },
-            {
-              type: 'confirm',
-              name: 'autostart',
-              default: false,
-              message: 'Save selection:',
-            },
-          ])
-          .then((answers) => {
-            resolve({
-              platform: platform,
-              environment: answers.environment,
-              autostart: answers.autostart,
-              command: environments[answers.environment],
-            });
-          });
-      });
-  });
+function saveCustomConfig(configFile: string, config: IConfig): void {
+  const jsonData = JSON.stringify(config, null, 2);
+
+  fs.writeFileSync(configFile, jsonData);
 }

@@ -6,6 +6,10 @@ export class Process {
   public static spawn(command: string, args?: string[], options?: SpawnOptions): Process {
     const process = spawn(command, args, options);
 
+    Logger.log('Spawn process   :', '"' + command + '"', args);
+    Logger.info('Process dir     : "' + options.cwd + '"');
+    Logger.debug('Process pid     :', process.pid);
+
     return new Process(process);
   }
 
@@ -19,15 +23,16 @@ export class Process {
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
         childProcess.on('exit', (code, signal) => {
-          Logger.debug(`Process ${childProcess.pid} exited with code ${code} and signal ${signal}.`);
+          Logger.debug('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal);
+
           resolve(code);
         });
         childProcess.on('error', (error) => {
-          Logger.debug(`Process ${childProcess.pid} terminated with an error, ${error}.`);
+          Logger.debug('Process error   : pid=' + childProcess.pid + `  code=${error}`);
           reject(error);
         });
       } catch (error) {
-        Logger.error(`Process ${childProcess.pid} failed to attach event emitters, ${error}.`);
+        Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
         reject(error);
       }
     });
