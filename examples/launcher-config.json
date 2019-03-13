@@ -12,6 +12,16 @@
         "echo Concurrent 2 && sleep 5"
       ]
     },
+    "sequential-concurrent": {
+      "sequential": [
+        "echo Sequential SC-1 && sleep 5",
+        "echo Sequential SC-2 && sleep 5"
+      ],
+      "concurrent": [
+        "echo Concurrent SC-1 && sleep 5",
+        "echo Concurrent SC-2 && sleep 5"
+      ]
+    },
     "bug": {
       "concurrent": [
         "sequential",
@@ -21,7 +31,7 @@
     },
     "bug1": [
       "echo 0",
-      "sequential",
+      "sequential-concurrent",
       "echo 1",
       "echo 2"
     ],
@@ -129,7 +139,7 @@
     }
   },
   "options": {
-    "logLevel": 4,
+    "logLevel": 0,
     "files": [
       "../launcher-menu.json",
       "../launcher-custom.json"
