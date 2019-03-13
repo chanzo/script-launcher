@@ -5,6 +5,7 @@ import * as stringArgv from 'string-argv';
 import * as Fs from 'fs';
 import * as Path from 'path';
 import { Logger } from './logger';
+import { Colors } from './common';
 
 interface ICommands {
   concurrent: Array<ICommands | string>;
@@ -129,6 +130,14 @@ export class Command {
 
       processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[]));
       processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[]));
+
+      // for (const item of command.sequential) {
+      //   if (typeof item === 'string') {
+      //     processes.push(this.executeCommand([item], Order.sequential));
+      //   } else {
+      //     processes.push(...this.executeCommands([item]));
+      //   }
+      // }
     }
 
     return processes;
@@ -149,6 +158,8 @@ export class Command {
       options = params.options;
 
       if (params.command) {
+        Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+
         const process = Process.spawn(params.command, params.args, params.options);
 
         processes.push(process);
