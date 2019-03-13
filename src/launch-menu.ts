@@ -3,13 +3,7 @@ import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
 import { Command } from './command';
 import { IScript, IScriptInfo, IScriptSequence } from './scripts';
-
-enum Colors {
-  Bold = '\x1b[1m',
-  ResetAll = '\x1b[0m',
-  Green = '\x1b[32m',
-  Cyan = '\x1b[36m',
-}
+import { Colors } from './common';
 
 export async function launchMenu(config: Config): Promise<number> {
   const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
@@ -38,7 +32,7 @@ export async function launchMenu(config: Config): Promise<number> {
       } as IConfig);
     }
   } else {
-    console.log(Colors.Bold + 'Auto launching: ' + Colors.ResetAll + script.name);
+    console.log(Colors.Bold + 'Auto launching: ' + Colors.Normal + script.name);
   }
 
   console.log();
