@@ -5,6 +5,7 @@ import * as stringArgv from 'string-argv';
 import * as Fs from 'fs';
 import * as Path from 'path';
 import { Logger } from './logger';
+import { Colors } from './common';
 
 interface ICommands {
   concurrent: Array<ICommands | string>;
@@ -63,6 +64,28 @@ export class Command {
     return { command, args, options };
   }
 
+  private static syntaxHighlight(json): string {
+    if (typeof json !== 'string') {
+      json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+      let cls = Colors.Yellow;
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = Colors.Normal;
+        } else {
+          cls = Colors.Green;
+        }
+      } else if (/true|false/.test(match)) {
+        cls = Colors.Yellow;
+      } else if (/null/.test(match)) {
+        cls = Colors.Dim;
+      }
+      return cls + match + Colors.Normal;
+    });
+  }
+
   private readonly shell: boolean | string;
   private readonly args: string[];
   private readonly environment: { [name: string]: string };
@@ -88,9 +111,9 @@ export class Command {
 
     Logger.info('Selected script:', script.name);
     Logger.info('Parameters:', script.parameters);
-    Logger.log('Prepared commands: ', JSON.stringify(commands, null, 2));
+    Logger.log('Prepared commands: ', Command.syntaxHighlight(commands));
 
-    const processes = await this.executeCommands([commands]);
+    const processes = await this.executeCommands(commands);
 
     let exitCode = 0;
 
@@ -120,16 +143,83 @@ export class Command {
     return this.resolveReferences(concurrent, sequential, environment);
   }
 
-  private executeCommands(commands: ICommands[]): Array<Promise<Process[]>> {
+  private resolveSequential(items: Array<ICommands | string>): string[] {
+    const result: string[] = [];
+
+    for (const item of items) {
+      if (typeof item === 'string') {
+        result.push(item);
+      } else {
+        result.push(...this.resolveSequential(item.sequential));
+      }
+    }
+
+    return result;
+  }
+
+  private resolveConcurrent(items: Array<ICommands | string>): string[] {
+    const result: string[] = [];
+
+    for (const item of items) {
+      if (typeof item === 'string') {
+        result.push(item);
+      } else {
+        result.push(...this.resolveConcurrent(item.concurrent));
+      }
+    }
+
+    return result;
+  }
+
+  private resolveNoStringSequential(items: Array<ICommands | string>): string[] {
+    const result: string[] = [];
+
+    for (const item of items) {
+      if (typeof item !== 'string') {
+        result.push(...this.resolveSequential(item.sequential));
+      }
+    }
+
+    return result;
+  }
+
+  private resolveNoStringConcurrent(items: Array<ICommands | string>): string[] {
+    const result: string[] = [];
+
+    for (const item of items) {
+      if (typeof item !== 'string') {
+        result.push(...this.resolveConcurrent(item.concurrent));
+      }
+    }
+
+    return result;
+  }
+
+  private executeCommands(command: ICommands): Array<Promise<Process[]>> {
     const processes: Array<Promise<Process[]>> = [];
 
-    for (const command of commands) {
-      processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], Order.concurrent));
-      processes.push(this.executeCommand(command.sequential.filter((command) => typeof command === 'string') as string[], Order.sequential));
+    const sequential = this.resolveSequential(command.sequential);
+    const concurrent = this.resolveConcurrent(command.concurrent);
 
-      processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[]));
-      processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[]));
+    Logger.debug('sequential: ' + Command.syntaxHighlight(sequential));
+    Logger.debug('concurrent: ' + Command.syntaxHighlight(concurrent));
+
+    processes.push(this.executeCommand(sequential, Order.sequential));
+    processes.push(this.executeCommand(concurrent, Order.concurrent));
+
+    command = {
+      sequential: this.resolveNoStringSequential(command.concurrent),
+      concurrent: this.resolveNoStringConcurrent(command.sequential),
+    };
+    if (command.concurrent.length > 0 || command.sequential.length) {
+      processes.push(...this.executeCommands(command));
     }
+
+    // processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], Order.concurrent));
+    // processes.push(this.executeCommand(command.sequential.filter((command) => typeof command === 'string') as string[], Order.sequential));
+
+    // processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[]));
+    // processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[]));
 
     return processes;
   }
@@ -149,6 +239,8 @@ export class Command {
       options = params.options;
 
       if (params.command) {
+        Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+
         const process = Process.spawn(params.command, params.args, params.options);
 
         processes.push(process);
