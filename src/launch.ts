@@ -64,8 +64,11 @@ async function main(): Promise<void> {
 
     const shell = config.options.script.shell;
     const executor = new Executor(shell, commandArgs, process.env, config.scripts);
+    const script = config.scripts.find(launchScript);
 
-    exitCode = await executor.execute(launchScript);
+    if (!script) throw new Error('Missing launch script: ' + launchScript);
+
+    exitCode = await executor.execute(script);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {

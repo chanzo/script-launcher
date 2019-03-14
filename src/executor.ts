@@ -77,15 +77,7 @@ export class Executor {
     this.scripts = scripts;
   }
 
-  public async execute(script: string | IScriptInfo): Promise<number> {
-    if (typeof script === 'string') {
-      const scriptName = script;
-
-      script = this.scripts.find(scriptName);
-
-      if (!script) throw new Error('Missing launch script: ' + scriptName);
-    }
-
+  public async execute(script: IScriptInfo): Promise<number> {
     const commands = this.prepare(script);
 
     Logger.info('Script name     :', script.name);
