@@ -112,7 +112,7 @@ export class Executor {
 
     const environment = { ...this.environment, ...script.parameters };
 
-    return this.resolveReferences(concurrent, sequential, environment);
+    return this.expandTasks(concurrent, sequential, environment);
   }
 
   private resolveSequential(items: Array<ICommands | string>): string[] {
@@ -263,7 +263,7 @@ export class Executor {
     return result;
   }
 
-  private resolveReferences(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
+  private expandTasks(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
     concurrent = [...concurrent];
     sequential = [...sequential];
 
