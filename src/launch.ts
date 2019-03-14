@@ -2,7 +2,7 @@
 
 import { Config } from './config-loader';
 import { Logger } from './logger';
-import { Command } from './command';
+import { Executor } from './command';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -63,9 +63,9 @@ async function main(): Promise<void> {
     }
 
     const shell = config.options.script.shell;
-    const command = new Command(shell, commandArgs, process.env, config.scripts);
+    const executor = new Executor(shell, commandArgs, process.env, config.scripts);
 
-    exitCode = await command.execute(launchScript);
+    exitCode = await executor.execute(launchScript);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {

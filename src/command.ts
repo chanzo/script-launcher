@@ -17,7 +17,7 @@ enum Order {
   sequential,
 }
 
-export class Command {
+export class Executor {
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
       const regexp = new RegExp('\\$' + index, 'g');
@@ -214,7 +214,7 @@ export class Command {
     const processes: Process[] = [];
 
     for (const command of commands) {
-      const params = Command.getCommandParams(command, options);
+      const params = Executor.getCommandParams(command, options);
 
       options = params.options;
 
@@ -276,15 +276,15 @@ export class Command {
     sequential = [...sequential];
 
     for (let index = 0; index < concurrent.length; index++) {
-      const command = Command.expandArguments(concurrent[index], this.args);
+      const command = Executor.expandArguments(concurrent[index], this.args);
 
-      concurrent[index] = Command.expandEnvironment(command, environment);
+      concurrent[index] = Executor.expandEnvironment(command, environment);
     }
 
     for (let index = 0; index < sequential.length; index++) {
-      const command = Command.expandArguments(sequential[index], this.args);
+      const command = Executor.expandArguments(sequential[index], this.args);
 
-      sequential[index] = Command.expandEnvironment(command, environment);
+      sequential[index] = Executor.expandEnvironment(command, environment);
     }
 
     return this.expandReferences(concurrent, sequential, this.scripts);

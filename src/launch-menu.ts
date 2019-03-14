@@ -1,7 +1,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
-import { Command } from './command';
+import { Executor } from './command';
 import { IScript, IScriptInfo, IScriptTask } from './scripts';
 import { Colors } from './common';
 
@@ -13,7 +13,7 @@ export async function launchMenu(config: Config): Promise<number> {
     script: config.options.menu.defaultScript,
   };
 
-  const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
+  const executor = new Executor(config.options.script.shell, process.argv, process.env, config.scripts);
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
@@ -37,7 +37,7 @@ export async function launchMenu(config: Config): Promise<number> {
 
   console.log();
 
-  return await command.execute(script);
+  return await executor.execute(script);
 }
 
 async function saveChoiceMenu(): Promise<boolean> {
