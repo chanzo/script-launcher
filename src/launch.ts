@@ -2,7 +2,7 @@
 
 import { Config } from './config-loader';
 import { Logger } from './logger';
-import { Executor } from './command';
+import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';

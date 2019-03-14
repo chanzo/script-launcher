@@ -1,7 +1,7 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
-import { Executor } from './command';
+import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask } from './scripts';
 import { Colors } from './common';
 
