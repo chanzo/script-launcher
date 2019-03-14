@@ -6,6 +6,7 @@ import { Command } from './command';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
+import { stringify } from './common';
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -28,7 +29,7 @@ async function main(): Promise<void> {
 
     Logger.level = config.options.logLevel;
 
-    Logger.debug('Config: ', config);
+    Logger.debug('Config: ', stringify(config));
 
     showLoadedFiles(config.options.files);
 

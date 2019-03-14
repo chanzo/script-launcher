@@ -2,7 +2,7 @@ import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
 import { Command } from './command';
-import { IScript, IScriptInfo, IScriptSequence } from './scripts';
+import { IScript, IScriptInfo, IScriptTask } from './scripts';
 import { Colors } from './common';
 
 export async function launchMenu(config: Config): Promise<number> {
@@ -88,8 +88,8 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
 function isMenuObject(object: any) {
   if (object instanceof Array) return false;
   if (typeof object === 'string') return false;
-  if ((object as IScriptSequence).concurrent && (object as IScriptSequence).concurrent instanceof Array) return false;
-  if ((object as IScriptSequence).sequential && (object as IScriptSequence).sequential instanceof Array) return false;
+  if ((object as IScriptTask).concurrent && (object as IScriptTask).concurrent instanceof Array) return false;
+  if ((object as IScriptTask).sequential && (object as IScriptTask).sequential instanceof Array) return false;
 
   return true;
 }

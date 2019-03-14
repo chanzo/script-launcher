@@ -10,3 +10,24 @@ export enum Colors {
   Dim = '\x1b[2m',
   Normal = '\x1b[0m',
 }
+
+export function stringify(json): string {
+  if (typeof json !== 'string') {
+    json = JSON.stringify(json, undefined, 2);
+  }
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+    let cls = Colors.Yellow;
+    if (/^"/.test(match)) {
+      if (/:$/.test(match)) {
+        cls = Colors.Normal;
+      } else {
+        cls = Colors.Green;
+      }
+    } else if (/true|false/.test(match)) {
+      cls = Colors.Yellow;
+    } else if (/null/.test(match)) {
+      cls = Colors.Dim;
+    }
+    return cls + match + Colors.Normal;
+  });
+}

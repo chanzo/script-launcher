@@ -35,6 +35,13 @@
       "echo 1",
       "echo 2"
     ],
+    "test1:$arg1": {
+      "sequential": [
+        "echo Sequential $arg1",
+        "sequential",
+        "echo Sequential $arg1"
+      ]
+    },
     "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
@@ -139,7 +146,7 @@
     }
   },
   "options": {
-    "logLevel": 0,
+    "logLevel": 4,
     "files": [
       "../launcher-menu.json",
       "../launcher-custom.json"
