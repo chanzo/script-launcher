@@ -2,8 +2,8 @@ import { IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
-import * as Fs from 'fs';
-import * as Path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Logger } from './logger';
 import { stringify, Colors } from './common';
 
@@ -31,8 +31,8 @@ export class Executor {
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
-    for (const [key, value] of Object.entries(environment)) {
-      const regexp = new RegExp('\\$' + key + '([^\\w]|$)', 'g');
+    for (const [name, value] of Object.entries(environment)) {
+      const regexp = new RegExp('\\$' + name + '([^\\w]|$)', 'g');
 
       text = text.replace(regexp, value + '$1');
 
@@ -55,10 +55,10 @@ export class Executor {
       args.shift();
     }
 
-    const path = Path.join(Path.resolve(options.cwd), command);
+    const fullPath = path.join(path.resolve(options.cwd), command);
 
-    if (Fs.existsSync(path)) {
-      options.cwd = path;
+    if (fs.existsSync(fullPath)) {
+      options.cwd = fullPath;
       command = null;
     }
 
@@ -78,7 +78,7 @@ export class Executor {
   }
 
   public async execute(script: IScriptInfo): Promise<number> {
-    const commands = this.prepare(script);
+    const commands = this.expand(script);
 
     Logger.info('Script name     :', script.name);
     Logger.info('Script params   :', script.parameters);
@@ -98,7 +98,7 @@ export class Executor {
     return exitCode;
   }
 
-  private prepare(script: IScriptInfo): ICommands {
+  private expand(script: IScriptInfo): ICommands {
     const concurrent: string[] = [];
     const sequential: string[] = [];
     const command = script.script;
@@ -112,7 +112,7 @@ export class Executor {
 
     const environment = { ...this.environment, ...script.parameters };
 
-    return this.resolveReferences(concurrent, sequential, environment);
+    return this.expandTasks(concurrent, sequential, environment);
   }
 
   private resolveSequential(items: Array<ICommands | string>): string[] {
@@ -234,7 +234,7 @@ export class Executor {
       const script = scripts.find(command);
 
       if (script) {
-        const commands = this.prepare(script);
+        const commands = this.expand(script);
 
         result.concurrent.push({
           sequential: commands.sequential,
@@ -249,7 +249,7 @@ export class Executor {
       const script = scripts.find(command);
 
       if (script) {
-        const commands = this.prepare(script);
+        const commands = this.expand(script);
 
         result.sequential.push({
           sequential: commands.sequential,
@@ -263,7 +263,7 @@ export class Executor {
     return result;
   }
 
-  private resolveReferences(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
+  private expandTasks(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
     concurrent = [...concurrent];
     sequential = [...sequential];
 
