@@ -1,7 +1,10 @@
 [![npm version](https://badge.fury.io/js/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
+[![GitHub last commit](https://img.shields.io/github/last-commit/chanzo/script-launcher.svg?maxAge=2400)](#)
 [![downloads-image](https://img.shields.io/npm/dm/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
 [![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
 [![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
+
+[![NPM](https://nodei.co/npm/script-launcher.png?compact=true)](https://www.npmjs.com/package/script-launcher)
 
 [![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
 
