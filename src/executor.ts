@@ -7,9 +7,9 @@ import * as path from 'path';
 import { Logger } from './logger';
 import { stringify, Colors } from './common';
 
-interface ICommands {
-  concurrent: Array<ICommands | string>;
-  sequential: Array<ICommands | string>;
+interface ITasks {
+  concurrent: Array<ITasks | string>;
+  sequential: Array<ITasks | string>;
 }
 
 enum Order {
@@ -77,15 +77,15 @@ export class Executor {
     this.scripts = scripts;
   }
 
-  public async execute(script: IScriptInfo): Promise<number> {
-    const commands = this.expand(script);
+  public async execute(scriptInfo: IScriptInfo): Promise<number> {
+    const tasks = this.expand(scriptInfo);
 
-    Logger.info('Script name     :', script.name);
-    Logger.info('Script params   :', script.parameters);
-    Logger.debug('Script object   : ' + stringify(script.script));
-    Logger.debug('Script expanded : ' + stringify(commands));
+    Logger.info('Script name     :', scriptInfo.name);
+    Logger.info('Script params   :', scriptInfo.parameters);
+    Logger.debug('Script object   : ' + stringify(scriptInfo.script));
+    Logger.debug('Script expanded : ' + stringify(tasks));
 
-    const processes = await this.executeCommands(commands);
+    const processes = await this.executeTasks(tasks);
 
     let exitCode = 0;
 
@@ -98,24 +98,27 @@ export class Executor {
     return exitCode;
   }
 
-  private expand(script: IScriptInfo): ICommands {
+  private expand(scriptInfo: IScriptInfo): ITasks { // 286
     const concurrent: string[] = [];
     const sequential: string[] = [];
-    const command = script.script;
+    const script = scriptInfo.script;
 
-    if (command instanceof Array) sequential.push(...command);
-    if (typeof command === 'string') sequential.push(command);
-    if (command instanceof String) sequential.push(command.toString());
+    if (script instanceof Array) sequential.push(...script);
+    if (typeof script === 'string') sequential.push(script);
+    if (script instanceof String) sequential.push(script.toString());
 
-    if ((command as IScriptTask).concurrent) concurrent.push(...(command as IScriptTask).concurrent);
-    if ((command as IScriptTask).sequential) sequential.push(...(command as IScriptTask).sequential);
+    if ((script as IScriptTask).concurrent) concurrent.push(...(script as IScriptTask).concurrent);
+    if ((script as IScriptTask).sequential) sequential.push(...(script as IScriptTask).sequential);
 
-    const environment = { ...this.environment, ...script.parameters };
+    const environment = { ...this.environment, ...scriptInfo.parameters };
 
-    return this.expandTasks(concurrent, sequential, environment);
+    return {
+      concurrent: this.expandTasks(concurrent, environment),
+      sequential: this.expandTasks(sequential, environment),
+    };
   }
 
-  private resolveSequential(items: Array<ICommands | string>): string[] {
+  private resolveSequential(items: Array<ITasks | string>): string[] {
     const result: string[] = [];
 
     for (const item of items) {
@@ -129,7 +132,7 @@ export class Executor {
     return result;
   }
 
-  private resolveConcurrent(items: Array<ICommands | string>): string[] {
+  private resolveConcurrent(items: Array<ITasks | string>): string[] {
     const result: string[] = [];
 
     for (const item of items) {
@@ -143,7 +146,7 @@ export class Executor {
     return result;
   }
 
-  private resolveNoStringSequential(items: Array<ICommands | string>): string[] {
+  private resolveNoStringSequential(items: Array<ITasks | string>): string[] {
     const result: string[] = [];
 
     for (const item of items) {
@@ -155,7 +158,7 @@ export class Executor {
     return result;
   }
 
-  private resolveNoStringConcurrent(items: Array<ICommands | string>): string[] {
+  private resolveNoStringConcurrent(items: Array<ITasks | string>): string[] {
     const result: string[] = [];
 
     for (const item of items) {
@@ -167,11 +170,11 @@ export class Executor {
     return result;
   }
 
-  private executeCommands(command: ICommands): Array<Promise<Process[]>> {
+  private executeTasks(tasks: ITasks): Array<Promise<Process[]>> {
     const processes: Array<Promise<Process[]>> = [];
 
-    const sequential = this.resolveSequential(command.sequential);
-    const concurrent = this.resolveConcurrent(command.concurrent);
+    const sequential = this.resolveSequential(tasks.sequential);
+    const concurrent = this.resolveConcurrent(tasks.concurrent);
 
     Logger.debug('sequential: ' + stringify(sequential));
     Logger.debug('concurrent: ' + stringify(concurrent));
@@ -181,12 +184,12 @@ export class Executor {
     processes.push(this.executeCommand(sequential, Order.sequential));
     processes.push(this.executeCommand(concurrent, Order.concurrent));
 
-    command = {
-      sequential: this.resolveNoStringSequential(command.concurrent),
-      concurrent: this.resolveNoStringConcurrent(command.sequential),
+    tasks = {
+      sequential: this.resolveNoStringSequential(tasks.concurrent),
+      concurrent: this.resolveNoStringConcurrent(tasks.sequential),
     };
-    if (command.concurrent.length > 0 || command.sequential.length) {
-      processes.push(...this.executeCommands(command));
+    if (tasks.concurrent.length > 0 || tasks.sequential.length) {
+      processes.push(...this.executeTasks(tasks));
     }
 
     // processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], Order.concurrent));
@@ -226,61 +229,23 @@ export class Executor {
     return processes;
   }
 
-  private expandReferences(concurrent: string[], sequential: string[], scripts: Scripts): ICommands {
-    const result: ICommands = {
-      concurrent: [],
-      sequential: [],
-    };
+  private expandTasks(tasks: string[], environment: { [name: string]: string }): Array<ITasks | string> {
+    const result: Array<ITasks | string> = [];
 
-    for (const command of concurrent) {
-      const script = scripts.find(command);
+    for (let task of tasks) {
 
-      if (script) {
-        const commands = this.expand(script);
+      task = Executor.expandArguments(task, this.args);
+      task = Executor.expandEnvironment(task, environment);
 
-        result.concurrent.push({
-          sequential: commands.sequential,
-          concurrent: commands.concurrent,
-        });
-      } else {
-        result.concurrent.push(command);
-      }
-    }
-
-    for (const command of sequential) {
-      const script = scripts.find(command);
+      const script = this.scripts.find(task);
 
       if (script) {
-        const commands = this.expand(script);
-
-        result.sequential.push({
-          sequential: commands.sequential,
-          concurrent: commands.concurrent,
-        });
+        result.push(this.expand(script));
       } else {
-        result.sequential.push(command);
+        result.push(task);
       }
     }
 
     return result;
-  }
-
-  private expandTasks(concurrent: string[], sequential: string[], environment: { [name: string]: string }): ICommands {
-    concurrent = [...concurrent];
-    sequential = [...sequential];
-
-    for (let index = 0; index < concurrent.length; index++) {
-      const command = Executor.expandArguments(concurrent[index], this.args);
-
-      concurrent[index] = Executor.expandEnvironment(command, environment);
-    }
-
-    for (let index = 0; index < sequential.length; index++) {
-      const command = Executor.expandArguments(sequential[index], this.args);
-
-      sequential[index] = Executor.expandEnvironment(command, environment);
-    }
-
-    return this.expandReferences(concurrent, sequential, this.scripts);
   }
 }
