@@ -175,6 +175,8 @@ export class Executor {
 
     Logger.debug('sequential: ' + stringify(sequential));
     Logger.debug('concurrent: ' + stringify(concurrent));
+    Logger.debug();
+    Logger.debug();
 
     processes.push(this.executeCommand(sequential, Order.sequential));
     processes.push(this.executeCommand(concurrent, Order.concurrent));
