@@ -35,6 +35,12 @@
       "echo 1",
       "echo 2"
     ],
+    "bug2": {
+      "concurrent": [
+        "sequential",
+        "sequential"
+      ]
+    },
     "test1:$arg1": {
       "sequential": [
         "echo Sequential $arg1",
@@ -146,7 +152,7 @@
     }
   },
   "options": {
-    "logLevel": 4,
+    "logLevel": 2,
     "files": [
       "../launcher-menu.json",
       "../launcher-custom.json"

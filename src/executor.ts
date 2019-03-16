@@ -82,10 +82,10 @@ export class Executor {
 
     Logger.info('Script name     :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
-    Logger.debug('Script object   : ' + stringify(scriptInfo.script));
-    Logger.debug('Script expanded : ' + stringify(tasks));
+    Logger.log('Script object   : ' + stringify(scriptInfo.script));
+    Logger.log('Script expanded : ' + stringify(tasks));
 
-    const processes = await this.executeTasks(tasks);
+    const processes = await this.executeTasksRoot(tasks);
 
     let exitCode = 0;
 
@@ -118,90 +118,16 @@ export class Executor {
     };
   }
 
-  private resolveSequential(items: Array<ITasks | string>): string[] {
-    const result: string[] = [];
-
-    for (const item of items) {
-      if (typeof item === 'string') {
-        result.push(item);
-      } else {
-        result.push(...this.resolveSequential(item.sequential));
-      }
-    }
-
-    return result;
-  }
-
-  private resolveConcurrent(items: Array<ITasks | string>): string[] {
-    const result: string[] = [];
-
-    for (const item of items) {
-      if (typeof item === 'string') {
-        result.push(item);
-      } else {
-        result.push(...this.resolveConcurrent(item.concurrent));
-      }
-    }
-
-    return result;
-  }
-
-  private resolveNoStringSequential(items: Array<ITasks | string>): string[] {
-    const result: string[] = [];
-
-    for (const item of items) {
-      if (typeof item !== 'string') {
-        result.push(...this.resolveSequential(item.sequential));
-      }
-    }
-
-    return result;
-  }
-
-  private resolveNoStringConcurrent(items: Array<ITasks | string>): string[] {
-    const result: string[] = [];
-
-    for (const item of items) {
-      if (typeof item !== 'string') {
-        result.push(...this.resolveConcurrent(item.concurrent));
-      }
-    }
-
-    return result;
-  }
-
-  private executeTasks(tasks: ITasks): Array<Promise<Process[]>> {
+  private executeTasksRoot(tasks: ITasks): Array<Promise<Process[]>> {
     const processes: Array<Promise<Process[]>> = [];
 
-    const sequential = this.resolveSequential(tasks.sequential);
-    const concurrent = this.resolveConcurrent(tasks.concurrent);
-
-    Logger.debug('sequential: ' + stringify(sequential));
-    Logger.debug('concurrent: ' + stringify(concurrent));
-    Logger.debug();
-    Logger.debug();
-
-    processes.push(this.executeCommand(sequential, Order.sequential));
-    processes.push(this.executeCommand(concurrent, Order.concurrent));
-
-    tasks = {
-      sequential: this.resolveNoStringSequential(tasks.concurrent),
-      concurrent: this.resolveNoStringConcurrent(tasks.sequential),
-    };
-    if (tasks.concurrent.length > 0 || tasks.sequential.length) {
-      processes.push(...this.executeTasks(tasks));
-    }
-
-    // processes.push(this.executeCommand(command.concurrent.filter((command) => typeof command === 'string') as string[], Order.concurrent));
-    // processes.push(this.executeCommand(command.sequential.filter((command) => typeof command === 'string') as string[], Order.sequential));
-
-    // processes.push(...this.executeCommands(command.concurrent.filter((command) => typeof command !== 'string') as ICommands[]));
-    // processes.push(...this.executeCommands(command.sequential.filter((command) => typeof command !== 'string') as ICommands[]));
+    processes.push(this.executeTasks(tasks.concurrent, Order.concurrent));
+    processes.push(this.executeTasks(tasks.sequential, Order.sequential));
 
     return processes;
   }
 
-  private async executeCommand(commands: string[], order: Order): Promise<Process[]> {
+  private async executeTasks(tasks: Array<ITasks | string>, order: Order): Promise<Process[]> {
     let options: SpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
@@ -210,19 +136,28 @@ export class Executor {
 
     const processes: Process[] = [];
 
-    for (const command of commands) {
-      const params = Executor.getCommandParams(command, options);
+    for (const task of tasks) {
 
-      options = params.options;
+      if (typeof task === 'string') {
+        const params = Executor.getCommandParams(task, options);
 
-      if (params.command) {
-        Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+        options = params.options;
 
-        const process = Process.spawn(params.command, params.args, params.options);
+        if (params.command) {
+          Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
-        processes.push(process);
+          const process = Process.spawn(params.command, params.args, params.options);
 
-        if (order === Order.sequential && await process.wait() !== 0) break;
+          processes.push(process);
+
+          if (order === Order.sequential && await process.wait() !== 0) break;
+        }
+      } else {
+        console.log('********************');
+        // processes.push(...await this.executeTasks(task.concurrent, Order.concurrent));
+        // processes.push(...await this.executeTasks(task.sequential, Order.sequential));
+        this.executeTasks(task.concurrent, Order.concurrent);
+        this.executeTasks(task.sequential, Order.sequential);
       }
     }
 
