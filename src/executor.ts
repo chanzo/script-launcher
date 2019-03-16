@@ -154,10 +154,8 @@ export class Executor {
         }
       } else {
         console.log('********************');
-        // processes.push(...await this.executeTasks(task.concurrent, Order.concurrent));
-        // processes.push(...await this.executeTasks(task.sequential, Order.sequential));
-        this.executeTasks(task.concurrent, Order.concurrent);
-        this.executeTasks(task.sequential, Order.sequential);
+        processes.push(...await this.executeTasks(task.concurrent, Order.concurrent));
+        processes.push(...await this.executeTasks(task.sequential, Order.sequential));
       }
     }
 
