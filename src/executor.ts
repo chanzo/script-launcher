@@ -65,6 +65,22 @@ export class Executor {
     return { command, args, options };
   }
 
+  private static async wait(processes: Array<Process | Promise<Process[]>>): Promise<number> {
+    let exitCode = 0;
+
+    for (const item of processes) {
+      if (item instanceof Promise) {
+        console.log('Promise:', item);
+        exitCode += await this.wait(await item);
+      } else {
+        console.log('Process:', item);
+        exitCode += await item.wait();
+      }
+    }
+
+    return exitCode;
+  }
+
   private readonly shell: boolean | string;
   private readonly args: string[];
   private readonly environment: { [name: string]: string };
@@ -79,23 +95,23 @@ export class Executor {
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
     const tasks = this.expand(scriptInfo);
+    const options: SpawnOptions = {
+      stdio: 'inherit',
+      env: this.environment,
+      shell: this.shell,
+    };
 
     Logger.info('Script name     :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.log('Script object   : ' + stringify(scriptInfo.script));
     Logger.log('Script expanded : ' + stringify(tasks));
 
-    const processes = await this.executeTasksRoot(tasks);
+    const processes: Array<Process | Promise<Process[]>> = [];
 
-    let exitCode = 0;
+    processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
+    processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
 
-    for (const promis of processes) {
-      for (const process of await promis) {
-        exitCode += await process.wait();
-      }
-    }
-
-    return exitCode;
+    return Executor.wait(processes);
   }
 
   private expand(scriptInfo: IScriptInfo): ITasks { // 286
@@ -118,23 +134,8 @@ export class Executor {
     };
   }
 
-  private executeTasksRoot(tasks: ITasks): Array<Promise<Process[]>> {
-    const processes: Array<Promise<Process[]>> = [];
-
-    processes.push(this.executeTasks(tasks.concurrent, Order.concurrent));
-    processes.push(this.executeTasks(tasks.sequential, Order.sequential));
-
-    return processes;
-  }
-
-  private async executeTasks(tasks: Array<ITasks | string>, order: Order): Promise<Process[]> {
-    let options: SpawnOptions = {
-      stdio: 'inherit',
-      env: this.environment,
-      shell: this.shell,
-    };
-
-    const processes: Process[] = [];
+  private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<Array<Process | Promise<Process[]>>> {
+    const processes: Array<Process | Promise<Process[]>> = [];
 
     for (const task of tasks) {
 
@@ -153,9 +154,8 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        console.log('********************');
-        processes.push(...await this.executeTasks(task.concurrent, Order.concurrent));
-        processes.push(...await this.executeTasks(task.sequential, Order.sequential));
+        processes.push(this.executeTasks(task.concurrent, options, Order.concurrent) as Promise<Process[]>);
+        processes.push(this.executeTasks(task.sequential, options, Order.sequential) as Promise<Process[]>);
       }
     }
 

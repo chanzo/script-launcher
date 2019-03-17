@@ -1,5 +1,5 @@
 {
-  "scripts": {
+  "scripts2": {
     "sequential": {
       "sequential": [
         "echo Sequential 1 && sleep 5",
@@ -36,6 +36,10 @@
       "echo 2"
     ],
     "bug2": {
+      "sequential": [
+        "echo Sequential 1 && sleep 5",
+        "echo Sequential 2 && sleep 5"
+      ],
       "concurrent": [
         "sequential",
         "sequential"
@@ -155,6 +159,7 @@
     "logLevel": 2,
     "files": [
       "../launcher-menu.json",
+      "example-nesting.json",
       "../launcher-custom.json"
     ],
     "script": {

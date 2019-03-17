@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "sequential": {
+      "sequential": [
+        "echo Sequential 1 && sleep 5",
+        "echo Sequential 2 && sleep 5"
+      ]
+    },
+    "concurrent": {
+      "concurrent": [
+        "sequential",
+        "sequential"
+      ]
+    },
+    "nest": {
+      "concurrent": [
+        "concurrent",
+        "concurrent"
+      ]
+    }
+  }
+}
