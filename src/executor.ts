@@ -105,6 +105,7 @@ export class Executor {
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.log('Script object   : ' + stringify(scriptInfo.script));
     Logger.log('Script expanded : ' + stringify(tasks));
+    Logger.info();
 
     const processes: IProcesses = [];
 
