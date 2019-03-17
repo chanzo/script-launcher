@@ -104,7 +104,7 @@ Show menu
 npm start
 ```
 
-Start a launch script
+Start a specific launch script
 ```
 npm start serve:uva:dev
 npm start serve:uva:tst
@@ -257,4 +257,3 @@ Run `npm start` to test this example.
   }
 }
 ```
-
