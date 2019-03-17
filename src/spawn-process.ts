@@ -12,9 +12,10 @@ export class Process {
 
     const process = spawn(command, args, options);
 
+    Logger.log('Spawn process   : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
+    Logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
+
     if (Logger.level > 2) {
-      Logger.log('Spawn process   : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
-      Logger.info('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
       Logger.debug('Process pid     : ' + Colors.Yellow + process.pid + Colors.Normal);
       Logger.debug(''.padEnd(64, '-'));
 

@@ -1,12 +1,12 @@
-export interface IScriptSequence {
+export interface IScriptTask {
   concurrent: string[];
   sequential: string[];
 }
 
-export type IScript = string | string[] | IScriptSequence;
+export type IScript = string | string[] | IScriptTask;
 
 export interface IScripts {
-  [key: string]: IScript;
+  [name: string]: IScript;
 }
 
 export interface IScriptInfo {
@@ -52,10 +52,10 @@ export class Scripts {
   }
 
   public find(pattern: string): IScriptInfo | null {
-    for (const [key, command] of Object.entries(this.scripts)) {
-      const parameters = Scripts.getParameters(key, pattern);
+    for (const [name, script] of Object.entries(this.scripts)) {
+      const parameters = Scripts.getParameters(name, pattern);
 
-      if (parameters !== null) return { name: key, parameters, script: command };
+      if (parameters !== null) return { name: name, parameters, script: script };
     }
 
     return null;

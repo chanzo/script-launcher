@@ -1,5 +1,5 @@
 {
-  "scripts": {
+  "scripts2": {
     "sequential": {
       "sequential": [
         "echo Sequential 1 && sleep 5",
@@ -31,10 +31,27 @@
     },
     "bug1": [
       "echo 0",
-      "sequential-concurrent",
+      "sequential",
       "echo 1",
       "echo 2"
     ],
+    "bug2": {
+      "sequential": [
+        "echo Sequential 1 && sleep 5",
+        "echo Sequential 2 && sleep 5"
+      ],
+      "concurrent": [
+        "sequential",
+        "sequential"
+      ]
+    },
+    "test1:$arg1": {
+      "sequential": [
+        "echo Sequential $arg1",
+        "sequential",
+        "echo Sequential $arg1"
+      ]
+    },
     "lookup01": "echo Lookup 01 && echo Lookup 02 $(readlink /proc/$$/exe)",
     "lookup02:$param1": "\"echo Lookup 02 param1=$param1\"",
     "lookup03:$param1:$param2": "echo Lookup 03 param1=$param1  param2=$param2",
@@ -142,6 +159,7 @@
     "logLevel": 0,
     "files": [
       "../launcher-menu.json",
+      "example-nesting.json",
       "../launcher-custom.json"
     ],
     "script": {
