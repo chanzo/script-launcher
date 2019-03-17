@@ -66,10 +66,10 @@ To start the above example you would run: `npm start build:uva:tst` or `npm star
 * [Implementation examples](#implementation-examples)
   * [Use array's to start multiple scripts sequentially.](#array-sequential-scripts)
   * [Use array's to start multiple scripts concurrently.](#array-concurrent-scripts)
-  * [Change directory in a separate script line](#change-directory)
+  * [Change directory in a separate script line.](#change-directory)
   * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#environment-and-argument-values-on-linux-mac-and-windows)
   * [Pass arguments to script, use them like functions.](#script-functions-with-parameters)
-  * Gain the possibility to reference your scripts from other scripts.
+  * [Reference scripts from other scripts.](#reference-scripts-from-other-scripts)
   * [Use an interactive landing menu, so a new developer get can start on your project more easily.](#interactive-landing-menu)
 
 ## Installation
@@ -81,10 +81,7 @@ npm install script-launcher --save-dev
 
 Use `launch init` to create an example `launcher-config.json` file.
 ``` bash
-# Linux and Mac
-./node_modules/.bin/launch init
-# Windows
-.\node_modules\.bin\launch init
+"node_modules/.bin/launch" init
 ```
 
 For easy usage, change your `package.json` start script to use script launcher as the default.
@@ -109,8 +106,8 @@ npm start
 
 Start a launch script
 ```
-npm start build:myProject1:tst
-npm start deploy:myProject2:acc
+npm start serve:uva:dev
+npm start serve:uva:tst
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
@@ -198,11 +195,29 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 ```
 
 ### Script functions with parameters.
-Run `npm start build:myProject:production` to test this example.
+Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to test this example.
 ``` JSON
 {
   "scripts": {
-    "build:$PROJECT:$CONFIGURATION": "echo build project=$PROJECT configuration=$CONFIGURATION"
+    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+  }
+}
+```
+
+### Reference scripts from other scripts
+Run `npm start deploy:tst` to test this example.
+``` JSON
+{
+  "scripts": {
+    "build:$project:$config": "echo ng build $project -configuration=$config",
+    "deploy:$project:$config": [
+      "build:$project:$config",
+      "echo firebase deploy --public dist/$project --project $project-$config"
+    ],
+    "deploy:$config": [
+      "deploy:uva:$config",
+      "deploy:hva:$config"
+    ]
   }
 }
 ```
@@ -211,21 +226,33 @@ Run `npm start build:myProject:production` to test this example.
 Run `npm start` to test this example.
 ``` JSON
 {
-  "menu": {
-    "description": "action",
-    "build": {
-      "description": "environment",
-      "development": "echo Building development environment...",
-      "test": "echo Building test environment...",
-      "acceptance": "echo Building acceptance environment...",
-      "production": "echo Building production environment..."
+  "scripts": {
+    "serve:$project:dev": {
+      "concurrent": [
+        "echo Start development server",
+        "echo ng serve $project -configuration=dev"
+      ]
     },
-    "deploy": {
+    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+  },
+  "menu": {
+    "description": "organization",
+    "uva": {
       "description": "environment",
-      "development": "echo Deploying development environment...",
-      "test": "echo Deploying test environment...",
-      "acceptance": "echo Deploying acceptance environment...",
-      "production": "echo Deploying production environment..."
+      "development": "serve:uva:dev",
+      "acceptance": "serve:uva:acc",
+      "production": "serve:uva:prd"
+    },
+    "hva": {
+      "description": "environment",
+      "development": "serve:hva:dev",
+      "acceptance": "serve:hva:acc",
+      "production": "serve:hva:prd"
+    }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "hva:dev"
     }
   }
 }
