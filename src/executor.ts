@@ -17,6 +17,8 @@ enum Order {
   sequential,
 }
 
+interface IProcesses extends Array<Process | Promise<IProcesses>> { }
+
 export class Executor {
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
@@ -65,15 +67,13 @@ export class Executor {
     return { command, args, options };
   }
 
-  private static async wait(processes: Array<Process | Promise<Process[]>>): Promise<number> {
+  private static async wait(processes: IProcesses): Promise<number> {
     let exitCode = 0;
 
     for (const item of processes) {
       if (item instanceof Promise) {
-        console.log('Promise:', item);
         exitCode += await this.wait(await item);
       } else {
-        console.log('Process:', item);
         exitCode += await item.wait();
       }
     }
@@ -106,7 +106,7 @@ export class Executor {
     Logger.log('Script object   : ' + stringify(scriptInfo.script));
     Logger.log('Script expanded : ' + stringify(tasks));
 
-    const processes: Array<Process | Promise<Process[]>> = [];
+    const processes: IProcesses = [];
 
     processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
     processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
@@ -134,8 +134,8 @@ export class Executor {
     };
   }
 
-  private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<Array<Process | Promise<Process[]>>> {
-    const processes: Array<Process | Promise<Process[]>> = [];
+  private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<IProcesses> {
+    const processes: IProcesses = [];
 
     for (const task of tasks) {
 
@@ -154,8 +154,8 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        processes.push(this.executeTasks(task.concurrent, options, Order.concurrent) as Promise<Process[]>);
-        processes.push(this.executeTasks(task.sequential, options, Order.sequential) as Promise<Process[]>);
+        processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
+        processes.push(this.executeTasks(task.sequential, options, Order.sequential));
       }
     }
 
