@@ -2,10 +2,11 @@
 
 import { Config } from './config-loader';
 import { Logger } from './logger';
-import { Command } from './command';
+import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
+import { stringify } from './common';
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -28,7 +29,7 @@ async function main(): Promise<void> {
 
     Logger.level = config.options.logLevel;
 
-    Logger.debug('Config: ', config);
+    Logger.debug('Config: ', stringify(config));
 
     showLoadedFiles(config.options.files);
 
@@ -62,9 +63,12 @@ async function main(): Promise<void> {
     }
 
     const shell = config.options.script.shell;
-    const command = new Command(shell, commandArgs, process.env, config.scripts);
+    const executor = new Executor(shell, commandArgs, process.env, config.scripts);
+    const scriptInfo = config.scripts.find(launchScript);
 
-    exitCode = await command.execute(launchScript);
+    if (!scriptInfo) throw new Error('Missing launch script: ' + launchScript);
+
+    exitCode = await executor.execute(scriptInfo);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {

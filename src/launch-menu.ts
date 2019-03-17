@@ -1,8 +1,8 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
-import { Command } from './command';
-import { IScript, IScriptInfo, IScriptSequence } from './scripts';
+import { Executor } from './executor';
+import { IScript, IScriptInfo, IScriptTask } from './scripts';
 import { Colors } from './common';
 
 export async function launchMenu(config: Config): Promise<number> {
@@ -13,7 +13,7 @@ export async function launchMenu(config: Config): Promise<number> {
     script: config.options.menu.defaultScript,
   };
 
-  const command = new Command(config.options.script.shell, process.argv, process.env, config.scripts);
+  const executor = new Executor(config.options.script.shell, process.argv, process.env, config.scripts);
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
@@ -37,7 +37,7 @@ export async function launchMenu(config: Config): Promise<number> {
 
   console.log();
 
-  return await command.execute(script);
+  return await executor.execute(script);
 }
 
 async function saveChoiceMenu(): Promise<boolean> {
@@ -88,8 +88,8 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
 function isMenuObject(object: any) {
   if (object instanceof Array) return false;
   if (typeof object === 'string') return false;
-  if ((object as IScriptSequence).concurrent && (object as IScriptSequence).concurrent instanceof Array) return false;
-  if ((object as IScriptSequence).sequential && (object as IScriptSequence).sequential instanceof Array) return false;
+  if ((object as IScriptTask).concurrent && (object as IScriptTask).concurrent instanceof Array) return false;
+  if ((object as IScriptTask).sequential && (object as IScriptTask).sequential instanceof Array) return false;
 
   return true;
 }
