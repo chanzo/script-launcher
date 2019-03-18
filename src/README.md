@@ -304,7 +304,7 @@ The launcher **options** can be used the customize the default behavior of scrip
 ### Launcher files
 The **files** options can be used to configure the config files to load when starting launcher. When using multiple files they will be merged together in the loading order. Be aware the `launcher-config.json` is always the first file being loaded even when it is not present in the files list.
 
-By using this option it's possible the split your configuration over multiple files. A could practice is to split your script and menu configurations to there own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in you `package.json` file.
+By using this option it's possible the split your configuration over multiple files. A could practice is to split your script and menu configurations to there own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
 ``` JSON
