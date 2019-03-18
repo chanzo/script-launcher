@@ -15,7 +15,7 @@
 
 Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
-In a traditional `package.json` you can only run commands on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
+In a traditional `package.json` you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
 ```JSON
 {
@@ -38,7 +38,7 @@ In a traditional `package.json` you can only run commands on a per line basis. W
 }
 ```
 
-With script-launcher you have the benefits of using variables and references, so you can make the above example easier to maintain:
+With script-launcher you have the benefits of using script variables and script references, so you can make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
