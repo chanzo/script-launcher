@@ -4,7 +4,7 @@
 [![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
 [![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
 
-[![NPM](https://nodei.co/npm/script-launcher.png?compact=true)](https://www.npmjs.com/package/script-launcher)
+[![NPM](https://nodei.co/npm/script-launcher.png?compact=false)](https://www.npmjs.com/package/script-launcher)
 
 [![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
 
@@ -13,7 +13,7 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the table of content to get familiar with these features.
+Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
 In a traditional `package.json` you can only run commands on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
@@ -51,26 +51,52 @@ With script-launcher you have the benefits of using variables and references, so
     "deploy:$config":[
       "deploy:uva:$config",
       "deploy:hva:$config"
-    ]
+    ],
     ...
   }
 }
 ```
-To start the above example you would run: `npm start build:uva:tst` or `npm start deploy:prd` etc. 
+You would use: `npm start build:uva:tst` or `npm start deploy:prd` etc, to start the above example.
 
+Now you can extend the example with an interactive landing menu, so a new developer can get start on your project more easily:
+``` JSON
+  "menu": {
+    "description": "deploy organization",
+    "uva": {
+      "description": "deploy environment",
+      "acceptance": "deploy:uva:acc",
+      "production": "deploy:uva:tst"
+    },
+    "hva": {
+      "description": "deploy environment",
+      "acceptance": "deploy:hva:acc",
+      "production": "deploy:hva:tst"
+    }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "hva:acc"
+    }
+  }
+```
+To start the above example you would run: `npm start`
 
-
-## Table of Contents
+# Table of Contents
 * [Installation](#installation)
 * [Usage examples](#usage-examples)
 * [Implementation examples](#implementation-examples)
-  * [Use array's to start multiple scripts sequentially.](#array-sequential-scripts)
-  * [Use array's to start multiple scripts concurrently.](#array-concurrent-scripts)
-  * [Change directory in a separate script line](#change-directory)
-  * [Environment and argument values can be used on Linux, Mac and Windows in a consistent manner.](#environment-and-argument-values-on-linux-mac-and-windows)
-  * [Pass arguments to script, use them like functions.](#script-functions-with-parameters)
-  * Gain the possibility to reference your scripts from other scripts.
-  * [Use an interactive landing menu, so a new developer get can start on your project more easily.](#interactive-landing-menu)
+  * [Sequential scripts](#sequential-scripts)
+  * [Concurrent scripts](#concurrent-scripts)
+  * [Change directory](#change-directory)
+  * [Environment and argument values](#environment-and-argument-values)
+  * [Arguments and functions](#arguments-and-functions)
+  * [Reference scripts](#reference-scripts)
+  * [Interactive menu](#interactive-menu)
+* [Launcher options](#launcher-options)
+  * [Launcher files](#launcher-files)
+  * [Script shell](#script-shell)
+  * [Menu defaults](#menu-defaults)
+  * [Debug logging](#debug-logging)
 
 ## Installation
 
@@ -81,10 +107,7 @@ npm install script-launcher --save-dev
 
 Use `launch init` to create an example `launcher-config.json` file.
 ``` bash
-# Linux and Mac
-./node_modules/.bin/launch init
-# Windows
-.\node_modules\.bin\launch init
+"node_modules/.bin/launch" init
 ```
 
 For easy usage, change your `package.json` start script to use script launcher as the default.
@@ -107,17 +130,19 @@ Show menu
 npm start
 ```
 
-Start a launch script
+Start a specific launch script
 ```
-npm start build:myProject1:tst
-npm start deploy:myProject2:acc
+npm start serve:uva:dev
+npm start serve:uva:tst
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
 To test an example, copy the json content from the example to the file named `launcher-config.json` and run the script.
 
-### Array sequential scripts.
+### Sequential scripts
+This example uses square brackets to start multiple script one by one.
+
 Run `npm start build-stuff` to test this example.
 ``` JSON
 {
@@ -131,7 +156,9 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Array concurrent scripts.
+### Concurrent scripts
+This example uses the keyword **concurrent** to run multiple script in parallel and the keyword **sequential** to start multiple script one by one.
+
 Run `npm start build-stuff` to test this example.
 
 **Linux and Macos example using sleep**
@@ -171,6 +198,8 @@ Run `npm start build-stuff` to test this example.
 ```
 
 ### Change directory
+If the first line of the **build-stuff** script array is an existing directory, this directory will be the current directory of the following script lines.
+
 Run `npm start build-stuff` to test this example.
 ```
 {
@@ -183,7 +212,9 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Environment and argument values on Linux, Mac and Windows.
+### Environment and argument values
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
+
 Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 ``` JSON
 {
@@ -197,37 +228,127 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 }
 ```
 
-### Script functions with parameters.
-Run `npm start build:myProject:production` to test this example.
+### Arguments and functions
+Use the dollar-sign in the script name and command, to specify custom script function arguments.
+
+Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to test this example.
 ``` JSON
 {
   "scripts": {
-    "build:$PROJECT:$CONFIGURATION": "echo build project=$PROJECT configuration=$CONFIGURATION"
+    "serve:$project:$config": "echo ng serve $project -configuration=$config"
   }
 }
 ```
 
-### Interactive landing menu.
+### Reference scripts
+Use an existing script name in the command section to execute another script in your config file.
+
+Run `npm start deploy:tst` to test this example.
+``` JSON
+{
+  "scripts": {
+    "build:$project:$config": "echo ng build $project -configuration=$config",
+    "deploy:$project:$config": [
+      "build:$project:$config",
+      "echo firebase deploy --public dist/$project --project $project-$config"
+    ],
+    "deploy:$config": [
+      "deploy:uva:$config",
+      "deploy:hva:$config"
+    ]
+  }
+}
+```
+
+### Interactive menu
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily.
+
 Run `npm start` to test this example.
 ``` JSON
 {
-  "menu": {
-    "description": "action",
-    "build": {
-      "description": "environment",
-      "development": "echo Building development environment...",
-      "test": "echo Building test environment...",
-      "acceptance": "echo Building acceptance environment...",
-      "production": "echo Building production environment..."
+  "scripts": {
+    "serve:$project:dev": {
+      "concurrent": [
+        "echo Start development server",
+        "echo ng serve $project -configuration=dev"
+      ]
     },
-    "deploy": {
+    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+  },
+  "menu": {
+    "description": "organization",
+    "uva": {
       "description": "environment",
-      "development": "echo Deploying development environment...",
-      "test": "echo Deploying test environment...",
-      "acceptance": "echo Deploying acceptance environment...",
-      "production": "echo Deploying production environment..."
+      "development": "serve:uva:dev",
+      "acceptance": "serve:uva:acc",
+      "production": "serve:uva:prd"
+    },
+    "hva": {
+      "description": "environment",
+      "development": "serve:hva:dev",
+      "acceptance": "serve:hva:acc",
+      "production": "serve:hva:prd"
+    }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "hva:dev"
     }
   }
 }
 ```
 
+## Launcher options
+The launcher **options** can be used the customize the default behavior of script launcher.
+
+### Launcher files
+The **files** options can be used to configure the config files to load when starting launcher. When using multiple files they will be merged together in the loading order. Be aware the `launcher-config.json` is always the first file being loaded even when it is not present in the files list.
+
+By using this option it's possible the split your configuration over multiple files. A could practice is to split your script and menu configurations to there own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
+
+The default value of this list is presented in the following example:
+``` JSON
+"options": {
+  "files": [
+    "launcher-config.json",
+    "launcher-scripts.json",
+    "launcher-menu.json",
+    "launcher-custom.json",
+  ]
+}
+```
+
+### Script shell
+The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method.
+
+The default value is presented in the following example:
+``` JSON
+"options": {
+  "script": {
+    "shell": true
+  }
+}
+```
+
+### Menu defaults
+The **menu defaultChoice** option can be used to specify the default selected entries of your menu separated by a colon. The **menu defaultScript** option can be used for auto starting a specific script, this will disable the interactive menu.
+
+The default value is presented in the following example:
+``` JSON
+"options": {
+  "menu": {
+    "defaultChoice": "",
+    "defaultScript": ""
+  }
+}
+```
+
+### Debug logging
+The **logLevel** option is used for debugging script launcher itself.
+
+The default value is presented in the following example:
+``` JSON
+"options": {
+  "logLevel": 0
+}
+```
