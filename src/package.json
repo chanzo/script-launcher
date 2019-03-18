@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Script Launcher",
   "main": "launch.js",
   "keywords": [
@@ -10,7 +10,9 @@
     "windows",
     "concurrent",
     "parallel",
-    "menu"
+    "menu",
+    "multiple",
+    "command"
   ],
   "bin": {
     "launch": "bin/launch.js"
@@ -25,6 +27,6 @@
     "cross-spawn": "6.0.5",
     "deepmerge": "3.2.0",
     "inquirer": "6.2.2",
-    "string-argv": "0.1.1"
+    "string-argv": "0.1.2"
   }
 }
