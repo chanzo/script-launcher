@@ -58,7 +58,7 @@ With script-launcher you have the benefits of using script variables and script 
 ```
 You would use: `npm start build:uva:tst` or `npm start deploy:prd` etc, to start the above example.
 
-Now you can extend the example with an interactive landing menu, so a new developer can get start on your project more easily:
+It's also possible to extend the example with an interactive menu, so a new developer can get start on your project more easily:
 ``` JSON
   "menu": {
     "description": "deploy organization",
@@ -157,7 +157,7 @@ Run `npm start build-stuff` to test this example.
 ```
 
 ### Concurrent scripts
-This example uses the keyword **concurrent** to run multiple script in parallel and the keyword **sequential** to start multiple script one by one.
+This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one.
 
 Run `npm start build-stuff` to test this example.
 
@@ -165,32 +165,22 @@ Run `npm start build-stuff` to test this example.
 ``` JSON
 {
   "scripts": {
+    "sleep:$time":"node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time":[
+      "echo Background job: $job",
+      "sleep:$time",
+      "echo Done: $job"
+    ],
     "build-stuff": {
       "concurrent": [
-        "echo Long background job 1 && sleep 4 && echo Job 1 done.",
-        "echo Long background job 2 && sleep 6 && echo Job 2 done."
+        "background:1:3000",
+        "background:2:4000"
       ],
       "sequential": [
-        "echo Sequential 1 && sleep 1",
-        "echo Sequential 2 && sleep 1"
-      ]
-    }
-  }
-}
-```
-
-**Windows example using timeout**
-``` JSON
-{
-  "scripts": {
-    "build-stuff": {
-      "concurrent": [
-        "echo Long background job 1 && (timeout 4 > nul) && echo Job 1 done.",
-        "echo Long background job 2 && (timeout 6 > nul) && echo Job 2 done."
-      ],
-      "sequential": [
-        "echo Sequential 1 && (timeout 1 > nul)",
-        "echo Sequential 2 && (timeout 1 > nul)"
+        "echo Sequential 1",
+        "sleep:1000",
+        "echo Sequential 2",
+        "sleep:1000"
       ]
     }
   }

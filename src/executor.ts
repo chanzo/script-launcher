@@ -155,8 +155,13 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
-        processes.push(this.executeTasks(task.sequential, options, Order.sequential));
+        if (order === Order.sequential) {
+          processes.push(...await this.executeTasks(task.concurrent, options, Order.concurrent));
+          processes.push(...await this.executeTasks(task.sequential, options, Order.sequential));
+        } else {
+          processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
+          processes.push(this.executeTasks(task.sequential, options, Order.sequential));
+        }
       }
     }
 
