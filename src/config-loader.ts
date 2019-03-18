@@ -61,29 +61,29 @@ export class Config {
 
   public static readonly init: IConfig = {
     scripts: {
-      "serve:$project:dev": {
+      'serve:$project:dev': {
         sequential: [],
         concurrent: [
-          "echo Start development server",
-          "echo ng serve $project -configuration=dev"
-        ]
+          'echo Start development server',
+          'echo ng serve $project -configuration=dev',
+        ],
       },
-      "serve:$project:$config": "echo ng serve $project -configuration=$config"
+      'serve:$project:$config': 'echo ng serve $project -configuration=$config',
     },
     menu: {
-      description: "organization",
+      description: 'organization',
       uva: {
-        description: "environment",
-        development: "serve:uva:dev",
-        acceptance: "serve:uva:acc",
-        production: "serve:uva:prd"
+        description: 'environment',
+        development: 'serve:uva:dev',
+        acceptance: 'serve:uva:acc',
+        production: 'serve:uva:prd',
       },
       hva: {
-        description: "environment",
-        development: "serve:hva:dev",
-        acceptance: "serve:hva:acc",
-        production: "serve:hva:prd"
-      }
+        description: 'environment',
+        development: 'serve:hva:dev',
+        acceptance: 'serve:hva:acc',
+        production: 'serve:hva:prd',
+      },
     },
     options: {
       menu: {
