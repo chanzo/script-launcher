@@ -61,34 +61,33 @@ export class Config {
 
   public static readonly init: IConfig = {
     scripts: {
-      'build:$PROJECT:$CONFIGURATION': 'echo Example build: ng build --prod --no-progress --project=$PROJECT --configuration=$CONFIGURATION',
-      'upload:$PROJECT:$CONFIGURATION': [
-        'echo Example upload: step 1 - $PROJECT:$CONFIGURATION',
-        'echo Example upload: step 2 - $PROJECT:$CONFIGURATION',
-      ],
-      'deploy:$PROJECT:$CONFIGURATION': [
-        'build:$PROJECT:$CONFIGURATION',
-        'upload:$PROJECT:$CONFIGURATION',
-      ],
+      'serve:$project:dev': {
+        sequential: [],
+        concurrent: [
+          'echo Start development server',
+          'echo ng serve $project -configuration=dev',
+        ],
+      },
+      'serve:$project:$config': 'echo ng serve $project -configuration=$config',
     },
     menu: {
-      description: 'project',
-      myProject1: {
-        description: 'configuration',
-        test: 'deploy:myProject1:tst',
-        acceptance: 'deploy:myProject1:acc',
-        production: 'deploy:myProject1:prd',
+      description: 'organization',
+      uva: {
+        description: 'environment',
+        development: 'serve:uva:dev',
+        acceptance: 'serve:uva:acc',
+        production: 'serve:uva:prd',
       },
-      myProject2: {
-        description: 'configuration',
-        test: 'deploy:myProject2:tst',
-        acceptance: 'deploy:myProject2:acc',
-        production: 'deploy:myProject2:prd',
+      hva: {
+        description: 'environment',
+        development: 'serve:hva:dev',
+        acceptance: 'serve:hva:acc',
+        production: 'serve:hva:prd',
       },
     },
     options: {
       menu: {
-        defaultChoice: 'myProject2:test',
+        defaultChoice: 'hva:dev',
       },
     } as IOptions,
   };

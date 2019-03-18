@@ -4,7 +4,7 @@
 [![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
 [![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
 
-[![NPM](https://nodei.co/npm/script-launcher.png?compact=true)](https://www.npmjs.com/package/script-launcher)
+[![NPM](https://nodei.co/npm/script-launcher.png?compact=false)](https://www.npmjs.com/package/script-launcher)
 
 [![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
 
@@ -21,7 +21,7 @@
 
 ### Basic setup
 ``` bash
-git clone git@gitlab.quilzer.net:bas/script-launcher.git
+git clone git@github.com:chanzo/script-launcher.git
 cd script-launcher
 
 npm install
@@ -30,7 +30,6 @@ npm start
 
 ### Build & Publish
 ```
-npm start lint
 npm start build
 cd dist
 npm login
