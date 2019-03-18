@@ -62,7 +62,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     {
       type: 'list',
       name: 'value',
-      message: 'Select ' + menu.description + ':',
+      message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
       default: defaults[0],
       choices: choices,
     },
