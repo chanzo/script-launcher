@@ -251,7 +251,7 @@ Run `npm start deploy:tst` to test this example.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The content of the **description** keyword is used as a description of presented values.
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values.
 
 Run `npm start` to test this example.
 ``` JSON
