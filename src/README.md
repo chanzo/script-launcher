@@ -13,7 +13,7 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its functions are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these functions.
 
 In a traditional `package.json` you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
@@ -21,14 +21,14 @@ In a traditional `package.json` you can only run scripts on a per line basis. Wi
 {
   "scripts": {
     ...
-    "build:uva:dev": "ng build uva --prod --configuration=dev",
-    "build:uva:tst": "ng build uva --prod --configuration=tst",
-    "build:uva:acc": "ng build uva --prod --configuration=acc",
-    "build:uva:prd": "ng build uva --prod --configuration=prd",
-    "build:hva:dev": "ng build hva --prod --configuration=dev",
-    "build:hva:tst": "ng build hva --prod --configuration=tst",
-    "build:hva:acc": "ng build hva --prod --configuration=acc",
-    "build:hva:prd": "ng build hva --prod --configuration=prd",
+    "build:uva:dev": "ng build uva --prod --c=dev",
+    "build:uva:tst": "ng build uva --prod --c=tst",
+    "build:uva:acc": "ng build uva --prod --c=acc",
+    "build:uva:prd": "ng build uva --prod --c=prd",
+    "build:hva:dev": "ng build hva --prod --c=dev",
+    "build:hva:tst": "ng build hva --prod --c=tst",
+    "build:hva:acc": "ng build hva --prod --c=acc",
+    "build:hva:prd": "ng build hva --prod --c=prd",
     "deploy:dev": "npm run build:uva:dev && npm run build:hva:dev && firebase deploy --public dist/uva --project status-uva-dev && firebase deploy --public dist/hva --project status-hva-dev",
     "deploy:tst": "npm run build:uva:tst && npm run build:hva:tst && firebase deploy --public dist/uva --project status-uva-tst && firebase deploy --public dist/hva --project status-hva-tst",
     "deploy:acc": "npm run build:uva:acc && npm run build:hva:acc && firebase deploy --public dist/uva --project status-uva-acc && firebase deploy --public dist/hva --project status-hva-acc",
@@ -38,12 +38,12 @@ In a traditional `package.json` you can only run scripts on a per line basis. Wi
 }
 ```
 
-With script-launcher you have the benefits of using script variables and script references, so you can make the above example easier to maintain:
+With **script-launcher** you have the benefits of using variables, script references and many more functions, so you can make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
     ...
-    "build:$project:$config": "ng build $project -configuration=$config",
+    "build:$project:$config": "ng build $project -c=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
       "firebase deploy --public dist/$project --project $project-$config"
@@ -86,11 +86,11 @@ To start the above example you would run: `npm start`
 * [Usage examples](#usage-examples)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
-  * [Concurrent scripts](#concurrent-scripts)
-  * [Change directory](#change-directory)
-  * [Environment and argument values](#environment-and-argument-values)
   * [Arguments and functions](#arguments-and-functions)
   * [Reference scripts](#reference-scripts)
+  * [Change directory](#change-directory)
+  * [Environment and argument values](#environment-and-argument-values)
+  * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -100,17 +100,17 @@ To start the above example you would run: `npm start`
 
 ## Installation
 
-Install `script-launcher` as a development dependency in your project.
+Install **script-launcher** as a development dependency in your project.
 ``` bash
 npm install script-launcher --save-dev
 ```
 
-Use `launch init` to create an example `launcher-config.json` file.
+Use **launch init** to create an example **launcher-config.json** file.
 ``` bash
 "node_modules/.bin/launch" init
 ```
 
-For easy usage, change your `package.json` start script to use script launcher as the default.
+For easy usage, change your **package.json** start script to use script launcher as the default.
 ``` json
 {
     ...
@@ -138,12 +138,12 @@ npm start serve:uva:tst
 Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
-To test an example, copy the json content from the example to the file named `launcher-config.json` and run the script.
+To test an example, copy the json content from the example to the file named **launcher-config.json** and run the script.
 
 ### Sequential scripts
-This example uses square brackets to start multiple script one by one.
+This example uses square brackets to start multiple script one by one. This function makes long script lines more readable.
 
-Run `npm start build-stuff` to test this example.
+Run `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -156,41 +156,42 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Concurrent scripts
-This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one.
+### Arguments and functions
+Use the dollar-sign in the script name and command, to specify custom script function arguments. This function makes it possible to start one script with different arguments, this works on Mac, Linux and Windows in the same way.
 
-Run `npm start build-stuff` to test this example.
-
-**Linux and Macos example using sleep**
+Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to use this example.
 ``` JSON
 {
   "scripts": {
-    "sleep:$time":"node -e \"setTimeout(() => {}, $time)\"",
-    "background:$job:$time":[
-      "echo Background job: $job",
-      "sleep:$time",
-      "echo Done: $job"
+    "serve:$project:$config": "echo ng serve $project -c=$config"
+  }
+}
+```
+
+### Reference scripts
+Use an existing script name in the command section to execute another script in your config file. This function makes it possible to reuse script from other script, with different arguments if desired.
+
+Run `npm start deploy:tst` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build:$project:$config": "echo ng build $project -c=$config",
+    "deploy:$project:$config": [
+      "build:$project:$config",
+      "echo firebase deploy --public dist/$project -P $project-$config"
     ],
-    "build-stuff": {
-      "concurrent": [
-        "background:1:3000",
-        "background:2:4000"
-      ],
-      "sequential": [
-        "echo Sequential 1",
-        "sleep:1000",
-        "echo Sequential 2",
-        "sleep:1000"
-      ]
-    }
+    "deploy:$config": [
+      "deploy:uva:$config",
+      "deploy:hva:$config"
+    ]
   }
 }
 ```
 
 ### Change directory
-If the first line of the **build-stuff** script array is an existing directory, this directory will be the current directory of the following script lines.
+Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
 
-Run `npm start build-stuff` to test this example.
+Run `npm start build-stuff` to use this example.
 ```
 {
   "scripts": {
@@ -205,7 +206,7 @@ Run `npm start build-stuff` to test this example.
 ### Environment and argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
 
-Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
+Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -218,34 +219,31 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
 }
 ```
 
-### Arguments and functions
-Use the dollar-sign in the script name and command, to specify custom script function arguments.
+### Concurrent scripts
+This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This function is mostly confinent in development environment, when you want to start development server in the background.
 
-Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to test this example.
+Run `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
-    "serve:$project:$config": "echo ng serve $project -configuration=$config"
-  }
-}
-```
-
-### Reference scripts
-Use an existing script name in the command section to execute another script in your config file.
-
-Run `npm start deploy:tst` to test this example.
-``` JSON
-{
-  "scripts": {
-    "build:$project:$config": "echo ng build $project -configuration=$config",
-    "deploy:$project:$config": [
-      "build:$project:$config",
-      "echo firebase deploy --public dist/$project --project $project-$config"
+    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time": [
+      "echo Background job : $job",
+      "sleep:$time",
+      "echo Completed job : $job"
     ],
-    "deploy:$config": [
-      "deploy:uva:$config",
-      "deploy:hva:$config"
-    ]
+    "build-stuff": {
+      "concurrent": [
+        "background:1:3000",
+        "background:2:5000"
+      ],
+      "sequential": [
+        "echo Sequential job : 3",
+        "sleep:1000",
+        "echo Sequential job : 4",
+        "sleep:1000"
+      ]
+    }
   }
 }
 ```
@@ -253,17 +251,17 @@ Run `npm start deploy:tst` to test this example.
 ### Interactive menu
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values.
 
-Run `npm start` to test this example.
+Run `npm start` to use this example.
 ``` JSON
 {
   "scripts": {
     "serve:$project:dev": {
       "concurrent": [
         "echo Start development server",
-        "echo ng serve $project -configuration=dev"
+        "echo ng serve $project -c=dev"
       ]
     },
-    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+    "serve:$project:$config": "echo ng serve $project -c=$config"
   },
   "menu": {
     "description": "organization",
