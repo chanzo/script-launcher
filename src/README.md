@@ -21,14 +21,14 @@ In a traditional `package.json` you can only run scripts on a per line basis. Wi
 {
   "scripts": {
     ...
-    "build:uva:dev": "ng build uva --prod --c=dev",
-    "build:uva:tst": "ng build uva --prod --c=tst",
-    "build:uva:acc": "ng build uva --prod --c=acc",
-    "build:uva:prd": "ng build uva --prod --c=prd",
-    "build:hva:dev": "ng build hva --prod --c=dev",
-    "build:hva:tst": "ng build hva --prod --c=tst",
-    "build:hva:acc": "ng build hva --prod --c=acc",
-    "build:hva:prd": "ng build hva --prod --c=prd",
+    "build:uva:dev": "ng build uva --prod --configuration=dev",
+    "build:uva:tst": "ng build uva --prod --configuration=tst",
+    "build:uva:acc": "ng build uva --prod --configuration=acc",
+    "build:uva:prd": "ng build uva --prod --configuration=prd",
+    "build:hva:dev": "ng build hva --prod --configuration=dev",
+    "build:hva:tst": "ng build hva --prod --configuration=tst",
+    "build:hva:acc": "ng build hva --prod --configuration=acc",
+    "build:hva:prd": "ng build hva --prod --configuration=prd",
     "deploy:dev": "npm run build:uva:dev && npm run build:hva:dev && firebase deploy --public dist/uva --project status-uva-dev && firebase deploy --public dist/hva --project status-hva-dev",
     "deploy:tst": "npm run build:uva:tst && npm run build:hva:tst && firebase deploy --public dist/uva --project status-uva-tst && firebase deploy --public dist/hva --project status-hva-tst",
     "deploy:acc": "npm run build:uva:acc && npm run build:hva:acc && firebase deploy --public dist/uva --project status-uva-acc && firebase deploy --public dist/hva --project status-hva-acc",
@@ -43,7 +43,7 @@ With **script-launcher** you have the benefits of using variables, script refere
 {
   "scripts": {
     ...
-    "build:$project:$config": "ng build $project -c=$config",
+    "build:$project:$config": "ng build $project --configuration=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
       "firebase deploy --public dist/$project --project $project-$config"
