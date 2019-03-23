@@ -32,7 +32,7 @@ export class Executor {
     return text;
   }
 
-  private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
+  private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
     for (const [name, value] of Object.entries(environment)) {
       const regexp = new RegExp('\\$' + name + '([^\\w]|$)', 'g');
 
@@ -41,10 +41,12 @@ export class Executor {
       if (!text.includes('$')) break;
     }
 
+    if (!remove) return text;
+
     return text.replace(/\$\w+/g, '');
   }
 
-  private static getCommandParams(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
+  private static getCommandInfo(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
     options = { ...options };
 
     if (!options.cwd) options.cwd = '';
@@ -57,11 +59,20 @@ export class Executor {
       args.shift();
     }
 
+    const match = command.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
+
+    if (match !== null) {
+      options.env[match[1]] = match[2];
+
+      return { command: null, args, options };
+    }
+
     const fullPath = path.join(path.resolve(options.cwd), command);
 
     if (fs.existsSync(fullPath)) {
       options.cwd = fullPath;
-      command = null;
+
+      return { command: null, args, options };
     }
 
     return { command, args, options };
@@ -141,14 +152,16 @@ export class Executor {
     for (const task of tasks) {
 
       if (typeof task === 'string') {
-        const params = Executor.getCommandParams(task, options);
+        const info = Executor.getCommandInfo(task, options);
 
-        options = params.options;
+        options = info.options;
 
-        if (params.command) {
+        if (info.command) {
+          const command = Executor.expandEnvironment(info.command, info.options.env, true);
+
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
-          const process = Process.spawn(params.command, params.args, params.options);
+          const process = Process.spawn(command, info.args, info.options);
 
           processes.push(process);
 
