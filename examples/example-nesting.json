@@ -17,6 +17,11 @@
         "concurrent",
         "concurrent"
       ]
-    }
+    },
+    "env": [
+      "data=10",
+      "echo Node version: $npm_config_node_version",
+      "echo Data: $data $bas"
+    ]
   }
 }
