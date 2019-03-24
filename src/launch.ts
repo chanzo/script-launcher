@@ -37,7 +37,9 @@ async function main(): Promise<void> {
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
     const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
     const launchScript = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+    const interactive = `${scriptArgs}` === 'interactive';
 
+    Logger.info('Date:', new Date().toISOString());
     Logger.info('Lifecycle event:', lifecycleEvent);
     Logger.info('Command arguments:', commandArgs);
     Logger.info('Script arguments:', scriptArgs);
@@ -58,7 +60,7 @@ async function main(): Promise<void> {
     }
 
     if (launchScript === undefined) {
-      exitCode = await launchMenu(config);
+      exitCode = await launchMenu(config, commandArgs, interactive);
       return;
     }
 
