@@ -22,6 +22,19 @@
       "data=10",
       "echo Node version: $npm_config_node_version",
       "echo Data: $data $bas"
+    ],
+    "terraform:$command:$environment": [
+      "AWS_PROFILE=pairbot-$environment",
+      "echo terraform $command $1 $2 $3 -var release=$npm_package_version"
+    ],
+    "build:$environment": [
+      "echo Building: $environment",
+      "sequential"
+    ],
+    "deploy:$environment": [
+      "build:$environment",
+      "terraform:init:$environment",
+      "terraform:apply:$environment"
     ]
   }
 }
