@@ -26,7 +26,8 @@
     "terraform:$command:$environment": [
       "echo pipeline/$environment",
       "echo AWS_PROFILE=pairbot-$environment",
-      "echo terraform $command $1 -var release=$npm_package_version"
+      "echo terraform $command $1 -var release=$npm_package_version",
+      "echo args: $0 $1 $2 $3 $4 $5 $6"
     ],
     "build:$environment": [
       "echo Building: $environment $*",
@@ -38,6 +39,6 @@
       "terraform:init:$environment",
       "terraform:apply:$environment"
     ],
-    "test": "terraformaaa:state:acc yy zz"
+    "test": "terraform:state:acc yy zz"
   }
 }

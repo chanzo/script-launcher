@@ -41,9 +41,9 @@ async function main(): Promise<void> {
 
     Logger.info('Date:', new Date().toISOString());
     Logger.info('Lifecycle event:', lifecycleEvent);
-    Logger.info('Command arguments:', commandArgs);
-    Logger.info('Script arguments:', scriptArgs);
     Logger.info('Launch script:', launchScript);
+    Logger.info('Launch arguments:', scriptArgs);
+    Logger.info('Command arguments:', commandArgs);
     Logger.info();
 
     if (`${scriptArgs}` === 'init') {

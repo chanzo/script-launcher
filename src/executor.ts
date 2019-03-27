@@ -114,6 +114,7 @@ export class Executor {
 
     Logger.info('Script name     :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
+    Logger.info('Script args     :', scriptInfo.arguments);
     Logger.log('Script object   : ' + stringify(scriptInfo.script));
     Logger.log('Script expanded : ' + stringify(tasks));
     Logger.info();
@@ -141,8 +142,8 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
-      concurrent: this.expandTasks(concurrent, environment),
-      sequential: this.expandTasks(sequential, environment),
+      concurrent: this.expandTasks(concurrent, environment, scriptInfo.arguments),
+      sequential: this.expandTasks(sequential, environment, scriptInfo.arguments),
     };
   }
 
@@ -182,15 +183,18 @@ export class Executor {
     return processes;
   }
 
-  private expandTasks(tasks: string[], environment: { [name: string]: string }): Array<ITasks | string> {
+  private expandTasks(tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
+    console.log('array[0]: ', args[0]);
+    console.log('array[1]: ', args[1]);
+    console.log('array[2]: ', args[2]);
+    console.log('array[3]: ', args[3]);
+    args = [this.args[0], ...args, ...[...this.args].slice(1)];
+
     for (let task of tasks) {
-
-      task = Executor.expandArguments(task, this.args);
+      task = Executor.expandArguments(task, args);
       task = Executor.expandEnvironment(task, environment);
-
-      console.log('>>>>>>>: ', task);
 
       const script = this.scripts.find(task);
 

@@ -12,6 +12,7 @@ export interface IScripts {
 export interface IScriptInfo {
   name: string;
   parameters: { [name: string]: string };
+  arguments: string[];
   script: IScript;
 }
 
@@ -45,6 +46,15 @@ export class Scripts {
     return parameters;
   }
 
+  private static parse(pattern: string): { command: string, arguments: string[] } {
+    const columns = pattern.split(' ');
+
+    return {
+      command: columns[0],
+      arguments: columns.slice(1),
+    };
+  }
+
   private readonly scripts: IScripts;
 
   public constructor(scripts: IScripts) {
@@ -52,10 +62,19 @@ export class Scripts {
   }
 
   public find(pattern: string): IScriptInfo | null {
-    for (const [name, script] of Object.entries(this.scripts)) {
-      const parameters = Scripts.getParameters(name, pattern);
+    const info = Scripts.parse(pattern);
 
-      if (parameters !== null) return { name: name, parameters, script: script };
+    for (const [name, script] of Object.entries(this.scripts)) {
+      const parameters = Scripts.getParameters(name, info.command);
+
+      if (parameters !== null) {
+        return {
+          name: name,
+          parameters: parameters,
+          arguments: info.arguments,
+          script: script,
+        };
+      }
     }
 
     return null;
