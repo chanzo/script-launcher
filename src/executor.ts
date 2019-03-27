@@ -159,6 +159,7 @@ export class Executor {
         if (info.command) {
           const command = Executor.expandEnvironment(info.command, info.options.env, true);
 
+          Logger.log('Date            : ' + new Date().toISOString());
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
           const process = Process.spawn(command, info.args, info.options);

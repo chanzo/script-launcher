@@ -10,6 +10,7 @@ export class Process {
       options.stdio = 'pipe';
     }
 
+    const milliseconds = Date.now();
     const process = spawn(command, args, options);
 
     Logger.log('Spawn process   : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
@@ -17,12 +18,12 @@ export class Process {
 
     if (Logger.level > 2) {
       Logger.debug('Process pid     : ' + Colors.Yellow + process.pid + Colors.Normal);
-      Logger.debug(''.padEnd(64, '-'));
+      Logger.debug(''.padEnd(70, '-'));
 
       Process.showOutputData(process);
     }
 
-    return new Process(process);
+    return new Process(process, milliseconds);
   }
 
   private static showOutputData(childProcess: ChildProcess): void {
@@ -35,15 +36,17 @@ export class Process {
 
   private readonly exitPromise: Promise<number>;
 
-  private constructor(childProcess: ChildProcess) {
+  private constructor(childProcess: ChildProcess, milliseconds: number) {
     this.pid = childProcess.pid;
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
 
         childProcess.on('exit', (code, signal) => {
-          Logger.debug(''.padEnd(64, '-'));
-          Logger.debug('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal);
+          const timeSpan = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
+
+          Logger.debug(''.padEnd(70, '-'));
+          Logger.debug('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  timespan=' + timeSpan + ' ms');
           Logger.debug();
           Logger.debug();
 
@@ -51,14 +54,16 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
-          Logger.debug(''.padEnd(64, '-'));
-          Logger.debug('Process error   : pid=' + childProcess.pid + `  code=${error}`);
+          const timeSpan = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
+
+          Logger.debug(''.padEnd(70, '-'));
+          Logger.debug('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  timespan=' + timeSpan + ' ms');
           Logger.debug();
           Logger.debug();
           reject(error);
         });
       } catch (error) {
-        Logger.debug(''.padEnd(64, '-'));
+        Logger.debug(''.padEnd(70, '-'));
         Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
         Logger.debug();
         Logger.debug();
