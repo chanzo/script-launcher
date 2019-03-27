@@ -29,7 +29,7 @@ export class Executor {
       if (!text.includes('$')) break;
     }
 
-    return text;
+    return text.replace(/\$\*/g, args.slice(1).join(' '));
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
@@ -189,6 +189,8 @@ export class Executor {
 
       task = Executor.expandArguments(task, this.args);
       task = Executor.expandEnvironment(task, environment);
+
+      console.log('>>>>>>>: ', task);
 
       const script = this.scripts.find(task);
 

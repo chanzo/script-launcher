@@ -163,7 +163,7 @@
       "../launcher-custom.json"
     ],
     "script": {
-      "shell0": true
+      "shell": true
     },
     "menu": {
       "default": "deploy:uva:acceptance"

@@ -2,8 +2,8 @@
   "scripts": {
     "sequential": {
       "sequential": [
-        "echo Sequential 1 && sleep 5",
-        "echo Sequential 2 && sleep 5"
+        "echo Sequential 1 && sleep 1",
+        "echo Sequential 2 && sleep 1"
       ]
     },
     "concurrent": {
@@ -24,17 +24,20 @@
       "echo Data: $data $bas"
     ],
     "terraform:$command:$environment": [
-      "AWS_PROFILE=pairbot-$environment",
-      "echo terraform $command $1 $2 $3 -var release=$npm_package_version"
+      "echo pipeline/$environment",
+      "echo AWS_PROFILE=pairbot-$environment",
+      "echo terraform $command $1 -var release=$npm_package_version"
     ],
     "build:$environment": [
-      "echo Building: $environment",
+      "echo Building: $environment $*",
+      "echo test",
       "sequential"
     ],
     "deploy:$environment": [
-      "build:$environment",
+      "build:$environment 11 22",
       "terraform:init:$environment",
       "terraform:apply:$environment"
-    ]
+    ],
+    "test": "terraformaaa:state:acc yy zz"
   }
 }

@@ -30,6 +30,10 @@ export class Process {
     childProcess.stdout.on('data', (data) => {
       Logger.debug(Colors.Dim + Colors.Italic + (data.toString() as string).trim() + Colors.Normal);
     });
+
+    childProcess.stderr.on('data', (data) => {
+      Logger.debug(Colors.Red + Colors.Italic + (data.toString() as string).trim() + Colors.Normal);
+    });
   }
 
   public readonly pid: number;
