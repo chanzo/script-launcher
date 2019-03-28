@@ -42,6 +42,21 @@
     "test:$command": [
       "terraform:$state:acc yy zz",
       "echo args: '$0' '$1' '$2' '$3' '$4' '$5' '$6'"
+    ],
+    "order:bas1:$value2": "echo Order2: bas1 $value2",
+    "order:$value1:$value2": "echo Order1: $value1 $value2",
+    "order:bas1:bas2": "echo Order3: bas1 bas2",
+    "myFunc:$funcParam1:$funcParam2": [
+      "echo Function Parameters: param1=$funcParam1  param2=$funcParam2",
+      "echo Function Arguments: argument1=$1  argument2=$2",
+      "echo Function All arguments: $*"
+    ],
+    "build-stuff:$myParam1:$myParam2": [
+      "echo Parameters: param1=$myParam1  param2=$myParam2",
+      "echo Arguments: argument1=$1  argument2=$2",
+      "echo All arguments: $*",
+      "echo -------------------------------------------------------",
+      "myFunc:$myParam1:funcParam2 funcArg1"
     ]
   }
 }

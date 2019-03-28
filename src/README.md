@@ -161,7 +161,7 @@ Run `npm start build-stuff` to use this example.
 Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
 
 Run `npm start build-stuff` to use this example.
-```
+``` JSON
 {
   "scripts": {
     "build-stuff": [
@@ -216,6 +216,7 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
       "echo Node version: $npm_config_node_version",
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
+      "echo All arguments: $*",
       "echo Environment : $environment"
     ]
   }
@@ -227,8 +228,26 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
 * **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
-```
-...
+
+Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
+
+``` JSON
+{
+  "scripts": {
+    "myFunc:$funcParam1:$funcParam2": [
+      "echo Function Parameters: param1=$funcParam1  param2=$funcParam2",
+      "echo Function Arguments: argument1=$1  argument2=$2",
+      "echo Function All arguments: $*"
+    ],
+    "build-stuff:$myParam1:$myParam2": [
+      "echo Parameters: param1=$myParam1  param2=$myParam2",
+      "echo Arguments: argument1=$1  argument2=$2",
+      "echo All arguments: $*",
+      "echo -------------------------------------------------------",
+      "myFunc:$myParam1:funcParam2 funcArg1"
+    ]
+  }
+}
 ```
 
 ### Concurrent scripts

@@ -63,18 +63,23 @@ export class Scripts {
 
   public find(pattern: string): IScriptInfo | null {
     const info = Scripts.parse(pattern);
+    const result: IScriptInfo[] = [];
 
     for (const [name, script] of Object.entries(this.scripts)) {
       const parameters = Scripts.getParameters(name, info.command);
 
       if (parameters !== null) {
-        return {
+        result.push({
           name: name,
           parameters: parameters,
           arguments: info.arguments,
           script: script,
-        };
+        });
       }
+    }
+
+    if (result.length > 0) {
+      return result.sort((itemA, itemB) => itemA.name.split('$').length - itemB.name.split('$').length)[0];
     }
 
     return null;
