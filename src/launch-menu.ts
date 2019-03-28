@@ -9,6 +9,7 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     parameters: {},
+    arguments: [],
     script: config.options.menu.defaultScript,
   };
 
@@ -77,6 +78,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     return {
       name: choice.join(':'),
       parameters: {},
+      arguments: [],
       script: command as IScript,
     };
   }

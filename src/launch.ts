@@ -6,7 +6,7 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { stringify } from './common';
+import { stringify, Colors } from './common';
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -36,15 +36,8 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
     const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
-    const launchScript = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
     const interactive = `${scriptArgs}` === 'interactive';
-
-    Logger.info('Date:', new Date().toISOString());
-    Logger.info('Lifecycle event:', lifecycleEvent);
-    Logger.info('Command arguments:', commandArgs);
-    Logger.info('Script arguments:', scriptArgs);
-    Logger.info('Launch script:', launchScript);
-    Logger.info();
 
     if (`${scriptArgs}` === 'init') {
       const targetFile = 'launcher-config.json';
@@ -59,21 +52,35 @@ async function main(): Promise<void> {
       return;
     }
 
-    if (launchScript === undefined) {
+    Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
+    Logger.info('Lifecycle event   :', lifecycleEvent);
+    Logger.info('Launch command    :', launchCommand);
+    Logger.info('Launch arguments  :', scriptArgs);
+
+    if (launchCommand === undefined) {
+      Logger.info('Command arguments :', commandArgs);
+      Logger.info();
       exitCode = await launchMenu(config, commandArgs, interactive);
       return;
     }
 
     const shell = config.options.script.shell;
-    const executor = new Executor(shell, commandArgs, process.env, config.scripts);
-    const scriptInfo = config.scripts.find(launchScript);
+    const scriptInfo = config.scripts.find(launchCommand);
 
-    if (!scriptInfo) throw new Error('Missing launch script: ' + launchScript);
+    if (!scriptInfo) throw new Error('Missing launch script: ' + launchCommand);
+
+    commandArgs[0] = launchCommand.split(' ')[0];
+
+    Logger.info('Command arguments :', commandArgs);
+    Logger.info();
+
+    const executor = new Executor(shell, commandArgs, process.env, config.scripts);
 
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
+    if (Logger.level < 2) Logger.info('');
     Logger.info('ExitCode:', exitCode);
     process.exit(exitCode);
   }
