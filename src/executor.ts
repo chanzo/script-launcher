@@ -160,7 +160,7 @@ export class Executor {
         if (info.command) {
           const command = Executor.expandEnvironment(info.command, info.options.env, true);
 
-          Logger.log('Date            : ' + new Date().toISOString());
+          Logger.log(Colors.Bold + 'Date            : ' + new Date().toISOString() + Colors.Normal);
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
           const process = Process.spawn(command, info.args, info.options);
@@ -186,10 +186,6 @@ export class Executor {
   private expandTasks(tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
-    console.log('array[0]: ', args[0]);
-    console.log('array[1]: ', args[1]);
-    console.log('array[2]: ', args[2]);
-    console.log('array[3]: ', args[3]);
     args = [this.args[0], ...args, ...[...this.args].slice(1)];
 
     for (let task of tasks) {

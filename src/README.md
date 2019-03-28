@@ -13,9 +13,9 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its functions are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these functions.
+Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. Its functions are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these functions.
 
-In a traditional `package.json` you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
+In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
 ```JSON
 {
@@ -86,10 +86,11 @@ To start the above example you would run: `npm start`
 * [Usage examples](#usage-examples)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
-  * [Arguments and functions](#arguments-and-functions)
-  * [Reference scripts](#reference-scripts)
   * [Change directory](#change-directory)
-  * [Environment and argument values](#environment-and-argument-values)
+  * [Parameters and functions](#parameters-and-functions)
+  * [Reference scripts](#reference-scripts)
+  * [Environment and command line argument values](#environment-and-command-line-argument-values)
+  * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
 * [Launcher options](#launcher-options)
@@ -156,10 +157,25 @@ Run `npm start build-stuff` to use this example.
 }
 ```
 
-### Arguments and functions
-Use the dollar-sign in the script name and command, to specify custom script function arguments. This function makes it possible to start one script with different arguments, this works on Mac, Linux and Windows in the same way.
+### Change directory
+Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
 
-Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to use this example.
+Run `npm start build-stuff` to use this example.
+```
+{
+  "scripts": {
+    "build-stuff": [
+      "node_modules/script-launcher",
+      "dir"
+    ]
+  }
+}
+```
+
+### Parameters and functions
+Use the dollar-sign in the script name and command, to specify script function parameter. This function makes it possible to start one script with different parameters, this works on Mac, Linux and Windows in the same way.
+
+Run `npm start serve:uva:tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
 {
   "scripts": {
@@ -188,22 +204,7 @@ Run `npm start deploy:tst` to use this example.
 }
 ```
 
-### Change directory
-Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
-
-Run `npm start build-stuff` to use this example.
-```
-{
-  "scripts": {
-    "build-stuff": [
-      "node_modules/script-launcher",
-      "dir"
-    ]
-  }
-}
-```
-
-### Environment and argument values
+### Environment and command line argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
 
 Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
@@ -219,6 +220,15 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
     ]
   }
 }
+```
+
+### Launch arguments, command arguments, parameters and arguments
+* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch my-arg1 my-arg2`
+* **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
+* **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
+* **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
+```
+...
 ```
 
 ### Concurrent scripts
