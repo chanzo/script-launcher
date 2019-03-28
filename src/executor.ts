@@ -189,10 +189,13 @@ export class Executor {
     args = [this.args[0], ...args, ...[...this.args].slice(1)];
 
     for (let task of tasks) {
+      const command = Scripts.parse(task).command;
+
       task = Executor.expandArguments(task, args);
       task = Executor.expandEnvironment(task, environment);
 
-      const script = this.scripts.find(task);
+      const scripts = this.scripts.find(task);
+      const script = Scripts.select(scripts, command);
 
       if (script) {
         result.push(this.expand(script));
