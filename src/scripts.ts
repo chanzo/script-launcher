@@ -79,13 +79,13 @@ export class Scripts {
 
   public find(pattern: string): IScriptInfo[] {
     const info = Scripts.parse(pattern);
-    const matches: IScriptInfo[] = [];
+    const scripts: IScriptInfo[] = [];
 
     for (const [name, script] of Object.entries(this.scripts)) {
       const parameters = Scripts.getParameters(name, info.command);
 
       if (parameters !== null) {
-        matches.push({
+        scripts.push({
           name: name,
           parameters: parameters,
           arguments: info.arguments,
@@ -94,6 +94,6 @@ export class Scripts {
       }
     }
 
-    return matches;
+    return scripts;
   }
 }
