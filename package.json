@@ -22,7 +22,7 @@
     "@types/cross-spawn": "^6.0.0",
     "@types/inquirer": "^6.0.0",
     "@types/node": "^11.11.6",
-    "script-launcher": "^1.0.3",
+    "script-launcher": "^1.0.5",
     "ts-node": "^8.0.2",
     "tslint": "^5.12.1",
     "typescript": "^3.3.4000"
