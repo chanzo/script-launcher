@@ -23,7 +23,7 @@
       "echo Node version: $npm_config_node_version",
       "echo Data: $data $bas"
     ],
-    "terraform:$command:$environment": [
+    "terraform20:$command:$environment": [
       "echo pipeline/$environment",
       "echo AWS_PROFILE=pairbot-$environment",
       "echo terraform $command $1 -var release=$npm_package_version",
@@ -46,17 +46,12 @@
     "order:bas1:$value2": "echo Order2: bas1 $value2",
     "order:$value1:$value2": "echo Order1: $value1 $value2",
     "order:bas1:bas2": "echo Order3: bas1 bas2",
-    "myFunc:$funcParam1:$funcParam2": [
-      "echo Function Parameters: param1=$funcParam1  param2=$funcParam2",
-      "echo Function Arguments: argument1=$1  argument2=$2",
-      "echo Function All arguments: $*"
+    "terraform:$command:$environment": [
+      "echo pipeline/$environment",
+      "echo AWS_PROFILE=pairbot-$environment",
+      "echo terraform $command $*"
     ],
-    "build-stuff:$myParam1:$myParam2": [
-      "echo Parameters: param1=$myParam1  param2=$myParam2",
-      "echo Arguments: argument1=$1  argument2=$2",
-      "echo All arguments: $*",
-      "echo -------------------------------------------------------",
-      "myFunc:$myParam1:funcParam2 funcArg1"
-    ]
+    "terraform:apply:$environment": "terraform:apply:$environment -var release=$npm_package_version",
+    "terraform:destroy:$environment": "terraform:destroy:$environment -var release=$npm_package_version"
   }
 }

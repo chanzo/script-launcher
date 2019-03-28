@@ -7,6 +7,7 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { stringify, Colors } from './common';
+import { Scripts } from './scripts';
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -65,18 +66,20 @@ async function main(): Promise<void> {
     }
 
     const shell = config.options.script.shell;
-    const scriptInfo = config.scripts.find(launchCommand);
+    const scripts = config.scripts.find(launchCommand);
 
-    if (!scriptInfo) throw new Error('Missing launch script: ' + launchCommand);
+    if (scripts.length === 0) throw new Error('Missing launch script: ' + launchCommand);
 
-    commandArgs[0] = launchCommand.split(' ')[0];
+    const script = Scripts.select(scripts);
+
+    commandArgs[0] = Scripts.parse(launchCommand).command;
 
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
     const executor = new Executor(shell, commandArgs, process.env, config.scripts);
 
-    exitCode = await executor.execute(scriptInfo);
+    exitCode = await executor.execute(script);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
