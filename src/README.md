@@ -207,7 +207,7 @@ Run `npm start deploy:tst` to use this example.
 ### Environment and command line argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
 
-Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
+Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -224,7 +224,7 @@ Run `npm start build-stuff my-arg-1 my-arg-2` to use this example.
 ```
 
 ### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch my-arg1 my-arg2`
+* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive`
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
 * **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
@@ -235,16 +235,20 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 {
   "scripts": {
     "myFunc:$funcParam1:$funcParam2": [
-      "echo Function Parameters: param1=$funcParam1  param2=$funcParam2",
-      "echo Function Arguments: argument1=$1  argument2=$2",
+      "echo Function Parameter 1: $funcParam1",
+      "echo Function Parameter 2: $funcParam2",
+      "echo Function Arguments 1: $1",
+      "echo Function Arguments 2: $2",
       "echo Function All arguments: $*"
     ],
     "build-stuff:$myParam1:$myParam2": [
-      "echo Parameters: param1=$myParam1  param2=$myParam2",
-      "echo Arguments: argument1=$1  argument2=$2",
+      "echo Parameter 1: $myParam1",
+      "echo Parameter 2: $myParam2",
+      "echo Arguments 1: $1",
+      "echo Arguments 2: $2",
       "echo All arguments: $*",
       "echo -------------------------------------------------------",
-      "myFunc:$myParam1:funcParam2 funcArg1"
+      "myFunc:$myParam1:funcParam funcArg"
     ]
   }
 }
@@ -280,7 +284,8 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values.
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. Use `launch interactive` to ignore the `launcher-custom.json` file.
+
 
 Run `npm start` to use this example.
 ``` JSON
