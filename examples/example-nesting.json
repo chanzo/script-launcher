@@ -34,7 +34,7 @@
       "echo test",
       "sequential"
     ],
-    "deploy:$environment": [
+    "deploy2:$environment": [
       "build:$environment 11 22",
       "terraform:init:$environment",
       "terraform:apply:$environment"
@@ -52,6 +52,15 @@
       "echo terraform $command $*"
     ],
     "terraform:apply:$environment": "terraform:apply:$environment -var release=$npm_package_version",
-    "terraform:destroy:$environment": "terraform:destroy:$environment -var release=$npm_package_version"
+    "terraform:destroy:$environment": "terraform:destroy:$environment -var release=$npm_package_version",
+    "build:$project:$config": "echo ng build $project -c=$config",
+    "deploy:$project:$config": [
+      "build:$project:$config",
+      "echo firebase deploy --public dist/$project -P $project-$config"
+    ],
+    "deploy:$config": [
+      "deploy:uva:$config",
+      "deploy:hva:$config"
+    ]
   }
 }

@@ -27,7 +27,10 @@ export class Scripts {
         if (script.name !== filter) return script;
       }
 
-      throw new Error('Circular script reference detected.');
+      console.log('filter', filter);
+      console.log('scripts:', scripts);
+      // throw new Error('Circular script reference detected.');
+      return scripts[0];
     }
 
     return null;
