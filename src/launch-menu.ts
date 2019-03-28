@@ -5,15 +5,15 @@ import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask } from './scripts';
 import { Colors } from './common';
 
-export async function launchMenu(config: Config): Promise<number> {
-  const interactive = process.argv.length >= 3 && process.argv[2].localeCompare('interactive') === 0;
+export async function launchMenu(config: Config, args: string[], interactive: boolean): Promise<number> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     parameters: {},
+    arguments: [],
     script: config.options.menu.defaultScript,
   };
 
-  const executor = new Executor(config.options.script.shell, process.argv, process.env, config.scripts);
+  const executor = new Executor(config.options.script.shell, args, process.env, config.scripts);
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
@@ -78,6 +78,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     return {
       name: choice.join(':'),
       parameters: {},
+      arguments: [],
       script: command as IScript,
     };
   }

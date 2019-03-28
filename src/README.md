@@ -13,9 +13,9 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your `package.json` scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. Its functions are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these functions.
 
-In a traditional `package.json` you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
+In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
 ```JSON
 {
@@ -38,12 +38,12 @@ In a traditional `package.json` you can only run scripts on a per line basis. Wi
 }
 ```
 
-With script-launcher you have the benefits of using script variables and script references, so you can make the above example easier to maintain:
+With **script-launcher** you have the benefits of using variables, script references and many more functions, so you can make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
     ...
-    "build:$project:$config": "ng build $project -configuration=$config",
+    "build:$project:$config": "ng build $project --configuration=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
       "firebase deploy --public dist/$project --project $project-$config"
@@ -86,11 +86,12 @@ To start the above example you would run: `npm start`
 * [Usage examples](#usage-examples)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
-  * [Concurrent scripts](#concurrent-scripts)
   * [Change directory](#change-directory)
-  * [Environment and argument values](#environment-and-argument-values)
-  * [Arguments and functions](#arguments-and-functions)
+  * [Parameters and functions](#parameters-and-functions)
   * [Reference scripts](#reference-scripts)
+  * [Environment and command line argument values](#environment-and-command-line-argument-values)
+  * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
+  * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -100,17 +101,17 @@ To start the above example you would run: `npm start`
 
 ## Installation
 
-Install `script-launcher` as a development dependency in your project.
+Install **script-launcher** as a development dependency in your project.
 ``` bash
 npm install script-launcher --save-dev
 ```
 
-Use `launch init` to create an example `launcher-config.json` file.
+Use **launch init** to create an example **launcher-config.json** file.
 ``` bash
 "node_modules/.bin/launch" init
 ```
 
-For easy usage, change your `package.json` start script to use script launcher as the default.
+For easy usage, change your **package.json** start script to use script launcher as the default.
 ``` json
 {
     ...
@@ -138,12 +139,12 @@ npm start serve:uva:tst
 Basically you can now use `npm start` instead of `npm run`.
 
 ## Implementation examples
-To test an example, copy the json content from the example to the file named `launcher-config.json` and run the script.
+To test an example, copy the json content from the example to the file named **launcher-config.json** and run the script.
 
 ### Sequential scripts
-This example uses square brackets to start multiple script one by one.
+This example uses square brackets to start multiple script one by one. This function makes long script lines more readable.
 
-Run `npm start build-stuff` to test this example.
+Run `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -156,42 +157,11 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Concurrent scripts
-This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one.
-
-Run `npm start build-stuff` to test this example.
-
-**Linux and Macos example using sleep**
-``` JSON
-{
-  "scripts": {
-    "sleep:$time":"node -e \"setTimeout(() => {}, $time)\"",
-    "background:$job:$time":[
-      "echo Background job: $job",
-      "sleep:$time",
-      "echo Done: $job"
-    ],
-    "build-stuff": {
-      "concurrent": [
-        "background:1:3000",
-        "background:2:4000"
-      ],
-      "sequential": [
-        "echo Sequential 1",
-        "sleep:1000",
-        "echo Sequential 2",
-        "sleep:1000"
-      ]
-    }
-  }
-}
-```
-
 ### Change directory
-If the first line of the **build-stuff** script array is an existing directory, this directory will be the current directory of the following script lines.
+Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
 
-Run `npm start build-stuff` to test this example.
-```
+Run `npm start build-stuff` to use this example.
+``` JSON
 {
   "scripts": {
     "build-stuff": [
@@ -202,45 +172,29 @@ Run `npm start build-stuff` to test this example.
 }
 ```
 
-### Environment and argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
+### Parameters and functions
+Use the dollar-sign in the script name and command, to specify script function parameter. This function makes it possible to start one script with different parameters, this works on Mac, Linux and Windows in the same way.
 
-Run `npm start build-stuff my-arg-1 my-arg-2` to test this example.
+Run `npm start serve:uva:tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
 {
   "scripts": {
-    "build-stuff": [
-      "echo Node version: $npm_config_node_version",
-      "echo Argument 1 : $1",
-      "echo Argument 2 : $2"
-    ]
-  }
-}
-```
-
-### Arguments and functions
-Use the dollar-sign in the script name and command, to specify custom script function arguments.
-
-Run `npm start serve:uva:tst` or `npm start serve:uva:prd` etc, to test this example.
-``` JSON
-{
-  "scripts": {
-    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+    "serve:$project:$config": "echo ng serve $project -c=$config"
   }
 }
 ```
 
 ### Reference scripts
-Use an existing script name in the command section to execute another script in your config file.
+Use an existing script name in the command section to execute another script in your config file. This function makes it possible to reuse script from other script, with different arguments if desired.
 
-Run `npm start deploy:tst` to test this example.
+Run `npm start deploy:tst` to use this example.
 ``` JSON
 {
   "scripts": {
-    "build:$project:$config": "echo ng build $project -configuration=$config",
+    "build:$project:$config": "echo ng build $project -c=$config",
     "deploy:$project:$config": [
       "build:$project:$config",
-      "echo firebase deploy --public dist/$project --project $project-$config"
+      "echo firebase deploy --public dist/$project -P $project-$config"
     ],
     "deploy:$config": [
       "deploy:uva:$config",
@@ -250,20 +204,100 @@ Run `npm start deploy:tst` to test this example.
 }
 ```
 
-### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values.
+### Environment and command line argument values
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
 
-Run `npm start` to test this example.
+Run `npm start build-stuff arg1 arg2 arg3` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "environment=my-env",
+      "echo Node version: $npm_config_node_version",
+      "echo Argument 1 : $1",
+      "echo Argument 2 : $2",
+      "echo All arguments: $*",
+      "echo Environment : $environment"
+    ]
+  }
+}
+```
+
+### Launch arguments, command arguments, parameters and arguments
+* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive`
+* **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
+* **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
+* **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
+
+Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
+
+``` JSON
+{
+  "scripts": {
+    "myFunc:$funcParam1:$funcParam2": [
+      "echo Function Parameter 1: $funcParam1",
+      "echo Function Parameter 2: $funcParam2",
+      "echo Function Arguments 1: $1",
+      "echo Function Arguments 2: $2",
+      "echo Function All arguments: $*"
+    ],
+    "build-stuff:$myParam1:$myParam2": [
+      "echo Parameter 1: $myParam1",
+      "echo Parameter 2: $myParam2",
+      "echo Arguments 1: $1",
+      "echo Arguments 2: $2",
+      "echo All arguments: $*",
+      "echo -------------------------------------------------------",
+      "myFunc:$myParam1:funcParam funcArg"
+    ]
+  }
+}
+```
+
+### Concurrent scripts
+This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This function is mostly confinent in development environment, when you want to start development server in the background.
+
+Run `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time": [
+      "echo Background job : $job",
+      "sleep:$time",
+      "echo Completed job : $job"
+    ],
+    "build-stuff": {
+      "concurrent": [
+        "background:1:3000",
+        "background:2:5000"
+      ],
+      "sequential": [
+        "echo Sequential job : 3",
+        "sleep:1000",
+        "echo Sequential job : 4",
+        "sleep:1000"
+      ]
+    }
+  }
+}
+```
+
+### Interactive menu
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. Use `launch interactive` to ignore the `launcher-custom.json` file.
+
+
+Run `npm start` to use this example.
 ``` JSON
 {
   "scripts": {
     "serve:$project:dev": {
       "concurrent": [
         "echo Start development server",
-        "echo ng serve $project -configuration=dev"
+        "echo ng serve $project -c=dev"
       ]
     },
-    "serve:$project:$config": "echo ng serve $project -configuration=$config"
+    "serve:$project:$config": "echo ng serve $project -c=$config"
   },
   "menu": {
     "description": "organization",
