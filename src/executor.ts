@@ -59,6 +59,12 @@ export class Executor {
       args.shift();
     }
 
+    if (command === 'echo') {
+      if (process.platform === 'win32') command += '.';
+
+      return { command, args, options };
+    }
+
     const match = command.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
 
     if (match !== null) {
