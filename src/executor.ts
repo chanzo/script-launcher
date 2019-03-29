@@ -142,8 +142,8 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
-      concurrent: this.expandTasks(concurrent, environment, scriptInfo.arguments),
-      sequential: this.expandTasks(sequential, environment, scriptInfo.arguments),
+      concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
+      sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
     };
   }
 
@@ -183,19 +183,17 @@ export class Executor {
     return processes;
   }
 
-  private expandTasks(tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
+  private expandTasks(parent: string, tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
     args = [this.args[0], ...args, ...[...this.args].slice(1)];
 
     for (let task of tasks) {
-      const command = Scripts.parse(task).command;
-
       task = Executor.expandArguments(task, args);
       task = Executor.expandEnvironment(task, environment);
 
       const scripts = this.scripts.find(task);
-      const script = Scripts.select(scripts, command);
+      const script = Scripts.select(scripts, parent);
 
       if (script) {
         result.push(this.expand(script));

@@ -70,7 +70,7 @@ async function main(): Promise<void> {
 
     if (scripts.length === 0) throw new Error('Missing launch script: ' + launchCommand);
 
-    const script = Scripts.select(scripts);
+    const scriptInfo = Scripts.select(scripts);
 
     commandArgs[0] = Scripts.parse(launchCommand).command;
 
@@ -79,7 +79,7 @@ async function main(): Promise<void> {
 
     const executor = new Executor(shell, commandArgs, process.env, config.scripts);
 
-    exitCode = await executor.execute(script);
+    exitCode = await executor.execute(scriptInfo);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
