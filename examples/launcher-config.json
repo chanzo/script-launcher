@@ -156,14 +156,14 @@
     }
   },
   "options": {
-    "logLevel": 3,
+    "logLevel": 2,
     "files": [
       "../launcher-menu.json",
       "example-nesting.json",
       "../launcher-custom.json"
     ],
     "script": {
-      "shell0": true
+      "shell": true
     },
     "menu": {
       "default": "deploy:uva:acceptance"

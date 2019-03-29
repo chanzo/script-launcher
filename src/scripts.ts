@@ -1,3 +1,5 @@
+import * as stringArgv from 'string-argv';
+
 export interface IScriptTask {
   concurrent: string[];
   sequential: string[];
@@ -12,10 +14,34 @@ export interface IScripts {
 export interface IScriptInfo {
   name: string;
   parameters: { [name: string]: string };
+  arguments: string[];
   script: IScript;
 }
 
 export class Scripts {
+  public static select(scripts: IScriptInfo[], filter: string = null): IScriptInfo {
+    if (scripts.length > 0) {
+      scripts = scripts.sort((itemA, itemB) => itemA.name.split('$').length - itemB.name.split('$').length);
+
+      for (const script of scripts) {
+        if (script.name !== filter) return script;
+      }
+
+      throw new Error('Circular script reference detected.');
+    }
+
+    return null;
+  }
+
+  public static parse(pattern: string): { command: string, arguments: string[] } {
+    const args = stringArgv(pattern);
+
+    return {
+      command: args[0],
+      arguments: args.slice(1),
+    };
+  }
+
   private static getParameters(patternA: string, patternB: string): { [name: string]: string } {
     const columnsA = patternA.split(':');
     const columnsB = patternB.split(':');
@@ -51,13 +77,23 @@ export class Scripts {
     this.scripts = scripts;
   }
 
-  public find(pattern: string): IScriptInfo | null {
-    for (const [name, script] of Object.entries(this.scripts)) {
-      const parameters = Scripts.getParameters(name, pattern);
+  public find(pattern: string): IScriptInfo[] {
+    const info = Scripts.parse(pattern);
+    const scripts: IScriptInfo[] = [];
 
-      if (parameters !== null) return { name: name, parameters, script: script };
+    for (const [name, script] of Object.entries(this.scripts)) {
+      const parameters = Scripts.getParameters(name, info.command);
+
+      if (parameters !== null) {
+        scripts.push({
+          name: name,
+          parameters: parameters,
+          arguments: info.arguments,
+          script: script,
+        });
+      }
     }
 
-    return null;
+    return scripts;
   }
 }

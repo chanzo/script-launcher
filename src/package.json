@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Script Launcher",
   "main": "launch.js",
   "keywords": [

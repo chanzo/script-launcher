@@ -29,7 +29,7 @@ export class Executor {
       if (!text.includes('$')) break;
     }
 
-    return text;
+    return text.replace(/\$\*/g, args.slice(1).join(' '));
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
@@ -114,6 +114,7 @@ export class Executor {
 
     Logger.info('Script name     :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
+    Logger.info('Script args     :', scriptInfo.arguments);
     Logger.log('Script object   : ' + stringify(scriptInfo.script));
     Logger.log('Script expanded : ' + stringify(tasks));
     Logger.info();
@@ -141,8 +142,8 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
-      concurrent: this.expandTasks(concurrent, environment),
-      sequential: this.expandTasks(sequential, environment),
+      concurrent: this.expandTasks(concurrent, environment, scriptInfo.arguments),
+      sequential: this.expandTasks(sequential, environment, scriptInfo.arguments),
     };
   }
 
@@ -159,7 +160,7 @@ export class Executor {
         if (info.command) {
           const command = Executor.expandEnvironment(info.command, info.options.env, true);
 
-          Logger.log('Date            : ' + new Date().toISOString());
+          Logger.log(Colors.Bold + 'Date            : ' + new Date().toISOString() + Colors.Normal);
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
           const process = Process.spawn(command, info.args, info.options);
@@ -182,15 +183,19 @@ export class Executor {
     return processes;
   }
 
-  private expandTasks(tasks: string[], environment: { [name: string]: string }): Array<ITasks | string> {
+  private expandTasks(tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
-    for (let task of tasks) {
+    args = [this.args[0], ...args, ...[...this.args].slice(1)];
 
-      task = Executor.expandArguments(task, this.args);
+    for (let task of tasks) {
+      const command = Scripts.parse(task).command;
+
+      task = Executor.expandArguments(task, args);
       task = Executor.expandEnvironment(task, environment);
 
-      const script = this.scripts.find(task);
+      const scripts = this.scripts.find(task);
+      const script = Scripts.select(scripts, command);
 
       if (script) {
         result.push(this.expand(script));

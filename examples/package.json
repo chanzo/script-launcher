@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "(cd .. && npm --silent start lint) && ../node_modules/.bin/ts-node ../src/launch.ts"
+    "start": "(cd .. && npm --silent start lint) && ../node_modules/.bin/ts-node ../src/launch.ts  l1 l2"
   },
   "author": "Bas Heerschop",
   "license": "MIT"
