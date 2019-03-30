@@ -111,7 +111,7 @@ Use **launch init** to create an example **launcher-config.json** file.
 "node_modules/.bin/launch" init
 ```
 
-For easy usage, change your **package.json** start script to use script launcher as the default.
+Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, the name of the custom script is then used as the launch script.
 ``` json
 {
     ...
@@ -133,8 +133,8 @@ npm start
 
 Start a specific launch script
 ```
-npm start serve:uva:dev
-npm start serve:uva:tst
+npm start serve:dev
+npm start build:prd
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
@@ -224,7 +224,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ```
 
 ### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive`
+* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive` or `launch menu`
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
 * **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`

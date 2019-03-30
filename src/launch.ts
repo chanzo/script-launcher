@@ -1,6 +1,6 @@
 #!./node_modules/.bin/ts-node --skip-project
 
-import { Config } from './config-loader';
+import { Config, IConfig } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
@@ -22,6 +22,15 @@ function showLoadedFiles(files: string[]) {
   Logger.info();
 }
 
+function createExampleFile(fileName: string, config: Partial<IConfig>): void {
+  if (fs.existsSync(fileName)) {
+    Logger.error('The file "' + fileName + '" already exists.');
+    return;
+  }
+
+  fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
+}
+
 async function main(): Promise<void> {
   let exitCode = 1;
 
@@ -36,29 +45,22 @@ async function main(): Promise<void> {
 
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const scriptArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
+    const launchArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
-    const interactive = `${scriptArgs}` === 'interactive';
+    const interactive = `${launchArgs}` === 'interactive';
 
-    if (`${scriptArgs}` === 'init') {
-      const targetFile = 'launcher-config.json';
-
-      if (fs.existsSync(targetFile)) {
-        Logger.error('The file "' + targetFile + '" already exists.');
-        return;
-      }
-
-      fs.writeFileSync(targetFile, JSON.stringify(Config.init, null, 2));
-
+    if (`${launchArgs}` === 'init') {
+      createExampleFile('launcher-config.json', Config.initConfig);
+      createExampleFile('launcher-menu.json', Config.initMenu);
       return;
     }
 
     Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
-    Logger.info('Launch arguments  :', scriptArgs);
+    Logger.info('Launch arguments  :', launchArgs);
 
-    if (launchCommand === undefined) {
+    if (launchCommand === undefined || `${launchArgs}` === 'menu') {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
       exitCode = await launchMenu(config, commandArgs, interactive);

@@ -59,37 +59,46 @@ export class Config {
     },
   };
 
-  public static readonly init: IConfig = {
+  public static readonly initConfig: Partial<IConfig> = {
     scripts: {
-      'serve:$project:dev': {
+      'serve:dev': {
         sequential: [],
         concurrent: [
           'echo Start development server',
-          'echo ng serve $project -configuration=dev',
+          'echo ng serve',
         ],
       },
-      'serve:$project:$config': 'echo ng serve $project -configuration=$config',
+      'serve:$config': 'echo ng serve --configuration=$config',
+      'build:$config': 'echo ng build --configuration=$config',
+      'build:dev': 'echo ng build',
+      'build:prd': 'echo ng build --configuration=production --prod',
     },
+    options: {
+    } as IOptions,
+  };
+
+  public static readonly initMenu: Partial<IConfig> = {
     menu: {
-      description: 'organization',
-      uva: {
+      description: 'action',
+      serve: {
         description: 'environment',
-        development: 'serve:uva:dev',
-        acceptance: 'serve:uva:acc',
-        production: 'serve:uva:prd',
+        development: 'serve:dev',
+        acceptance: 'serve:acc',
+        production: 'serve:prd',
       },
-      hva: {
+      build: {
         description: 'environment',
-        development: 'serve:hva:dev',
-        acceptance: 'serve:hva:acc',
-        production: 'serve:hva:prd',
+        development: 'build:dev',
+        acceptance: 'build:acc',
+        production: 'build:prd',
       },
     },
     options: {
       menu: {
-        defaultChoice: 'hva:dev',
+        defaultChoice: 'serve:development',
       },
     } as IOptions,
+
   };
 
   public static load(): Config {
