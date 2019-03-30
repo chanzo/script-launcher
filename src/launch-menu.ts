@@ -2,7 +2,7 @@ import * as inquirer from 'inquirer';
 import * as fs from 'fs';
 import { Config, IConfig, IMenu } from './config-loader';
 import { Executor } from './executor';
-import { IScript, IScriptInfo, IScriptTask } from './scripts';
+import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
 export async function launchMenu(config: Config, args: string[], interactive: boolean): Promise<number> {
@@ -37,7 +37,29 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
 
   console.log();
 
+  const command = getStartCommand(script.script, config.scripts);
+
+  if (command && process.env.npm_lifecycle_event === 'start') {
+    console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
+    console.log();
+  }
+
   return await executor.execute(script);
+}
+
+function getStartCommand(script: IScript, scripts: Scripts): string {
+  const result = [];
+
+  if ((script as IScriptTask).concurrent) return null;
+  if ((script as IScriptTask).sequential) return null;
+
+  if (script instanceof Array) result.push(...script);
+  if (typeof script === 'string') result.push(script);
+  if (script instanceof String) result.push(script.toString());
+
+  if (result.length > 1 || scripts.find(result[0]).length === 0) return null;
+
+  return result[0];
 }
 
 async function saveChoiceMenu(): Promise<boolean> {

@@ -133,7 +133,7 @@ export class Executor {
     return Executor.wait(processes);
   }
 
-  private expand(scriptInfo: IScriptInfo): ITasks { // 286
+  private expand(scriptInfo: IScriptInfo): ITasks {
     const concurrent: string[] = [];
     const sequential: string[] = [];
     const script = scriptInfo.script;
