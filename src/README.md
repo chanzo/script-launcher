@@ -13,7 +13,7 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. Its functions are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these functions.
+Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
@@ -29,21 +29,29 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
     "build:hva:tst": "ng build hva --prod --configuration=tst",
     "build:hva:acc": "ng build hva --prod --configuration=acc",
     "build:hva:prd": "ng build hva --prod --configuration=prd",
-    "deploy:dev": "npm run build:uva:dev && npm run build:hva:dev && firebase deploy --public dist/uva --project status-uva-dev && firebase deploy --public dist/hva --project status-hva-dev",
-    "deploy:tst": "npm run build:uva:tst && npm run build:hva:tst && firebase deploy --public dist/uva --project status-uva-tst && firebase deploy --public dist/hva --project status-hva-tst",
-    "deploy:acc": "npm run build:uva:acc && npm run build:hva:acc && firebase deploy --public dist/uva --project status-uva-acc && firebase deploy --public dist/hva --project status-hva-acc",
-    "deploy:prd": "npm run build:uva:prd && npm run build:hva:prd && firebase deploy --public dist/uva --project status-uva-prd && firebase deploy --public dist/hva --project status-hva-prd",
+    "deploy:uva:dev": "npm run build:uva:dev && firebase deploy --public dist/uva --project status-uva-dev",
+    "deploy:uva:tst": "npm run build:uva:tst && firebase deploy --public dist/uva --project status-uva-tst",
+    "deploy:uva:acc": "npm run build:uva:acc && firebase deploy --public dist/uva --project status-uva-acc",
+    "deploy:uva:prd": "npm run build:uva:prd && firebase deploy --public dist/uva --project status-uva-prd",
+    "deploy:hva:dev": "npm run build:hva:dev && firebase deploy --public dist/hva --project status-hva-dev",
+    "deploy:hva:tst": "npm run build:hva:tst && firebase deploy --public dist/hva --project status-hva-tst",
+    "deploy:hva:acc": "npm run build:hva:acc && firebase deploy --public dist/hva --project status-hva-acc",
+    "deploy:hva:prd": "npm run build:hva:prd && firebase deploy --public dist/hva --project status-hva-prd",
+    "deploy:dev": "npm run deploy:uva:dev && npm run deploy:hva:dev",
+    "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
+    "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
+    "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd",
     ...
   }        
 }
 ```
 
-With **script-launcher** you have the benefits of using variables, script references and many more functions, so you can make the above example easier to maintain:
+With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
 {
   "scripts": {
     ...
-    "build:$project:$config": "ng build $project --configuration=$config",
+    "build:$project:$config": "ng build $project --prod --configuration=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
       "firebase deploy --public dist/$project --project $project-$config"
@@ -56,7 +64,7 @@ With **script-launcher** you have the benefits of using variables, script refere
   }
 }
 ```
-You would use: `npm start build:uva:tst` or `npm start deploy:prd` etc, to start the above example.
+To start this example you would use: `npm start build:uva:tst` or `npm start deploy:prd` etc.
 
 It's also possible to extend the example with an interactive menu, so a new developer can get start on your project more easily:
 ``` JSON
@@ -79,7 +87,7 @@ It's also possible to extend the example with an interactive menu, so a new deve
     }
   }
 ```
-To start the above example you would run: `npm start`
+You would use: `npm start` to start the menu.
 
 # Table of Contents
 * [Installation](#installation)
@@ -106,12 +114,12 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create an example **launcher-config.json** file.
+Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json**file.
 ``` bash
 "node_modules/.bin/launch" init
 ```
 
-Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, the name of the custom script is then used as the launch script.
+Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, the name of the custom script is then used as the launch script to start.
 ``` json
 {
     ...
@@ -122,7 +130,7 @@ Change your **package.json** start script, so it will start script launcher. If 
     ...
 }
 ```
-You are now ready to start use Script Launcher.
+You are now ready to start use Script Launcher, by running `npm start <<launch script name>>` as described in the examples below.
 
 ## Usage examples
 
@@ -142,7 +150,7 @@ Basically you can now use `npm start` instead of `npm run`.
 To test an example, copy the json content from the example to the file named **launcher-config.json** and run the script.
 
 ### Sequential scripts
-This example uses square brackets to start multiple script one by one. This function makes long script lines more readable.
+This example uses square brackets to start multiple script one by one. This feature makes long script lines more readable.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -173,7 +181,7 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Parameters and functions
-Use the dollar-sign in the script name and command, to specify script function parameter. This function makes it possible to start one script with different parameters, this works on Mac, Linux and Windows in the same way.
+Use the dollar-sign in the script name and command, to specify script function parameter. This feature makes it possible to start one script with different parameters, this works on Mac, Linux and Windows in the same way.
 
 Run `npm start serve:uva:tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
@@ -185,7 +193,7 @@ Run `npm start serve:uva:tst` or `npm start serve:hva:prd` etc, to use this exam
 ```
 
 ### Reference scripts
-Use an existing script name in the command section to execute another script in your config file. This function makes it possible to reuse script from other script, with different arguments if desired.
+Use an existing script name in the command section to execute another script in your config file. This feature makes it possible to reuse script from other script, with different arguments if desired.
 
 Run `npm start deploy:tst` to use this example.
 ``` JSON
@@ -255,7 +263,7 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 ```
 
 ### Concurrent scripts
-This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This function is mostly confinent in development environment, when you want to start development server in the background.
+This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
