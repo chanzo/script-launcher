@@ -61,6 +61,8 @@
     "deploy:$config": [
       "deploy:uva:$config",
       "deploy:hva:$config"
-    ]
+    ],
+    "data1:$a": "echo data1 $a",
+    "data2:$b": "echo data2 $b"
   }
 }

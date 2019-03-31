@@ -98,7 +98,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
 
   if (!isMenuObject(command)) {
     return {
-      name: choice.join(':'),
+      name: 'menu:' + choice.join(':'),
       parameters: {},
       arguments: [],
       script: command as IScript,
