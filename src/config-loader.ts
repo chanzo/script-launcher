@@ -65,13 +65,12 @@ export class Config {
         sequential: [],
         concurrent: [
           'echo Start development server',
-          'echo ng serve',
+          'serve:',
         ],
       },
       'serve:$config': 'echo ng serve --configuration=$config',
       'build:$config': 'echo ng build --configuration=$config',
-      'build:dev': 'echo ng build',
-      'build:prd': 'echo ng build --configuration=production --prod',
+      'build:dev': 'build:',
     },
     options: {
     } as IOptions,
@@ -84,13 +83,13 @@ export class Config {
         description: 'environment',
         development: 'serve:dev',
         acceptance: 'serve:acc',
-        production: 'serve:prd',
+        production: 'serve:production',
       },
       build: {
         description: 'environment',
         development: 'build:dev',
         acceptance: 'build:acc',
-        production: 'build:prd',
+        production: 'build:production',
       },
     },
     options: {

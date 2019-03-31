@@ -28,11 +28,13 @@ export class Process {
 
   private static showOutputData(childProcess: ChildProcess): void {
     childProcess.stdout.on('data', (data) => {
-      Logger.log(Colors.Dim + Colors.Italic + (data.toString() as string).trim() + Colors.Normal);
+      const content = (data.toString() as string).trim();
+      if (content) Logger.log(Colors.Dim + Colors.Italic + content + Colors.Normal);
     });
 
     childProcess.stderr.on('data', (data) => {
-      Logger.log(Colors.Red + Colors.Italic + (data.toString() as string).trim() + Colors.Normal);
+      const content = (data.toString() as string).trim();
+      if (content) Logger.log(Colors.Red + Colors.Italic + content + Colors.Normal);
     });
   }
 
