@@ -256,7 +256,7 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
       "echo Arguments 2: $2",
       "echo All arguments: $*",
       "echo -------------------------------------------------------",
-      "myFunc:$myParam1:funcParam funcArg"
+      "myFunc:$myParam1:funcParam funcArg $1"
     ]
   }
 }
