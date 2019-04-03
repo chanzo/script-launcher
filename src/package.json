@@ -1,7 +1,7 @@
 {
   "name": "script-launcher",
   "version": "1.0.10",
-  "description": "Script Launcher",
+  "description": "Enhances you package.json scripts with arrays, functions and many more.",
   "main": "launch.js",
   "keywords": [
     "script",
@@ -10,6 +10,7 @@
     "windows",
     "concurrent",
     "parallel",
+    "array",
     "menu",
     "multiple",
     "command"
