@@ -9,11 +9,11 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     parameters: {},
-    arguments: [],
+    arguments: args,
     script: config.options.menu.defaultScript,
   };
 
-  const executor = new Executor(config.options.script.shell, args, process.env, config.scripts);
+  const executor = new Executor(config.options.script.shell, process.env, config.scripts);
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
