@@ -13,11 +13,12 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. Its features are specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. You can use features like functions, arrays, concurrent script and many more. Script Launcher is specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
 ```JSON
+// Traditional package.json scripts //
 {
   "scripts": {
     ...
@@ -48,6 +49,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
+// Example using script launcher //
 {
   "scripts": {
     ...
@@ -213,7 +215,7 @@ Run `npm start deploy:tst` to use this example.
 ```
 
 ### Environment and command line argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner.
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables.
 
 Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ``` JSON
@@ -336,7 +338,7 @@ The launcher **options** can be used the customize the default behavior of scrip
 ### Launcher files
 The **files** options can be used to configure the config files to load when starting launcher. When using multiple files they will be merged together in the loading order. Be aware the `launcher-config.json` is always the first file being loaded even when it is not present in the files list.
 
-By using this option it's possible the split your configuration over multiple files. A could practice is to split your script and menu configurations to there own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
+By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
 ``` JSON
@@ -375,8 +377,8 @@ The default value is presented in the following example:
 }
 ```
 
-### Debug logging
-The **logLevel** option is used for debugging script launcher itself.
+### Logging
+The **logLevel** option is used for configuring the script launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
 
 The default value is presented in the following example:
 ``` JSON
