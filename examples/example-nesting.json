@@ -62,7 +62,13 @@
       "deploy:uva:$config",
       "deploy:hva:$config"
     ],
-    "data1:$a": "echo data1 $a",
-    "data2:$b": "echo data2 $b"
+    "arg0": [
+      "echo arg0: $*"
+    ],
+    "arg1": [
+      "echo arg1: $*",
+      "echo arg1: $0 $1 $2 $3 $4",
+      "arg0"
+    ]
   }
 }

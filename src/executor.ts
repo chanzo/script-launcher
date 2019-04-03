@@ -99,13 +99,11 @@ export class Executor {
   }
 
   private readonly shell: boolean | string;
-  private readonly args: string[];
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
 
-  public constructor(shell: boolean | string, args: string[], environment: { [name: string]: string }, scripts: Scripts) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
     this.shell = shell;
-    this.args = args;
     this.environment = environment;
     this.scripts = scripts;
   }
@@ -192,8 +190,6 @@ export class Executor {
   private expandTasks(parent: string, tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
-    args = [this.args[0], ...args, ...[...this.args].slice(1)];
-
     for (let task of tasks) {
       task = Executor.expandArguments(task, args);
       task = Executor.expandEnvironment(task, environment);
@@ -202,6 +198,8 @@ export class Executor {
       const script = Scripts.select(scripts, parent);
 
       if (script) {
+        script.arguments = [script.name, ...script.arguments];
+
         result.push(this.expand(script));
       } else {
         result.push(task);

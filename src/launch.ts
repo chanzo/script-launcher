@@ -76,10 +76,12 @@ async function main(): Promise<void> {
 
     commandArgs[0] = Scripts.parse(launchCommand).command;
 
+    scriptInfo.arguments = commandArgs;
+
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, commandArgs, process.env, config.scripts);
+    const executor = new Executor(shell, process.env, config.scripts);
 
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
