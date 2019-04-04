@@ -6,9 +6,17 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { stringify, Colors } from './common';
+import { parseArgs, stringify, Colors } from './common';
 import { Scripts } from './scripts';
-import * as stringArgv from 'string-argv';
+
+interface IArgs {
+  init: boolean;
+  menu: boolean;
+  interactive: boolean;
+  logLevel: number;
+  config: string;
+
+}
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -30,25 +38,8 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   }
 
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
-}
 
-function parseArgs(argv: string[]): any {
-  const result = {};
-
-  for (const arg of argv) {
-    const columns = arg.split('=', 2);
-    const name = columns[0].replace(/^--/, '');
-
-    if (columns.length > 1) {
-      result[name] = stringArgv(columns[1]);
-
-    } else {
-      result[name] = true;
-    }
-
-  }
-
-  return result;
+  console.log('Created file: ' + fileName);
 }
 
 async function main(): Promise<void> {
@@ -56,38 +47,43 @@ async function main(): Promise<void> {
 
   try {
     const config = Config.load();
+    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
+    const launchArgs = parseArgs<IArgs>(process.argv.slice(2, process.argv.length - commandArgs.length), {
+      logLevel: config.options.logLevel,
+      init: false,
+      menu: false,
+      interactive: false,
+      config: null,
+    });
 
-    Logger.level = config.options.logLevel;
+    Logger.level = launchArgs.logLevel;
+
+    if (launchArgs.config) {
+      //
+    }
 
     Logger.debug('Config: ', stringify(config));
 
     showLoadedFiles(config.options.files);
 
-    const lifecycleEvent = process.env.npm_lifecycle_event;
-    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const launchArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
-    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
-    const interactive = `${launchArgs}` === 'interactive';
-
-    const args = parseArgs(process.argv.slice(2, process.argv.length - commandArgs.length));
-
-    console.log('arguments: ', args);
-
-    if (`${launchArgs}` === 'init') {
+    if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
       return;
     }
+
+    const lifecycleEvent = process.env.npm_lifecycle_event;
+    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
     Logger.info('Launch arguments  :', launchArgs);
 
-    if (launchCommand === undefined || `${launchArgs}` === 'menu') {
+    if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
-      exitCode = await launchMenu(config, commandArgs, interactive);
+      exitCode = await launchMenu(config, commandArgs, launchArgs.interactive);
       return;
     }
 
