@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Enhances you package.json scripts with arrays, functions and many more.",
   "main": "launch.js",
   "keywords": [
