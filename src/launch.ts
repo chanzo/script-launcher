@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { stringify, Colors } from './common';
 import { Scripts } from './scripts';
+import * as stringArgv from 'string-argv';
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -31,6 +32,25 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
 }
 
+function parseArgs(argv: string[]): any {
+  const result = {};
+
+  for (const arg of argv) {
+    const columns = arg.split('=', 2);
+    const name = columns[0].replace(/^--/, '');
+
+    if (columns.length > 1) {
+      result[name] = stringArgv(columns[1]);
+
+    } else {
+      result[name] = true;
+    }
+
+  }
+
+  return result;
+}
+
 async function main(): Promise<void> {
   let exitCode = 1;
 
@@ -48,6 +68,10 @@ async function main(): Promise<void> {
     const launchArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
     const interactive = `${launchArgs}` === 'interactive';
+
+    const args = parseArgs(process.argv.slice(2, process.argv.length - commandArgs.length));
+
+    console.log('arguments: ', args);
 
     if (`${launchArgs}` === 'init') {
       createExampleFile('launcher-config.json', Config.initConfig);
