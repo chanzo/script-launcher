@@ -46,7 +46,7 @@ async function main(): Promise<void> {
   let exitCode = 1;
 
   try {
-    const config = Config.load();
+    let config = Config.load();
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
     const launchArgs = parseArgs<IArgs>(process.argv.slice(2, process.argv.length - commandArgs.length), {
       logLevel: config.options.logLevel,
@@ -58,9 +58,7 @@ async function main(): Promise<void> {
 
     Logger.level = launchArgs.logLevel;
 
-    if (launchArgs.config) {
-      //
-    }
+    if (launchArgs.config) config = config.merge(launchArgs.config);
 
     Logger.debug('Config: ', stringify(config));
 
