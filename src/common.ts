@@ -35,38 +35,41 @@ export function stringify(json): string {
 }
 
 export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null = null): T {
+  const result: T = {} as T;
 
-  try {
-    const result: T = {} as T;
+  defaultData = defaultData instanceof Function ? defaultData() : defaultData;
 
-    for (const arg of argv) {
-      const columns = arg.split('=', 2);
-      const name = columns[0].replace(/^--/, '');
-      let value: string | boolean | number = true;
+  const validArguments = Object.keys(defaultData);
 
-      if (columns.length > 1) {
-        value = Number.parseInt(columns[1], 10);
+  for (const arg of argv) {
+    const columns = arg.split('=', 2);
+    const name = columns[0].replace(/^--/, '');
+    let value: string | boolean | number = true;
 
-        if (isNaN(value)) value = columns[1];
-      }
+    if (columns.length > 1) {
+      if (name === columns[0]) throw new Error('Unexpected value for command (\"' + name + '\") use option syntax instead (\"--' + name + '=' + columns[1] + '\").');
 
-      result[name] = value;
+      if (!validArguments.includes(name)) throw new Error('The specified option (\"--' + name + '\") is invalid.');
+
+      value = Number.parseInt(columns[1], 10);
+
+      if (isNaN(value)) value = columns[1];
+    } else {
+      if (!validArguments.includes(name)) throw new Error('The specified command (\"' + name + '\") is invalid.');
     }
 
-    if (result !== null) {
-
-      if (defaultData === null) return result;
-      if (defaultData instanceof Function) return result;
-      if (typeof defaultData === 'string') return result;
-      if (defaultData instanceof String) return result;
-
-      return deepmerge(defaultData, result);
-    }
-  } catch {
-    // return the default value
+    result[name] = value;
   }
 
-  if (defaultData instanceof Function) return defaultData();
+  if (result !== null) {
+
+    if (defaultData === null) return result;
+    if (defaultData instanceof Function) return result;
+    if (typeof defaultData === 'string') return result;
+    if (defaultData instanceof String) return result;
+
+    return deepmerge(defaultData, result);
+  }
 
   return defaultData;
 }

@@ -11,6 +11,7 @@ import { Scripts } from './scripts';
 
 interface IArgs {
   init: boolean;
+  help: boolean;
   menu: boolean;
   interactive: boolean;
   logLevel: number;
@@ -42,6 +43,33 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   console.log('Created file: ' + fileName);
 }
 
+function showHelp() {
+  const args = {
+    'Commands:': '',
+    'init': 'create starter config files.',
+    'help': 'show this help.',
+    'menu': 'show interactive menu.',
+    'interactive': 'force to show menu the by ignoring the options value of defaultScript.',
+    'Options:': '',
+    'logLevel=': 'set log level.',
+    'config=': 'merge in an extra config file.',
+  };
+
+  console.log('Usage: launch [command] [options...]');
+
+  for (const [arg, description] of Object.entries(args)) {
+    let value = arg.padEnd(12, ' ');
+
+    if (description) {
+      value = Colors.Cyan + value + Colors.Normal;
+    } else {
+      console.log();
+    }
+
+    console.log(value + ' ' + description);
+  }
+}
+
 async function main(): Promise<void> {
   let exitCode = 1;
 
@@ -51,6 +79,7 @@ async function main(): Promise<void> {
     const launchArgs = parseArgs<IArgs>(process.argv.slice(2, process.argv.length - commandArgs.length), {
       logLevel: config.options.logLevel,
       init: false,
+      help: false,
       menu: false,
       interactive: false,
       config: null,
@@ -64,9 +93,18 @@ async function main(): Promise<void> {
 
     showLoadedFiles(config.options.files);
 
+    if (launchArgs.help) {
+      showHelp();
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
+
     if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
+      Logger.log();
+      exitCode = 0;
       return;
     }
 

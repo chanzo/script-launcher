@@ -111,7 +111,7 @@ export class Config {
 
       for (const file of files) {
         if (file && !hash.has(file)) {
-          config = config.merge(file);
+          if (existsSync(resolve(file))) config = config.merge(file);
 
           hash.add(file);
 
@@ -120,8 +120,6 @@ export class Config {
       }
       files = config.options.files;
     } while (loaded > 0);
-
-    Config.verifyScriptNames(config.scripts.scripts);
 
     return config;
   }
@@ -159,12 +157,15 @@ export class Config {
   }
 
   public merge(file: string): Config {
+    const absolutePath = resolve(file);
     const current: IConfig = {
       menu: this.menu,
       options: this.options,
       scripts: this.scripts.scripts,
     };
-    const config = deepmerge<IConfig>(current, Config.loadConfig(file));
+    const config = deepmerge<IConfig>(current, require(absolutePath));
+
+    Config.verifyScriptNames(config.scripts);
 
     return new Config(config);
   }
