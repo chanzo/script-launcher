@@ -102,7 +102,7 @@ export class Config {
 
   public static load(): Config {
     const hash = new Set<string>();
-    let config = Config.default;
+    let config = new Config(Config.default);
     let files = Config.default.options.files;
     let loaded: number;
 
@@ -111,7 +111,7 @@ export class Config {
 
       for (const file of files) {
         if (file && !hash.has(file)) {
-          config = deepmerge<IConfig>(config, Config.loadConfig(file));
+          if (existsSync(resolve(file))) config = config.merge(file);
 
           hash.add(file);
 
@@ -121,9 +121,7 @@ export class Config {
       files = config.options.files;
     } while (loaded > 0);
 
-    Config.verifyScriptNames(config.scripts);
-
-    return new Config(config);
+    return config;
   }
 
   private static verifyScriptNames(scripts: IScripts) {
@@ -156,5 +154,19 @@ export class Config {
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
     this.options = config.options;
+  }
+
+  public merge(file: string): Config {
+    const absolutePath = resolve(file);
+    const current: IConfig = {
+      menu: this.menu,
+      options: this.options,
+      scripts: this.scripts.scripts,
+    };
+    const config = deepmerge<IConfig>(current, require(absolutePath));
+
+    Config.verifyScriptNames(config.scripts);
+
+    return new Config(config);
   }
 }

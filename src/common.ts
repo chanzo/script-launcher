@@ -1,3 +1,5 @@
+import deepmerge = require('deepmerge');
+
 export enum Colors {
   Red = '\x1b[31m',
   Green = '\x1b[32m',
@@ -30,4 +32,58 @@ export function stringify(json): string {
     }
     return cls + match + Colors.Normal;
   });
+}
+
+export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null = null): T {
+  const result: T = {} as T;
+
+  defaultData = defaultData instanceof Function ? defaultData() : defaultData;
+
+  const validArguments = Object.keys(defaultData);
+
+  for (const arg of argv) {
+    const columns = arg.split('=', 2);
+    const name = columns[0].replace(/^--/, '');
+    let value: string | boolean | number = true;
+
+    if (columns.length > 1) {
+      if (name === columns[0]) throw new Error('Unexpected value for command (\"' + name + '\") use option syntax instead (\"--' + name + '=' + columns[1] + '\").');
+
+      if (!validArguments.includes(name)) throw new Error('The specified option (\"--' + name + '\") is invalid.');
+
+      value = Number.parseInt(columns[1], 10);
+
+      if (isNaN(value)) value = columns[1];
+    } else {
+      if (!validArguments.includes(name)) throw new Error('The specified command (\"' + name + '\") is invalid.');
+    }
+
+    result[name] = value;
+  }
+
+  if (result !== null) {
+
+    if (defaultData === null) return result;
+    if (defaultData instanceof Function) return result;
+    if (typeof defaultData === 'string') return result;
+    if (defaultData instanceof String) return result;
+
+    return deepmerge(defaultData, result);
+  }
+
+  return defaultData;
+}
+
+export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: string | string[]; }): void {
+  console.log('Usage: ' + name + ' [command] [options...]');
+
+  for (const description of Object.values(descriptions)) {
+    if (Array.isArray(description)) {
+      for (const item of Object.values(description)) {
+        console.log(item);
+      }
+    } else {
+      console.log(description);
+    }
+  }
 }

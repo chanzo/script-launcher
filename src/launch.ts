@@ -6,8 +6,19 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { stringify, Colors } from './common';
+import { parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
+import { version } from './package.json';
+
+interface IArgs {
+  init: boolean;
+  help: boolean;
+  menu: boolean;
+  version: boolean;
+  interactive: boolean;
+  logLevel: number;
+  config: string;
+}
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -29,41 +40,91 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   }
 
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
+
+  console.log('Created file: ' + fileName);
+}
+
+function showHelp() {
+  showArgsHelp<IArgs>('launch', {
+    init: [
+      '',
+      'Commands:',
+      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
+    ],
+    help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
+    menu: '  ' + Colors.Cyan + 'menu         ' + Colors.Normal + 'Show interactive menu.',
+    version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
+    interactive: [
+      '',
+      'Options:',
+      '  ' + Colors.Cyan + 'interactive  ' + Colors.Normal + 'Force to show menu the by ignoring the options value of defaultScript.',
+    ],
+    logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
+    config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
+  });
+
 }
 
 async function main(): Promise<void> {
   let exitCode = 1;
 
   try {
-    const config = Config.load();
+    let config = Config.load();
+    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
+    const launchArgs = parseArgs<IArgs>(process.argv.slice(2, process.argv.length - commandArgs.length), {
+      logLevel: config.options.logLevel,
+      init: false,
+      help: false,
+      menu: false,
+      version: false,
+      interactive: false,
+      config: null,
+    });
 
-    Logger.level = config.options.logLevel;
+    Logger.level = launchArgs.logLevel;
+
+    if (launchArgs.config) config = config.merge(launchArgs.config);
 
     Logger.debug('Config: ', stringify(config));
 
-    showLoadedFiles(config.options.files);
+    showLoadedFiles([...config.options.files, launchArgs.config]);
 
-    const lifecycleEvent = process.env.npm_lifecycle_event;
-    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const launchArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
-    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
-    const interactive = `${launchArgs}` === 'interactive';
+    const a: Partial<IArgs> = {} as any;
 
-    if (`${launchArgs}` === 'init') {
-      createExampleFile('launcher-config.json', Config.initConfig);
-      createExampleFile('launcher-menu.json', Config.initMenu);
+    if (launchArgs.version) {
+      console.log(version);
+      Logger.log();
+      exitCode = 0;
       return;
     }
+
+    if (launchArgs.help) {
+      showHelp();
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
+
+    if (launchArgs.init) {
+      createExampleFile('launcher-config.json', Config.initConfig);
+      createExampleFile('launcher-menu.json', Config.initMenu);
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
+
+    const lifecycleEvent = process.env.npm_lifecycle_event;
+    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
     Logger.info('Launch arguments  :', launchArgs);
 
-    if (launchCommand === undefined || `${launchArgs}` === 'menu') {
+    if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
-      exitCode = await launchMenu(config, commandArgs, interactive);
+      exitCode = await launchMenu(config, commandArgs, launchArgs.interactive);
       return;
     }
 
