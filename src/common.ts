@@ -73,3 +73,17 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
 
   return defaultData;
 }
+
+export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: string | string[]; }): void {
+  console.log('Usage: ' + name + ' [command] [options...]');
+
+  for (const description of Object.values(descriptions)) {
+    if (Array.isArray(description)) {
+      for (const item of Object.values(description)) {
+        console.log(item);
+      }
+    } else {
+      console.log(description);
+    }
+  }
+}

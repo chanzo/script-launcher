@@ -6,17 +6,18 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseArgs, stringify, Colors } from './common';
+import { parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
+import { version } from './package.json';
 
 interface IArgs {
   init: boolean;
   help: boolean;
   menu: boolean;
+  version: boolean;
   interactive: boolean;
   logLevel: number;
   config: string;
-
 }
 
 function showLoadedFiles(files: string[]) {
@@ -44,30 +45,24 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
 }
 
 function showHelp() {
-  const args = {
-    'Commands:': '',
-    'init': 'create starter config files.',
-    'help': 'show this help.',
-    'menu': 'show interactive menu.',
-    'interactive': 'force to show menu the by ignoring the options value of defaultScript.',
-    'Options:': '',
-    'logLevel=': 'set log level.',
-    'config=': 'merge in an extra config file.',
-  };
+  showArgsHelp<IArgs>('launch', {
+    init: [
+      '',
+      'Commands:',
+      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
+    ],
+    help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
+    menu: '  ' + Colors.Cyan + 'menu         ' + Colors.Normal + 'Show interactive menu.',
+    version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
+    interactive: [
+      '',
+      'Options:',
+      '  ' + Colors.Cyan + 'interactive  ' + Colors.Normal + 'Force to show menu the by ignoring the options value of defaultScript.',
+    ],
+    logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
+    config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
+  });
 
-  console.log('Usage: launch [command] [options...]');
-
-  for (const [arg, description] of Object.entries(args)) {
-    let value = arg.padEnd(12, ' ');
-
-    if (description) {
-      value = Colors.Cyan + value + Colors.Normal;
-    } else {
-      console.log();
-    }
-
-    console.log(value + ' ' + description);
-  }
 }
 
 async function main(): Promise<void> {
@@ -81,6 +76,7 @@ async function main(): Promise<void> {
       init: false,
       help: false,
       menu: false,
+      version: false,
       interactive: false,
       config: null,
     });
@@ -92,6 +88,15 @@ async function main(): Promise<void> {
     Logger.debug('Config: ', stringify(config));
 
     showLoadedFiles(config.options.files);
+
+    const a: Partial<IArgs> = {} as any;
+
+    if (launchArgs.version) {
+      console.log(version);
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
 
     if (launchArgs.help) {
       showHelp();

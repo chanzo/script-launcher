@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "(cd .. && npm --silent start lint) && ../node_modules/.bin/ts-node ../src/launch.ts  --config='custom.json' --logLevel=2"
+    "start": "(cd .. && npm --silent start lint) && ../node_modules/.bin/ts-node ../src/launch.ts  help  --logLevel=0"
   },
   "author": "Bas Heerschop",
   "license": "MIT"
