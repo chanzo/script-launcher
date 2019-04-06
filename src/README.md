@@ -103,6 +103,7 @@ You would use: `npm start` to start the menu.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
+* [Launcher arguments](#launcher-arguments)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
@@ -330,6 +331,12 @@ Run `npm start` to use this example.
     }
   }
 }
+```
+
+## Launcher arguments
+Use the help for a list of available options.
+``` bash
+"node_modules/.bin/launch" help
 ```
 
 ## Launcher options
