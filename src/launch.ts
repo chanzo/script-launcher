@@ -87,7 +87,7 @@ async function main(): Promise<void> {
 
     Logger.debug('Config: ', stringify(config));
 
-    showLoadedFiles(config.options.files);
+    showLoadedFiles([...config.options.files, launchArgs.config]);
 
     const a: Partial<IArgs> = {} as any;
 
