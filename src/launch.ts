@@ -6,7 +6,7 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
 import { version } from './package.json';
 
@@ -18,6 +18,7 @@ interface IArgs {
   interactive: boolean;
   logLevel: number;
   config: string;
+  ansi: boolean;
 }
 
 function showLoadedFiles(files: string[]) {
@@ -61,8 +62,21 @@ function showHelp() {
     ],
     logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
+    ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
   });
+}
 
+function disableAnsiColors() {
+  for (const key of Object.keys(Colors)) {
+    (Colors as any)[key] = '';
+  }
+}
+
+function setLauncherEnviromentValues() {
+  for (const [key, value] of Object.entries(Colors)) {
+    process.env['LAUNCH_' + key.toUpperCase()] = value;
+  }
+  process.env.LAUNCH_START = getCurrentTime();
 }
 
 async function main(): Promise<void> {
@@ -71,7 +85,8 @@ async function main(): Promise<void> {
   try {
     let config = Config.load();
     const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const launchArgs = parseArgs<IArgs>(process.argv.slice(2, process.argv.length - commandArgs.length), {
+    const argsString = process.argv.slice(2, process.argv.length - commandArgs.length);
+    const launchArgs = parseArgs<IArgs>(argsString, {
       logLevel: config.options.logLevel,
       init: false,
       help: false,
@@ -79,17 +94,20 @@ async function main(): Promise<void> {
       version: false,
       interactive: false,
       config: null,
+      ansi: true,
     });
 
     Logger.level = launchArgs.logLevel;
 
     if (launchArgs.config) config = config.merge(launchArgs.config);
 
+    if (!launchArgs.ansi) disableAnsiColors();
+
+    setLauncherEnviromentValues();
+
     Logger.debug('Config: ', stringify(config));
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
-
-    const a: Partial<IArgs> = {} as any;
 
     if (launchArgs.version) {
       console.log(version);
@@ -116,10 +134,15 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
-    Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
+    Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
-    Logger.info('Launch arguments  :', launchArgs);
+
+    if (Logger.level > 1) {
+      Logger.info('Launch arguments  :', launchArgs);
+    } else {
+      Logger.info('Launch arguments  :', argsString);
+    }
 
     if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
