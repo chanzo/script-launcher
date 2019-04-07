@@ -103,6 +103,7 @@ You would use: `npm start` to start the menu.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
+* [Launcher environment values](#launcher-environment-values)
 * [Launcher arguments](#launcher-arguments)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -332,6 +333,21 @@ Run `npm start` to use this example.
   }
 }
 ```
+
+## Launcher environment values
+* LAUNCH_START
+* LAUNCH_CURRENT
+* LAUNCH_ELAPSED
+* LAUNCH_BLUE
+* LAUNCH_BOLD
+* LAUNCH_CYAN
+* LAUNCH_DIM
+* LAUNCH_GREEN
+* LAUNCH_ITALIC
+* LAUNCH_NORMAL
+* LAUNCH_ORANGE
+* LAUNCH_RED
+* LAUNCH_YELLOW
 
 ## Launcher arguments
 Use the help for a list of available options.

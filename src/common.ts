@@ -54,6 +54,8 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
       value = Number.parseInt(columns[1], 10);
 
       if (isNaN(value)) value = columns[1];
+
+      if (columns[1] === 'true' || columns[1] === 'false') value = columns[1] === 'true';
     } else {
       if (!validArguments.includes(name)) throw new Error('The specified command (\"' + name + '\") is invalid.');
     }
@@ -86,4 +88,8 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
       console.log(description);
     }
   }
+}
+
+export function getCurrentTime(): string {
+  return new Date(Date.now() + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
 }
