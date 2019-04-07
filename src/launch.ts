@@ -62,7 +62,7 @@ function showHelp() {
     ],
     logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
-    ansi: '  ' + Colors.Cyan + 'ansi=      ' + Colors.Normal + 'Enable or disable ansi color output.',
+    ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
   });
 }
 
