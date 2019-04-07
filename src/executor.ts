@@ -5,7 +5,7 @@ import * as stringArgv from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { stringify, Colors } from './common';
+import { getCurrentTime, stringify, Colors } from './common';
 
 interface ITasks {
   concurrent: Array<ITasks | string>;
@@ -153,6 +153,7 @@ export class Executor {
 
   private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<IProcesses> {
     const processes: IProcesses = [];
+    const milliseconds = (new Date(options.env.LAUNCH_START)).getTime();
 
     for (const task of tasks) {
 
@@ -162,12 +163,15 @@ export class Executor {
         options = info.options;
 
         if (info.command) {
-          const command = Executor.expandEnvironment(info.command, info.options.env, true);
+          options.env.LAUNCH_CURRENT = getCurrentTime();
+          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') + ' ms';
 
-          Logger.log(Colors.Bold + 'Date            : ' + new Date().toISOString() + Colors.Normal);
+          const command = Executor.expandEnvironment(info.command, options.env, true);
+
+          Logger.log(Colors.Bold + 'Date            : ' + options.env.LAUNCH_CURRENT + Colors.Normal);
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
-          const process = Process.spawn(command, info.args, info.options);
+          const process = Process.spawn(command, info.args, options);
 
           processes.push(process);
 
