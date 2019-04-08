@@ -63,7 +63,18 @@
       "deploy:hva:$config"
     ],
     "arg0": [
-      "echo arg0: $*"
+      "echo arg0: $*",
+      "echo LAUNCH_START=$LAUNCH_START",
+      "echo LAUNCH_CURRENT=$LAUNCH_BOLD$LAUNCH_CURRENT$LAUNCH_NORMAL",
+      "sleep 0.500",
+      "echo LAUNCH_ELAPSED=$LAUNCH_BOLD$LAUNCH_ELAPSED$LAUNCH_NORMAL",
+      "sleep 0.500",
+      "echo LAUNCH_ELAPSED=$LAUNCH_BOLD$LAUNCH_ELAPSED$LAUNCH_NORMAL",
+      "sleep 0.500",
+      "echo LAUNCH_ELAPSED=$LAUNCH_BOLD$LAUNCH_ELAPSED$LAUNCH_NORMAL",
+      "sleep 0.500",
+      "echo LAUNCH_ELAPSED=$LAUNCH_BOLD$LAUNCH_ELAPSED$LAUNCH_NORMAL",
+      "set"
     ],
     "arg1": [
       "echo arg1: $*",

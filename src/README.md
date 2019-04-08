@@ -13,7 +13,7 @@
 
 # Script Launcher
 
-Script Launcher is a tool, to manage your **package.json** scripts in a more flexible manner. You can use features like functions, arrays, concurrent script and many more. Script Launcher is specialized to work on Mac, Linux and Windows. You can use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Extend your **package.json** scripts with features like: functions, arrays, concurrency and many more. Script Launcher is specialized to work on Mac, Linux and Windows. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
@@ -103,6 +103,8 @@ You would use: `npm start` to start the menu.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Interactive menu](#interactive-menu)
+* [Launcher environment values](#launcher-environment-values)
+* [Launcher arguments](#launcher-arguments)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
@@ -330,6 +332,27 @@ Run `npm start` to use this example.
     }
   }
 }
+```
+
+## Launcher environment values
+* LAUNCH_START
+* LAUNCH_CURRENT
+* LAUNCH_ELAPSED
+* LAUNCH_BLUE
+* LAUNCH_BOLD
+* LAUNCH_CYAN
+* LAUNCH_DIM
+* LAUNCH_GREEN
+* LAUNCH_ITALIC
+* LAUNCH_NORMAL
+* LAUNCH_ORANGE
+* LAUNCH_RED
+* LAUNCH_YELLOW
+
+## Launcher arguments
+Use the help for a list of available options.
+``` bash
+"node_modules/.bin/launch" help
 ```
 
 ## Launcher options

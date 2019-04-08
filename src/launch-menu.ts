@@ -76,7 +76,7 @@ async function saveChoiceMenu(): Promise<boolean> {
 }
 
 async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
-  const choices = Object.keys(menu).filter((item) => item !== 'description');
+  const choices = Object.entries(menu).filter(([name, value]) => name !== 'description' && Object.keys(value).length !== 0).map(([name, value]) => name);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 

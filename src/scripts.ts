@@ -71,7 +71,7 @@ export class Scripts {
     return parameters;
   }
 
-  private readonly scripts: IScripts;
+  public readonly scripts: IScripts;
 
   public constructor(scripts: IScripts) {
     this.scripts = scripts;

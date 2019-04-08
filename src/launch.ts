@@ -6,8 +6,20 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { stringify, Colors } from './common';
+import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
+import { version } from './package.json';
+
+interface IArgs {
+  init: boolean;
+  help: boolean;
+  menu: boolean;
+  version: boolean;
+  interactive: boolean;
+  logLevel: number;
+  config: string;
+  ansi: boolean;
+}
 
 function showLoadedFiles(files: string[]) {
   for (const file of files) {
@@ -29,41 +41,113 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   }
 
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
+
+  console.log('Created file: ' + fileName);
+}
+
+function showHelp() {
+  showArgsHelp<IArgs>('launch', {
+    init: [
+      '',
+      'Commands:',
+      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
+    ],
+    help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
+    menu: '  ' + Colors.Cyan + 'menu         ' + Colors.Normal + 'Show interactive menu.',
+    version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
+    interactive: [
+      '',
+      'Options:',
+      '  ' + Colors.Cyan + 'interactive  ' + Colors.Normal + 'Force to show menu the by ignoring the options value of defaultScript.',
+    ],
+    logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
+    config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
+    ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
+  });
+}
+
+function disableAnsiColors() {
+  for (const key of Object.keys(Colors)) {
+    (Colors as any)[key] = '';
+  }
+}
+
+function setLauncherEnviromentValues() {
+  for (const [key, value] of Object.entries(Colors)) {
+    process.env['LAUNCH_' + key.toUpperCase()] = value;
+  }
+  process.env.LAUNCH_START = getCurrentTime();
 }
 
 async function main(): Promise<void> {
   let exitCode = 1;
 
   try {
-    const config = Config.load();
+    let config = Config.load();
+    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
+    const argsString = process.argv.slice(2, process.argv.length - commandArgs.length);
+    const launchArgs = parseArgs<IArgs>(argsString, {
+      logLevel: config.options.logLevel,
+      init: false,
+      help: false,
+      menu: false,
+      version: false,
+      interactive: false,
+      config: null,
+      ansi: true,
+    });
 
-    Logger.level = config.options.logLevel;
+    Logger.level = launchArgs.logLevel;
+
+    if (launchArgs.config) config = config.merge(launchArgs.config);
+
+    if (!launchArgs.ansi) disableAnsiColors();
+
+    setLauncherEnviromentValues();
 
     Logger.debug('Config: ', stringify(config));
 
-    showLoadedFiles(config.options.files);
+    showLoadedFiles([...config.options.files, launchArgs.config]);
 
-    const lifecycleEvent = process.env.npm_lifecycle_event;
-    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const launchArgs = process.argv.slice(2, process.argv.length - commandArgs.length);
-    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
-    const interactive = `${launchArgs}` === 'interactive';
-
-    if (`${launchArgs}` === 'init') {
-      createExampleFile('launcher-config.json', Config.initConfig);
-      createExampleFile('launcher-menu.json', Config.initMenu);
+    if (launchArgs.version) {
+      console.log(version);
+      Logger.log();
+      exitCode = 0;
       return;
     }
 
-    Logger.info(Colors.Bold + 'Date              :', new Date().toISOString() + Colors.Normal);
+    if (launchArgs.help) {
+      showHelp();
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
+
+    if (launchArgs.init) {
+      createExampleFile('launcher-config.json', Config.initConfig);
+      createExampleFile('launcher-menu.json', Config.initMenu);
+      Logger.log();
+      exitCode = 0;
+      return;
+    }
+
+    const lifecycleEvent = process.env.npm_lifecycle_event;
+    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+
+    Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
-    Logger.info('Launch arguments  :', launchArgs);
 
-    if (launchCommand === undefined || `${launchArgs}` === 'menu') {
+    if (Logger.level > 1) {
+      Logger.info('Launch arguments  :', launchArgs);
+    } else {
+      Logger.info('Launch arguments  :', argsString);
+    }
+
+    if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
-      exitCode = await launchMenu(config, commandArgs, interactive);
+      exitCode = await launchMenu(config, commandArgs, launchArgs.interactive);
       return;
     }
 
