@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "bastiaan": "echo bastiaan asdfasf"
+    "debug": "echo bastiaan asdfasf"
   },
   "scripts2": {
     "sequential": {

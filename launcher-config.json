@@ -15,7 +15,7 @@
     ],
     "debug": [
       "lint",
-      "ts-node src/launch.ts --logLevel=2 --config=examples/launcher-config.json --ansi=true "
+      "ts-node src/launch.ts --config=debug/launcher-config.json debug"
     ]
   },
   "menu": {
