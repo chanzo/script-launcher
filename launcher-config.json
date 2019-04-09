@@ -13,14 +13,16 @@
       "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
     ],
-    "publish": [
-      "echo Not implemented."
+    "debug": [
+      "lint",
+      "ts-node src/launch.ts --logLevel=2 --config=examples/launcher-config.json --ansi=true "
     ]
   },
   "menu": {
     "description": "action",
-    "build package": "build",
-    "publish package": "publish",
-    "help": "echo Not implemented."
+    "build package": "build"
+  },
+  "options": {
+    "logLevel": "2"
   }
 }

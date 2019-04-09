@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "bastiaan": "echo bastiaan asdfasf"
+  },
   "scripts2": {
     "sequential": {
       "sequential": [

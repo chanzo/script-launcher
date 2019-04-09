@@ -97,6 +97,14 @@ async function main(): Promise<void> {
       ansi: true,
     });
 
+    console.log('----------------------------------------');
+    console.log('commandArgs: ', commandArgs);
+    console.log('argsString: ', argsString);
+    console.log('process.argv: ', process.argv);
+    console.log('process.argv.length - commandArgs.length: ', process.argv.length - commandArgs.length);
+
+    console.log('----------------------------------------');
+
     Logger.level = launchArgs.logLevel;
 
     if (launchArgs.config) config = config.merge(launchArgs.config);
@@ -105,9 +113,9 @@ async function main(): Promise<void> {
 
     setLauncherEnviromentValues();
 
-    Logger.debug('Config: ', stringify(config));
-
     showLoadedFiles([...config.options.files, launchArgs.config]);
+
+    Logger.debug('Config: ', stringify(config));
 
     if (launchArgs.version) {
       console.log(version);
