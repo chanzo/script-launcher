@@ -101,13 +101,15 @@ async function main(): Promise<void> {
 
     if (launchArgs.config) config = config.merge(launchArgs.config);
 
+    const shell = Config.evaluateShellOption(config.options.script.shell, true);
+
     if (!launchArgs.ansi) disableAnsiColors();
 
     setLauncherEnviromentValues();
 
-    Logger.debug('Config: ', stringify(config));
-
     showLoadedFiles([...config.options.files, launchArgs.config]);
+
+    Logger.debug('Config: ', stringify(config));
 
     if (launchArgs.version) {
       console.log(version);
@@ -135,10 +137,13 @@ async function main(): Promise<void> {
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
+    Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
+    Logger.debug('Process platform  :', process.platform);
+    Logger.debug('Script shell      :', shell);
 
-    if (Logger.level > 1) {
+    if (Logger.level > 2) {
       Logger.info('Launch arguments  :', launchArgs);
     } else {
       Logger.info('Launch arguments  :', argsString);
@@ -151,7 +156,6 @@ async function main(): Promise<void> {
       return;
     }
 
-    const shell = config.options.script.shell;
     const scripts = config.scripts.find(launchCommand);
 
     if (scripts.length === 0) throw new Error('Missing launch script: ' + launchCommand);

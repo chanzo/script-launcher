@@ -12,7 +12,7 @@ interface IOptions {
   logLevel: number;
   files: string[];
   script: {
-    shell: boolean | string;
+    shell: (boolean | string) | { [platform: string]: boolean | string };
   };
   menu: {
     defaultScript: IScript;
@@ -122,6 +122,17 @@ export class Config {
     } while (loaded > 0);
 
     return config;
+  }
+
+  public static evaluateShellOption(shellOption: (boolean | string) | { [platform: string]: boolean | string }, defaultOption: boolean | string): boolean | string {
+
+    if (typeof shellOption !== 'object') return shellOption;
+
+    const shell = shellOption[process.platform];
+
+    if (shell !== undefined) return shell;
+
+    return defaultOption;
   }
 
   private static verifyScriptNames(scripts: IScripts) {

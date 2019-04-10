@@ -4,7 +4,8 @@
   "description": "Script launcher repo root package.json, used mainly to execute build scripts. This package is not published to npm.",
   "main": "",
   "scripts": {
-    "start": "launch"
+    "start": "launch",
+    "postinstall": "cd debug && npm install"
   },
   "repository": {
     "type": "git",
