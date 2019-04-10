@@ -179,8 +179,13 @@ export class Executor {
         }
       } else {
         if (order === Order.sequential) {
-          processes.push(...await this.executeTasks(task.concurrent, options, Order.concurrent));
-          processes.push(...await this.executeTasks(task.sequential, options, Order.sequential));
+          const concurrentProcesses = await this.executeTasks(task.concurrent, options, Order.concurrent);
+          const sequentialProcesses = await this.executeTasks(task.sequential, options, Order.sequential);
+
+          processes.push(...concurrentProcesses);
+          processes.push(...sequentialProcesses);
+
+          await Executor.wait(concurrentProcesses);
         } else {
           processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
           processes.push(this.executeTasks(task.sequential, options, Order.sequential));

@@ -2,10 +2,19 @@
   "scripts": {
     "arg0": [
       "echo debug test 1",
+      "test",
       "echo debug test 2",
-      "echo Cuurent shell: $(readlink /proc/$$/exe)",
+      "echo Current shell: $(readlink /proc/$$/exe)",
       "arg1"
     ],
+    "test": {
+      "concurrent": [
+        "echo s1 && sleep 4",
+        "echo s2 && sleep 4",
+        "echo s3 && sleep 4",
+        "echo s4 && sleep 4"
+      ]
+    },
     "arg1": "echo debug arg1"
   },
   "menu": {
@@ -13,7 +22,7 @@
     "arg1": "arg1"
   },
   "options": {
-    "logLevel": 2,
+    "logLevel": 1,
     "script": {
       "shell": {
         "win32": "zsh",
