@@ -7,7 +7,7 @@ export class Process {
   public static spawn(command: string, args?: string[], options?: SpawnOptions): Process {
     if (Logger.level > 1 && options) {
       options = { ...options };
-      options.stdio = 'pipe';
+      options.stdio = ['inherit', 'pipe', 'pipe'];
     }
 
     const milliseconds = Date.now();
