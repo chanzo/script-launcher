@@ -12,8 +12,8 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
     arguments: args,
     script: config.options.menu.defaultScript,
   };
-
-  const executor = new Executor(config.options.script.shell, process.env, config.scripts);
+  const shell = Config.evaluateShellOption(config.options.script.shell, true);
+  const executor = new Executor(shell, process.env, config.scripts);
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');

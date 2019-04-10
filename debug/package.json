@@ -1,0 +1,14 @@
+{
+  "name": "script-launcher-debug",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "npm run --silent lint && ts-node ../src/launch.ts",
+    "lint": "(cd .. && npm --silent start lint)"
+  },
+  "author": "Bas Heerschop",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^8.0.3"
+  }
+}

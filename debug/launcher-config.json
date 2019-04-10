@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "arg0": [
+      "echo debug test 1",
+      "echo debug test 2",
+      "echo Cuurent shell: $(readlink /proc/$$/exe)",
+      "arg1"
+    ],
+    "arg1": "echo debug arg1"
+  },
+  "menu": {
+    "arg0": "arg0",
+    "arg1": "arg1"
+  },
+  "options": {
+    "logLevel": 2,
+    "script": {
+      "shell": {
+        "win32": "zsh",
+        "linux": "zsh"
+      }
+    }
+  }
+}
