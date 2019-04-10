@@ -97,14 +97,6 @@ async function main(): Promise<void> {
       ansi: true,
     });
 
-    console.log(''.padEnd(process.stdout.columns, '-'));
-    console.log('commandArgs: ', commandArgs);
-    console.log('argsString: ', argsString);
-    console.log('process.argv: ', process.argv);
-    console.log('process.argv.length - commandArgs.length: ', process.argv.length - commandArgs.length);
-
-    console.log(''.padEnd(process.stdout.columns, '-'));
-
     Logger.level = launchArgs.logLevel;
 
     if (launchArgs.config) config = config.merge(launchArgs.config);
