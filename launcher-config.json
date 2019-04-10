@@ -13,16 +13,13 @@
       "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
     ],
-    "debug": [
+    "debug:$script": [
       "lint",
-      "ts-node src/launch.ts --config=debug/launcher-config.json debug"
+      "ts-node src/launch.ts --logLevel=2 --config=debug/launcher-config.json arg0"
     ]
   },
   "menu": {
     "description": "action",
     "build package": "build"
-  },
-  "options": {
-    "logLevel": "2"
   }
 }

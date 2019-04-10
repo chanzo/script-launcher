@@ -97,13 +97,13 @@ async function main(): Promise<void> {
       ansi: true,
     });
 
-    console.log('----------------------------------------');
+    console.log(''.padEnd(process.stdout.columns, '-'));
     console.log('commandArgs: ', commandArgs);
     console.log('argsString: ', argsString);
     console.log('process.argv: ', process.argv);
     console.log('process.argv.length - commandArgs.length: ', process.argv.length - commandArgs.length);
 
-    console.log('----------------------------------------');
+    console.log(''.padEnd(process.stdout.columns, '-'));
 
     Logger.level = launchArgs.logLevel;
 
@@ -143,6 +143,7 @@ async function main(): Promise<void> {
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
+    Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
 

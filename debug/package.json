@@ -1,10 +1,9 @@
 {
-  "name": "script-launcher-examples",
+  "name": "script-launcher-debug",
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "(cd .. && npm --silent start lint) && ../node_modules/.bin/ts-node ../src/launch.ts  --logLevel=1 --ansi=true",
-    "bastiaan2": "../node_modules/.bin/ts-node ../src/launch.ts --logLevel=2"
+    "start": "../node_modules/.bin/ts-node ../src/launch.ts  --logLevel=2 --ansi=true"
   },
   "author": "Bas Heerschop",
   "license": "MIT"
