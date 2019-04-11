@@ -297,6 +297,7 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Inline script blocks
+Run `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
