@@ -102,6 +102,7 @@ You would use: `npm start` to start the menu.
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
+  * [Inline script blocks](#inline-script-blocks)
   * [Interactive menu](#interactive-menu)
 * [Launcher environment values](#launcher-environment-values)
 * [Launcher arguments](#launcher-arguments)
@@ -295,6 +296,10 @@ Run `npm start build-stuff` to use this example.
 }
 ```
 
+### Inline script blocks
+``` JSON
+```
+
 ### Interactive menu
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. Use `launch interactive` to ignore the `launcher-custom.json` file.
 
@@ -376,7 +381,7 @@ The default value of this list is presented in the following example:
 ```
 
 ### Script shell
-The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method. If you want to specify a shell for a specific platform, use one of the [platform names](https://nodejs.org/api/process.html#process_process_platform) as a nested object name.
+The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method. If you want to specify a shell for a specific platform, use one of the [platform names](https://nodejs.org/api/process.html#process_process_platform) as a nested object name. If there is no platform name match found the default will be used.
 
 Example shell option for specific platform
 ``` JSON
@@ -389,7 +394,8 @@ Example shell option for specific platform
       "linux":"bash",
       "openbsd":"bash",
       "sunos":"bash",
-      "win32":"cmd.exe"
+      "win32":"cmd.exe",
+      "default":"bash"
     }
   }
 }
