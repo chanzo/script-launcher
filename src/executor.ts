@@ -186,8 +186,12 @@ export class Executor {
         processes.push(sequentialProcesses);
 
         if (order === Order.sequential) {
-          await Executor.wait(await concurrentProcesses);
-          await Executor.wait(await sequentialProcesses);
+          let exitCode = 0;
+
+          exitCode += await Executor.wait(await concurrentProcesses);
+          exitCode += await Executor.wait(await sequentialProcesses);
+
+          if (exitCode > 0) break;
         }
       }
     }

@@ -1,58 +1,40 @@
 {
   "scripts": {
-    "arg0": [
-      "echo debug test 1",
-      {
-        "concurrent": [
-          "echo concurrent-1 && sleep 4",
-          "echo concurrent-2 && sleep 4",
-          [
-            "echo inline-1 && sleep 4",
-            "echo inline-2 && sleep 4",
-            "echo inline-3 && sleep 4"
-          ],
-          "echo concurrent-3 && sleep 4",
-          "echo concurrent-4 && sleep 4"
-        ]
-      },
-      [
-        "echo sequential-1 && sleep 4",
-        "echo sequential-2 && sleep 4",
-        "echo sequential-3 && sleep 4",
-        "echo sequential-4 && sleep 4"
-      ],
-      "echo debug test 2",
+    "debug-0": [
       "echo Current shell: $(readlink /proc/$$/exe)",
-      "arg1"
+      "echo debug-0 1",
+      "echo debug-0 2",
+      "debug-1"
     ],
     "concurrent": {
       "concurrent": [
-        "echo concurrent-1 && sleep 4",
-        "echo concurrent-2 && sleep 4",
-        "echo concurrent-3 && sleep 4",
-        "echo concurrent-4 && sleep 4"
+        "echo concurrent-1 && sleep 2",
+        "echo concurrent-2 && sleep 2",
+        "echo concurrent-3 && sleep 2",
+        "echo concurrent-4 && sleep 2"
       ]
     },
     "sequential": {
       "sequential": [
-        "echo sequential-1 && sleep 4",
-        "echo sequential-2 && sleep 4",
-        "echo sequential-3 && sleep 4",
-        "echo sequential-4 && sleep 4"
+        "echo sequential-1 && sleep 2",
+        "echo sequential-2 && sleep 2",
+        "echo sequential-3 && sleep 2",
+        "echo sequential-4 && sleep 2"
       ]
     },
-    "arg1": "echo debug arg1"
+    "debug-1": "echo debug-1"
   },
   "menu": {
-    "arg0": "arg0",
-    "arg1": "arg1"
+    "debug 0": "debug-0",
+    "debug 1": "debug-1"
   },
   "options": {
-    "logLevel": 3,
+    "logLevel": 1,
     "script": {
       "shell": {
-        "win32": "zsh",
-        "linux": "zsh"
+        "win32": "cmd.exe",
+        "linux": "zsh",
+        "default": "bash"
       }
     }
   }
