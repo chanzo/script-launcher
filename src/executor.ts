@@ -1,4 +1,4 @@
-import { IScriptInfo, IScriptTask, Scripts } from './scripts';
+import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { SpawnOptions } from 'child_process';
 import { Process } from './spawn-process';
 import * as stringArgv from 'string-argv';
@@ -65,6 +65,7 @@ export class Executor {
       return { command, args, options };
     }
 
+    // Test whether the command represents the assignment of an environment variable
     const match = command.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
 
     if (match !== null) {
@@ -132,8 +133,8 @@ export class Executor {
   }
 
   private expand(scriptInfo: IScriptInfo): ITasks {
-    const concurrent: string[] = [];
-    const sequential: string[] = [];
+    const concurrent: IScript[] = [];
+    const sequential: IScript[] = [];
     const script = scriptInfo.script;
 
     if (script instanceof Array) sequential.push(...script);
@@ -178,12 +179,19 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
+        const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
+        const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
+
+        processes.push(concurrentProcesses);
+        processes.push(sequentialProcesses);
+
         if (order === Order.sequential) {
-          processes.push(...await this.executeTasks(task.concurrent, options, Order.concurrent));
-          processes.push(...await this.executeTasks(task.sequential, options, Order.sequential));
-        } else {
-          processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
-          processes.push(this.executeTasks(task.sequential, options, Order.sequential));
+          let exitCode = 0;
+
+          exitCode += await Executor.wait(await concurrentProcesses);
+          exitCode += await Executor.wait(await sequentialProcesses);
+
+          if (exitCode > 0) break;
         }
       }
     }
@@ -191,22 +199,35 @@ export class Executor {
     return processes;
   }
 
-  private expandTasks(parent: string, tasks: string[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
+  private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
     for (let task of tasks) {
-      task = Executor.expandArguments(task, args);
-      task = Executor.expandEnvironment(task, environment);
+      if (typeof task === 'string') {
+        task = Executor.expandArguments(task, args);
+        task = Executor.expandEnvironment(task, environment);
 
-      const scripts = this.scripts.find(task);
-      const script = Scripts.select(scripts, parent);
+        const scripts = this.scripts.find(task);
+        const script = Scripts.select(scripts, parent);
 
-      if (script) {
+        if (script) {
+          script.arguments = [script.name, ...script.arguments];
+
+          result.push(this.expand(script));
+        } else {
+          result.push(task);
+        }
+      } else {
+        const script: IScriptInfo = {
+          name: 'inline-script-block',
+          parameters: {},
+          arguments: [],
+          script: task,
+        };
+
         script.arguments = [script.name, ...script.arguments];
 
         result.push(this.expand(script));
-      } else {
-        result.push(task);
       }
     }
 
