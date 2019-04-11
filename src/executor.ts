@@ -65,6 +65,7 @@ export class Executor {
       return { command, args, options };
     }
 
+    // Test whether the command represents the assignment of an environment variable
     const match = command.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
 
     if (match !== null) {
@@ -178,17 +179,15 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
+        const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
+        const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
+
+        processes.push(concurrentProcesses);
+        processes.push(sequentialProcesses);
+
         if (order === Order.sequential) {
-          const concurrentProcesses = await this.executeTasks(task.concurrent, options, Order.concurrent);
-          const sequentialProcesses = await this.executeTasks(task.sequential, options, Order.sequential);
-
-          processes.push(...concurrentProcesses);
-          processes.push(...sequentialProcesses);
-
-          await Executor.wait(concurrentProcesses);
-        } else {
-          processes.push(this.executeTasks(task.concurrent, options, Order.concurrent));
-          processes.push(this.executeTasks(task.sequential, options, Order.sequential));
+          await Executor.wait(await concurrentProcesses);
+          await Executor.wait(await sequentialProcesses);
         }
       }
     }
