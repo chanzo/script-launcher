@@ -1,8 +1,8 @@
 import * as stringArgv from 'string-argv';
 
 export interface IScriptTask {
-  concurrent: string[];
-  sequential: string[];
+  concurrent: IScript[];
+  sequential: IScript[];
 }
 
 export type IScript = string | string[] | IScriptTask;

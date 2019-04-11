@@ -2,8 +2,25 @@
   "scripts": {
     "arg0": [
       "echo debug test 1",
-      "concurrent",
-      "sequential",
+      {
+        "concurrent": [
+          "echo concurrent-1 && sleep 4",
+          "echo concurrent-2 && sleep 4",
+          [
+            "echo inline-1 && sleep 4",
+            "echo inline-2 && sleep 4",
+            "echo inline-3 && sleep 4"
+          ],
+          "echo concurrent-3 && sleep 4",
+          "echo concurrent-4 && sleep 4"
+        ]
+      },
+      [
+        "echo sequential-1 && sleep 4",
+        "echo sequential-2 && sleep 4",
+        "echo sequential-3 && sleep 4",
+        "echo sequential-4 && sleep 4"
+      ],
       "echo debug test 2",
       "echo Current shell: $(readlink /proc/$$/exe)",
       "arg1"
@@ -31,7 +48,7 @@
     "arg1": "arg1"
   },
   "options": {
-    "logLevel": 1,
+    "logLevel": 3,
     "script": {
       "shell": {
         "win32": "zsh",
