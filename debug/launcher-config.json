@@ -1,41 +1,22 @@
 {
   "scripts": {
-    "debug-0": [
-      "echo Current shell: $(readlink /proc/$$/exe)",
-      "echo debug-0 1",
-      "echo debug-0 2",
-      "debug-1"
+    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time": [
+      "echo Background job : $job",
+      "sleep:$time",
+      "echo Completed job : $job"
     ],
-    "concurrent": {
-      "concurrent": [
-        "echo concurrent-1 && sleep 2",
-        "echo concurrent-2 && sleep 2",
-        "echo concurrent-3 && sleep 2",
-        "echo concurrent-4 && sleep 2"
-      ]
-    },
-    "sequential": {
-      "sequential": [
-        "echo sequential-1 && sleep 2",
-        "echo sequential-2 && sleep 2",
-        "echo sequential-3 && sleep 2",
-        "echo sequential-4 && sleep 2"
-      ]
-    },
-    "debug-1": "echo debug-1"
-  },
-  "menu": {
-    "debug 0": "debug-0",
-    "debug 1": "debug-1"
-  },
-  "options": {
-    "logLevel": 1,
-    "script": {
-      "shell": {
-        "win32": "cmd.exe",
-        "linux": "zsh",
-        "default": "bash"
-      }
-    }
+    "build-stuff": [
+      {
+        "concurrent": [
+          "background:1:3000",
+          "background:2:5000"
+        ]
+      },
+      "echo Sequential job : 3",
+      "sleep:1000",
+      "echo Sequential job : 4",
+      "sleep:1000"
+    ]
   }
 }

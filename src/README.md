@@ -298,6 +298,28 @@ Run `npm start build-stuff` to use this example.
 
 ### Inline script blocks
 ``` JSON
+{
+  "scripts": {
+    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time": [
+      "echo Background job : $job",
+      "sleep:$time",
+      "echo Completed job : $job"
+    ],
+    "build-stuff": [
+      {
+        "concurrent": [
+          "background:1:3000",
+          "background:2:5000"
+        ]
+      },
+      "echo Sequential job : 3",
+      "sleep:1000",
+      "echo Sequential job : 4",
+      "sleep:1000"
+    ]
+  }
+}
 ```
 
 ### Interactive menu
