@@ -376,7 +376,24 @@ The default value of this list is presented in the following example:
 ```
 
 ### Script shell
-The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method.
+The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method. If you want to specify a shell for a specific platform, use one of the [platform names](https://nodejs.org/api/process.html#process_process_platform) as a nested object name.
+
+Example shell option for specific platform
+``` JSON
+"options": {
+  "script": {
+    "shell": {
+      "aix":"bash",
+      "darwin":"bash",
+      "freebsd":"bash",
+      "linux":"bash",
+      "openbsd":"bash",
+      "sunos":"bash",
+      "win32":"cmd.exe"
+    }
+  }
+}
+```
 
 The default value is presented in the following example:
 ``` JSON
