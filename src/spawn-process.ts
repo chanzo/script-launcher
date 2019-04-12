@@ -10,7 +10,7 @@ export class Process {
       options.stdio = ['inherit', 'pipe', 'pipe'];
     }
 
-    const milliseconds = Date.now();
+    const startTime = Date.now();
     const childProcess = spawn(command, args, options);
 
     Logger.log('Spawn process   : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
@@ -23,7 +23,7 @@ export class Process {
       Process.showOutputData(childProcess);
     }
 
-    return new Process(childProcess, milliseconds);
+    return new Process(childProcess, startTime);
   }
 
   private static showOutputData(childProcess: ChildProcess): void {
@@ -42,14 +42,14 @@ export class Process {
 
   private readonly exitPromise: Promise<number>;
 
-  private constructor(childProcess: ChildProcess, milliseconds: number) {
+  private constructor(childProcess: ChildProcess, startTime: number) {
     this.pid = childProcess.pid;
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
 
         childProcess.on('exit', (code, signal) => {
-          const timeSpan = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
+          const timeSpan = Date.now() - startTime;
 
           Logger.log(''.padEnd(process.stdout.columns, '-'));
           Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  timespan=' + timeSpan + ' ms');
@@ -60,7 +60,7 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
-          const timeSpan = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
+          const timeSpan = Date.now() - startTime;
 
           Logger.log(''.padEnd(process.stdout.columns, '-'));
           Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  timespan=' + timeSpan + ' ms');

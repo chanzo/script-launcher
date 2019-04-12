@@ -81,6 +81,7 @@ function setLauncherEnviromentValues() {
 
 async function main(): Promise<void> {
   let exitCode = 1;
+  let startTime = Date.now();
 
   try {
     let config = Config.load();
@@ -152,7 +153,12 @@ async function main(): Promise<void> {
     if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
-      exitCode = await launchMenu(config, commandArgs, launchArgs.interactive);
+
+      const result = await launchMenu(config, commandArgs, launchArgs.interactive);
+
+      startTime = result.startTime;
+      exitCode = result.exitCode;
+
       return;
     }
 
@@ -175,8 +181,13 @@ async function main(): Promise<void> {
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
+    const timespan = Date.now() - startTime;
+
     if (Logger.level < 2) Logger.info('');
+
+    Logger.info('Timespan:', timespan + ' ms');
     Logger.info('ExitCode:', exitCode);
+
     process.exit(exitCode);
   }
 }

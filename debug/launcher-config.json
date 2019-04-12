@@ -1,22 +1,21 @@
 {
   "scripts": {
-    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
-    "background:$job:$time": [
-      "echo Background job : $job",
-      "sleep:$time",
-      "echo Completed job : $job"
-    ],
-    "build-stuff": [
+    "debug-01": [
+      "echo 1 && sleep 2",
       {
+        "exclusion": "exit 1",
         "concurrent": [
-          "background:1:3000",
-          "background:2:5000"
+          "echo 2 && sleep 2",
+          "echo 3 && sleep 2"
         ]
       },
-      "echo Sequential job : 3",
-      "sleep:1000",
-      "echo Sequential job : 4",
-      "sleep:1000"
+      "echo 4 && sleep 2"
     ]
+  },
+  "menu": {
+    "debug": "debug-01"
+  },
+  "options": {
+    "logLevel": 3
   }
 }

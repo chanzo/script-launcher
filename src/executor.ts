@@ -8,6 +8,8 @@ import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
 
 interface ITasks {
+  condition: string;
+  exclusion: string;
   concurrent: Array<ITasks | string>;
   sequential: Array<ITasks | string>;
 }
@@ -47,6 +49,8 @@ export class Executor {
   }
 
   private static getCommandInfo(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
+    if (!command) command = '';
+
     options = { ...options };
 
     if (!options.cwd) options.cwd = '';
@@ -137,7 +141,7 @@ export class Executor {
     const sequential: IScript[] = [];
     const script = scriptInfo.script;
 
-    if (script instanceof Array) sequential.push(...script);
+    if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
     if (typeof script === 'string') sequential.push(script);
     if (script instanceof String) sequential.push(script.toString());
 
@@ -147,6 +151,8 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
+      condition: (script as IScriptTask).condition,
+      exclusion: (script as IScriptTask).exclusion,
       concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
       sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
     };
@@ -179,24 +185,46 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
-        const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
+        if (await this.evaluateConstraint(task, options)) {
+          const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
+          const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
 
-        processes.push(concurrentProcesses);
-        processes.push(sequentialProcesses);
+          processes.push(concurrentProcesses);
+          processes.push(sequentialProcesses);
 
-        if (order === Order.sequential) {
-          let exitCode = 0;
+          if (order === Order.sequential) {
+            let exitCode = 0;
 
-          exitCode += await Executor.wait(await concurrentProcesses);
-          exitCode += await Executor.wait(await sequentialProcesses);
+            exitCode += await Executor.wait(await concurrentProcesses);
+            exitCode += await Executor.wait(await sequentialProcesses);
 
-          if (exitCode > 0) break;
+            if (exitCode > 0) break;
+          }
         }
       }
     }
 
     return processes;
+  }
+
+  private async evaluateConstraint(task: ITasks, options: SpawnOptions): Promise<boolean> {
+    const condition = Executor.getCommandInfo(task.condition, options);
+
+    if (condition.command) {
+      const process = Process.spawn(condition.command, [], condition.options);
+
+      return await process.wait() === 0;
+    }
+
+    const exclusion = Executor.getCommandInfo(task.exclusion, options);
+
+    if (exclusion.command) {
+      const process = Process.spawn(exclusion.command, [], exclusion.options);
+
+      return await process.wait() !== 0;
+    }
+
+    return true;
   }
 
   private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
@@ -220,6 +248,7 @@ export class Executor {
       } else {
         const script: IScriptInfo = {
           name: 'inline-script-block',
+          inline: true,
           parameters: {},
           arguments: [],
           script: task,

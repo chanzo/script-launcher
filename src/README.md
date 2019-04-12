@@ -314,6 +314,10 @@ Run `npm start build-stuff` to use this example.
           "background:2:5000"
         ]
       },
+      [
+        "background:3:3000",
+        "background:4:5000"
+      ],
       "echo Sequential job : 3",
       "sleep:1000",
       "echo Sequential job : 4",
