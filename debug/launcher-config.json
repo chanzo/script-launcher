@@ -1,24 +1,22 @@
 {
   "scripts": {
-    "arg0": [
-      "echo debug test 1",
-      "echo debug test 2",
-      "echo Cuurent shell: $(readlink /proc/$$/exe)",
-      "arg1"
+    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
+    "background:$job:$time": [
+      "echo Background job : $job",
+      "sleep:$time",
+      "echo Completed job : $job"
     ],
-    "arg1": "echo debug arg1"
-  },
-  "menu": {
-    "arg0": "arg0",
-    "arg1": "arg1"
-  },
-  "options": {
-    "logLevel": 2,
-    "script": {
-      "shell": {
-        "win32": "zsh",
-        "linux": "zsh"
-      }
-    }
+    "build-stuff": [
+      {
+        "concurrent": [
+          "background:1:3000",
+          "background:2:5000"
+        ]
+      },
+      "echo Sequential job : 3",
+      "sleep:1000",
+      "echo Sequential job : 4",
+      "sleep:1000"
+    ]
   }
 }

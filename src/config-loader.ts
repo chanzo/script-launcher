@@ -128,7 +128,11 @@ export class Config {
 
     if (typeof shellOption !== 'object') return shellOption;
 
-    const shell = shellOption[process.platform];
+    let shell = shellOption[process.platform];
+
+    if (shell !== undefined) return shell;
+
+    shell = shellOption.default;
 
     if (shell !== undefined) return shell;
 
