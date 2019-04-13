@@ -106,13 +106,11 @@ export class Executor {
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
-  private readonly logger: Logger;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts, logLevel: number) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
     this.shell = shell;
     this.environment = environment;
     this.scripts = scripts;
-    this.logger = new Logger(logLevel);
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -123,12 +121,12 @@ export class Executor {
       shell: this.shell,
     };
 
-    this.logger.info('Script name     :', scriptInfo.name);
-    this.logger.info('Script params   :', scriptInfo.parameters);
-    this.logger.info('Script args     :', scriptInfo.arguments);
-    this.logger.debug('Script object   : ' + stringify(scriptInfo.script));
-    this.logger.debug('Script expanded : ' + stringify(tasks));
-    this.logger.info();
+    Logger.info('Script name     :', scriptInfo.name);
+    Logger.info('Script params   :', scriptInfo.parameters);
+    Logger.info('Script args     :', scriptInfo.arguments);
+    Logger.debug('Script object   : ' + stringify(scriptInfo.script));
+    Logger.debug('Script expanded : ' + stringify(tasks));
+    Logger.info();
 
     const processes: IProcesses = [];
 
@@ -177,10 +175,10 @@ export class Executor {
 
           const command = Executor.expandEnvironment(info.command, options.env, true);
 
-          this.logger.log(Colors.Bold + 'Spawn process   : ' + Colors.Normal + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
-          this.logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+          Logger.log(Colors.Bold + 'Spawn process   : ' + Colors.Normal + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
+          Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
-          const process = Process.spawn(command, info.args, options, this.logger);
+          const process = Process.spawn(command, info.args, options);
 
           processes.push(process);
 
@@ -211,17 +209,17 @@ export class Executor {
 
   private async evaluateConstraint(constraint: string, options): Promise<boolean> {
     if (fs.existsSync(path.join(path.resolve(options.cwd), constraint))) {
-      this.logger.log(''.padEnd(process.stdout.columns, '-'));
-      this.logger.log(Colors.Dim + Colors.Italic + 'directory exists' + Colors.Normal);
-      this.logger.log(''.padEnd(process.stdout.columns, '-'));
-      this.logger.log('Result          : code=true');
-      this.logger.log();
-      this.logger.log();
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log(Colors.Dim + Colors.Italic + 'directory exists' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Result          : code=true');
+      Logger.log();
+      Logger.log();
 
       return true;
     }
 
-    return await Process.spawn(constraint, [], options, this.logger).wait() === 0;
+    return await Process.spawn(constraint, [], options).wait() === 0;
   }
 
   private async evaluateTask(task: ITasks, options: SpawnOptions): Promise<boolean> {
@@ -229,13 +227,13 @@ export class Executor {
     let exclusion = false;
 
     if (task.condition) {
-      this.logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + task.condition + '"' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + task.condition + '"' + Colors.Normal);
 
       condition = await this.evaluateConstraint(task.condition, options);
     }
 
     if (task.exclusion) {
-      this.logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + task.exclusion + '"' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + task.exclusion + '"' + Colors.Normal);
 
       exclusion = await this.evaluateConstraint(task.exclusion, options);
     }
