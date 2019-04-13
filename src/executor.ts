@@ -8,6 +8,8 @@ import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
 
 interface ITasks {
+  condition: string[];
+  exclusion: string[];
   concurrent: Array<ITasks | string>;
   sequential: Array<ITasks | string>;
 }
@@ -47,6 +49,8 @@ export class Executor {
   }
 
   private static getCommandInfo(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
+    if (!command) command = '';
+
     options = { ...options };
 
     if (!options.cwd) options.cwd = '';
@@ -123,6 +127,7 @@ export class Executor {
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));
     Logger.debug('Script expanded : ' + stringify(tasks));
     Logger.info();
+    Logger.log();
 
     const processes: IProcesses = [];
 
@@ -132,24 +137,69 @@ export class Executor {
     return Executor.wait(processes);
   }
 
+  private preprocessScripts(scripts: IScript[] | string): IScript[] {
+    const result: IScript[] = [];
+
+    if (scripts) {
+      if (typeof scripts !== 'string') {
+        result.push(...scripts);
+      } else {
+        result.push(scripts);
+      }
+    }
+
+    return result;
+  }
+
   private expand(scriptInfo: IScriptInfo): ITasks {
     const concurrent: IScript[] = [];
     const sequential: IScript[] = [];
     const script = scriptInfo.script;
 
-    if (script instanceof Array) sequential.push(...script);
+    if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
     if (typeof script === 'string') sequential.push(script);
-    if (script instanceof String) sequential.push(script.toString());
 
-    if ((script as IScriptTask).concurrent) concurrent.push(...(script as IScriptTask).concurrent);
-    if ((script as IScriptTask).sequential) sequential.push(...(script as IScriptTask).sequential);
+    concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
+    sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
 
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
+      condition: this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments),
+      exclusion: this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments),
       concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
       sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
     };
+  }
+
+  private expandConstraint(parent: string, constraints: string | string[], environment: { [name: string]: string }, args: string[]): string[] {
+    const result = [];
+
+    if (!constraints) return result;
+
+    if (typeof constraints === 'string') constraints = [constraints];
+
+    if (!(constraints instanceof Array)) throw new Error('Constraint object value not supported: ' + stringify(constraints));
+
+    for (let constraint of constraints) {
+      constraint = Executor.expandArguments(constraint, args);
+      constraint = Executor.expandEnvironment(constraint, environment);
+
+      const scripts = this.scripts.find(constraint);
+      const scriptInfo = Scripts.select(scripts, parent);
+
+      if (scriptInfo) {
+        const environment = { ...this.environment, ...scriptInfo.parameters };
+
+        scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
+
+        result.push(...this.expandConstraint(constraint, scriptInfo.script as any, environment, args));
+      } else {
+        result.push(constraint);
+      }
+    }
+
+    return result;
   }
 
   private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<IProcesses> {
@@ -169,7 +219,7 @@ export class Executor {
 
           const command = Executor.expandEnvironment(info.command, options.env, true);
 
-          Logger.log(Colors.Bold + 'Date            : ' + options.env.LAUNCH_CURRENT + Colors.Normal);
+          Logger.log(Colors.Bold + 'Spawn process   : ' + Colors.Normal + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
           Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
           const process = Process.spawn(command, info.args, options);
@@ -179,24 +229,91 @@ export class Executor {
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
-        const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
+        if (await this.evaluateTask(task, options)) {
+          const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
+          const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
 
-        processes.push(concurrentProcesses);
-        processes.push(sequentialProcesses);
+          processes.push(concurrentProcesses);
+          processes.push(sequentialProcesses);
 
-        if (order === Order.sequential) {
-          let exitCode = 0;
+          if (order === Order.sequential) {
+            let exitCode = 0;
 
-          exitCode += await Executor.wait(await concurrentProcesses);
-          exitCode += await Executor.wait(await sequentialProcesses);
+            exitCode += await Executor.wait(await concurrentProcesses);
+            exitCode += await Executor.wait(await sequentialProcesses);
 
-          if (exitCode > 0) break;
+            if (exitCode > 0) break;
+          }
         }
       }
     }
 
     return processes;
+  }
+
+  private async evaluateConstraint(constraint: string, options: SpawnOptions): Promise<boolean> {
+    options = { ...options };
+
+    if (!options.cwd) options.cwd = '';
+
+    const evaluateExpression = eval;
+
+    try {
+      const result = evaluateExpression(constraint);
+
+      if (typeof result !== 'boolean') throw new Error('type not supported');
+
+      Logger.log('Result          : ' + result);
+      Logger.log();
+      Logger.log();
+
+      return result;
+    } catch (error) {
+      // Not a valid javascript expression, continue
+    }
+
+    if (fs.existsSync(path.join(path.resolve(options.cwd), constraint))) {
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log(Colors.Dim + 'directory exists' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Result          : true');
+      Logger.log();
+      Logger.log();
+
+      return true;
+    }
+
+    try {
+      options.stdio = ['inherit', 'ignore', 'ignore'];
+      return await Process.spawn(constraint, [], options).wait() === 0;
+    } catch {
+      return false;
+    }
+  }
+
+  private async evaluateTask(task: ITasks, options: SpawnOptions): Promise<boolean> {
+    let condition = true;
+    let exclusion = false;
+
+    for (const constraint of task.condition) {
+      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+
+      if (!await this.evaluateConstraint(constraint, options)) {
+        condition = false;
+        break;
+      }
+    }
+
+    for (const constraint of task.exclusion) {
+      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+
+      if (await this.evaluateConstraint(constraint, options)) {
+        exclusion = true;
+        break;
+      }
+    }
+
+    return condition && !exclusion;
   }
 
   private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
@@ -208,26 +325,25 @@ export class Executor {
         task = Executor.expandEnvironment(task, environment);
 
         const scripts = this.scripts.find(task);
-        const script = Scripts.select(scripts, parent);
+        const scriptInfo = Scripts.select(scripts, parent);
 
-        if (script) {
-          script.arguments = [script.name, ...script.arguments];
+        if (scriptInfo) {
+          scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
-          result.push(this.expand(script));
+          result.push(this.expand(scriptInfo));
         } else {
           result.push(task);
         }
       } else {
-        const script: IScriptInfo = {
+        const scriptInfo: IScriptInfo = {
           name: 'inline-script-block',
+          inline: true,
           parameters: {},
-          arguments: [],
+          arguments: args,
           script: task,
         };
 
-        script.arguments = [script.name, ...script.arguments];
-
-        result.push(this.expand(script));
+        result.push(this.expand(scriptInfo));
       }
     }
 

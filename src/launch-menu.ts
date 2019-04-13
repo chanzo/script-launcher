@@ -5,9 +5,10 @@ import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
-export async function launchMenu(config: Config, args: string[], interactive: boolean): Promise<number> {
+export async function launchMenu(config: Config, args: string[], interactive: boolean): Promise<{ startTime: number, exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
+    inline: false,
     parameters: {},
     arguments: args,
     script: config.options.menu.defaultScript,
@@ -44,7 +45,10 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
     console.log();
   }
 
-  return await executor.execute(script);
+  return {
+    startTime: Date.now(),
+    exitCode: await executor.execute(script),
+  };
 }
 
 function getStartCommand(script: IScript, scripts: Scripts): string {
@@ -99,6 +103,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
   if (!isMenuObject(command)) {
     return {
       name: 'menu:' + choice.join(':'),
+      inline: false,
       parameters: {},
       arguments: [],
       script: command as IScript,

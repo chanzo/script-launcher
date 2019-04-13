@@ -1,22 +1,36 @@
 {
   "scripts": {
-    "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
-    "background:$job:$time": [
-      "echo Background job : $job",
-      "sleep:$time",
-      "echo Completed job : $job"
+    "test": [
+      "node_modules_$1",
+      "node_modules_$1",
+      "node_modules_$1"
     ],
     "build-stuff": [
+      "echo args $0 $1",
       {
-        "concurrent": [
-          "background:1:3000",
-          "background:2:5000"
+        "exclusion": "test $1",
+        "sequential": [
+          "echo npm install $0 $1",
+          "mkdir node_modules_test"
         ]
       },
-      "echo Sequential job : 3",
-      "sleep:1000",
-      "echo Sequential job : 4",
-      "sleep:1000"
+      {
+        "condition": "node_modules_test",
+        "sequential": [
+          "echo npm start",
+          {
+            "condition": "'$LAUNCH_PLATFORM'==='win32'",
+            "sequential": "del /q node_modules_test"
+          },
+          {
+            "condition": "'$LAUNCH_PLATFORM'!=='win32'",
+            "sequential": "rm -d node_modules_test"
+          }
+        ]
+      }
     ]
+  },
+  "options": {
+    "logLevel": 3
   }
 }
