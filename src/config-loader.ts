@@ -62,6 +62,8 @@ export class Config {
   public static readonly initConfig: Partial<IConfig> = {
     scripts: {
       'serve:dev': {
+        condition: '',
+        exclusion: '',
         sequential: [],
         concurrent: [
           'echo Start development server',

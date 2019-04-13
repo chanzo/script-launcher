@@ -1,8 +1,10 @@
 import * as stringArgv from 'string-argv';
 
 export interface IScriptTask {
-  concurrent: IScript[];
-  sequential: IScript[];
+  condition: string[] | string;
+  exclusion: string[] | string;
+  concurrent: IScript[] | string;
+  sequential: IScript[] | string;
 }
 
 export type IScript = string | string[] | IScriptTask;
@@ -13,6 +15,7 @@ export interface IScripts {
 
 export interface IScriptInfo {
   name: string;
+  inline: boolean;
   parameters: { [name: string]: string };
   arguments: string[];
   script: IScript;
@@ -87,6 +90,7 @@ export class Scripts {
       if (parameters !== null) {
         scripts.push({
           name: name,
+          inline: false,
           parameters: parameters,
           arguments: info.arguments,
           script: script,
