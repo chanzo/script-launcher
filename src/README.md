@@ -297,6 +297,8 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Inline script blocks
+This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
+
 Run `npm start build-stuff` to use this example.
 ``` JSON
 {
@@ -308,21 +310,62 @@ Run `npm start build-stuff` to use this example.
       "echo Completed job : $job"
     ],
     "build-stuff": [
+      [
+        "background:1:3000",
+        "background:2:5000"
+      ],
       {
-        "concurrent": [
-          "background:1:3000",
-          "background:2:5000"
+        "sequential": [
+          "echo Sequential job : 3",
+          "sleep:1000",
+          "echo Sequential job : 4",
+          "sleep:1000"
+        ]
+      }
+    ]
+  }
+}
+```
+
+
+### Conditions and exclusions
+* **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
+* **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
+
+Run `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      {
+        "exclusion": "node_modules_test",
+        "sequential": [
+          "echo npm install",
+          "mkdir node_modules_test"
         ]
       },
-      [
-        "background:3:3000",
-        "background:4:5000"
-      ],
-      "echo Sequential job : 3",
-      "sleep:1000",
-      "echo Sequential job : 4",
-      "sleep:1000"
+      {
+        "condition": "node_modules_test",
+        "sequential": [
+          "echo npm start",
+          {
+            "condition": "'$LAUNCH_PLATFORM'==='win32'",
+            "sequential": [
+              "del /q node_modules_test"
+            ]
+          },
+          {
+            "condition": "'$LAUNCH_PLATFORM'!=='win32'",
+            "sequential": [
+              "rm -d node_modules_test"
+            ]
+          }
+        ]
+      }
     ]
+  },
+  "options": {
+    "logLevel": 2
   }
 }
 ```
@@ -380,6 +423,8 @@ Run `npm start` to use this example.
 * LAUNCH_ORANGE
 * LAUNCH_RED
 * LAUNCH_YELLOW
+* LAUNCH_PLATFORM
+* LAUNCH_VERSION
 
 ## Launcher arguments
 Use the help for a list of available options.

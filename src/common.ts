@@ -8,7 +8,6 @@ export enum Colors {
   Orange = '\x1b[38;2;255;165;0m',
   Cyan = '\x1b[36m',
   Bold = '\x1b[1m',
-  Italic = '\x1b[3m',
   Dim = '\x1b[2m',
   Normal = '\x1b[0m',
 }

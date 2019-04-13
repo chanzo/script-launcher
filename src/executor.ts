@@ -127,6 +127,7 @@ export class Executor {
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));
     Logger.debug('Script expanded : ' + stringify(tasks));
     Logger.info();
+    Logger.log();
 
     const processes: IProcesses = [];
 
@@ -151,8 +152,8 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
-      condition: (script as IScriptTask).condition,
-      exclusion: (script as IScriptTask).exclusion,
+      condition: (script as IScriptTask).condition ? Executor.expandEnvironment((script as IScriptTask).condition, environment) : undefined,
+      exclusion: (script as IScriptTask).exclusion ? Executor.expandEnvironment((script as IScriptTask).exclusion, environment) : undefined,
       concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
       sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
     };
@@ -207,12 +208,32 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(constraint: string, options): Promise<boolean> {
+  private async evaluateConstraint(constraint: string, options: SpawnOptions): Promise<boolean> {
+    options = { ...options };
+
+    if (!options.cwd) options.cwd = '';
+
+    const evaluateExpression = eval;
+
+    try {
+      const result = evaluateExpression(constraint);
+
+      if (typeof result !== 'boolean') throw new Error('type not supported');
+
+      Logger.log('Result          : ' + result);
+      Logger.log();
+      Logger.log();
+
+      return result;
+    } catch (error) {
+      // Not a valid javascript expression, continue
+    }
+
     if (fs.existsSync(path.join(path.resolve(options.cwd), constraint))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
-      Logger.log(Colors.Dim + Colors.Italic + 'directory exists' + Colors.Normal);
+      Logger.log(Colors.Dim + 'directory exists' + Colors.Normal);
       Logger.log(''.padEnd(process.stdout.columns, '-'));
-      Logger.log('Result          : code=true');
+      Logger.log('Result          : true');
       Logger.log();
       Logger.log();
 
@@ -220,6 +241,7 @@ export class Executor {
     }
 
     try {
+      options.stdio = ['inherit', 'ignore', 'ignore'];
       return await Process.spawn(constraint, [], options).wait() === 0;
     } catch {
       return false;

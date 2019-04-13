@@ -28,12 +28,12 @@ export class Process {
   private static showOutputData(childProcess: ChildProcess): void {
     childProcess.stdout.on('data', (data) => {
       const content = (data.toString() as string).trim();
-      if (content) Logger.log(Colors.Dim + Colors.Italic + content + Colors.Normal);
+      if (content) Logger.log(Colors.Dim + content + Colors.Normal);
     });
 
     childProcess.stderr.on('data', (data) => {
       const content = (data.toString() as string).trim();
-      if (content) Logger.log(Colors.Red + Colors.Italic + content + Colors.Normal);
+      if (content) Logger.log(Colors.Red + content + Colors.Normal);
     });
   }
 

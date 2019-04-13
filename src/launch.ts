@@ -77,6 +77,8 @@ function setLauncherEnviromentValues() {
     process.env['LAUNCH_' + key.toUpperCase()] = value;
   }
   process.env.LAUNCH_START = getCurrentTime();
+  process.env.LAUNCH_PLATFORM = process.platform;
+  process.env.LAUNCH_VERSION = version;
 }
 
 async function main(): Promise<void> {
@@ -105,6 +107,8 @@ async function main(): Promise<void> {
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
     if (!launchArgs.ansi) disableAnsiColors();
+
+    if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
     setLauncherEnviromentValues();
 
