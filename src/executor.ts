@@ -219,7 +219,11 @@ export class Executor {
       return true;
     }
 
-    return await Process.spawn(constraint, [], options).wait() === 0;
+    try {
+      return await Process.spawn(constraint, [], options).wait() === 0;
+    } catch{
+      return false;
+    }
   }
 
   private async evaluateTask(task: ITasks, options: SpawnOptions): Promise<boolean> {
