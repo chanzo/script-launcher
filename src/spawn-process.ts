@@ -51,7 +51,7 @@ export class Process {
           const timeSpan = Date.now() - startTime;
 
           Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  timespan=' + timeSpan + ' ms');
+          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + timeSpan + ' ms');
           Logger.log();
           Logger.log();
 
@@ -62,7 +62,7 @@ export class Process {
           const timeSpan = Date.now() - startTime;
 
           Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  timespan=' + timeSpan + ' ms');
+          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + timeSpan + ' ms');
           Logger.log();
           Logger.log();
           reject(error);

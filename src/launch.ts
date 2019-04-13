@@ -185,8 +185,8 @@ async function main(): Promise<void> {
 
     if (Logger.level < 2) Logger.info('');
 
-    Logger.info('Timespan:', timespan + ' ms');
     Logger.info('ExitCode:', exitCode);
+    Logger.info('Elapsed:', timespan + ' ms');
 
     process.exit(exitCode);
   }
