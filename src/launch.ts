@@ -21,22 +21,22 @@ interface IArgs {
   ansi: boolean;
 }
 
-function showLoadedFiles(files: string[]) {
+function showLoadedFiles(files: string[], logger: Logger) {
   for (const file of files) {
     if (file) {
       const absolutePath = path.resolve(file);
 
       if (fs.existsSync(absolutePath)) {
-        Logger.info('Loaded config: ', absolutePath);
+        logger.info('Loaded config: ', absolutePath);
       }
     }
   }
-  Logger.info();
+  logger.info();
 }
 
 function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   if (fs.existsSync(fileName)) {
-    Logger.error('The file "' + fileName + '" already exists.');
+    console.error('The file "' + fileName + '" already exists.');
     return;
   }
 
@@ -82,6 +82,7 @@ function setLauncherEnviromentValues() {
 async function main(): Promise<void> {
   let exitCode = 1;
   let startTime = Date.now();
+  let logger = new Logger(3);
 
   try {
     let config = Config.load();
@@ -98,7 +99,7 @@ async function main(): Promise<void> {
       ansi: true,
     });
 
-    Logger.level = launchArgs.logLevel;
+    logger = new Logger(launchArgs.logLevel);
 
     if (launchArgs.config) config = config.merge(launchArgs.config);
 
@@ -108,20 +109,20 @@ async function main(): Promise<void> {
 
     setLauncherEnviromentValues();
 
-    showLoadedFiles([...config.options.files, launchArgs.config]);
+    showLoadedFiles([...config.options.files, launchArgs.config], logger);
 
-    Logger.debug('Config: ', stringify(config));
+    logger.debug('Config: ', stringify(config));
 
     if (launchArgs.version) {
       console.log(version);
-      Logger.log();
+      logger.log();
       exitCode = 0;
       return;
     }
 
     if (launchArgs.help) {
       showHelp();
-      Logger.log();
+      logger.log();
       exitCode = 0;
       return;
     }
@@ -129,7 +130,7 @@ async function main(): Promise<void> {
     if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
-      Logger.log();
+      logger.log();
       exitCode = 0;
       return;
     }
@@ -137,22 +138,22 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
-    Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
-    Logger.info('Version           :', version);
-    Logger.info('Lifecycle event   :', lifecycleEvent);
-    Logger.info('Launch command    :', launchCommand);
-    Logger.debug('Process platform  :', process.platform);
-    Logger.debug('Script shell      :', shell);
+    logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
+    logger.info('Version           :', version);
+    logger.info('Lifecycle event   :', lifecycleEvent);
+    logger.info('Launch command    :', launchCommand);
+    logger.debug('Process platform  :', process.platform);
+    logger.debug('Script shell      :', shell);
 
-    if (Logger.level > 2) {
-      Logger.info('Launch arguments  :', launchArgs);
+    if (logger.level > 2) {
+      logger.info('Launch arguments  :', launchArgs);
     } else {
-      Logger.info('Launch arguments  :', argsString);
+      logger.info('Launch arguments  :', argsString);
     }
 
     if (launchCommand === undefined || launchArgs.menu) {
-      Logger.info('Command arguments :', commandArgs);
-      Logger.info();
+      logger.info('Command arguments :', commandArgs);
+      logger.info();
 
       const result = await launchMenu(config, commandArgs, launchArgs.interactive);
 
@@ -172,21 +173,21 @@ async function main(): Promise<void> {
 
     scriptInfo.arguments = commandArgs;
 
-    Logger.info('Command arguments :', commandArgs);
-    Logger.info();
+    logger.info('Command arguments :', commandArgs);
+    logger.info();
 
-    const executor = new Executor(shell, process.env, config.scripts);
+    const executor = new Executor(shell, process.env, config.scripts, logger.level);
 
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
-    Logger.error(`${error}`);
+    logger.error(`${error}`);
   } finally {
     const timespan = Date.now() - startTime;
 
-    if (Logger.level < 2) Logger.info('');
+    if (logger.level < 2) logger.info('');
 
-    Logger.info('Timespan:', timespan + ' ms');
-    Logger.info('ExitCode:', exitCode);
+    logger.info('Timespan:', timespan + ' ms');
+    logger.info('ExitCode:', exitCode);
 
     process.exit(exitCode);
   }

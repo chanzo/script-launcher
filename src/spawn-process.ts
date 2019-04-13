@@ -4,8 +4,8 @@ import { Logger } from './logger';
 import { Colors } from './common';
 
 export class Process {
-  public static spawn(command: string, args?: string[], options?: SpawnOptions): Process {
-    if (Logger.level > 1 && options) {
+  public static spawn(command: string, args: string[], options: SpawnOptions, logger: Logger): Process {
+    if (logger.level > 1 && options) {
       options = { ...options };
       options.stdio = ['inherit', 'pipe', 'pipe'];
     }
@@ -13,28 +13,27 @@ export class Process {
     const startTime = Date.now();
     const childProcess = spawn(command, args, options);
 
-    Logger.log('Spawn process   : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
-    Logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
+    if (options.cwd) logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
 
-    if (Logger.level > 1) {
-      Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
-      Logger.log(''.padEnd(process.stdout.columns, '-'));
+    if (logger.level > 1) {
+      logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
+      logger.log(''.padEnd(process.stdout.columns, '-'));
 
-      Process.showOutputData(childProcess);
+      Process.showOutputData(childProcess, logger);
     }
 
-    return new Process(childProcess, startTime);
+    return new Process(childProcess, startTime, logger);
   }
 
-  private static showOutputData(childProcess: ChildProcess): void {
+  private static showOutputData(childProcess: ChildProcess, logger: Logger): void {
     childProcess.stdout.on('data', (data) => {
       const content = (data.toString() as string).trim();
-      if (content) Logger.log(Colors.Dim + Colors.Italic + content + Colors.Normal);
+      if (content) logger.log(Colors.Dim + Colors.Italic + content + Colors.Normal);
     });
 
     childProcess.stderr.on('data', (data) => {
       const content = (data.toString() as string).trim();
-      if (content) Logger.log(Colors.Red + Colors.Italic + content + Colors.Normal);
+      if (content) logger.log(Colors.Red + Colors.Italic + content + Colors.Normal);
     });
   }
 
@@ -42,7 +41,7 @@ export class Process {
 
   private readonly exitPromise: Promise<number>;
 
-  private constructor(childProcess: ChildProcess, startTime: number) {
+  private constructor(childProcess: ChildProcess, startTime: number, logger: Logger) {
     this.pid = childProcess.pid;
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
@@ -51,10 +50,10 @@ export class Process {
         childProcess.on('exit', (code, signal) => {
           const timeSpan = Date.now() - startTime;
 
-          Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  timespan=' + timeSpan + ' ms');
-          Logger.log();
-          Logger.log();
+          logger.log(''.padEnd(process.stdout.columns, '-'));
+          logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  timespan=' + timeSpan + ' ms');
+          logger.log();
+          logger.log();
 
           resolve(code);
         });
@@ -62,17 +61,17 @@ export class Process {
         childProcess.on('error', (error) => {
           const timeSpan = Date.now() - startTime;
 
-          Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  timespan=' + timeSpan + ' ms');
-          Logger.log();
-          Logger.log();
+          logger.log(''.padEnd(process.stdout.columns, '-'));
+          logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  timespan=' + timeSpan + ' ms');
+          logger.log();
+          logger.log();
           reject(error);
         });
       } catch (error) {
-        Logger.log(''.padEnd(process.stdout.columns, '-'));
-        Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
-        Logger.log();
-        Logger.log();
+        logger.log(''.padEnd(process.stdout.columns, '-'));
+        logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
+        logger.log();
+        logger.log();
         reject(error);
       }
     });

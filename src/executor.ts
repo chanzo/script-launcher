@@ -106,11 +106,13 @@ export class Executor {
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
+  private readonly logger: Logger;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts, logLevel: number) {
     this.shell = shell;
     this.environment = environment;
     this.scripts = scripts;
+    this.logger = new Logger(logLevel);
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -121,12 +123,12 @@ export class Executor {
       shell: this.shell,
     };
 
-    Logger.info('Script name     :', scriptInfo.name);
-    Logger.info('Script params   :', scriptInfo.parameters);
-    Logger.info('Script args     :', scriptInfo.arguments);
-    Logger.debug('Script object   : ' + stringify(scriptInfo.script));
-    Logger.debug('Script expanded : ' + stringify(tasks));
-    Logger.info();
+    this.logger.info('Script name     :', scriptInfo.name);
+    this.logger.info('Script params   :', scriptInfo.parameters);
+    this.logger.info('Script args     :', scriptInfo.arguments);
+    this.logger.debug('Script object   : ' + stringify(scriptInfo.script));
+    this.logger.debug('Script expanded : ' + stringify(tasks));
+    this.logger.info();
 
     const processes: IProcesses = [];
 
@@ -175,17 +177,17 @@ export class Executor {
 
           const command = Executor.expandEnvironment(info.command, options.env, true);
 
-          Logger.log(Colors.Bold + 'Date            : ' + options.env.LAUNCH_CURRENT + Colors.Normal);
-          Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+          this.logger.log(Colors.Bold + 'Spawn process   : ' + Colors.Normal + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
+          this.logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
 
-          const process = Process.spawn(command, info.args, options);
+          const process = Process.spawn(command, info.args, options, this.logger);
 
           processes.push(process);
 
           if (order === Order.sequential && await process.wait() !== 0) break;
         }
       } else {
-        if (await this.evaluateConstraint(task, options)) {
+        if (await this.evaluateTask(task, options)) {
           const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
           const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
 
@@ -207,24 +209,38 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(task: ITasks, options: SpawnOptions): Promise<boolean> {
-    const condition = Executor.getCommandInfo(task.condition, options);
+  private async evaluateConstraint(constraint: string, options): Promise<boolean> {
+    if (fs.existsSync(path.join(path.resolve(options.cwd), constraint))) {
+      this.logger.log(''.padEnd(process.stdout.columns, '-'));
+      this.logger.log(Colors.Dim + Colors.Italic + 'directory exists' + Colors.Normal);
+      this.logger.log(''.padEnd(process.stdout.columns, '-'));
+      this.logger.log('Result          : code=true');
+      this.logger.log();
+      this.logger.log();
 
-    if (condition.command) {
-      const process = Process.spawn(condition.command, [], condition.options);
-
-      return await process.wait() === 0;
+      return true;
     }
 
-    const exclusion = Executor.getCommandInfo(task.exclusion, options);
+    return await Process.spawn(constraint, [], options, this.logger).wait() === 0;
+  }
 
-    if (exclusion.command) {
-      const process = Process.spawn(exclusion.command, [], exclusion.options);
+  private async evaluateTask(task: ITasks, options: SpawnOptions): Promise<boolean> {
+    let condition = true;
+    let exclusion = false;
 
-      return await process.wait() !== 0;
+    if (task.condition) {
+      this.logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + task.condition + '"' + Colors.Normal);
+
+      condition = await this.evaluateConstraint(task.condition, options);
     }
 
-    return true;
+    if (task.exclusion) {
+      this.logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + task.exclusion + '"' + Colors.Normal);
+
+      exclusion = await this.evaluateConstraint(task.exclusion, options);
+    }
+
+    return condition && !exclusion;
   }
 
   private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
