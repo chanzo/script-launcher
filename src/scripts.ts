@@ -3,8 +3,8 @@ import * as stringArgv from 'string-argv';
 export interface IScriptTask {
   condition: string;
   exclusion: string;
-  concurrent: IScript[];
-  sequential: IScript[];
+  concurrent: IScript[] | string;
+  sequential: IScript[] | string;
 }
 
 export type IScript = string | string[] | IScriptTask;

@@ -14,21 +14,17 @@
           "echo npm start",
           {
             "condition": "'$LAUNCH_PLATFORM'==='win32'",
-            "sequential": [
-              "del /q node_modules_test"
-            ]
+            "sequential": "del /q node_modules_test"
           },
           {
             "condition": "'$LAUNCH_PLATFORM'!=='win32'",
-            "sequential": [
-              "rm -d node_modules_test"
-            ]
+            "sequential": "rm -d node_modules_test"
           }
         ]
       }
     ]
   },
   "options": {
-    "logLevel": 2
+    "logLevel": 3
   }
 }

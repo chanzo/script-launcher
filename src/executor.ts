@@ -137,6 +137,20 @@ export class Executor {
     return Executor.wait(processes);
   }
 
+  private preprocessScripts(scripts: IScript[] | string): IScript[] {
+    const result: IScript[] = [];
+
+    if (scripts) {
+      if (typeof scripts !== 'string') {
+        result.push(...scripts);
+      } else {
+        result.push(scripts);
+      }
+    }
+
+    return result;
+  }
+
   private expand(scriptInfo: IScriptInfo): ITasks {
     const concurrent: IScript[] = [];
     const sequential: IScript[] = [];
@@ -146,8 +160,8 @@ export class Executor {
     if (typeof script === 'string') sequential.push(script);
     if (script instanceof String) sequential.push(script.toString());
 
-    if ((script as IScriptTask).concurrent) concurrent.push(...(script as IScriptTask).concurrent);
-    if ((script as IScriptTask).sequential) sequential.push(...(script as IScriptTask).sequential);
+    concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
+    sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
 
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
