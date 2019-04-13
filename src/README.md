@@ -103,6 +103,7 @@ You would use: `npm start` to start the menu.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
+  * [Conditions and exclusions](#conditions-and-exclusions)
   * [Interactive menu](#interactive-menu)
 * [Launcher environment values](#launcher-environment-values)
 * [Launcher arguments](#launcher-arguments)
