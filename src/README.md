@@ -333,6 +333,8 @@ Run `npm start build-stuff` to use this example.
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
 * **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
 
+Condition and exclusion can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
+
 Run `npm start build-stuff` to use this example.
 ``` JSON
 {
