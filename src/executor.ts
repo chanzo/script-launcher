@@ -221,7 +221,7 @@ export class Executor {
 
     try {
       return await Process.spawn(constraint, [], options).wait() === 0;
-    } catch{
+    } catch {
       return false;
     }
   }
