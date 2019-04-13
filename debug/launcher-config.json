@@ -1,10 +1,16 @@
 {
   "scripts": {
+    "test": [
+      "node_modules_$1",
+      "node_modules_$1",
+      "node_modules_$1"
+    ],
     "build-stuff": [
+      "echo args $0 $1",
       {
-        "exclusion": "node_modules_test",
+        "exclusion": "test $1",
         "sequential": [
-          "echo npm install",
+          "echo npm install $0 $1",
           "mkdir node_modules_test"
         ]
       },

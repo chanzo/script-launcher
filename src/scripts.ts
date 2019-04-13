@@ -1,8 +1,8 @@
 import * as stringArgv from 'string-argv';
 
 export interface IScriptTask {
-  condition: string;
-  exclusion: string;
+  condition: string[] | string;
+  exclusion: string[] | string;
   concurrent: IScript[] | string;
   sequential: IScript[] | string;
 }

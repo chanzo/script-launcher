@@ -8,8 +8,8 @@ import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
 
 interface ITasks {
-  condition: string;
-  exclusion: string;
+  condition: string[];
+  exclusion: string[];
   concurrent: Array<ITasks | string>;
   sequential: Array<ITasks | string>;
 }
@@ -158,7 +158,6 @@ export class Executor {
 
     if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
     if (typeof script === 'string') sequential.push(script);
-    if (script instanceof String) sequential.push(script.toString());
 
     concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
     sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
@@ -166,11 +165,41 @@ export class Executor {
     const environment = { ...this.environment, ...scriptInfo.parameters };
 
     return {
-      condition: (script as IScriptTask).condition ? Executor.expandEnvironment((script as IScriptTask).condition, environment) : undefined,
-      exclusion: (script as IScriptTask).exclusion ? Executor.expandEnvironment((script as IScriptTask).exclusion, environment) : undefined,
+      condition: this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments),
+      exclusion: this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments),
       concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
       sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
     };
+  }
+
+  private expandConstraint(parent: string, constraints: string | string[], environment: { [name: string]: string }, args: string[]): string[] {
+    const result = [];
+
+    if (!constraints) return result;
+
+    if (typeof constraints === 'string') constraints = [constraints];
+
+    if (!(constraints instanceof Array)) throw new Error('Constraint object value not supported: ' + stringify(constraints));
+
+    for (let constraint of constraints) {
+      constraint = Executor.expandArguments(constraint, args);
+      constraint = Executor.expandEnvironment(constraint, environment);
+
+      const scripts = this.scripts.find(constraint);
+      const scriptInfo = Scripts.select(scripts, parent);
+
+      if (scriptInfo) {
+        const environment = { ...this.environment, ...scriptInfo.parameters };
+
+        scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
+
+        result.push(...this.expandConstraint(constraint, scriptInfo.script as any, environment, args));
+      } else {
+        result.push(constraint);
+      }
+    }
+
+    return result;
   }
 
   private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<IProcesses> {
@@ -266,16 +295,22 @@ export class Executor {
     let condition = true;
     let exclusion = false;
 
-    if (task.condition) {
-      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + task.condition + '"' + Colors.Normal);
+    for (const constraint of task.condition) {
+      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
-      condition = await this.evaluateConstraint(task.condition, options);
+      if (!await this.evaluateConstraint(constraint, options)) {
+        condition = false;
+        break;
+      }
     }
 
-    if (task.exclusion) {
-      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + task.exclusion + '"' + Colors.Normal);
+    for (const constraint of task.exclusion) {
+      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
-      exclusion = await this.evaluateConstraint(task.exclusion, options);
+      if (await this.evaluateConstraint(constraint, options)) {
+        exclusion = true;
+        break;
+      }
     }
 
     return condition && !exclusion;
@@ -290,27 +325,25 @@ export class Executor {
         task = Executor.expandEnvironment(task, environment);
 
         const scripts = this.scripts.find(task);
-        const script = Scripts.select(scripts, parent);
+        const scriptInfo = Scripts.select(scripts, parent);
 
-        if (script) {
-          script.arguments = [script.name, ...script.arguments];
+        if (scriptInfo) {
+          scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
-          result.push(this.expand(script));
+          result.push(this.expand(scriptInfo));
         } else {
           result.push(task);
         }
       } else {
-        const script: IScriptInfo = {
+        const scriptInfo: IScriptInfo = {
           name: 'inline-script-block',
           inline: true,
           parameters: {},
-          arguments: [],
+          arguments: args,
           script: task,
         };
 
-        script.arguments = [script.name, ...script.arguments];
-
-        result.push(this.expand(script));
+        result.push(this.expand(scriptInfo));
       }
     }
 
