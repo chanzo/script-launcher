@@ -36,16 +36,18 @@ export class Executor {
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
     for (const [name, value] of Object.entries(environment)) {
-      const regexp = new RegExp('\\$' + name + '([^\\w]|$)', 'g');
-
-      text = text.replace(regexp, value + '$1');
+      text = text.replace(new RegExp('\\$' + name + '([^\\w]|$)', 'g'), value + '$1');
+      text = text.replace(new RegExp('\\$\\{' + name + '\\}', 'g'), value);
 
       if (!text.includes('$')) break;
     }
 
     if (!remove) return text;
 
-    return text.replace(/\$\w+/g, '');
+    text = text.replace(/\$\w+/g, '');
+    text = text.replace(/\$\{\w+\}/g, '');
+
+    return text;
   }
 
   private static getCommandInfo(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
@@ -67,6 +69,12 @@ export class Executor {
       if (process.platform === 'win32') command += '.';
 
       return { command, args, options };
+    }
+
+    if (command === '--') {
+      console.log(''.padEnd(process.stdout.columns, '-'));
+
+      return { command: null, args, options };
     }
 
     // Test whether the command represents the assignment of an environment variable
@@ -215,7 +223,7 @@ export class Executor {
 
         if (info.command) {
           options.env.LAUNCH_CURRENT = getCurrentTime();
-          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') + ' ms';
+          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds) + ' ms';
 
           const command = Executor.expandEnvironment(info.command, options.env, true);
 
