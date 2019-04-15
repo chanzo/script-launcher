@@ -223,7 +223,7 @@ export class Executor {
 
         if (info.command) {
           options.env.LAUNCH_CURRENT = getCurrentTime();
-          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') + ' ms';
+          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds) + ' ms';
 
           const command = Executor.expandEnvironment(info.command, options.env, true);
 

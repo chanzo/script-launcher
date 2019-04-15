@@ -218,7 +218,7 @@ Run `npm start deploy:tst` to use this example.
 }
 ```
 
-*## Environment values and special commands
+### Environment values and special commands
 * LAUNCH_VERSION
 * LAUNCH_PLATFORM
 * LAUNCH_START
@@ -230,7 +230,6 @@ Run `npm start deploy:tst` to use this example.
 * LAUNCH_DIM
 * LAUNCH_GREEN
 * LAUNCH_NORMAL
-* LAUNCH_ORANGE
 * LAUNCH_RED
 * LAUNCH_YELLOW
 * Use "--" to generate a line with the width of the terminal
@@ -239,21 +238,20 @@ Run `npm start deploy:tst` to use this example.
 {
   "scripts": {
     "build-stuff": [
-      "echo Version: $LAUNCH_VERSION",
-      "echo Platform: LAUNCH_PLATFORM",
-      "echo Time: $LAUNCH_START",
+      "echo ${LAUNCH_BOLD}Version:$LAUNCH_NORMAL $LAUNCH_VERSION",
+      "echo ${LAUNCH_BOLD}Platform:$LAUNCH_NORMAL $LAUNCH_PLATFORM",
+      "echo ${LAUNCH_BOLD}Time:$LAUNCH_NORMAL $LAUNCH_START",
       "--",
-      "echo ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
-      "echo ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
-      "echo ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
-      "echo ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
-      "echo ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
-      "echo ${LAUNCH_ORANGE}Orange$LAUNCH_NORMAL",
-      "echo ${LAUNCH_RED}Red$LAUNCH_NORMAL",
-      "echo ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_RED}Red$LAUNCH_NORMAL",
+      "echo Color: ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
       "--",
-      "echo Current: $LAUNCH_CURRENT",
-      "echo Elapsed: $LAUNCH_ELAPSED"
+      "echo ${LAUNCH_BOLD}Current:$LAUNCH_NORMAL $LAUNCH_CURRENT",
+      "echo ${LAUNCH_BOLD}Elapsed:$LAUNCH_NORMAL $LAUNCH_ELAPSED"
     ]
   }
 }
@@ -527,10 +525,3 @@ The default value is presented in the following example:
   "logLevel": 0
 }
 ```
-
-
-
-
-
-* Special script command "--" added to generate a line with the width of the terminal
-* Added support for bracket accolade environment variable names like ${LAUNCH_VERSION}
