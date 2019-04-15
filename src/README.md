@@ -99,13 +99,13 @@ You would use: `npm start` to start the menu.
   * [Change directory](#change-directory)
   * [Parameters and functions](#parameters-and-functions)
   * [Reference scripts](#reference-scripts)
+  * [Environment values and special commands](#environment-values-and-special-commands)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
   * [Conditions and exclusions](#conditions-and-exclusions)
   * [Interactive menu](#interactive-menu)
-* [Launcher environment values](#launcher-environment-values)
 * [Launcher arguments](#launcher-arguments)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -213,6 +213,47 @@ Run `npm start deploy:tst` to use this example.
     "deploy:$config": [
       "deploy:uva:$config",
       "deploy:hva:$config"
+    ]
+  }
+}
+```
+
+*## Environment values and special commands
+* LAUNCH_VERSION
+* LAUNCH_PLATFORM
+* LAUNCH_START
+* LAUNCH_CURRENT
+* LAUNCH_ELAPSED
+* LAUNCH_BLUE
+* LAUNCH_BOLD
+* LAUNCH_CYAN
+* LAUNCH_DIM
+* LAUNCH_GREEN
+* LAUNCH_NORMAL
+* LAUNCH_ORANGE
+* LAUNCH_RED
+* LAUNCH_YELLOW
+* Use "--" to generate a line with the width of the terminal
+
+```JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Version: $LAUNCH_VERSION",
+      "echo Platform: LAUNCH_PLATFORM",
+      "echo Time: $LAUNCH_START",
+      "--",
+      "echo ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
+      "echo ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
+      "echo ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
+      "echo ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
+      "echo ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
+      "echo ${LAUNCH_ORANGE}Orange$LAUNCH_NORMAL",
+      "echo ${LAUNCH_RED}Red$LAUNCH_NORMAL",
+      "echo ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
+      "--",
+      "echo Current: $LAUNCH_CURRENT",
+      "echo Elapsed: $LAUNCH_ELAPSED"
     ]
   }
 }
@@ -408,23 +449,6 @@ Run `npm start` to use this example.
 }
 ```
 
-## Launcher environment values
-* LAUNCH_START
-* LAUNCH_CURRENT
-* LAUNCH_ELAPSED
-* LAUNCH_BLUE
-* LAUNCH_BOLD
-* LAUNCH_CYAN
-* LAUNCH_DIM
-* LAUNCH_GREEN
-* LAUNCH_ITALIC
-* LAUNCH_NORMAL
-* LAUNCH_ORANGE
-* LAUNCH_RED
-* LAUNCH_YELLOW
-* LAUNCH_PLATFORM
-* LAUNCH_VERSION
-
 ## Launcher arguments
 Use the help for a list of available options.
 ``` bash
@@ -503,3 +527,10 @@ The default value is presented in the following example:
   "logLevel": 0
 }
 ```
+
+
+
+
+
+* Special script command "--" added to generate a line with the width of the terminal
+* Added support for bracket accolade environment variable names like ${LAUNCH_VERSION}
