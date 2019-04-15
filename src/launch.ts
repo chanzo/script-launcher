@@ -77,10 +77,13 @@ function setLauncherEnviromentValues() {
     process.env['LAUNCH_' + key.toUpperCase()] = value;
   }
   process.env.LAUNCH_START = getCurrentTime();
+  process.env.LAUNCH_PLATFORM = process.platform;
+  process.env.LAUNCH_VERSION = version;
 }
 
 async function main(): Promise<void> {
   let exitCode = 1;
+  let startTime = Date.now();
 
   try {
     let config = Config.load();
@@ -104,6 +107,8 @@ async function main(): Promise<void> {
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
     if (!launchArgs.ansi) disableAnsiColors();
+
+    if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
     setLauncherEnviromentValues();
 
@@ -152,7 +157,12 @@ async function main(): Promise<void> {
     if (launchCommand === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
-      exitCode = await launchMenu(config, commandArgs, launchArgs.interactive);
+
+      const result = await launchMenu(config, commandArgs, launchArgs.interactive);
+
+      startTime = result.startTime;
+      exitCode = result.exitCode;
+
       return;
     }
 
@@ -175,8 +185,13 @@ async function main(): Promise<void> {
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
+    const timespan = Date.now() - startTime;
+
     if (Logger.level < 2) Logger.info('');
+
     Logger.info('ExitCode:', exitCode);
+    Logger.info('Elapsed:', timespan + ' ms');
+
     process.exit(exitCode);
   }
 }

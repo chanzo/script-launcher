@@ -103,6 +103,7 @@ You would use: `npm start` to start the menu.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
+  * [Conditions and exclusions](#conditions-and-exclusions)
   * [Interactive menu](#interactive-menu)
 * [Launcher environment values](#launcher-environment-values)
 * [Launcher arguments](#launcher-arguments)
@@ -297,6 +298,8 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Inline script blocks
+This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
+
 Run `npm start build-stuff` to use this example.
 ``` JSON
 {
@@ -308,17 +311,60 @@ Run `npm start build-stuff` to use this example.
       "echo Completed job : $job"
     ],
     "build-stuff": [
+      [
+        "background:1:3000",
+        "background:2:5000"
+      ],
       {
-        "concurrent": [
-          "background:1:3000",
-          "background:2:5000"
+        "sequential": [
+          "echo Sequential job : 3",
+          "sleep:1000",
+          "echo Sequential job : 4",
+          "sleep:1000"
+        ]
+      }
+    ]
+  }
+}
+```
+
+
+### Conditions and exclusions
+* **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
+* **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
+
+Condition and exclusion can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
+
+Run `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      {
+        "exclusion": "node_modules_test",
+        "sequential": [
+          "echo npm install",
+          "mkdir node_modules_test"
         ]
       },
-      "echo Sequential job : 3",
-      "sleep:1000",
-      "echo Sequential job : 4",
-      "sleep:1000"
+      {
+        "condition": "node_modules_test",
+        "sequential": [
+          "echo npm start",
+          {
+            "condition": "'$LAUNCH_PLATFORM'==='win32'",
+            "sequential": "del /q node_modules_test"
+          },
+          {
+            "condition": "'$LAUNCH_PLATFORM'!=='win32'",
+            "sequential": "rm -d node_modules_test"
+          }
+        ]
+      }
     ]
+  },
+  "options": {
+    "logLevel": 3
   }
 }
 ```
@@ -376,6 +422,8 @@ Run `npm start` to use this example.
 * LAUNCH_ORANGE
 * LAUNCH_RED
 * LAUNCH_YELLOW
+* LAUNCH_PLATFORM
+* LAUNCH_VERSION
 
 ## Launcher arguments
 Use the help for a list of available options.
