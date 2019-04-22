@@ -1,11 +1,11 @@
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
-import { SpawnOptions } from 'child_process';
-import { Process } from './spawn-process';
-import * as stringArgv from 'string-argv';
+import { ISpawnOptions, Process } from './spawn-process';
+import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
+import glob = require('glob');
 
 interface ITasks {
   condition: string[];
@@ -50,7 +50,21 @@ export class Executor {
     return text;
   }
 
-  private static getCommandInfo(command: string, options: SpawnOptions): { command: string, args: string[], options: SpawnOptions } {
+  private static expandGlobs(pattern: string, options?: glob.IOptions): string {
+    const result: string[] = [];
+
+    for (const item of pattern.split(' ')) {
+      let value = [item];
+
+      if (item && glob.hasMagic(item, options)) value = glob.sync(item, options);
+
+      result.push(...value);
+    }
+
+    return result.join(' ');
+  }
+
+  private static getCommandInfo(command: string, options: ISpawnOptions): { command: string, args: string[], options: ISpawnOptions } {
     if (!command) command = '';
 
     options = { ...options };
@@ -60,9 +74,15 @@ export class Executor {
     let args = [];
 
     if (!options.shell) {
-      args = stringArgv(command);
+      args = parseArgsStringToArgv(command);
       command = args[0];
       args.shift();
+    }
+
+    if (command === '') {
+      console.log();
+
+      return { command: null, args, options };
     }
 
     if (command === 'echo') {
@@ -75,6 +95,18 @@ export class Executor {
       console.log(''.padEnd(process.stdout.columns, '-'));
 
       return { command: null, args, options };
+    }
+
+    if (command.startsWith('#')) {
+      Logger.log(Colors.Bold + 'Skipping action' + Colors.Normal + ' : ' + Colors.Green + '"' + command + Colors.Normal + Colors.Green + '"' + Colors.Normal, args);
+
+      return { command: null, args, options };
+    }
+
+    if (command.endsWith(' || true')) {
+      command = command.replace(/ \|\| true$/, '');
+
+      options.suppress = true;
     }
 
     // Test whether the command represents the assignment of an environment variable
@@ -123,10 +155,11 @@ export class Executor {
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
     const tasks = this.expand(scriptInfo);
-    const options: SpawnOptions = {
+    const options: ISpawnOptions = {
       stdio: 'inherit',
       env: this.environment,
       shell: this.shell,
+      suppress: false,
     };
 
     Logger.info('Script name     :', scriptInfo.name);
@@ -210,11 +243,13 @@ export class Executor {
     return result;
   }
 
-  private async executeTasks(tasks: Array<ITasks | string>, options: SpawnOptions, order: Order): Promise<IProcesses> {
+  private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order): Promise<IProcesses> {
     const processes: IProcesses = [];
     const milliseconds = (new Date(options.env.LAUNCH_START)).getTime();
+    const suppress = options.suppress;
 
     for (const task of tasks) {
+      options.suppress = suppress;
 
       if (typeof task === 'string') {
         const info = Executor.getCommandInfo(task, options);
@@ -225,10 +260,14 @@ export class Executor {
           options.env.LAUNCH_CURRENT = getCurrentTime();
           options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds) + ' ms';
 
-          const command = Executor.expandEnvironment(info.command, options.env, true);
+          let command = Executor.expandEnvironment(info.command, options.env, true);
 
-          Logger.log(Colors.Bold + 'Spawn process   : ' + Colors.Normal + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
-          Logger.log('Spawn order     : ' + Colors.Cyan + Order[order] + Colors.Normal);
+          command = Executor.expandGlobs(command, {
+            cwd: options.cwd,
+          });
+
+          Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '"' + command + Colors.Normal + Colors.Green + '"' + Colors.Normal, info.args);
+          Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
           const process = Process.spawn(command, info.args, options);
 
@@ -259,10 +298,8 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(constraint: string, options: SpawnOptions): Promise<boolean> {
+  private async evaluateConstraint(constraint: string, options: ISpawnOptions): Promise<boolean> {
     options = { ...options };
-
-    if (!options.cwd) options.cwd = '';
 
     const evaluateExpression = eval;
 
@@ -299,11 +336,19 @@ export class Executor {
     }
   }
 
-  private async evaluateTask(task: ITasks, options: SpawnOptions): Promise<boolean> {
+  private async evaluateTask(task: ITasks, options: ISpawnOptions): Promise<boolean> {
     let condition = true;
     let exclusion = false;
 
-    for (const constraint of task.condition) {
+    options = { ...options };
+
+    if (!options.cwd) options.cwd = '';
+
+    for (let constraint of task.condition) {
+      constraint = Executor.expandGlobs(constraint, {
+        cwd: options.cwd,
+      });
+
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
       if (!await this.evaluateConstraint(constraint, options)) {
@@ -312,7 +357,11 @@ export class Executor {
       }
     }
 
-    for (const constraint of task.exclusion) {
+    for (let constraint of task.exclusion) {
+      constraint = Executor.expandGlobs(constraint, {
+        cwd: options.cwd,
+      });
+
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
       if (await this.evaluateConstraint(constraint, options)) {
