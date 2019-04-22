@@ -1,10 +1,11 @@
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { ISpawnOptions, Process } from './spawn-process';
-import * as stringArgv from 'string-argv';
+import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
+import glob = require('glob');
 
 interface ITasks {
   condition: string[];
@@ -49,6 +50,20 @@ export class Executor {
     return text;
   }
 
+  private static expandGlobs(pattern: string, options?: glob.IOptions): string {
+    const result: string[] = [];
+
+    for (const item of pattern.split(' ')) {
+      let value = [item];
+
+      if (item && glob.hasMagic(item, options)) value = glob.sync(item, options);
+
+      result.push(...value);
+    }
+
+    return result.join(' ');
+  }
+
   private static getCommandInfo(command: string, options: ISpawnOptions): { command: string, args: string[], options: ISpawnOptions } {
     if (!command) command = '';
 
@@ -59,7 +74,7 @@ export class Executor {
     let args = [];
 
     if (!options.shell) {
-      args = stringArgv(command);
+      args = parseArgsStringToArgv(command);
       command = args[0];
       args.shift();
     }
@@ -210,6 +225,7 @@ export class Executor {
     for (let constraint of constraints) {
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
+      constraint = Executor.expandGlobs(constraint);
 
       const scripts = this.scripts.find(constraint);
       const scriptInfo = Scripts.select(scripts, parent);
@@ -351,6 +367,7 @@ export class Executor {
       if (typeof task === 'string') {
         task = Executor.expandArguments(task, args);
         task = Executor.expandEnvironment(task, environment);
+        task = Executor.expandGlobs(task);
 
         const scripts = this.scripts.find(task);
         const scriptInfo = Scripts.select(scripts, parent);
