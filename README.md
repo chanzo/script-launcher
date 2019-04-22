@@ -41,7 +41,8 @@ npm publish
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
 
 ### Dependencies 
-* [cross-spawn - A cross platform solution to node's spawn and spawnSync.](https://www.npmjs.com/package/cross-spawn)
-* [Inquirer.js - A collection of common interactive command line user interfaces.](https://www.npmjs.com/package/inquirer)
-* [string-argv - Parses a string into an argument array to mimic process.argv.](https://www.npmjs.com/package/string-argv)
-* [deepmerge - Merges the enumerable attributes of two or more objects deeply.](https://www.npmjs.com/package/deepmerge)
+* [cross-spawn](https://www.npmjs.com/package/cross-spawn) - A cross platform solution to node's spawn and spawnSync.            
+* [deepmerge](https://www.npmjs.com/package/deepmerge) - Merges the enumerable attributes of two or more objects deeply.     
+* [glob](https://www.npmjs.com/package/glob) - Match files using the patterns the shell uses, like stars and stuff.
+* [Inquirer.js](https://www.npmjs.com/package/inquirer) - A collection of common interactive command line user interfaces.    
+* [string-argv](https://www.npmjs.com/package/string-argv) - Parses a string into an argument array to mimic process.argv.       
