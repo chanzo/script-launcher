@@ -101,7 +101,7 @@ You would use: `npm start` to start the menu.
   * [Reference scripts](#reference-scripts)
   * [Environment values and special commands](#environment-values-and-special-commands)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
-  * [Globs patterns](#globs-patterns)
+  * [Glob patterns](#glob-patterns)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
@@ -285,7 +285,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 }
 ```
 
-### Globs patterns
+### Glob patterns
 Run `npm start build-stuff` to use this example.
 ``` JSON
 {
