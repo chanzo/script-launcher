@@ -101,6 +101,7 @@ You would use: `npm start` to start the menu.
   * [Reference scripts](#reference-scripts)
   * [Environment values and special commands](#environment-values-and-special-commands)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
+  * [Globs patterns](#globs-patterns)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
@@ -279,6 +280,20 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
       "echo Argument 2 : $2",
       "echo All arguments: $*",
       "echo Environment : $environment"
+    ]
+  }
+}
+```
+
+### Globs patterns
+Run `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "node_modules/script-launcher",
+      "echo All files: *",
+      "echo Markdown files: **/*.md"
     ]
   }
 }

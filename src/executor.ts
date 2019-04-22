@@ -225,7 +225,6 @@ export class Executor {
     for (let constraint of constraints) {
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
-      constraint = Executor.expandGlobs(constraint);
 
       const scripts = this.scripts.find(constraint);
       const scriptInfo = Scripts.select(scripts, parent);
@@ -261,7 +260,11 @@ export class Executor {
           options.env.LAUNCH_CURRENT = getCurrentTime();
           options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds) + ' ms';
 
-          const command = Executor.expandEnvironment(info.command, options.env, true);
+          let command = Executor.expandEnvironment(info.command, options.env, true);
+
+          command = Executor.expandGlobs(command, {
+            cwd: options.cwd,
+          });
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '"' + command + Colors.Normal + Colors.Green + '"' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
@@ -339,7 +342,11 @@ export class Executor {
     let condition = true;
     let exclusion = false;
 
-    for (const constraint of task.condition) {
+    for (let constraint of task.condition) {
+      constraint = Executor.expandGlobs(constraint, {
+        cwd: options.cwd,
+      });
+
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
       if (!await this.evaluateConstraint(constraint, options)) {
@@ -348,7 +355,11 @@ export class Executor {
       }
     }
 
-    for (const constraint of task.exclusion) {
+    for (let constraint of task.exclusion) {
+      constraint = Executor.expandGlobs(constraint, {
+        cwd: options.cwd,
+      });
+
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
 
       if (await this.evaluateConstraint(constraint, options)) {
@@ -367,7 +378,6 @@ export class Executor {
       if (typeof task === 'string') {
         task = Executor.expandArguments(task, args);
         task = Executor.expandEnvironment(task, environment);
-        task = Executor.expandGlobs(task);
 
         const scripts = this.scripts.find(task);
         const scriptInfo = Scripts.select(scripts, parent);
