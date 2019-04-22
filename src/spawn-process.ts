@@ -59,7 +59,12 @@ export class Process {
           Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + timeSpan + ' ms');
           Logger.log();
           Logger.log();
-          reject(error);
+
+          if (options.suppress) {
+            resolve(0);
+          } else {
+            reject(error);
+          }
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
