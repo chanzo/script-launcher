@@ -56,7 +56,7 @@ export class Executor {
     for (const item of pattern.split(' ')) {
       let value = [item];
 
-      if (item && glob.hasMagic(item, options)) value = glob.sync(item, options);
+      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) value = glob.sync(item, options);
 
       result.push(...value);
     }
