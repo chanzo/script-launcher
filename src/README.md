@@ -234,8 +234,8 @@ Run `npm start deploy:tst` to use this example.
 * LAUNCH_YELLOW
 * Use "echo" or "" the output a blank line.
 * Use "--" to generate a line with the width of the terminal
-* Use "|| true" at the end of a line to suppress errors.
-* Use "#" to disable execution.
+* Use " || true" at the end of a line to suppress errors.
+* Use "#" to disable execution for a line.
 
 Run `npm start build-stuff` to use this example.
 ```JSON
