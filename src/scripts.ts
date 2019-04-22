@@ -40,7 +40,7 @@ export class Scripts {
     const args = stringArgv(pattern);
 
     return {
-      command: args[0],
+      command: args.length > 0 ? args[0] : '',
       arguments: args.slice(1),
     };
   }

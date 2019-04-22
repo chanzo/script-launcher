@@ -232,8 +232,12 @@ Run `npm start deploy:tst` to use this example.
 * LAUNCH_NORMAL
 * LAUNCH_RED
 * LAUNCH_YELLOW
+* Use "echo" or "" the output a blank line.
 * Use "--" to generate a line with the width of the terminal
+* Use "|| true" at the end of a line to suppress errors.
+* Use "#" to disable execution.
 
+Run `npm start build-stuff` to use this example.
 ```JSON
 {
   "scripts": {
@@ -244,8 +248,12 @@ Run `npm start deploy:tst` to use this example.
       "--",
       "echo Color: ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
       "echo Color: ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
+      "echo",
       "echo Color: ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
       "echo Color: ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
+      "",
+      "# The error of the next action will be suppressed",
+      "exit 1 || true",
       "echo Color: ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
       "echo Color: ${LAUNCH_RED}Red$LAUNCH_NORMAL",
       "echo Color: ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
