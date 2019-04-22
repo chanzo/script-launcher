@@ -301,8 +301,6 @@ export class Executor {
   private async evaluateConstraint(constraint: string, options: ISpawnOptions): Promise<boolean> {
     options = { ...options };
 
-    if (!options.cwd) options.cwd = '';
-
     const evaluateExpression = eval;
 
     try {
@@ -341,6 +339,10 @@ export class Executor {
   private async evaluateTask(task: ITasks, options: ISpawnOptions): Promise<boolean> {
     let condition = true;
     let exclusion = false;
+
+    options = { ...options };
+
+    if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
       constraint = Executor.expandGlobs(constraint, {
