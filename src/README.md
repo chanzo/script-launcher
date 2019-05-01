@@ -13,7 +13,60 @@
 
 # Script Launcher
 
-Extend your **package.json** scripts with features like: functions, arrays, concurrency and many more. Script Launcher is specialized to work on Mac, Linux and Windows. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Extend your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. Script Launcher is specialized to work on Mac, Linux and Windows. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+
+![alt text](usage-animation.gif "Script launcher usage example")
+
+## Installation
+
+Install **script-launcher** as a development dependency in your project.
+``` bash
+npm install script-launcher --save-dev
+```
+
+Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json**file.
+``` bash
+"node_modules/.bin/launch" init
+```
+
+Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that start `launch` , the name of the custom script is then used as the launch script to start.
+``` json
+{
+    ...
+    "scripts": {
+        "start": "launch",
+        ...
+    },
+    ...
+}
+```
+You are now ready to start use Script Launcher, by running `npm start <<launch script name>>` as described in the [examples](#implementation-examples) below.
+
+# Table of Contents
+* [Installation](#installation)
+* [Motivation](#motivation)
+* [Usage examples](#usage-examples)
+* [Implementation examples](#implementation-examples)
+  * [Sequential scripts](#sequential-scripts)
+  * [Change directory](#change-directory)
+  * [Parameters and functions](#parameters-and-functions)
+  * [Reference scripts](#reference-scripts)
+  * [Environment values and special commands](#environment-values-and-special-commands)
+  * [Environment and command line argument values](#environment-and-command-line-argument-values)
+  * [Glob patterns](#glob-patterns)
+  * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
+  * [Concurrent scripts](#concurrent-scripts)
+  * [Inline script blocks](#inline-script-blocks)
+  * [Conditions and exclusions](#conditions-and-exclusions)
+  * [Interactive menu](#interactive-menu)
+* [Launcher arguments](#launcher-arguments)
+* [Launcher options](#launcher-options)
+  * [Launcher files](#launcher-files)
+  * [Script shell](#script-shell)
+  * [Menu defaults](#menu-defaults)
+  * [Debug logging](#debug-logging)
+
+## Motivation
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
@@ -90,54 +143,6 @@ It's also possible to extend the example with an interactive menu, so a new deve
   }
 ```
 You would use: `npm start` to start the menu.
-
-# Table of Contents
-* [Installation](#installation)
-* [Usage examples](#usage-examples)
-* [Implementation examples](#implementation-examples)
-  * [Sequential scripts](#sequential-scripts)
-  * [Change directory](#change-directory)
-  * [Parameters and functions](#parameters-and-functions)
-  * [Reference scripts](#reference-scripts)
-  * [Environment values and special commands](#environment-values-and-special-commands)
-  * [Environment and command line argument values](#environment-and-command-line-argument-values)
-  * [Glob patterns](#glob-patterns)
-  * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
-  * [Concurrent scripts](#concurrent-scripts)
-  * [Inline script blocks](#inline-script-blocks)
-  * [Conditions and exclusions](#conditions-and-exclusions)
-  * [Interactive menu](#interactive-menu)
-* [Launcher arguments](#launcher-arguments)
-* [Launcher options](#launcher-options)
-  * [Launcher files](#launcher-files)
-  * [Script shell](#script-shell)
-  * [Menu defaults](#menu-defaults)
-  * [Debug logging](#debug-logging)
-
-## Installation
-
-Install **script-launcher** as a development dependency in your project.
-``` bash
-npm install script-launcher --save-dev
-```
-
-Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json**file.
-``` bash
-"node_modules/.bin/launch" init
-```
-
-Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, the name of the custom script is then used as the launch script to start.
-``` json
-{
-    ...
-    "scripts": {
-        "start": "launch",
-        ...
-    },
-    ...
-}
-```
-You are now ready to start use Script Launcher, by running `npm start <<launch script name>>` as described in the examples below.
 
 ## Usage examples
 
