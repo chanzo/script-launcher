@@ -29,7 +29,7 @@ Use **launch init** to create the starter **launcher-config.json** and **launche
 "node_modules/.bin/launch" init
 ```
 
-Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that start `launch` , the name of the custom script is then used as the launch script to start.
+Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that will start `launch`. The name of the custom script is then used as the launch script to start.
 ``` json
 {
     ...
@@ -40,12 +40,26 @@ Change your **package.json** start script, so it will start script launcher. If 
     ...
 }
 ```
-You are now ready to start use Script Launcher, by running `npm start <<launch script name>>` as described in the [examples](#implementation-examples) below.
+You are now ready to start use Script Launcher by running: `npm start <<launch script name>>` as described in the [examples](#implementation-examples) below.
+
+## Usage examples
+
+Show menu
+```
+npm start
+```
+
+Start a specific launch script
+```
+npm start serve:dev
+npm start build:prd
+```
+Basically you can now use `npm start` instead of `npm run`.
 
 # Table of Contents
 * [Installation](#installation)
-* [Motivation](#motivation)
 * [Usage examples](#usage-examples)
+* [Motivation](#motivation)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
   * [Change directory](#change-directory)
@@ -75,14 +89,14 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 {
   "scripts": {
     ...
-    "build:uva:dev": "ng build uva --prod --configuration=dev",
-    "build:uva:tst": "ng build uva --prod --configuration=tst",
-    "build:uva:acc": "ng build uva --prod --configuration=acc",
-    "build:uva:prd": "ng build uva --prod --configuration=prd",
-    "build:hva:dev": "ng build hva --prod --configuration=dev",
-    "build:hva:tst": "ng build hva --prod --configuration=tst",
-    "build:hva:acc": "ng build hva --prod --configuration=acc",
-    "build:hva:prd": "ng build hva --prod --configuration=prd",
+    "build:uva:dev": "ng build uva --prod -c=dev",
+    "build:uva:tst": "ng build uva --prod -c=tst",
+    "build:uva:acc": "ng build uva --prod -c=acc",
+    "build:uva:prd": "ng build uva --prod -c=prd",
+    "build:hva:dev": "ng build hva --prod -c=dev",
+    "build:hva:tst": "ng build hva --prod -c=tst",
+    "build:hva:acc": "ng build hva --prod -c=acc",
+    "build:hva:prd": "ng build hva --prod -c=prd",
     "deploy:uva:dev": "npm run build:uva:dev && firebase deploy --public dist/uva --project status-uva-dev",
     "deploy:uva:tst": "npm run build:uva:tst && firebase deploy --public dist/uva --project status-uva-tst",
     "deploy:uva:acc": "npm run build:uva:acc && firebase deploy --public dist/uva --project status-uva-acc",
@@ -106,7 +120,7 @@ With **script-launcher** you have the benefits of using variables, script refere
 {
   "scripts": {
     ...
-    "build:$project:$config": "ng build $project --prod --configuration=$config",
+    "build:$project:$config": "ng build $project --prod -c=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
       "firebase deploy --public dist/$project --project $project-$config"
@@ -119,7 +133,7 @@ With **script-launcher** you have the benefits of using variables, script refere
   }
 }
 ```
-To start this example you would use: `npm start build:uva:tst` or `npm start deploy:prd` etc.
+To start this example you would use: `npm start build:uva:tst`, `npm start deploy:prd` etc.
 
 It's also possible to extend the example with an interactive menu, so a new developer can get start on your project more easily:
 ``` JSON
@@ -144,25 +158,11 @@ It's also possible to extend the example with an interactive menu, so a new deve
 ```
 You would use: `npm start` to start the menu.
 
-## Usage examples
-
-Show menu
-```
-npm start
-```
-
-Start a specific launch script
-```
-npm start serve:dev
-npm start build:prd
-```
-Basically you can now use `npm start` instead of `npm run`.
-
 ## Implementation examples
 To test an example, copy the json content from the example to the file named **launcher-config.json** and run the script.
 
 ### Sequential scripts
-This example uses square brackets to start multiple script one by one. This feature makes long script lines more readable.
+This example uses square brackets to start multiple script one by one. This feature can makes long script lines more readable.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -178,7 +178,7 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Change directory
-Specify an existing directory as an script command and it will change to that directory for the next scripts to execute. This can be handy if your script have to be run from a different location.
+Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from a different location.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -291,6 +291,8 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ```
 
 ### Glob patterns
+Script launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
+
 Run `npm start build-stuff` to use this example.
 ``` JSON
 {
@@ -491,13 +493,18 @@ By using this option it's possible the split your configuration over multiple fi
 
 The default value of this list is presented in the following example:
 ``` JSON
-"options": {
-  "files": [
-    "launcher-config.json",
-    "launcher-scripts.json",
-    "launcher-menu.json",
-    "launcher-custom.json",
-  ]
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "files": [
+      "launcher-config.json",
+      "launcher-scripts.json",
+      "launcher-menu.json",
+      "launcher-custom.json",
+    ]
+  }
 }
 ```
 
@@ -506,17 +513,22 @@ The **script shell** options can be used to configure the spawn shell, this valu
 
 Example shell option for specific platform
 ``` JSON
-"options": {
-  "script": {
-    "shell": {
-      "aix":"bash",
-      "darwin":"bash",
-      "freebsd":"bash",
-      "linux":"bash",
-      "openbsd":"bash",
-      "sunos":"bash",
-      "win32":"cmd.exe",
-      "default":"bash"
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "script": {
+      "shell": {
+        "aix":"bash",
+        "darwin":"bash",
+        "freebsd":"bash",
+        "linux":"bash",
+        "openbsd":"bash",
+        "sunos":"bash",
+        "win32":"cmd.exe",
+        "default":"bash"
+      }
     }
   }
 }
@@ -524,9 +536,14 @@ Example shell option for specific platform
 
 The default value is presented in the following example:
 ``` JSON
-"options": {
-  "script": {
-    "shell": true
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "script": {
+      "shell": true
+    }
   }
 }
 ```
@@ -536,10 +553,15 @@ The **menu defaultChoice** option can be used to specify the default selected en
 
 The default value is presented in the following example:
 ``` JSON
-"options": {
-  "menu": {
-    "defaultChoice": "",
-    "defaultScript": ""
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "",
+      "defaultScript": ""
+    }
   }
 }
 ```
@@ -549,7 +571,12 @@ The **logLevel** option is used for configuring the script launcher log level, a
 
 The default value is presented in the following example:
 ``` JSON
-"options": {
-  "logLevel": 0
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "logLevel": 0
+  }
 }
 ```
