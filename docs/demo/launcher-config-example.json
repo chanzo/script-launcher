@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "lint": "echo tslint --config tslint.json src/**/*.ts",
+    "build:$config": "echo ng build --prod --config=$config",
+    "deploy:$config": [
+      "lint",
+      "build:$config",
+      "echo firebase deploy --public dist --project $config"
+    ]
+  }
+}

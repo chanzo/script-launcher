@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Enhances you package.json scripts with arrays, functions and many more.",
   "main": "launch.js",
   "keywords": [
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/chanzo/script-launcher.git"
   },
-  "author": "Bas Heerschop",
+  "author": "Chanzo Wazi",
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "^6.0.5",
