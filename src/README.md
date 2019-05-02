@@ -3,9 +3,6 @@
 [![downloads-image](https://img.shields.io/npm/dm/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
 [![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
 [![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
-
-[![NPM](https://nodei.co/npm/script-launcher.png?compact=false)](https://www.npmjs.com/package/script-launcher)
-
 [![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
 
 [![GitHub forks](https://img.shields.io/github/forks/chanzo/script-launcher.svg?style=social&label=Fork)](https://github.com/chanzo/script-launcher/fork)
@@ -225,23 +222,26 @@ Run `npm start deploy:tst` to use this example.
 ```
 
 ### Environment values and special commands
-* LAUNCH_VERSION
-* LAUNCH_PLATFORM
-* LAUNCH_START
-* LAUNCH_CURRENT
-* LAUNCH_ELAPSED
-* LAUNCH_BLUE
-* LAUNCH_BOLD
-* LAUNCH_CYAN
-* LAUNCH_DIM
-* LAUNCH_GREEN
-* LAUNCH_NORMAL
-* LAUNCH_RED
-* LAUNCH_YELLOW
-* Use "echo" or "" the output a blank line.
-* Use "--" to generate a line with the width of the terminal
-* Use " || true" at the end of a line to suppress errors.
-* Use "#" to disable execution for a line.
+| Pattern             | Type          | Description                                       |
+| ------------------- | ------------- | ------------------------------------------------- |
+| **LAUNCH_VERSION**  | Environment   | Launcher Version number                           |
+| **LAUNCH_PLATFORM** | Environment   | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
+| **LAUNCH_START**    | Environment   | Start time                                        |
+| **LAUNCH_CURRENT**  | Environment   | Current time                                      |
+| **LAUNCH_ELAPSED**  | Environment   | Elapsed time                                      |
+| **LAUNCH_BLUE**     | Environment   | <span style="color:#0000FF">**Blue text**</span>  |
+| **LAUNCH_BOLD**     | Environment   | **Bold text**                                     |
+| **LAUNCH_CYAN**     | Environment   | <span style="color:#00FFFF">**Cyan text**</span>  |
+| **LAUNCH_DIM**      | Environment   | <span style="color:#707070">**Dim text**</span>   |
+| **LAUNCH_GREEN**    | Environment   | <span style="color:#00FF00">**Green text**</span> |
+| **LAUNCH_NORMAL**   | Environment   | Nomal text                                        |
+| **LAUNCH_RED**      | Environment   | <span style="color:#FF0000">**Cyan text**</span>  |
+| **LAUNCH_YELLOW**   | Environment   | <span style="color:#FFFF00">**Cyan text**</span>  |
+| **"echo"**          | Command       | Output an empty line                              |
+| **""**              | Command       | Output an empty line                              |
+| **"--"**            | Command       | Line with the width of the terminal               |
+| **" \|\| true"**    | Command       | Added at the end of a command to suppress errors  |
+| **"#"**             | Command       | Disable execution for a command                   |
 
 Run `npm start build-stuff` to use this example.
 ```JSON
