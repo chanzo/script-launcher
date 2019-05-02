@@ -21,7 +21,7 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json**file.
+Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json** file.
 ``` bash
 "node_modules/.bin/launch" init
 ```
@@ -235,8 +235,8 @@ Run `npm start deploy:tst` to use this example.
 | **LAUNCH_DIM**      | Environment   | <span style="color:#707070">**Dim text**</span>   |
 | **LAUNCH_GREEN**    | Environment   | <span style="color:#00FF00">**Green text**</span> |
 | **LAUNCH_NORMAL**   | Environment   | Nomal text                                        |
-| **LAUNCH_RED**      | Environment   | <span style="color:#FF0000">**Cyan text**</span>  |
-| **LAUNCH_YELLOW**   | Environment   | <span style="color:#FFFF00">**Cyan text**</span>  |
+| **LAUNCH_RED**      | Environment   | <span style="color:#FF0000">**Red text**</span>   |
+| **LAUNCH_YELLOW**   | Environment   | <span style="color:#FFFF00">**Yellow text**</span>|
 | **"echo"**          | Command       | Output an empty line                              |
 | **""**              | Command       | Output an empty line                              |
 | **"--"**            | Command       | Line with the width of the terminal               |
