@@ -1,0 +1,17 @@
+{
+  "menu": {
+    "description": "action",
+    "lint": "lint",
+    "build": {
+      "description": "environment",
+      "acceptance": "build:acc",
+      "production": "build:production"
+    },
+    "deploy": {
+      "description": "environment",
+      "acceptance": "deploy:acc",
+      "production": "deploy:production"
+    }
+  },
+  "options": {}
+}

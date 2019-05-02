@@ -1,0 +1,14 @@
+{
+  "name": "script-launcher-example",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "launch"
+  },
+  "author": "Chanzo Wazi",
+  "license": "MIT",
+  "devDependencies": {
+    "@angular/cli": "^8.0.0-rc.2",
+    "firebase-tools": "^6.7.2",
+    "script-launcher": "^1.6.3"
+  }
+}
