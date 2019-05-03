@@ -3,8 +3,12 @@ import { ChildProcess, SpawnOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
 
+export interface ISpawnOptions extends SpawnOptions {
+  suppress?: boolean;
+}
+
 export class Process {
-  public static spawn(command: string, args: string[], options: SpawnOptions): Process {
+  public static spawn(command: string, args: string[], options: ISpawnOptions): Process {
     if (Logger.level > 1 && options) {
       options = { ...options };
       options.stdio = ['inherit', 'pipe', 'pipe'];
@@ -15,14 +19,14 @@ export class Process {
 
     if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
 
-    return new Process(childProcess, startTime);
+    return new Process(childProcess, startTime, options);
   }
 
   public readonly pid: number;
   private outputCount = 0;
   private readonly exitPromise: Promise<number>;
 
-  private constructor(childProcess: ChildProcess, startTime: number) {
+  private constructor(childProcess: ChildProcess, startTime: number, options: ISpawnOptions) {
     this.pid = childProcess.pid;
 
     if (Logger.level > 1) {
@@ -43,6 +47,8 @@ export class Process {
           Logger.log();
           Logger.log();
 
+          if (options.suppress) code = 0;
+
           resolve(code);
         });
 
@@ -53,7 +59,12 @@ export class Process {
           Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + timeSpan + ' ms');
           Logger.log();
           Logger.log();
-          reject(error);
+
+          if (options.suppress) {
+            resolve(0);
+          } else {
+            reject(error);
+          }
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));

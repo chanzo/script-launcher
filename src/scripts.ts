@@ -1,4 +1,4 @@
-import * as stringArgv from 'string-argv';
+import { parseArgsStringToArgv } from 'string-argv';
 
 export interface IScriptTask {
   condition: string[] | string;
@@ -37,10 +37,10 @@ export class Scripts {
   }
 
   public static parse(pattern: string): { command: string, arguments: string[] } {
-    const args = stringArgv(pattern);
+    const args = parseArgsStringToArgv(pattern);
 
     return {
-      command: args[0],
+      command: args.length > 0 ? args[0] : '',
       arguments: args.slice(1),
     };
   }

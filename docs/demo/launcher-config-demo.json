@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "deploy:$config": [
+      "echo Deploying production environment",
+      "--",
+      "echo Linting: ${LAUNCH_DIM}source files.$LAUNCH_NORMAL",
+      "sleep 2",
+      "echo Compiling: ${LAUNCH_DIM}source files...$LAUNCH_NORMAL",
+      "sleep 2",
+      "echo Creating: ${LAUNCH_DIM}artifacts..$LAUNCH_NORMAL",
+      "sleep 2",
+      "echo Deploying: ${LAUNCH_DIM}artifacts to server......$LAUNCH_NORMAL",
+      "sleep 2",
+      "--",
+      "echo ${LAUNCH_BOLD}Completed:$LAUNCH_NORMAL $LAUNCH_ELAPSED",
+      "echo"
+    ]
+  }
+}
