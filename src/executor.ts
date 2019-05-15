@@ -245,7 +245,7 @@ export class Executor {
 
   private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order): Promise<IProcesses> {
     const processes: IProcesses = [];
-    const milliseconds = (new Date(options.env.LAUNCH_START)).getTime();
+    const milliseconds = (new Date(options.env.launch_time_start)).getTime();
     const suppress = options.suppress;
 
     for (const task of tasks) {
@@ -257,8 +257,8 @@ export class Executor {
         options = info.options;
 
         if (info.command) {
-          options.env.LAUNCH_CURRENT = getCurrentTime();
-          options.env.LAUNCH_ELAPSED = (Date.now() - milliseconds) + ' ms';
+          options.env.launch_time_current = getCurrentTime();
+          options.env.launch_time_elapsed = (Date.now() - milliseconds) + ' ms';
 
           let command = Executor.expandEnvironment(info.command, options.env, true);
 

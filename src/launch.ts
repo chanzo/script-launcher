@@ -1,6 +1,6 @@
 #!./node_modules/.bin/ts-node --skip-project
 
-import { Config, IConfig } from './config-loader';
+import { Config, IConfig, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
@@ -72,13 +72,31 @@ function disableAnsiColors() {
   }
 }
 
-function setLauncherEnviromentValues() {
+function setLauncherEnviromentValues(settings: ISettings) {
   for (const [key, value] of Object.entries(Colors)) {
-    process.env['LAUNCH_' + key.toUpperCase()] = value;
+    process.env['launch_style_' + key.toLowerCase()] = value;
   }
-  process.env.LAUNCH_START = getCurrentTime();
-  process.env.LAUNCH_PLATFORM = process.platform;
-  process.env.LAUNCH_VERSION = version;
+  process.env.launch_time_start = getCurrentTime();
+  process.env.launch_platform = process.platform;
+  process.env.launch_version = version;
+
+  for (const [key, value] of Object.entries(parseLaunchSetting(settings))) {
+    process.env[key] = value;
+  }
+}
+
+function parseLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
+  let result: { [name: string]: string } = {};
+
+  for (const [key, value] of Object.entries(settings)) {
+    if (typeof value === 'object') {
+      result = { ...result, ...parseLaunchSetting(value, prefix + key + '_') };
+    } else {
+      result[prefix + key.toLowerCase()] = value as string;
+    }
+  }
+
+  return result;
 }
 
 async function main(): Promise<void> {
@@ -110,7 +128,7 @@ async function main(): Promise<void> {
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
-    setLauncherEnviromentValues();
+    setLauncherEnviromentValues(config.settings);
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 
@@ -141,7 +159,7 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
-    Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
+    Logger.info(Colors.Bold + 'Date              :', process.env.launch_time_start + Colors.Normal);
     Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);

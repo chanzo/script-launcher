@@ -19,11 +19,15 @@ interface IOptions {
     defaultChoice: string;
   };
 }
+export interface ISettings {
+  [name: string]: boolean | string | number | ISettings;
+}
 
 export interface IConfig {
   scripts: IScripts;
   menu: IMenu;
   options: IOptions;
+  settings: ISettings;
 }
 
 export class Config {
@@ -56,6 +60,9 @@ export class Config {
         defaultChoice: '',
         defaultScript: '',
       },
+    },
+    settings: {
+
     },
   };
 
@@ -166,11 +173,13 @@ export class Config {
   public readonly scripts: Scripts;
   public readonly menu: IMenu;
   public readonly options: IOptions;
+  public readonly settings: ISettings;
 
   private constructor(config: IConfig) {
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
     this.options = config.options;
+    this.settings = config.settings;
   }
 
   public merge(file: string): Config {
@@ -179,6 +188,7 @@ export class Config {
       menu: this.menu,
       options: this.options,
       scripts: this.scripts.scripts,
+      settings: this.settings,
     };
     const config = deepmerge<IConfig>(current, require(absolutePath));
 

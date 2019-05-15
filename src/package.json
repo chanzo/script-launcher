@@ -4,16 +4,17 @@
   "description": "Enhances you package.json scripts with arrays, functions and many more.",
   "main": "launch.js",
   "keywords": [
+    "npm",
     "script",
+    "scripts",
+    "shell",
     "build",
     "environment",
     "windows",
     "concurrent",
     "parallel",
     "array",
-    "menu",
-    "multiple",
-    "command"
+    "menu"
   ],
   "bin": {
     "launch": "bin/launch.js"
