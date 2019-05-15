@@ -484,28 +484,30 @@ Use the help for a list of available options.
 "node_modules/.bin/launch" help
 ```
 ## Launcher settings
+The launcher settings can be used to specify named values that can be used by the launcher scripts.
+
 ``` JSON
 {
   "scripts": {
     "build:$environment": [
       "echo name: $launch_setting_name",
-      "echo version: $launch_setting_$environment_version",
-      "echo hostname: $launch_setting_$environment_hostname"
+      "echo version: $launch_setting_${environment}_version",
+      "echo hostname: $launch_setting_${environment}_hostname"
     ]
   },
   "settings": {
-    "name": "example",
+    "name": "www.example",
     "dev": {
       "version": "2.0.0",
-      "hostname": "$name.dev"
+      "hostname": "$launch_setting_name.dev.com"
     },
     "acc": {
       "version": "1.9.0",
-      "hostname": "$name.acc"
+      "hostname": "$launch_setting_name.acc.com"
     },
     "prd": {
       "version": "1.8.0",
-      "hostname": "$name.prd"
+      "hostname": "$launch_setting_name.prd.com"
     }
   }
 }

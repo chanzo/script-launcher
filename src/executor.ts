@@ -35,12 +35,18 @@ export class Executor {
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
-    for (const [name, value] of Object.entries(environment)) {
-      text = text.replace(new RegExp('\\$' + name + '([^\\w]|$)', 'g'), value + '$1');
-      text = text.replace(new RegExp('\\$\\{' + name + '\\}', 'g'), value);
+    let previousText: string;
 
-      if (!text.includes('$')) break;
-    }
+    do {
+      previousText = text;
+
+      for (const [name, value] of Object.entries(environment)) {
+        text = text.replace(new RegExp('\\$' + name + '([^\\w]|$)', 'g'), value + '$1');
+        text = text.replace(new RegExp('\\$\\{' + name + '\\}', 'g'), value);
+
+        if (!text.includes('$')) break;
+      }
+    } while (text.includes('$') && text !== previousText);
 
     if (!remove) return text;
 
