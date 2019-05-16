@@ -82,17 +82,17 @@ function setLauncherEnviromentValues(settings: ISettings) {
   process.env.launch_platform = process.platform;
   process.env.launch_version = version;
 
-  for (const [key, value] of Object.entries(parseLaunchSetting(settings))) {
+  for (const [key, value] of Object.entries(constructLaunchSetting(settings))) {
     process.env[key] = value;
   }
 }
 
-function parseLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
+function constructLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
   let result: { [name: string]: string } = {};
 
   for (const [key, value] of Object.entries(settings)) {
     if (typeof value === 'object') {
-      result = { ...result, ...parseLaunchSetting(value, prefix + key + '_') };
+      result = { ...result, ...constructLaunchSetting(value, prefix + key + '_') };
     } else {
       result[prefix + key.toLowerCase()] = value as string;
     }
