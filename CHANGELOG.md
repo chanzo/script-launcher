@@ -23,7 +23,25 @@
 * Implemented the `pretty-time` packages for better time formatting
 
 ### Fixes
-* Bug fix for using Condition and Exclusion on the first script level.
+* Bug fix so script parameters in an inline script block are now working.
+example:
+``` JSON
+{
+  "scripts": {
+    "build:$config": [
+      [
+        "echo Config: $config"
+      ],
+      {
+        "sequential": [
+          "echo Config: $config"
+        ]
+      }
+    ]
+  }
+}
+``` 
+* Bug fix so Condition and Exclusion on the first script level are now working.
 example:
 ``` JSON
 {

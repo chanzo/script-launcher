@@ -1,34 +1,14 @@
 {
   "scripts": {
     "build:$config": [
-      "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url",
-      "sleep 1",
-      "date",
-      "echo Time: $launch_time_start",
-      "echo Time: $launch_time_elapsed"
+      [
+        "echo Config: $config"
+      ],
+      {
+        "sequential": [
+          "echo Config: $config"
+        ]
+      }
     ]
-  },
-  "settings": {
-    "name": "example",
-    "dev": {
-      "version": "2.0.0",
-      "url": "$launch_setting_name.dev.com"
-    },
-    "acc": {
-      "version": "1.9.0",
-      "url": "$launch_setting_name.acc.com"
-    },
-    "production": {
-      "version": "1.8.0",
-      "url": "$launch_setting_name.prd.com"
-    }
-  },
-  "options": {
-    "logLevel": 2
-  },
-  "menu": {
-    "test": "build:dev"
   }
 }

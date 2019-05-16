@@ -233,8 +233,8 @@ export class Executor {
     return {
       condition: this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments),
       exclusion: this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments),
-      concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments),
-      sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments),
+      concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters),
+      sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters),
     };
   }
 
@@ -397,7 +397,7 @@ export class Executor {
     return condition && !exclusion;
   }
 
-  private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[]): Array<ITasks | string> {
+  private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
     for (let task of tasks) {
@@ -419,7 +419,7 @@ export class Executor {
         const scriptInfo: IScriptInfo = {
           name: 'inline-script-block',
           inline: true,
-          parameters: {},
+          parameters: parameters,
           arguments: args,
           script: task,
         };
