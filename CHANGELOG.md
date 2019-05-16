@@ -16,8 +16,24 @@
 * Renamed LAUNCH_YELLOW => launch_style_yellow
 * Renamed LAUNCH_VERSION => launch_version
 
-### Features
+### Changes
 * Add support for using settings
+* Updated `launch init` example
+* Updated README.md example
+* Implemented the `pretty-time` packages for better time formatting
 
 ### Fixes
-* 
+* Bug fix for using Condition and Exclusion on the first script level.
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "exclusion": "node_modules",
+      "sequential": [
+        "echo npm install"
+      ]
+    }
+  }
+}
+```

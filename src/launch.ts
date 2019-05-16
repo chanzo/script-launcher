@@ -9,6 +9,7 @@ import * as path from 'path';
 import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
 import { version } from './package.json';
+import prettyTime = require('pretty-time');
 
 interface IArgs {
   init: boolean;
@@ -76,6 +77,7 @@ function setLauncherEnviromentValues(settings: ISettings) {
   for (const [key, value] of Object.entries(Colors)) {
     process.env['launch_style_' + key.toLowerCase()] = value;
   }
+
   process.env.launch_time_start = getCurrentTime();
   process.env.launch_platform = process.platform;
   process.env.launch_version = version;
@@ -101,7 +103,7 @@ function parseLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { 
 
 async function main(): Promise<void> {
   let exitCode = 1;
-  let startTime = Date.now();
+  let startTime = process.hrtime();
 
   try {
     let config = Config.load();
@@ -150,6 +152,7 @@ async function main(): Promise<void> {
 
     if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
+      createExampleFile('launcher-settings.json', Config.initConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
       Logger.log();
       exitCode = 0;
@@ -199,16 +202,18 @@ async function main(): Promise<void> {
 
     const executor = new Executor(shell, process.env, config.scripts);
 
+    startTime = executor.startTime;
+
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
-    const timespan = Date.now() - startTime;
+    const timespan = process.hrtime(startTime);
 
     if (Logger.level < 2) Logger.info('');
 
     Logger.info('ExitCode:', exitCode);
-    Logger.info('Elapsed:', timespan + ' ms');
+    Logger.info('Elapsed: ' + prettyTime(timespan, 'ms'));
 
     process.exit(exitCode);
   }

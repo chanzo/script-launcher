@@ -49,6 +49,7 @@ export class Config {
       files: [
         'launcher-config.json',
         'launcher-scripts.json',
+        'launcher-settings.json',
         'launcher-menu.json',
         'launcher-custom.json',
       ],
@@ -77,12 +78,26 @@ export class Config {
           'serve:',
         ],
       },
-      'serve:$config': 'echo ng serve --configuration=$config',
-      'build:$config': 'echo ng build --configuration=$config',
+      'serve:$config': 'echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url',
+      'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
       'build:dev': 'build:',
     },
     options: {
     } as IOptions,
+  };
+
+  public static readonly settingsConfig: Partial<IConfig> = {
+    settings: {
+      dev: {
+        url: 'example.dev.com',
+      },
+      acc: {
+        url: 'example.acc.com',
+      },
+      production: {
+        url: 'example.prd.com',
+      },
+    },
   };
 
   public static readonly initMenu: Partial<IConfig> = {

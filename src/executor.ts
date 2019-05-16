@@ -6,6 +6,7 @@ import * as path from 'path';
 import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
 import glob = require('glob');
+import prettyTime = require('pretty-time');
 
 interface ITasks {
   condition: string[];
@@ -152,11 +153,13 @@ export class Executor {
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
+  public readonly startTime: [number, number];
 
   public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
     this.shell = shell;
     this.environment = environment;
     this.scripts = scripts;
+    this.startTime = process.hrtime();
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -176,10 +179,26 @@ export class Executor {
     Logger.info();
     Logger.log();
 
+    if (Logger.level > 1) {
+      const settings = Object.entries(process.env).filter(([key, value]) => key.startsWith('launch_setting_'));
+
+      Logger.log(Colors.Bold + 'Launcher Settings' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      for (const [key, value] of settings) {
+        Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + '\'' + value + '\'' + Colors.Normal);
+      }
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Total: ' + settings.length);
+      Logger.log();
+      Logger.log();
+    }
+
     const processes: IProcesses = [];
 
-    processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
-    processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
+    if (await this.evaluateTask(tasks, options)) {
+      processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
+      processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
+    }
 
     return Executor.wait(processes);
   }
@@ -251,7 +270,6 @@ export class Executor {
 
   private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order): Promise<IProcesses> {
     const processes: IProcesses = [];
-    const milliseconds = (new Date(options.env.launch_time_start)).getTime();
     const suppress = options.suppress;
 
     for (const task of tasks) {
@@ -264,7 +282,7 @@ export class Executor {
 
         if (info.command) {
           options.env.launch_time_current = getCurrentTime();
-          options.env.launch_time_elapsed = (Date.now() - milliseconds) + ' ms';
+          options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms')
 
           let command = Executor.expandEnvironment(info.command, options.env, true);
 
@@ -275,11 +293,11 @@ export class Executor {
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '"' + command + Colors.Normal + Colors.Green + '"' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
-          const process = Process.spawn(command, info.args, options);
+          const commandProcess = Process.spawn(command, info.args, options);
 
-          processes.push(process);
+          processes.push(commandProcess);
 
-          if (order === Order.sequential && await process.wait() !== 0) break;
+          if (order === Order.sequential && await commandProcess.wait() !== 0) break;
         }
       } else {
         if (await this.evaluateTask(task, options)) {
