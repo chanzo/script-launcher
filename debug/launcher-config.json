@@ -5,6 +5,8 @@
       "echo version: $launch_setting_${config}_version",
       "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url",
       "sleep 1",
+      "date",
+      "echo Time: $launch_time_start",
       "echo Time: $launch_time_elapsed"
     ]
   },
@@ -25,5 +27,8 @@
   },
   "options": {
     "logLevel": 2
+  },
+  "menu": {
+    "test": "build:dev"
   }
 }

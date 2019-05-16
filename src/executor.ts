@@ -149,11 +149,11 @@ export class Executor {
 
     return exitCode;
   }
+  public readonly startTime: [number, number];
 
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
-  public readonly startTime: [number, number];
 
   public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
     this.shell = shell;
@@ -282,7 +282,7 @@ export class Executor {
 
         if (info.command) {
           options.env.launch_time_current = getCurrentTime();
-          options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms')
+          options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
 
           let command = Executor.expandEnvironment(info.command, options.env, true);
 
