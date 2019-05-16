@@ -1,14 +1,24 @@
 {
   "scripts": {
-    "build:$config": [
-      [
-        "echo Config: $config"
-      ],
-      {
-        "sequential": [
-          "echo Config: $config"
-        ]
-      }
+    "build-stuff": [
+      "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
+      "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+      "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
+      "--",
+      "echo Color: ${launch_style_blue}Blue$launch_style_normal",
+      "echo Color: ${launch_style_bold}Bold$launch_style_normal",
+      "echo",
+      "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
+      "echo Color: ${launch_style_dim}Dim$launch_style_normal",
+      "",
+      "# The error of the next action will be suppressed",
+      "exit 1 || true",
+      "echo Color: ${launch_style_green}Green$launch_style_normal",
+      "echo Color: ${launch_style_red}Red$launch_style_normal",
+      "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
+      "--",
+      "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+      "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
     ]
   }
 }
