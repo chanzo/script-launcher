@@ -75,12 +75,12 @@ export class Config {
         sequential: [],
         concurrent: [
           'echo Start development server',
-          'serve:',
+          'serve:dev',
         ],
       },
       'serve:$config': 'echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url',
       'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
-      'build:dev': 'build:',
+      'build:dev': 'build:dev',
     },
     options: {
     } as IOptions,

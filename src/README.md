@@ -49,7 +49,7 @@ npm start
 Start a specific launch script
 ```
 npm start serve:dev
-npm start build:prd
+npm start build:production
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
@@ -434,7 +434,7 @@ Run `npm start build-stuff` to use this example.
     ]
   },
   "options": {
-    "logLevel": 3
+    "logLevel": 2
   }
 }
 ```
@@ -486,6 +486,7 @@ Use the help for a list of available options.
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts.
 
+Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -512,7 +513,6 @@ The launcher settings can be used to specify named values that can be used by th
   }
 }
 ```
-Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 
 ## Launcher options
 The launcher **options** can be used the customize the default behavior of script launcher.

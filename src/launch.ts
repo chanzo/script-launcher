@@ -152,7 +152,7 @@ async function main(): Promise<void> {
 
     if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
-      createExampleFile('launcher-settings.json', Config.initConfig);
+      createExampleFile('launcher-settings.json', Config.settingsConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
       Logger.log();
       exitCode = 0;
