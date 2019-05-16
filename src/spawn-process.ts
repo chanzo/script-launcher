@@ -2,6 +2,7 @@ import * as spawn from 'cross-spawn';
 import { ChildProcess, SpawnOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
+import prettyTime = require('pretty-time');
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
@@ -14,19 +15,20 @@ export class Process {
       options.stdio = ['inherit', 'pipe', 'pipe'];
     }
 
-    const startTime = Date.now();
     const childProcess = spawn(command, args, options);
 
     if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
 
-    return new Process(childProcess, startTime, options);
+    return new Process(childProcess, options);
   }
 
   public readonly pid: number;
   private outputCount = 0;
   private readonly exitPromise: Promise<number>;
 
-  private constructor(childProcess: ChildProcess, startTime: number, options: ISpawnOptions) {
+  private constructor(childProcess: ChildProcess, options: ISpawnOptions) {
+    const startTime = process.hrtime();
+
     this.pid = childProcess.pid;
 
     if (Logger.level > 1) {
@@ -39,11 +41,11 @@ export class Process {
       try {
 
         childProcess.on('exit', (code, signal) => {
-          const timeSpan = Date.now() - startTime;
+          const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + timeSpan + ' ms');
+          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms'));
           Logger.log();
           Logger.log();
 
@@ -53,10 +55,10 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
-          const timeSpan = Date.now() - startTime;
+          const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + timeSpan + ' ms');
+          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms'));
           Logger.log();
           Logger.log();
 

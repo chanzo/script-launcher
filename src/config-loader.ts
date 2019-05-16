@@ -19,11 +19,15 @@ interface IOptions {
     defaultChoice: string;
   };
 }
+export interface ISettings {
+  [name: string]: boolean | string | number | ISettings;
+}
 
 export interface IConfig {
   scripts: IScripts;
   menu: IMenu;
   options: IOptions;
+  settings: ISettings;
 }
 
 export class Config {
@@ -45,6 +49,7 @@ export class Config {
       files: [
         'launcher-config.json',
         'launcher-scripts.json',
+        'launcher-settings.json',
         'launcher-menu.json',
         'launcher-custom.json',
       ],
@@ -57,6 +62,9 @@ export class Config {
         defaultScript: '',
       },
     },
+    settings: {
+
+    },
   };
 
   public static readonly initConfig: Partial<IConfig> = {
@@ -67,15 +75,29 @@ export class Config {
         sequential: [],
         concurrent: [
           'echo Start development server',
-          'serve:',
+          'serve:dev',
         ],
       },
-      'serve:$config': 'echo ng serve --configuration=$config',
-      'build:$config': 'echo ng build --configuration=$config',
-      'build:dev': 'build:',
+      'serve:$config': 'echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url',
+      'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
+      'build:dev': 'build:dev',
     },
     options: {
     } as IOptions,
+  };
+
+  public static readonly settingsConfig: Partial<IConfig> = {
+    settings: {
+      dev: {
+        url: 'example.dev.com',
+      },
+      acc: {
+        url: 'example.acc.com',
+      },
+      production: {
+        url: 'example.prd.com',
+      },
+    },
   };
 
   public static readonly initMenu: Partial<IConfig> = {
@@ -166,11 +188,13 @@ export class Config {
   public readonly scripts: Scripts;
   public readonly menu: IMenu;
   public readonly options: IOptions;
+  public readonly settings: ISettings;
 
   private constructor(config: IConfig) {
     this.scripts = new Scripts(config.scripts);
     this.menu = config.menu;
     this.options = config.options;
+    this.settings = config.settings;
   }
 
   public merge(file: string): Config {
@@ -179,6 +203,7 @@ export class Config {
       menu: this.menu,
       options: this.options,
       scripts: this.scripts.scripts,
+      settings: this.settings,
     };
     const config = deepmerge<IConfig>(current, require(absolutePath));
 

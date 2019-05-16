@@ -12,10 +12,6 @@
       "mkdir ./dist/bin",
       "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
-    ],
-    "debug:$script": [
-      "lint",
-      "ts-node src/launch.ts --logLevel=2 --config=debug/launcher-config.json arg0"
     ]
   },
   "menu": {

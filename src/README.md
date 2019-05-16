@@ -27,7 +27,7 @@ Use **launch init** to create the starter **launcher-config.json** and **launche
 ```
 
 Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that will start `launch`. The name of the custom script is then used as the launch script to start.
-``` json
+``` JSON
 {
     ...
     "scripts": {
@@ -49,7 +49,7 @@ npm start
 Start a specific launch script
 ```
 npm start serve:dev
-npm start build:prd
+npm start build:production
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
@@ -71,6 +71,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Conditions and exclusions](#conditions-and-exclusions)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
+* [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
@@ -222,50 +223,50 @@ Run `npm start deploy:tst` to use this example.
 ```
 
 ### Environment values and special commands
-| Pattern             | Type          | Description                                       |
-| ------------------- | ------------- | ------------------------------------------------- |
-| **LAUNCH_VERSION**  | Environment   | Launcher Version number                           |
-| **LAUNCH_PLATFORM** | Environment   | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
-| **LAUNCH_START**    | Environment   | Start time                                        |
-| **LAUNCH_CURRENT**  | Environment   | Current time                                      |
-| **LAUNCH_ELAPSED**  | Environment   | Elapsed time                                      |
-| **LAUNCH_BLUE**     | Environment   | <span style="color:#0000FF">**Blue text**</span>  |
-| **LAUNCH_BOLD**     | Environment   | **Bold text**                                     |
-| **LAUNCH_CYAN**     | Environment   | <span style="color:#00FFFF">**Cyan text**</span>  |
-| **LAUNCH_DIM**      | Environment   | <span style="color:#707070">**Dim text**</span>   |
-| **LAUNCH_GREEN**    | Environment   | <span style="color:#00FF00">**Green text**</span> |
-| **LAUNCH_NORMAL**   | Environment   | Nomal text                                        |
-| **LAUNCH_RED**      | Environment   | <span style="color:#FF0000">**Red text**</span>   |
-| **LAUNCH_YELLOW**   | Environment   | <span style="color:#FFFF00">**Yellow text**</span>|
-| **"echo"**          | Command       | Output an empty line                              |
-| **""**              | Command       | Output an empty line                              |
-| **"--"**            | Command       | Line with the width of the terminal               |
-| **" \|\| true"**    | Command       | Added at the end of a command to suppress errors  |
-| **"#"**             | Command       | Disable execution for a command                   |
+| Pattern                 | Type          | Description                                       |
+| ----------------------- | ------------- | ------------------------------------------------- |
+| **launch_version**      | Environment   | Launcher Version number                           |
+| **launch_platform**     | Environment   | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
+| **launch_time_start**   | Environment   | Start time                                        |
+| **launch_time_current** | Environment   | Current time                                      |
+| **launch_time_elapsed** | Environment   | Elapsed time                                      |
+| **launch_style_blue**   | Environment   | <span style="color:#0000FF">**Blue text**</span>  |
+| **launch_style_bold**   | Environment   | **Bold text**                                     |
+| **launch_style_cyan**   | Environment   | <span style="color:#00FFFF">**Cyan text**</span>  |
+| **launch_style_dim**    | Environment   | <span style="color:#707070">**Dim text**</span>   |
+| **launch_style_green**  | Environment   | <span style="color:#00FF00">**Green text**</span> |
+| **launch_style_normal** | Environment   | Nomal text                                        |
+| **launch_style_red**    | Environment   | <span style="color:#FF0000">**Red text**</span>   |
+| **launch_style_yellow** | Environment   | <span style="color:#FFFF00">**Yellow text**</span>|
+| **"echo"**              | Command       | Output an empty line                              |
+| **""**                  | Command       | Output an empty line                              |
+| **"--"**                | Command       | Line with the width of the terminal               |
+| **" \|\| true"**        | Command       | Added at the end of a command to suppress errors  |
+| **"#"**                 | Command       | Disable execution for a command                   |
 
 Run `npm start build-stuff` to use this example.
 ```JSON
 {
   "scripts": {
     "build-stuff": [
-      "echo ${LAUNCH_BOLD}Version:$LAUNCH_NORMAL $LAUNCH_VERSION",
-      "echo ${LAUNCH_BOLD}Platform:$LAUNCH_NORMAL $LAUNCH_PLATFORM",
-      "echo ${LAUNCH_BOLD}Time:$LAUNCH_NORMAL $LAUNCH_START",
+      "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
+      "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+      "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
       "--",
-      "echo Color: ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_blue}Blue$launch_style_normal",
+      "echo Color: ${launch_style_bold}Bold$launch_style_normal",
       "echo",
-      "echo Color: ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
+      "echo Color: ${launch_style_dim}Dim$launch_style_normal",
       "",
       "# The error of the next action will be suppressed",
       "exit 1 || true",
-      "echo Color: ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_RED}Red$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_green}Green$launch_style_normal",
+      "echo Color: ${launch_style_red}Red$launch_style_normal",
+      "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
       "--",
-      "echo ${LAUNCH_BOLD}Current:$LAUNCH_NORMAL $LAUNCH_CURRENT",
-      "echo ${LAUNCH_BOLD}Elapsed:$LAUNCH_NORMAL $LAUNCH_ELAPSED"
+      "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+      "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
     ]
   }
 }
@@ -421,11 +422,11 @@ Run `npm start build-stuff` to use this example.
         "sequential": [
           "echo npm start",
           {
-            "condition": "'$LAUNCH_PLATFORM'==='win32'",
+            "condition": "'$launch_platform'==='win32'",
             "sequential": "del /q node_modules_test"
           },
           {
-            "condition": "'$LAUNCH_PLATFORM'!=='win32'",
+            "condition": "'$launch_platform'!=='win32'",
             "sequential": "rm -d node_modules_test"
           }
         ]
@@ -433,7 +434,7 @@ Run `npm start build-stuff` to use this example.
     ]
   },
   "options": {
-    "logLevel": 3
+    "logLevel": 2
   }
 }
 ```
@@ -482,6 +483,36 @@ Use the help for a list of available options.
 ``` bash
 "node_modules/.bin/launch" help
 ```
+## Launcher settings
+The launcher settings can be used to specify named values that can be used by the launcher scripts.
+
+Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build:$config": [
+      "echo name: $launch_setting_name",
+      "echo version: $launch_setting_${config}_version",
+      "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url"
+    ]
+  },
+  "settings": {
+    "name": "example",
+    "dev": {
+      "version": "2.0.0",
+      "url": "$launch_setting_name.dev.com"
+    },
+    "acc": {
+      "version": "1.9.0",
+      "url": "$launch_setting_name.acc.com"
+    },
+    "production": {
+      "version": "1.8.0",
+      "url": "$launch_setting_name.prd.com"
+    }
+  }
+}
+```
 
 ## Launcher options
 The launcher **options** can be used the customize the default behavior of script launcher.
@@ -501,6 +532,7 @@ The default value of this list is presented in the following example:
     "files": [
       "launcher-config.json",
       "launcher-scripts.json",
+      "launcher-settings.json",
       "launcher-menu.json",
       "launcher-custom.json",
     ]

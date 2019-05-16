@@ -1,24 +1,24 @@
 {
   "scripts": {
     "build-stuff": [
-      "echo ${LAUNCH_BOLD}Version:$LAUNCH_NORMAL $LAUNCH_VERSION",
-      "echo ${LAUNCH_BOLD}Platform:$LAUNCH_NORMAL $LAUNCH_PLATFORM",
-      "echo ${LAUNCH_BOLD}Time:$LAUNCH_NORMAL $LAUNCH_START",
+      "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
+      "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+      "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
       "--",
-      "echo Color: ${LAUNCH_BLUE}Blue$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_BOLD}Bold$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_blue}Blue$launch_style_normal",
+      "echo Color: ${launch_style_bold}Bold$launch_style_normal",
       "echo",
-      "echo Color: ${LAUNCH_CYAN}Cyan$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_DIM}Dim$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
+      "echo Color: ${launch_style_dim}Dim$launch_style_normal",
       "",
       "# The error of the next action will be suppressed",
       "exit 1 || true",
-      "echo Color: ${LAUNCH_GREEN}Green$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_RED}Red$LAUNCH_NORMAL",
-      "echo Color: ${LAUNCH_YELLOW}Yellow$LAUNCH_NORMAL",
+      "echo Color: ${launch_style_green}Green$launch_style_normal",
+      "echo Color: ${launch_style_red}Red$launch_style_normal",
+      "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
       "--",
-      "echo ${LAUNCH_BOLD}Current:$LAUNCH_NORMAL $LAUNCH_CURRENT",
-      "echo ${LAUNCH_BOLD}Elapsed:$LAUNCH_NORMAL $LAUNCH_ELAPSED"
+      "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+      "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
     ]
   }
 }
