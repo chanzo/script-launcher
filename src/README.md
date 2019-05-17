@@ -10,7 +10,9 @@
 
 # Script Launcher
 
-Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with team mates on Mac, Linux and Windows can be a seamless experience. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with team mates on Mac, Linux and Windows can be a seamless experience. 
+
+Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
 ![alt text](usage-animation.gif "Script launcher usage example")
 
