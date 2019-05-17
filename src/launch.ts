@@ -1,6 +1,6 @@
 #!./node_modules/.bin/ts-node --skip-project
 
-import { Config, IConfig } from './config-loader';
+import { Config, IConfig, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
@@ -9,6 +9,7 @@ import * as path from 'path';
 import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
 import { version } from './package.json';
+import prettyTime = require('pretty-time');
 
 interface IArgs {
   init: boolean;
@@ -72,18 +73,37 @@ function disableAnsiColors() {
   }
 }
 
-function setLauncherEnviromentValues() {
+function setLauncherEnviromentValues(settings: ISettings) {
   for (const [key, value] of Object.entries(Colors)) {
-    process.env['LAUNCH_' + key.toUpperCase()] = value;
+    process.env['launch_style_' + key.toLowerCase()] = value;
   }
-  process.env.LAUNCH_START = getCurrentTime();
-  process.env.LAUNCH_PLATFORM = process.platform;
-  process.env.LAUNCH_VERSION = version;
+
+  process.env.launch_time_start = getCurrentTime();
+  process.env.launch_platform = process.platform;
+  process.env.launch_version = version;
+
+  for (const [key, value] of Object.entries(constructLaunchSetting(settings))) {
+    process.env[key] = value;
+  }
+}
+
+function constructLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
+  let result: { [name: string]: string } = {};
+
+  for (const [key, value] of Object.entries(settings)) {
+    if (typeof value === 'object') {
+      result = { ...result, ...constructLaunchSetting(value, prefix + key + '_') };
+    } else {
+      result[prefix + key.toLowerCase()] = value as string;
+    }
+  }
+
+  return result;
 }
 
 async function main(): Promise<void> {
   let exitCode = 1;
-  let startTime = Date.now();
+  let startTime = process.hrtime();
 
   try {
     let config = Config.load();
@@ -110,7 +130,7 @@ async function main(): Promise<void> {
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
-    setLauncherEnviromentValues();
+    setLauncherEnviromentValues(config.settings);
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 
@@ -132,6 +152,7 @@ async function main(): Promise<void> {
 
     if (launchArgs.init) {
       createExampleFile('launcher-config.json', Config.initConfig);
+      createExampleFile('launcher-settings.json', Config.settingsConfig);
       createExampleFile('launcher-menu.json', Config.initMenu);
       Logger.log();
       exitCode = 0;
@@ -141,7 +162,7 @@ async function main(): Promise<void> {
     const lifecycleEvent = process.env.npm_lifecycle_event;
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
-    Logger.info(Colors.Bold + 'Date              :', process.env.LAUNCH_START + Colors.Normal);
+    Logger.info(Colors.Bold + 'Date              :', process.env.launch_time_start + Colors.Normal);
     Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
@@ -181,16 +202,18 @@ async function main(): Promise<void> {
 
     const executor = new Executor(shell, process.env, config.scripts);
 
+    startTime = executor.startTime;
+
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
-    const timespan = Date.now() - startTime;
+    const timespan = process.hrtime(startTime);
 
     if (Logger.level < 2) Logger.info('');
 
     Logger.info('ExitCode:', exitCode);
-    Logger.info('Elapsed:', timespan + ' ms');
+    Logger.info('Elapsed: ' + prettyTime(timespan, 'ms'));
 
     process.exit(exitCode);
   }
