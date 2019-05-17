@@ -10,9 +10,11 @@
 
 # Script Launcher
 
-Extend your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. Script Launcher is specialized to work on Mac, Linux and Windows. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with team mates on Mac, Linux and Windows can be a seamless experience. 
 
-![alt text](usage-animation.gif "Script launcher usage example")
+Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+
+![alt text](usage-animation.gif "Script Launcher usage example")
 
 ## Installation
 
@@ -21,12 +23,13 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json** file.
+Use **launch init** to create the starter **launcher-config.json** , **launcher-settings.json** and **launcher-menu.json** files.
+
 ``` bash
 "node_modules/.bin/launch" init
 ```
 
-Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that will start `launch`. The name of the custom script is then used as the launch script to start.
+Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
 ``` JSON
 {
     ...
@@ -76,7 +79,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
   * [Menu defaults](#menu-defaults)
-  * [Debug logging](#debug-logging)
+  * [Debug logging](#logging)
 
 ## Motivation
 
@@ -114,7 +117,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
-// Example using script launcher //
+// Example using Script Launcher //
 {
   "scripts": {
     ...
@@ -292,7 +295,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ```
 
 ### Glob patterns
-Script launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
+Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -515,12 +518,12 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
 ```
 
 ## Launcher options
-The launcher **options** can be used the customize the default behavior of script launcher.
+The launcher **options** can be used the customize the default behavior of Script Launcher.
 
 ### Launcher files
 The **files** options can be used to configure the config files to load when starting launcher. When using multiple files they will be merged together in the loading order. Be aware the `launcher-config.json` is always the first file being loaded even when it is not present in the files list.
 
-By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
+By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of Script Launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
 ``` JSON
@@ -599,7 +602,7 @@ The default value is presented in the following example:
 ```
 
 ### Logging
-The **logLevel** option is used for configuring the script launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
+The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
 
 The default value is presented in the following example:
 ``` JSON
