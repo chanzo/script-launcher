@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.7.1
+### Changes
+* Updated README.md
+
 ## 1.7.0
 ### Breaking
 * Renamed LAUNCH_PLATFORM => launch_platform
