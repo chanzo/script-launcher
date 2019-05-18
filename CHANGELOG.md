@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.8.3
+### Changes
+* Added environment variable expansion for Grep pattern
+
 ## 1.8.2
 ### Fixes
 * Bug fix for environment variable expansion on constraints
