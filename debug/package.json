@@ -1,10 +1,14 @@
 {
   "name": "script-launcher-debug",
   "version": "1.0.0",
-  "description": "",
+  "description": "Script launcher debug package.json, used test stuff.",
   "scripts": {
     "start": "npm run --silent lint && ts-node ../src/launch.ts",
     "lint": "(cd .. && npm --silent start lint)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:chanzo/script-launcher.git"
   },
   "author": "Bas Heerschop",
   "license": "MIT",
