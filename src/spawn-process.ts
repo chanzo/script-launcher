@@ -1,8 +1,9 @@
 import * as spawn from 'cross-spawn';
-import { ChildProcess, SpawnOptions } from 'child_process';
+import { ChildProcess, SpawnOptions, StdioOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
 import prettyTime = require('pretty-time');
+import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
@@ -22,9 +23,39 @@ export class Process {
     return new Process(childProcess, options);
   }
 
+  private static getStdioOption(stdio: StdioOptions, index: number): string {
+    if (typeof stdio === 'string') return stdio;
+
+    if (index < stdio.length) return stdio[index].toString();
+
+    return '';
+  }
+
+  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions): string {
+    if (Logger.level === 0 && Process.getStdioOption(stdio, 1) === 'pipe') {
+      const data = childProcess.stdout.read();
+
+      if (data) return data.toString();
+    }
+
+    return '';
+  }
+
+  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions): string {
+    if (Logger.level === 0 && Process.getStdioOption(stdio, 2) === 'pipe') {
+      const data = childProcess.stderr.read();
+
+      if (data) return data.toString();
+    }
+
+    return '';
+  }
+
   public readonly pid: number;
   private outputCount = 0;
   private readonly exitPromise: Promise<number>;
+  private _stdout: string = '';
+  private _stderr: string = '';
 
   private constructor(childProcess: ChildProcess, options: ISpawnOptions) {
     const startTime = process.hrtime();
@@ -41,6 +72,9 @@ export class Process {
       try {
 
         childProcess.on('exit', (code, signal) => {
+          this._stdout = Process.getStdout(childProcess, options.stdio);
+          this._stderr = Process.getStderr(childProcess, options.stdio);
+
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -55,6 +89,9 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
+          this._stdout = Process.getStdout(childProcess, options.stdio);
+          this._stderr = Process.getStderr(childProcess, options.stdio);
+
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -82,10 +119,20 @@ export class Process {
     return this.exitPromise;
   }
 
+  get stdout(): string {
+    return this._stdout;
+  }
+
+  get stderr(): string {
+    return this._stderr;
+  }
+
   private showOutputData(childProcess: ChildProcess): void {
     childProcess.stdout.on('data', (data) => {
       const content = (data.toString() as string).trim();
       if (content) {
+        this._stdout += content;
+
         if (this.outputCount === 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
         Logger.log(Colors.Dim + content + Colors.Normal);
@@ -97,6 +144,8 @@ export class Process {
     childProcess.stderr.on('data', (data) => {
       const content = (data.toString() as string).trim();
       if (content) {
+        this._stderr += content;
+
         if (this.outputCount === 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
         Logger.log(Colors.Red + content + Colors.Normal);

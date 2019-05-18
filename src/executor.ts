@@ -248,6 +248,7 @@ export class Executor {
     if (!(constraints instanceof Array)) throw new Error('Constraint object value not supported: ' + stringify(constraints));
 
     for (let constraint of constraints) {
+
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
 
@@ -322,7 +323,7 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(constraint: string, options: ISpawnOptions): Promise<boolean> {
+  private async evaluateConstraint(constraint: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
     options = { ...options };
 
     const evaluateExpression = eval;
@@ -353,8 +354,14 @@ export class Executor {
     }
 
     try {
-      options.stdio = ['inherit', 'ignore', 'ignore'];
-      return await Process.spawn(constraint, [], options).wait() === 0;
+      options.stdio = ['inherit', 'pipe', 'pipe'];
+
+      const process = Process.spawn(constraint, [], options);
+      const exitCode = await process.wait();
+
+      if (outputPattern) return (process.stdout + process.stderr).match(outputPattern) != null;
+
+      return exitCode === 0;
     } catch {
       return false;
     }
@@ -369,26 +376,44 @@ export class Executor {
     if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
+      const matches = constraint.match(/(.*)\|\?(.*)/);
+      let outputPattern: string = null;
+
+      if (matches !== null) {
+        constraint = matches[1].trim();
+        outputPattern = matches[2].trim();
+      }
+
       constraint = Executor.expandGlobs(constraint, {
         cwd: options.cwd,
       });
 
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+      if (outputPattern) Logger.log('Output pattern  : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
-      if (!await this.evaluateConstraint(constraint, options)) {
+      if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
         condition = false;
         break;
       }
     }
 
     for (let constraint of task.exclusion) {
+      const matches = constraint.match(/(.*)\|\?(.*)/);
+      let outputPattern: string = null;
+
+      if (matches !== null) {
+        constraint = matches[1].trim();
+        outputPattern = matches[2].trim();
+      }
+
       constraint = Executor.expandGlobs(constraint, {
         cwd: options.cwd,
       });
 
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+      if (outputPattern) Logger.log('Output pattern  : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
-      if (await this.evaluateConstraint(constraint, options)) {
+      if (await this.evaluateConstraint(constraint, options, outputPattern)) {
         exclusion = true;
         break;
       }
