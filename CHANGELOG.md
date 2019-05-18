@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.8.1
+### Changes
+* Updated README.md
+* Updated dependencies
+
 ## 1.8.0
 ### Changes
 * Updated README.md
