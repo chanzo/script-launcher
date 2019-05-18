@@ -389,7 +389,7 @@ export class Executor {
       });
 
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
-      if (outputPattern) Logger.log('Output pattern  : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
+      if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
       if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
         condition = false;
@@ -411,7 +411,7 @@ export class Executor {
       });
 
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
-      if (outputPattern) Logger.log('Output pattern  : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
+      if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
       if (await this.evaluateConstraint(constraint, options, outputPattern)) {
         exclusion = true;

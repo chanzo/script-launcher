@@ -226,51 +226,55 @@ Run `npm start deploy:tst` to use this example.
 ```
 
 ### Environment values and special commands
-| Pattern                 | Type          | Description                                       |
-| ----------------------- | ------------- | ------------------------------------------------- |
-| **launch_version**      | Environment   | Launcher Version number                           |
-| **launch_platform**     | Environment   | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
-| **launch_time_start**   | Environment   | Start time                                        |
-| **launch_time_current** | Environment   | Current time                                      |
-| **launch_time_elapsed** | Environment   | Elapsed time                                      |
-| **launch_style_blue**   | Environment   | <span style="color:#0000FF">**Blue text**</span>  |
-| **launch_style_bold**   | Environment   | **Bold text**                                     |
-| **launch_style_cyan**   | Environment   | <span style="color:#00FFFF">**Cyan text**</span>  |
-| **launch_style_dim**    | Environment   | <span style="color:#707070">**Dim text**</span>   |
-| **launch_style_green**  | Environment   | <span style="color:#00FF00">**Green text**</span> |
-| **launch_style_normal** | Environment   | Nomal text                                        |
-| **launch_style_red**    | Environment   | <span style="color:#FF0000">**Red text**</span>   |
-| **launch_style_yellow** | Environment   | <span style="color:#FFFF00">**Yellow text**</span>|
-| **"echo"**              | Command       | Output an empty line                              |
-| **""**                  | Command       | Output an empty line                              |
-| **"--"**                | Command       | Line with the width of the terminal               |
-| **" \|\| true"**        | Command       | Added at the end of a command to suppress errors  |
-| **"#"**                 | Command       | Disable execution for a command                   |
+| Pattern                 | Type        | Description                                           |
+| ----------------------- | ----------- | ----------------------------------------------------- |
+| **launch_version**      | Environment | Launcher Version number                               |
+| **launch_platform**     | Environment | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
+| **launch_time_start**   | Environment | Start time                                            |
+| **launch_time_current** | Environment | Current time                                          |
+| **launch_time_elapsed** | Environment | Elapsed time                                          |
+| **launch_style_blue**   | Environment | <span style="color:#0000FF">**Blue text**</span>      |
+| **launch_style_bold**   | Environment | **Bold text**                                         |
+| **launch_style_cyan**   | Environment | <span style="color:#00FFFF">**Cyan text**</span>      |
+| **launch_style_dim**    | Environment | <span style="color:#707070">**Dim text**</span>       |
+| **launch_style_green**  | Environment | <span style="color:#00FF00">**Green text**</span>     |
+| **launch_style_normal** | Environment | Nomal text                                            |
+| **launch_style_red**    | Environment | <span style="color:#FF0000">**Red text**</span>       |
+| **launch_style_yellow** | Environment | <span style="color:#FFFF00">**Yellow text**</span>    |
+| **"echo"**              | Command     | Output an empty line                                  |
+| **""**                  | Command     | Output an empty line                                  |
+| **"--"**                | Command     | Line with the width of the terminal                   |
+| **" \|\| true"**        | Command     | Added at the end of a command to suppress errors      |
+| **"#"**                 | Command     | Added at the begining for a line to disable execution |
+| **"|?"**                | Command     | Grep like functionality                               |
 
 Run `npm start build-stuff` to use this example.
 ```JSON
 {
   "scripts": {
-    "build-stuff": [
-      "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
-      "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
-      "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
-      "--",
-      "echo Color: ${launch_style_blue}Blue$launch_style_normal",
-      "echo Color: ${launch_style_bold}Bold$launch_style_normal",
-      "echo",
-      "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
-      "echo Color: ${launch_style_dim}Dim$launch_style_normal",
-      "",
-      "# The error of the next action will be suppressed",
-      "exit 1 || true",
-      "echo Color: ${launch_style_green}Green$launch_style_normal",
-      "echo Color: ${launch_style_red}Red$launch_style_normal",
-      "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
-      "--",
-      "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
-      "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
-    ]
+    "build-stuff": {
+      "condition": "echo grep example |? example",
+      "sequential": [
+        "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
+        "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+        "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
+        "--",
+        "echo Color: ${launch_style_blue}Blue$launch_style_normal",
+        "echo Color: ${launch_style_bold}Bold$launch_style_normal",
+        "echo",
+        "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
+        "echo Color: ${launch_style_dim}Dim$launch_style_normal",
+        "",
+        "# The error of the next action will be suppressed",
+        "exit 1 || true",
+        "echo Color: ${launch_style_green}Green$launch_style_normal",
+        "echo Color: ${launch_style_red}Red$launch_style_normal",
+        "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
+        "--",
+        "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+        "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
+      ]
+    }
   }
 }
 ```
