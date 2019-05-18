@@ -394,6 +394,7 @@ export class Executor {
         outputPattern = matches[2].trim();
       }
 
+      constraint = Executor.expandEnvironment(constraint, options.env, true);
       constraint = Executor.expandGlobs(constraint, {
         cwd: options.cwd,
       });
@@ -415,6 +416,7 @@ export class Executor {
         outputPattern = matches[2].trim();
       }
 
+      constraint = Executor.expandEnvironment(constraint, options.env, true);
       constraint = Executor.expandGlobs(constraint, {
         cwd: options.cwd,
       });

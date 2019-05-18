@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.8.2
+### Fixes
+* Bug fix for environment variable expansion on constraints
+
 ## 1.8.1
 ### Changes
 * Updated README.md
