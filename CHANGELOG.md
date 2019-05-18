@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.8.0
+### Changes
+* Updated README.md
+* Updated dependencies
+* Added support for a build in grep like functionality
+
 ## 1.7.1
 ### Changes
 * Updated README.md
