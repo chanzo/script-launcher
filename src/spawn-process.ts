@@ -1,11 +1,13 @@
 import * as spawn from 'cross-spawn';
-import { ChildProcess, SpawnOptions } from 'child_process';
+import { ChildProcess, SpawnOptions, StdioOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
 import prettyTime = require('pretty-time');
+import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
+  extraLogInfo?: (process: Process) => string;
 }
 
 export class Process {
@@ -22,9 +24,39 @@ export class Process {
     return new Process(childProcess, options);
   }
 
+  private static getStdioOption(stdio: StdioOptions, index: number): string {
+    if (typeof stdio === 'string') return stdio;
+
+    if (index < stdio.length) return stdio[index].toString();
+
+    return '';
+  }
+
+  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 1) === 'pipe') {
+      const data = childProcess.stdout.read();
+
+      if (data) return data.toString();
+    }
+
+    return defaultValue;
+  }
+
+  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 2) === 'pipe') {
+      const data = childProcess.stderr.read();
+
+      if (data) return data.toString();
+    }
+
+    return defaultValue;
+  }
+
   public readonly pid: number;
   private outputCount = 0;
   private readonly exitPromise: Promise<number>;
+  private _stdout: string = '';
+  private _stderr: string = '';
 
   private constructor(childProcess: ChildProcess, options: ISpawnOptions) {
     const startTime = process.hrtime();
@@ -41,11 +73,16 @@ export class Process {
       try {
 
         childProcess.on('exit', (code, signal) => {
+          this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
+          this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
+
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms'));
+          const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
+
+          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
 
@@ -55,10 +92,16 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
+          this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
+          this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
+
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms'));
+
+          const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
+
+          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
 
@@ -82,10 +125,20 @@ export class Process {
     return this.exitPromise;
   }
 
+  get stdout(): string {
+    return this._stdout;
+  }
+
+  get stderr(): string {
+    return this._stderr;
+  }
+
   private showOutputData(childProcess: ChildProcess): void {
     childProcess.stdout.on('data', (data) => {
       const content = (data.toString() as string).trim();
       if (content) {
+        this._stdout += content;
+
         if (this.outputCount === 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
         Logger.log(Colors.Dim + content + Colors.Normal);
@@ -97,6 +150,8 @@ export class Process {
     childProcess.stderr.on('data', (data) => {
       const content = (data.toString() as string).trim();
       if (content) {
+        this._stderr += content;
+
         if (this.outputCount === 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
         Logger.log(Colors.Red + content + Colors.Normal);
