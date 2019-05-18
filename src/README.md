@@ -79,7 +79,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
   * [Menu defaults](#menu-defaults)
-  * [Debug logging](#logging)
+  * [Logging](#logging)
 
 ## Motivation
 

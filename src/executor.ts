@@ -324,6 +324,8 @@ export class Executor {
   }
 
   private async evaluateConstraint(constraint: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
+    if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
+
     options = { ...options };
 
     const evaluateExpression = eval;
@@ -355,6 +357,14 @@ export class Executor {
 
     try {
       options.stdio = ['inherit', 'pipe', 'pipe'];
+
+      if (outputPattern) {
+        options.extraLogInfo = (process) => {
+          const matches = (process.stdout + process.stderr).match(outputPattern);
+
+          return 'grep=' + (matches === null ? 'failed' : 'success');
+        };
+      }
 
       const process = Process.spawn(constraint, [], options);
       const exitCode = await process.wait();
@@ -389,7 +399,6 @@ export class Executor {
       });
 
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
-      if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
       if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
         condition = false;
@@ -411,7 +420,6 @@ export class Executor {
       });
 
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
-      if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
 
       if (await this.evaluateConstraint(constraint, options, outputPattern)) {
         exclusion = true;

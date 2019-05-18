@@ -23,8 +23,5 @@
         "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
       ]
     }
-  },
-  "options": {
-    "logLevel": 2
   }
 }

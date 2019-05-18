@@ -7,6 +7,7 @@ import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
+  extraLogInfo?: (process: Process) => string;
 }
 
 export class Process {
@@ -31,24 +32,24 @@ export class Process {
     return '';
   }
 
-  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions): string {
-    if (Logger.level === 0 && Process.getStdioOption(stdio, 1) === 'pipe') {
+  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 1) === 'pipe') {
       const data = childProcess.stdout.read();
 
       if (data) return data.toString();
     }
 
-    return '';
+    return defaultValue;
   }
 
-  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions): string {
-    if (Logger.level === 0 && Process.getStdioOption(stdio, 2) === 'pipe') {
+  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 2) === 'pipe') {
       const data = childProcess.stderr.read();
 
       if (data) return data.toString();
     }
 
-    return '';
+    return defaultValue;
   }
 
   public readonly pid: number;
@@ -72,14 +73,16 @@ export class Process {
       try {
 
         childProcess.on('exit', (code, signal) => {
-          this._stdout = Process.getStdout(childProcess, options.stdio);
-          this._stderr = Process.getStderr(childProcess, options.stdio);
+          this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
+          this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
 
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
 
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms'));
+          const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
+
+          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
 
@@ -89,13 +92,16 @@ export class Process {
         });
 
         childProcess.on('error', (error) => {
-          this._stdout = Process.getStdout(childProcess, options.stdio);
-          this._stderr = Process.getStderr(childProcess, options.stdio);
+          this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
+          this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
 
           const timespan = process.hrtime(startTime);
 
           if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms'));
+
+          const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
+
+          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
 
