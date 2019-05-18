@@ -246,7 +246,7 @@ Run `npm start deploy:tst` to use this example.
 | **"--"**                | Command     | Line with the width of the terminal                   |
 | **" \|\| true"**        | Command     | Added at the end of a command to suppress errors      |
 | **"#"**                 | Command     | Added at the begining for a line to disable execution |
-| **"|?"**                | Command     | Grep like functionality                               |
+| **"\|?"**               | Command     | Grep like functionality                               |
 
 Run `npm start build-stuff` to use this example.
 ```JSON
@@ -430,7 +430,7 @@ Run `npm start build-stuff` to use this example.
           "echo npm start",
           {
             "condition": "'$launch_platform'==='win32'",
-            "sequential": "del /q node_modules_test"
+            "sequential": "rmdir node_modules_test"
           },
           {
             "condition": "'$launch_platform'!=='win32'",
@@ -500,7 +500,7 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
     "build:$config": [
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
-      "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url"
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url"
     ]
   },
   "settings": {
