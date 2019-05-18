@@ -5,13 +5,13 @@
   "main": "",
   "scripts": {
     "start": "launch",
-    "postinstall": "cd debug && npm install"
+    "postinstall": "launch"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:chanzo/script-launcher.git"
   },
-  "author": "",
+  "author": "Chanzo Wazi",
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "^6.0.5",
