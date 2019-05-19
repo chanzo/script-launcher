@@ -1,5 +1,47 @@
 # Change Log
 
+## 1.9.0
+### Changes
+* Added support for brace expansion on command line arguments.
+example:
+```
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Argument 1: ${1}",
+      "echo Argument 2: ${2}",
+      "echo Argument 3: ${3}"
+    ]
+  }
+}
+```
+* Added support for offset expansion on command line arguments.
+example:
+```
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Argument 1: ${2*}",
+      "echo Argument 2: $2*"
+    ]
+  }
+}
+```
+* Added support for expansion character escaping
+example:
+```
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Exmaple 1: \\$2",
+      "echo Exmaple 2: \\$PATH",
+      "echo Exmaple 3: \\${2}",
+      "echo Exmaple 4: \\${PATH}"
+    ]
+  }
+}
+```
+
 ## 1.8.2
 ### Fixes
 * Bug fix for environment variable expansion on constraints

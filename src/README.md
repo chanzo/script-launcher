@@ -333,13 +333,16 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
       "echo Function All arguments: $*"
     ],
     "build-stuff:$myParam1:$myParam2": [
+      "--",
       "echo Parameter 1: $myParam1",
-      "echo Parameter 2: $myParam2",
+      "echo Parameter 2: ${myParam2}",
       "echo Arguments 1: $1",
       "echo Arguments 2: $2",
       "echo All arguments: $*",
-      "echo -------------------------------------------------------",
-      "myFunc:$myParam1:funcParam funcArg $1"
+      "echo Offset arguments: $2*",
+      "--",
+      "myFunc:$myParam1:funcParam funcArg $1",
+      "--"
     ]
   }
 }
