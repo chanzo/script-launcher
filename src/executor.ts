@@ -391,7 +391,7 @@ export class Executor {
 
       if (matches !== null) {
         constraint = matches[1].trim();
-        outputPattern = matches[2].trim();
+        outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
       }
 
       constraint = Executor.expandEnvironment(constraint, options.env, true);
@@ -413,7 +413,7 @@ export class Executor {
 
       if (matches !== null) {
         constraint = matches[1].trim();
-        outputPattern = matches[2].trim();
+        outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
       }
 
       constraint = Executor.expandEnvironment(constraint, options.env, true);
