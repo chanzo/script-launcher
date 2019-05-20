@@ -292,6 +292,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
       "echo All arguments: $*",
+      "echo Offset arguments: $2*",
       "echo Environment : $environment"
     ]
   }
@@ -315,10 +316,10 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive` or `launch menu`
+* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch interactive`
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
+* **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
-* **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
 
 Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 
