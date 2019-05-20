@@ -25,14 +25,21 @@ interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 export class Executor {
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
-      const regexp = new RegExp('\\$' + index, 'g');
+      text = text.replace(new RegExp('([^\\\\]|^)\\$' + index + '\\*', 'g'), '$1' + args.slice(index).join(' '));
+      text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + index + '\\*\\}', 'g'), '$1' + args.slice(index).join(' '));
 
-      text = text.replace(regexp, args[index]);
+      text = text.replace(new RegExp('([^\\\\]|^)\\$' + index, 'g'), '$1' + args[index]);
+      text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + index + '\\}', 'g'), '$1' + args[index]);
 
-      if (!text.includes('$')) break;
+      if (text.match(/([^\\]|^)\$/) === null) break;
     }
 
-    return text.replace(/\$\*/g, args.slice(1).join(' '));
+    text = text.replace(/([^\\]|^)\$\*/g, '$1' + args.slice(1).join(' '));
+    text = text.replace(/([^\\]|^)\$\{\*\}/g, '$1' + args.slice(1).join(' '));
+    text = text.replace(/([^\\]|^)\$\d+\*?/g, '$1');
+    text = text.replace(/([^\\]|^)\$\{\d+\*?\}/g, '$1');
+
+    return text;
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
@@ -42,17 +49,17 @@ export class Executor {
       previousText = text;
 
       for (const [name, value] of Object.entries(environment)) {
-        text = text.replace(new RegExp('\\$' + name + '([^\\w]|$)', 'g'), value + '$1');
-        text = text.replace(new RegExp('\\$\\{' + name + '\\}', 'g'), value);
+        text = text.replace(new RegExp('([^\\\\]|^)\\$' + name + '([^\\w]|$)', 'g'), '$1' + value + '$2');
+        text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + name + '\\}', 'g'), '$1' + value);
 
-        if (!text.includes('$')) break;
+        if (text.match(/([^\\]|^)\$/) === null) break;
       }
-    } while (text.includes('$') && text !== previousText);
+    } while (text.match(/([^\\]|^)\$/) !== null && text !== previousText);
 
     if (!remove) return text;
 
-    text = text.replace(/\$\w+/g, '');
-    text = text.replace(/\$\{\w+\}/g, '');
+    text = text.replace(/([^\\]|^)\$\w+/g, '$1');
+    text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
 
     return text;
   }
