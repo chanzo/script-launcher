@@ -1,10 +1,10 @@
 {
   "scripts": {
-    "upload:$environment": [
-      "image_tag1=$1",
-      "image_tag2=$image_tag1",
-      "echo Upload image_tag1=$image_tag1",
-      "echo Upload image_tag2=$image_tag2"
+    "environment": [
+      "value1='My Data'",
+      "value2=$value1",
+      "echo Success value1='$value1'",
+      "echo Was failing value2='$value2'"
     ]
   },
   "options": {

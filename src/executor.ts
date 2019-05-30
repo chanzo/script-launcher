@@ -114,7 +114,7 @@ export class Executor {
     }
 
     if (command.startsWith('#')) {
-      Logger.log(Colors.Bold + 'Skipping action' + Colors.Normal + ' : ' + Colors.Green + '"' + command + '"' + Colors.Normal, args);
+      Logger.log(Colors.Bold + 'Skipping action' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, args);
 
       return { command: null, args, options };
     }
@@ -131,7 +131,7 @@ export class Executor {
     if (match !== null) {
       options.env[match[1]] = match[2];
 
-      Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '"' + match[1] + '=' + match[2] + '"' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
 
       return { command: null, args, options };
     }
@@ -300,7 +300,7 @@ export class Executor {
             cwd: options.cwd,
           });
 
-          Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '"' + command + '"' + Colors.Normal, info.args);
+          Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
           const commandProcess = Process.spawn(command, info.args, options);
@@ -333,7 +333,7 @@ export class Executor {
   }
 
   private async evaluateConstraint(constraint: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
-    if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '"' + outputPattern + '"' + Colors.Normal);
+    if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '\'' + outputPattern + '\'' + Colors.Normal);
 
     options = { ...options };
 
@@ -408,7 +408,7 @@ export class Executor {
         cwd: options.cwd,
       });
 
-      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
       if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
         condition = false;
@@ -430,7 +430,7 @@ export class Executor {
         cwd: options.cwd,
       });
 
-      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '"' + constraint + '"' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
       if (await this.evaluateConstraint(constraint, options, outputPattern)) {
         exclusion = true;
