@@ -6,7 +6,7 @@
 * Changed log output so all strings are now formatted using single quotes.
 
 ### Fixes
-* When settings environment values that were using previous set values, it was failing to do so. Now environment variable expansion is done before setting environment values to fix the problem.
+* When setting environment values that were using previous set values, it was failing to do so. Now environment variable expansion is done before setting environment values to fix the problem.
 example of the problem:
 ``` JSON
 {
