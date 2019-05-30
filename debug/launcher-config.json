@@ -1,16 +1,13 @@
 {
   "scripts": {
-    "build:$environment": [
-      "image_tag=$1",
-      "echo Build image_tag=$image_tag"
-    ],
     "upload:$environment": [
-      "image_tag=$1",
-      "build:$environment $image_tag",
-      "echo Upload image_tag=$image_tag"
+      "image_tag1=$1",
+      "image_tag2=$image_tag1",
+      "echo Upload image_tag1=$image_tag1",
+      "echo Upload image_tag2=$image_tag2"
     ]
   },
   "options": {
-    "logLevel": 2
+    "logLevel": 3
   }
 }
