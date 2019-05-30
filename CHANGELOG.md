@@ -1,10 +1,31 @@
 # Change Log
 
+## 1.9.1
+### Changes
+* Added log output for settings environment values.
+* Changed log output so all strings are now formatted using single quotes.
+
+### Fixes
+* When setting environment values that were using previous set values, it was failing to do so. Now environment variable expansion is done before setting environment values to fix the problem.
+example of the problem:
+``` JSON
+{
+  "scripts": {
+    "environment": [
+      "value1='My Data'",
+      "value2=$value1",
+      "echo Success value1='$value1'",
+      "echo Was failing value2='$value2'"
+    ]
+  }
+}
+```
+
 ## 1.9.0
 ### Changes
 * Added support for brace expansion on command line arguments.
 example:
-```
+``` JSON
 {
   "scripts": {
     "build-stuff": [
@@ -17,7 +38,7 @@ example:
 ```
 * Added support for offset expansion on command line arguments.
 example:
-```
+``` JSON
 {
   "scripts": {
     "build-stuff": [
@@ -29,7 +50,7 @@ example:
 ```
 * Added support for expansion character escaping
 example:
-```
+``` JSON
 {
   "scripts": {
     "build-stuff": [
