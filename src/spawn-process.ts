@@ -19,7 +19,7 @@ export class Process {
 
     const childProcess = spawn(command, args, options);
 
-    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '"' + options.cwd + '"' + Colors.Normal);
+    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '\'' + options.cwd + '\'' + Colors.Normal);
 
     return new Process(childProcess, options);
   }

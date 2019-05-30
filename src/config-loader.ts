@@ -169,7 +169,7 @@ export class Config {
     for (const key of Object.keys(scripts)) {
       const value = key.replace(/\$\w+(\:|$)/g, '$1');
 
-      if (hash.has(value)) throw new Error('Duplicate object key: "' + key + '"');
+      if (hash.has(value)) throw new Error('Duplicate object key: \'' + key + '\'');
 
       hash.add(value);
     }
