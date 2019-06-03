@@ -78,6 +78,7 @@ Basically you can now use `npm start` instead of `npm run`.
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
+  * [Glob Options](#glob-options)
   * [Menu defaults](#menu-defaults)
   * [Logging](#logging)
 
@@ -586,6 +587,18 @@ The default value is presented in the following example:
   "options": {
     "script": {
       "shell": true
+    }
+  }
+}
+```
+
+### Glob Options
+[Official documentation of the globing options](https://www.npmjs.com/package/glob#options)
+``` JSON
+{
+  "options": {
+    "glob": {
+      "nonull": false
     }
   }
 }

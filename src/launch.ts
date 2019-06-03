@@ -200,7 +200,7 @@ async function main(): Promise<void> {
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, process.env, config.scripts);
+    const executor = new Executor(shell, process.env, config.scripts, config.options.glob);
 
     startTime = executor.startTime;
 

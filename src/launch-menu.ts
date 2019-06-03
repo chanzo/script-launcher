@@ -44,7 +44,7 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
     console.log();
   }
 
-  const executor = new Executor(shell, process.env, config.scripts);
+  const executor = new Executor(shell, process.env, config.scripts, config.options.glob);
 
   return {
     startTime: executor.startTime,

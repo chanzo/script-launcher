@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.10.0
+### Changes
+* Added the possibility to set [globing options](https://www.npmjs.com/package/glob#options)
+``` JSON
+{
+  "options": {
+    "glob": {
+      "nonull": false
+    }
+  }
+}
+```
+
 ## 1.9.1
 ### Changes
 * Added log output for settings environment values.

@@ -25,11 +25,11 @@
     "@types/cross-spawn": "^6.0.0",
     "@types/glob": "^7.1.1",
     "@types/inquirer": "^6.0.3",
-    "@types/node": "^12.0.3",
+    "@types/node": "^12.0.4",
     "@types/pretty-time": "^1.1.0",
-    "script-launcher": "^1.9.1",
+    "script-launcher": "^1.10.0",
     "ts-node": "^8.2.0",
-    "tslint": "^5.16.0",
+    "tslint": "^5.17.0",
     "typescript": "^3.5.1"
   }
 }
