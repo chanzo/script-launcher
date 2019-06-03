@@ -2,6 +2,7 @@ import { existsSync } from 'fs';
 import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
 import { IScript, IScripts, Scripts } from './scripts';
+import glob = require('glob');
 
 export interface IMenu {
   description: string;
@@ -14,11 +15,13 @@ interface IOptions {
   script: {
     shell: (boolean | string) | { [platform: string]: boolean | string };
   };
+  glob: glob.IOptions;
   menu: {
     defaultScript: IScript;
     defaultChoice: string;
   };
 }
+
 export interface ISettings {
   [name: string]: boolean | string | number | ISettings;
 }
@@ -46,6 +49,7 @@ export class Config {
       description: '',
     },
     options: {
+      logLevel: 0,
       files: [
         'launcher-config.json',
         'launcher-scripts.json',
@@ -53,10 +57,10 @@ export class Config {
         'launcher-menu.json',
         'launcher-custom.json',
       ],
-      logLevel: 0,
       script: {
         shell: true,
       },
+      glob: {},
       menu: {
         defaultChoice: '',
         defaultScript: '',

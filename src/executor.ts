@@ -165,11 +165,13 @@ export class Executor {
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
   private readonly scripts: Scripts;
+  private readonly globOptions: glob.IOptions;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts, globOptions: glob.IOptions) {
     this.shell = shell;
     this.environment = environment;
     this.scripts = scripts;
+    this.globOptions = globOptions;
     this.startTime = process.hrtime();
   }
 
@@ -297,7 +299,8 @@ export class Executor {
           options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
 
           const command = Executor.expandGlobs(info.command, {
-            cwd: options.cwd,
+            ...this.globOptions,
+            ...{ cwd: options.cwd },
           });
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
@@ -405,7 +408,8 @@ export class Executor {
 
       constraint = Executor.expandEnvironment(constraint, options.env, true);
       constraint = Executor.expandGlobs(constraint, {
-        cwd: options.cwd,
+        ...this.globOptions,
+        ...{ cwd: options.cwd },
       });
 
       Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
@@ -427,7 +431,8 @@ export class Executor {
 
       constraint = Executor.expandEnvironment(constraint, options.env, true);
       constraint = Executor.expandGlobs(constraint, {
-        cwd: options.cwd,
+        ...this.globOptions,
+        ...{ cwd: options.cwd },
       });
 
       Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
