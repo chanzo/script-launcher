@@ -290,13 +290,14 @@ export class Executor {
       options.suppress = suppress;
 
       if (typeof task === 'string') {
+        options.env.launch_time_current = getCurrentTime();
+        options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
+
         const info = Executor.getCommandInfo(task, options);
 
         options = info.options;
 
         if (info.command) {
-          options.env.launch_time_current = getCurrentTime();
-          options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
 
           const command = Executor.expandGlobs(info.command, {
             ...this.globOptions,

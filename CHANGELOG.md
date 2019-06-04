@@ -3,7 +3,8 @@
 * Refactoring related to the environment value processing.
 
 ### Fixes
-* In some edge cases $launch_time_current and $launch_time_elapsed could have the wrong value.
+* In some edge cases $launch_time_current or $launch_time_elapsed could have the wrong value.
+* When using $launch_time_current or $launch_time_elapsed in the first script, they were empty.
 
 ## 1.10.0
 ### Changes
