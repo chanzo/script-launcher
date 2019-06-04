@@ -1,5 +1,91 @@
 # Change Log
 
+## 1.9.1
+### Changes
+* Added log output for settings environment values.
+* Changed log output so all strings are now formatted using single quotes.
+
+### Fixes
+* When setting environment values that were using previous set values, it was failing to do so. Now environment variable expansion is done before setting environment values to fix the problem.
+example of the problem:
+``` JSON
+{
+  "scripts": {
+    "environment": [
+      "value1='My Data'",
+      "value2=$value1",
+      "echo Success value1='$value1'",
+      "echo Was failing value2='$value2'"
+    ]
+  }
+}
+```
+
+## 1.9.0
+### Changes
+* Added support for brace expansion on command line arguments.
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Argument 1: ${1}",
+      "echo Argument 2: ${2}",
+      "echo Argument 3: ${3}"
+    ]
+  }
+}
+```
+* Added support for offset expansion on command line arguments.
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Argument 1: ${2*}",
+      "echo Argument 2: $2*"
+    ]
+  }
+}
+```
+* Added support for expansion character escaping
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Exmaple 1: \\$2",
+      "echo Exmaple 2: \\$PATH",
+      "echo Exmaple 3: \\${2}",
+      "echo Exmaple 4: \\${PATH}"
+    ]
+  }
+}
+```
+
+## 1.8.3
+### Changes
+* Added environment variable expansion for Grep pattern
+
+## 1.8.2
+### Fixes
+* Bug fix for environment variable expansion on constraints
+
+## 1.8.1
+### Changes
+* Updated README.md
+* Updated dependencies
+
+## 1.8.0
+### Changes
+* Updated README.md
+* Updated dependencies
+* Added support for a build in grep like functionality
+
+## 1.7.1
+### Changes
+* Updated README.md
+
 ## 1.7.0
 ### Breaking
 * Renamed LAUNCH_PLATFORM => launch_platform

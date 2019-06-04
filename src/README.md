@@ -10,9 +10,11 @@
 
 # Script Launcher
 
-Extend your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. Script Launcher is specialized to work on Mac, Linux and Windows. Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with team mates on Mac, Linux and Windows can be a seamless experience. 
 
-![alt text](usage-animation.gif "Script launcher usage example")
+Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
+
+![alt text](usage-animation.gif "Script Launcher usage example")
 
 ## Installation
 
@@ -21,12 +23,13 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create the starter **launcher-config.json** and **launcher-menu.json** file.
+Use **launch init** to create the starter **launcher-config.json** , **launcher-settings.json** and **launcher-menu.json** files.
+
 ``` bash
 "node_modules/.bin/launch" init
 ```
 
-Change your **package.json** start script, so it will start script launcher. If you do not want to change your start script, you can also add custom scripts, that will start `launch`. The name of the custom script is then used as the launch script to start.
+Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
 ``` JSON
 {
     ...
@@ -76,7 +79,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
   * [Menu defaults](#menu-defaults)
-  * [Debug logging](#debug-logging)
+  * [Logging](#logging)
 
 ## Motivation
 
@@ -114,7 +117,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
-// Example using script launcher //
+// Example using Script Launcher //
 {
   "scripts": {
     ...
@@ -223,51 +226,55 @@ Run `npm start deploy:tst` to use this example.
 ```
 
 ### Environment values and special commands
-| Pattern                 | Type          | Description                                       |
-| ----------------------- | ------------- | ------------------------------------------------- |
-| **launch_version**      | Environment   | Launcher Version number                           |
-| **launch_platform**     | Environment   | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
-| **launch_time_start**   | Environment   | Start time                                        |
-| **launch_time_current** | Environment   | Current time                                      |
-| **launch_time_elapsed** | Environment   | Elapsed time                                      |
-| **launch_style_blue**   | Environment   | <span style="color:#0000FF">**Blue text**</span>  |
-| **launch_style_bold**   | Environment   | **Bold text**                                     |
-| **launch_style_cyan**   | Environment   | <span style="color:#00FFFF">**Cyan text**</span>  |
-| **launch_style_dim**    | Environment   | <span style="color:#707070">**Dim text**</span>   |
-| **launch_style_green**  | Environment   | <span style="color:#00FF00">**Green text**</span> |
-| **launch_style_normal** | Environment   | Nomal text                                        |
-| **launch_style_red**    | Environment   | <span style="color:#FF0000">**Red text**</span>   |
-| **launch_style_yellow** | Environment   | <span style="color:#FFFF00">**Yellow text**</span>|
-| **"echo"**              | Command       | Output an empty line                              |
-| **""**                  | Command       | Output an empty line                              |
-| **"--"**                | Command       | Line with the width of the terminal               |
-| **" \|\| true"**        | Command       | Added at the end of a command to suppress errors  |
-| **"#"**                 | Command       | Disable execution for a command                   |
+| Pattern                 | Type        | Description                                           |
+| ----------------------- | ----------- | ----------------------------------------------------- |
+| **launch_version**      | Environment | Launcher Version number                               |
+| **launch_platform**     | Environment | Operating system **[platform](https://nodejs.org/api/process.html#process_process_platform)**|
+| **launch_time_start**   | Environment | Start time                                            |
+| **launch_time_current** | Environment | Current time                                          |
+| **launch_time_elapsed** | Environment | Elapsed time                                          |
+| **launch_style_blue**   | Environment | <span style="color:#0000FF">**Blue text**</span>      |
+| **launch_style_bold**   | Environment | **Bold text**                                         |
+| **launch_style_cyan**   | Environment | <span style="color:#00FFFF">**Cyan text**</span>      |
+| **launch_style_dim**    | Environment | <span style="color:#707070">**Dim text**</span>       |
+| **launch_style_green**  | Environment | <span style="color:#00FF00">**Green text**</span>     |
+| **launch_style_normal** | Environment | Nomal text                                            |
+| **launch_style_red**    | Environment | <span style="color:#FF0000">**Red text**</span>       |
+| **launch_style_yellow** | Environment | <span style="color:#FFFF00">**Yellow text**</span>    |
+| **"echo"**              | Command     | Output an empty line                                  |
+| **""**                  | Command     | Output an empty line                                  |
+| **"--"**                | Command     | Line with the width of the terminal                   |
+| **" \|\| true"**        | Command     | Added at the end of a command to suppress errors      |
+| **"#"**                 | Command     | Added at the begining for a line to disable execution |
+| **"\|?"**               | Command     | Grep like functionality                               |
 
 Run `npm start build-stuff` to use this example.
 ```JSON
 {
   "scripts": {
-    "build-stuff": [
-      "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
-      "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
-      "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
-      "--",
-      "echo Color: ${launch_style_blue}Blue$launch_style_normal",
-      "echo Color: ${launch_style_bold}Bold$launch_style_normal",
-      "echo",
-      "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
-      "echo Color: ${launch_style_dim}Dim$launch_style_normal",
-      "",
-      "# The error of the next action will be suppressed",
-      "exit 1 || true",
-      "echo Color: ${launch_style_green}Green$launch_style_normal",
-      "echo Color: ${launch_style_red}Red$launch_style_normal",
-      "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
-      "--",
-      "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
-      "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
-    ]
+    "build-stuff": {
+      "condition": "echo grep example |? example",
+      "sequential": [
+        "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
+        "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+        "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
+        "--",
+        "echo Color: ${launch_style_blue}Blue$launch_style_normal",
+        "echo Color: ${launch_style_bold}Bold$launch_style_normal",
+        "echo",
+        "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
+        "echo Color: ${launch_style_dim}Dim$launch_style_normal",
+        "",
+        "# The error of the next action will be suppressed",
+        "exit 1 || true",
+        "echo Color: ${launch_style_green}Green$launch_style_normal",
+        "echo Color: ${launch_style_red}Red$launch_style_normal",
+        "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
+        "--",
+        "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+        "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
+      ]
+    }
   }
 }
 ```
@@ -285,6 +292,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
       "echo All arguments: $*",
+      "echo Offset arguments: $2*",
       "echo Environment : $environment"
     ]
   }
@@ -292,7 +300,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ```
 
 ### Glob patterns
-Script launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
+Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -308,10 +316,10 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, from the **package.json** script command line, for example: `launch interactive` or `launch menu`
+* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch interactive`
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
+* **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
-* **Arguments:** These are for passing dynamic set of values to a function. Arguments are accessed by a number, for example: `$1`
 
 Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 
@@ -326,13 +334,16 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
       "echo Function All arguments: $*"
     ],
     "build-stuff:$myParam1:$myParam2": [
+      "--",
       "echo Parameter 1: $myParam1",
-      "echo Parameter 2: $myParam2",
+      "echo Parameter 2: ${myParam2}",
       "echo Arguments 1: $1",
       "echo Arguments 2: $2",
       "echo All arguments: $*",
-      "echo -------------------------------------------------------",
-      "myFunc:$myParam1:funcParam funcArg $1"
+      "echo Offset arguments: $2*",
+      "--",
+      "myFunc:$myParam1:funcParam funcArg $1",
+      "--"
     ]
   }
 }
@@ -423,7 +434,7 @@ Run `npm start build-stuff` to use this example.
           "echo npm start",
           {
             "condition": "'$launch_platform'==='win32'",
-            "sequential": "del /q node_modules_test"
+            "sequential": "rmdir node_modules_test"
           },
           {
             "condition": "'$launch_platform'!=='win32'",
@@ -493,7 +504,7 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
     "build:$config": [
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
-      "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url"
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url"
     ]
   },
   "settings": {
@@ -515,12 +526,12 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
 ```
 
 ## Launcher options
-The launcher **options** can be used the customize the default behavior of script launcher.
+The launcher **options** can be used the customize the default behavior of Script Launcher.
 
 ### Launcher files
 The **files** options can be used to configure the config files to load when starting launcher. When using multiple files they will be merged together in the loading order. Be aware the `launcher-config.json` is always the first file being loaded even when it is not present in the files list.
 
-By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of script launcher in your `package.json` file.
+By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of Script Launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
 ``` JSON
@@ -599,7 +610,7 @@ The default value is presented in the following example:
 ```
 
 ### Logging
-The **logLevel** option is used for configuring the script launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
+The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
 
 The default value is presented in the following example:
 ``` JSON

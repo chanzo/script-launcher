@@ -37,7 +37,7 @@ function showLoadedFiles(files: string[]) {
 
 function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   if (fs.existsSync(fileName)) {
-    Logger.error('The file "' + fileName + '" already exists.');
+    Logger.error('The file \'' + fileName + '\' already exists.');
     return;
   }
 

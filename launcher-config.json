@@ -12,6 +12,10 @@
       "mkdir ./dist/bin",
       "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
+    ],
+    "postinstall": [
+      "debug",
+      "npm install"
     ]
   },
   "menu": {
