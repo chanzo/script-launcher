@@ -193,7 +193,7 @@ export class Executor {
     Logger.log();
 
     if (Logger.level > 1) {
-      const settings = Object.entries(process.env).filter(([key, value]) => key.startsWith('launch_setting_'));
+      const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
 
       Logger.log(Colors.Bold + 'Launcher Settings' + Colors.Normal);
       Logger.log(''.padEnd(process.stdout.columns, '-'));

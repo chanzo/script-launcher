@@ -73,18 +73,22 @@ function disableAnsiColors() {
   }
 }
 
-function setLauncherEnviromentValues(settings: ISettings) {
+function setLauncherEnviromentValues(settings: ISettings): { [name: string]: string } {
+  const environment = { ...process.env };
+
   for (const [key, value] of Object.entries(Colors)) {
-    process.env['launch_style_' + key.toLowerCase()] = value;
+    environment['launch_style_' + key.toLowerCase()] = value;
   }
 
-  process.env.launch_time_start = getCurrentTime();
-  process.env.launch_platform = process.platform;
-  process.env.launch_version = version;
+  environment.launch_time_start = getCurrentTime();
+  environment.launch_platform = process.platform;
+  environment.launch_version = version;
 
   for (const [key, value] of Object.entries(constructLaunchSetting(settings))) {
-    process.env[key] = value;
+    environment[key] = value;
   }
+
+  return environment;
 }
 
 function constructLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
@@ -130,7 +134,7 @@ async function main(): Promise<void> {
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
-    setLauncherEnviromentValues(config.settings);
+    const environment = setLauncherEnviromentValues(config.settings);
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 
@@ -159,10 +163,10 @@ async function main(): Promise<void> {
       return;
     }
 
-    const lifecycleEvent = process.env.npm_lifecycle_event;
+    const lifecycleEvent = environment.npm_lifecycle_event;
     const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
-    Logger.info(Colors.Bold + 'Date              :', process.env.launch_time_start + Colors.Normal);
+    Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
     Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
     Logger.info('Launch command    :', launchCommand);
@@ -179,7 +183,7 @@ async function main(): Promise<void> {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
-      const result = await launchMenu(config, commandArgs, launchArgs.interactive);
+      const result = await launchMenu(environment, config, commandArgs, launchArgs.interactive);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -200,7 +204,7 @@ async function main(): Promise<void> {
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, process.env, config.scripts, config.options.glob);
+    const executor = new Executor(shell, environment, config.scripts, config.options.glob);
 
     startTime = executor.startTime;
 
