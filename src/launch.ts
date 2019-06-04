@@ -73,7 +73,7 @@ function disableAnsiColors() {
   }
 }
 
-function setLauncherEnviromentValues(settings: ISettings): { [name: string]: string } {
+function getEnviromentValues(settings: ISettings): { [name: string]: string } {
   const environment = { ...process.env };
 
   for (const [key, value] of Object.entries(Colors)) {
@@ -83,6 +83,9 @@ function setLauncherEnviromentValues(settings: ISettings): { [name: string]: str
   environment.launch_time_start = getCurrentTime();
   environment.launch_platform = process.platform;
   environment.launch_version = version;
+
+  delete environment.launch_time_current;
+  delete environment.launch_time_elapsed;
 
   for (const [key, value] of Object.entries(constructLaunchSetting(settings))) {
     environment[key] = value;
@@ -134,7 +137,7 @@ async function main(): Promise<void> {
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
-    const environment = setLauncherEnviromentValues(config.settings);
+    const environment = getEnviromentValues(config.settings);
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 

@@ -2,6 +2,9 @@
 ## 1.10.1
 * Refactoring related to the environment value processing.
 
+### Fixes
+* In some edge cases $launch_time_current and $launch_time_elapsed could have the wrong value.
+
 ## 1.10.0
 ### Changes
 * Added the possibility to set [globing options](https://www.npmjs.com/package/glob#options)
