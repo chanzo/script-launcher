@@ -5,7 +5,7 @@ import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
-export async function launchMenu(config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     inline: false,
@@ -39,12 +39,12 @@ export async function launchMenu(config: Config, args: string[], interactive: bo
 
   const command = getStartCommand(script.script, config.scripts);
 
-  if (command && process.env.npm_lifecycle_event === 'start') {
+  if (command && environment.npm_lifecycle_event === 'start') {
     console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
     console.log();
   }
 
-  const executor = new Executor(shell, process.env, config.scripts);
+  const executor = new Executor(shell, environment, config.scripts, config.options.glob);
 
   return {
     startTime: executor.startTime,
