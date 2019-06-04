@@ -1,11 +1,15 @@
 {
   "scripts": {
     "build:$config": [
+      "echo launch_time: $launch_time_elapsed - $launch_time_current",
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-      "echo $launch_time_start",
-      "echo $launch_time_current"
+      "echo $launch_time_current",
+      "value1='My Data'",
+      "value2=$value1",
+      "echo Success value1='$value1'",
+      "echo Was failing value2='$value2'"
     ],
     "serve:$config": [
       "echo name: $launch_setting_name",

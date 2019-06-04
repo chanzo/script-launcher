@@ -1,4 +1,6 @@
 # Change Log
+## 1.10.1
+* Refactoring related to the environment value processing.
 
 ## 1.10.0
 ### Changes
