@@ -1,0 +1,15 @@
+{
+  "menu": {
+    "description": "organization",
+    "build": {
+      "description": "environment",
+      "development": "build:acc",
+      "acceptance": "build:prd"
+    },
+    "serve": {
+      "description": "environment",
+      "development": "serve:acc",
+      "acceptance": "serve:prd"
+    }
+  }
+}
