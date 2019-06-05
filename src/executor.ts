@@ -241,7 +241,7 @@ export class Executor {
     concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
     sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
 
-    const environment = { ...this.environment, ...scriptInfo.parameters };
+    const environment = { ...scriptInfo.parameters };
 
     return {
       condition: this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments),

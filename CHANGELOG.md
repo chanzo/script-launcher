@@ -1,4 +1,27 @@
 # Change Log
+
+## 1.10.2
+### Changes
+* Refactored environment value pre-processing.
+* Environment values will now be expanded only on the execution path not on the pre-processing path.
+
+### Fixes
+* Recently assigned environment values can now be used as a function parameter.
+``` JSON
+{
+  "scripts": {
+    "download:$env": [
+      "echo Download:$env"
+    ],
+    "build": [
+      "environment=$1",
+      "echo Build:$environment",
+      "download:$environment"
+    ]
+  }
+}
+```
+
 ## 1.10.1
 * Refactoring related to the environment value processing.
 

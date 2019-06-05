@@ -56,12 +56,6 @@ export class Scripts {
       const itemA = columnsA[index];
       const itemB = columnsB[index];
 
-      if (itemB.trim().startsWith('$')) {
-        parameters[itemB.trim().substr(1)] = itemA;
-
-        continue;
-      }
-
       if (itemA.trim().startsWith('$')) {
         parameters[itemA.trim().substr(1)] = itemB;
 

@@ -1,14 +1,12 @@
 {
   "scripts": {
-    "build:$config": [
-      "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-      "echo $launch_time_current"
+    "download:$env": [
+      "echo Download:$env"
     ],
-    "serve:$config": [
-      "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
+    "build": [
+      "environment=$1",
+      "echo Build:$environment",
+      "download:$environment"
     ]
   }
 }
