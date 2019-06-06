@@ -1,12 +1,24 @@
 {
-  "scripts": {
-    "download:$env": [
-      "echo Download:$env"
-    ],
-    "build": [
-      "environment=$1",
-      "echo Build:$environment",
-      "download:$environment"
-    ]
+  {
+    "scripts": {
+      "scripts": {
+        "build:$config": [
+          "download:$env": [
+            "echo version: $launch_setting_${config}_version",
+            "echo Download:$env"
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+            "echo $launch_time_current"
+          ],
+        ],
+        "serve:$config": [
+          "build": [
+            "echo name: $launch_setting_name",
+            "environment=$1",
+            "echo version: $launch_setting_${config}_version",
+            "echo Build:$environment",
+            "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"	      "download:$environment"
+          ]
+        ]
+      }
+    }
   }
-}

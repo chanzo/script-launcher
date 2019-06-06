@@ -45,24 +45,24 @@ export class Scripts {
     };
   }
 
-  private static getParameters(patternA: string, patternB: string): { [name: string]: string } {
-    const columnsA = patternA.split(':');
-    const columnsB = patternB.split(':');
+  private static getParameters(signature: string, reference: string): { [name: string]: string } {
+    const signatureParams = signature.split(':');
+    const referenceParams = reference.split(':');
     const parameters: { [name: string]: string } = {};
 
-    if (columnsA.length !== columnsB.length) return null;
+    if (signatureParams.length !== referenceParams.length) return null;
 
-    for (let index = 0; index < columnsA.length; index++) {
-      const itemA = columnsA[index];
-      const itemB = columnsB[index];
+    for (let index = 0; index < signatureParams.length; index++) {
+      const signatureParam = signatureParams[index];
+      const referenceParam = referenceParams[index];
 
-      if (itemA.trim().startsWith('$')) {
-        parameters[itemA.trim().substr(1)] = itemB;
+      if (signatureParam.trim().startsWith('$')) {
+        parameters[signatureParam.trim().substr(1)] = referenceParam;
 
         continue;
       }
 
-      if (itemA !== itemB) return null;
+      if (signatureParam !== referenceParam) return null;
     }
 
     return parameters;

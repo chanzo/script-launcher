@@ -3,10 +3,12 @@
 ## 1.10.2
 ### Changes
 * Refactored environment value pre-processing.
-* Environment values will now be expanded only on the execution path not on the pre-processing path.
+
+### Breaking
+* Environment value can no longer be used for function resolving. Environment values will only be resolved on the execution part of script launcher.
 
 ### Fixes
-* Recently assigned environment values can now be used as a function parameter.
+* Recently assigned environment values can now be used as a function parameters.
 ``` JSON
 {
   "scripts": {
