@@ -1,4 +1,29 @@
 # Change Log
+
+## 1.10.2
+### Changes
+* Refactored environment value pre-processing.
+
+### Breaking
+* Environment value can no longer be used for function resolving. Environment values will only be resolved on the execution part of script launcher.
+
+### Fixes
+* Recently assigned environment values can now be used as a function parameters.
+``` JSON
+{
+  "scripts": {
+    "download:$env": [
+      "echo Download:$env"
+    ],
+    "build": [
+      "environment=$1",
+      "echo Build:$environment",
+      "download:$environment"
+    ]
+  }
+}
+```
+
 ## 1.10.1
 * Refactoring related to the environment value processing.
 
