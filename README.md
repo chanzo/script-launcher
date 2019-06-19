@@ -11,7 +11,11 @@
 [![GitHub forks](https://img.shields.io/github/forks/chanzo/script-launcher.svg?style=social&label=Fork)](https://github.com/chanzo/script-launcher/fork)
 [![GitHub stars](https://img.shields.io/github/stars/chanzo/script-launcher.svg?style=social&label=Star)](https://github.com/chanzo/script-launcher) 
 
-# ![Logo](docs/readme-logo.png) Script Launcher
+# ![Logo](docs/readme-logo.png) Script Launcher Sources
+
+This repository contains the Typescript source code of script-launcher. The sources are located in the **src** directory.
+This readme describes how to build and deploy script launcher it self. For the npm package documentation open
+the [readme](src/README.md) located in the **src** directory.
 
 ### Tools
 * [node](https://nodejs.org/en/) - JavaScript runtime
