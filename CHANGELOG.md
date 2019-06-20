@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.10.3
+### Changes
+* Update dependencies to ~ matches the most recent patch version, to fix issue with inquirer@6.4.0
+
 ## 1.10.2
 ### Changes
 * Refactored environment value pre-processing.
