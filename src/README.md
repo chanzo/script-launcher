@@ -560,7 +560,7 @@ Use the help for a list of available options.
 "node_modules/.bin/launch" help
 ```
 ## Launcher settings
-The launcher settings can be used to specify named values that can be used by the launcher scripts.
+The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
 
 Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
@@ -569,22 +569,41 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
     "build:$config": [
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url"
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "",
+      {
+        "repeater": "$launch_setting_${config}_server",
+        "sequential": [
+          "echo Deploying to: $launch_setting_${config}_server"
+        ]
+      }
     ]
   },
   "settings": {
     "name": "example",
     "dev": {
       "version": "2.0.0",
-      "url": "$launch_setting_name.dev.com"
+      "url": "$launch_setting_name.dev.com",
+      "server": [
+        "server1.dev.com",
+        "server2.dev.com"
+      ]
     },
     "acc": {
       "version": "1.9.0",
-      "url": "$launch_setting_name.acc.com"
+      "url": "$launch_setting_name.acc.com",
+      "server": [
+        "server1.acc.com",
+        "server2.acc.com"
+      ]
     },
     "production": {
       "version": "1.8.0",
-      "url": "$launch_setting_name.prd.com"
+      "url": "$launch_setting_name.prd.com",
+      "server": [
+        "server1.prd.com",
+        "server2.prd.com"
+      ]
     }
   }
 }

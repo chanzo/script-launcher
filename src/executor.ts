@@ -251,6 +251,10 @@ export class Executor {
       concurrent: [],
       sequential: [],
     };
+    const environment = {
+      ...scriptInfo.parameters,
+      ...this.settings.values,
+    };
 
     if (!repeater) {
       const concurrent: IScript[] = [];
@@ -272,7 +276,12 @@ export class Executor {
       result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
       result.sequential.push(...this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters));
     } else {
-      const settings = this.settings.arrays[repeater.replace(/^\$/, '')] || [];
+      let array = repeater.replace(/^\$/, '');
+
+      array = Executor.expandArguments(array, scriptInfo.arguments);
+      array = Executor.expandEnvironment(array, environment);
+
+      const settings = this.settings.arrays[array] || [];
 
       for (const setting of settings) {
         const task = this.expand({
