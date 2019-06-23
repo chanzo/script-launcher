@@ -96,13 +96,6 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
     arrays: {},
   };
 
-  if (typeof settings === 'string') {
-
-    result.values[prefix.replace(/_$/, '')] = settings;
-
-    return result;
-  }
-
   for (const [key, value] of Object.entries(settings)) {
     if (value instanceof Array) {
       const name = prefix + key;
@@ -110,6 +103,14 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
       result.arrays[name] = [];
 
       for (const item of value) {
+        if (typeof item !== 'object') {
+          result.arrays[name].push({
+            [name]: item as string,
+          });
+
+          continue;
+        }
+
         const settings = getLaunchSetting(item, name + '_');
 
         result.arrays[name].push(settings.values);

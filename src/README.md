@@ -72,6 +72,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
   * [Conditions and exclusions](#conditions-and-exclusions)
+  * [Repeaters](#repeaters)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
 * [Launcher settings](#launcher-settings)
@@ -415,7 +416,7 @@ Run `npm start build-stuff` to use this example.
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
 * **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
 
-Condition and exclusion can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
+The value of the **condition** and **exclusion** statement can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -447,6 +448,69 @@ Run `npm start build-stuff` to use this example.
   },
   "options": {
     "logLevel": 2
+  }
+}
+```
+
+### Repeaters
+The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
+
+Example using a string array. Run `npm start ping` to use this example.
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo Action: $launch_setting_command $launch_setting_servers"
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      "www.google.com",
+      "duckduckgo.com",
+      "bing.com"
+    ]
+  }
+}
+```
+
+Example using an object array. Run `npm start ping` to use this example.
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo $launch_setting_servers_name",
+          "--",
+          "echo Action: $launch_setting_command $launch_setting_servers_host",
+          ""
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      {
+        "name": "Google",
+        "host": "www.google.com"
+      },
+      {
+        "name": "DuckDuckGo",
+        "host": "duckduckgo.com"
+      },
+      {
+        "name": "Bing",
+        "host": "bing.com"
+      }
+    ]
   }
 }
 ```

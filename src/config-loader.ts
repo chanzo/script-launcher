@@ -23,7 +23,7 @@ interface IOptions {
 }
 
 export interface ISettings {
-  [name: string]: boolean | string | number | ISettings | ISettings[];
+  [name: string]: boolean | string | number | ISettings | Array<boolean | string | number | { [name: string]: boolean | string | number }>;
 }
 
 export interface ILaunchSetting {
