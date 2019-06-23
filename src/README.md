@@ -72,6 +72,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
   * [Conditions and exclusions](#conditions-and-exclusions)
+  * [Repeaters](#repeaters)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
 * [Launcher settings](#launcher-settings)
@@ -415,7 +416,7 @@ Run `npm start build-stuff` to use this example.
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
 * **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
 
-Condition and exclusion can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
+The value of the **condition** and **exclusion** statement can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
 
 Run `npm start build-stuff` to use this example.
 ``` JSON
@@ -447,6 +448,69 @@ Run `npm start build-stuff` to use this example.
   },
   "options": {
     "logLevel": 2
+  }
+}
+```
+
+### Repeaters
+The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
+
+Example using a string array. Run `npm start ping` to use this example.
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo Action: $launch_setting_command $launch_setting_servers"
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      "www.google.com",
+      "duckduckgo.com",
+      "bing.com"
+    ]
+  }
+}
+```
+
+Example using an object array. Run `npm start ping` to use this example.
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo $launch_setting_servers_name",
+          "--",
+          "echo Action: $launch_setting_command $launch_setting_servers_host",
+          ""
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      {
+        "name": "Google",
+        "host": "www.google.com"
+      },
+      {
+        "name": "DuckDuckGo",
+        "host": "duckduckgo.com"
+      },
+      {
+        "name": "Bing",
+        "host": "bing.com"
+      }
+    ]
   }
 }
 ```
@@ -496,7 +560,7 @@ Use the help for a list of available options.
 "node_modules/.bin/launch" help
 ```
 ## Launcher settings
-The launcher settings can be used to specify named values that can be used by the launcher scripts.
+The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
 
 Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
@@ -505,22 +569,41 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
     "build:$config": [
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url"
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "",
+      {
+        "repeater": "$launch_setting_${config}_server",
+        "sequential": [
+          "echo Deploying to: $launch_setting_${config}_server"
+        ]
+      }
     ]
   },
   "settings": {
     "name": "example",
     "dev": {
       "version": "2.0.0",
-      "url": "$launch_setting_name.dev.com"
+      "url": "$launch_setting_name.dev.com",
+      "server": [
+        "server1.dev.com",
+        "server2.dev.com"
+      ]
     },
     "acc": {
       "version": "1.9.0",
-      "url": "$launch_setting_name.acc.com"
+      "url": "$launch_setting_name.acc.com",
+      "server": [
+        "server1.acc.com",
+        "server2.acc.com"
+      ]
     },
     "production": {
       "version": "1.8.0",
-      "url": "$launch_setting_name.prd.com"
+      "url": "$launch_setting_name.prd.com",
+      "server": [
+        "server1.prd.com",
+        "server2.prd.com"
+      ]
     }
   }
 }

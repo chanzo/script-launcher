@@ -3,6 +3,7 @@ import { parseArgsStringToArgv } from 'string-argv';
 export interface IScriptTask {
   condition: string[] | string;
   exclusion: string[] | string;
+  repeater: string;
   concurrent: IScript[] | string;
   sequential: IScript[] | string;
 }
