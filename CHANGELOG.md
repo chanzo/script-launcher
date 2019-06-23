@@ -2,6 +2,8 @@
 
 ## 1.11.0
 ### Changes
+* Updated to deepmerge 3.3.0
+* Updated to inquirer 6.4.1
 * Moved setting value expansion to the preprocessing phase of script launcher.
 * Added support for settings arrays in conjunction with the repeater statement
 ``` JSON
