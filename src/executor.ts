@@ -7,6 +7,7 @@ import { Logger } from './logger';
 import { getCurrentTime, stringify, Colors } from './common';
 import glob = require('glob');
 import prettyTime = require('pretty-time');
+import { ILaunchSetting } from './config-loader';
 
 interface ITasks {
   condition: string[];
@@ -164,12 +165,14 @@ export class Executor {
 
   private readonly shell: boolean | string;
   private readonly environment: { [name: string]: string };
+  private readonly settings: ILaunchSetting;
   private readonly scripts: Scripts;
   private readonly globOptions: glob.IOptions;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, scripts: Scripts, globOptions: glob.IOptions) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions) {
     this.shell = shell;
     this.environment = environment;
+    this.settings = settings;
     this.scripts = scripts;
     this.globOptions = globOptions;
     this.startTime = process.hrtime();
@@ -195,10 +198,19 @@ export class Executor {
     if (Logger.level > 1) {
       const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
 
-      Logger.log(Colors.Bold + 'Launcher Settings' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Launcher Settings Values' + Colors.Normal);
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       for (const [key, value] of settings) {
         Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + '\'' + value + '\'' + Colors.Normal);
+      }
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Total: ' + settings.length);
+      Logger.log();
+      Logger.log();
+      Logger.log(Colors.Bold + 'Launcher Settings Arrays' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      for (const [key, value] of Object.entries(this.settings.arrays)) {
+        Logger.log(Colors.Dim + key + Colors.Normal + '=' + stringify(value));
       }
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       Logger.log('Total: ' + settings.length);
@@ -231,24 +243,57 @@ export class Executor {
   }
 
   private expand(scriptInfo: IScriptInfo): ITasks {
-    const concurrent: IScript[] = [];
-    const sequential: IScript[] = [];
     const script = scriptInfo.script;
-
-    if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
-    if (typeof script === 'string') sequential.push(script);
-
-    concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
-    sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
-
-    const environment = { ...scriptInfo.parameters };
-
-    return {
-      condition: this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments),
-      exclusion: this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments),
-      concurrent: this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters),
-      sequential: this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters),
+    const repeater = (script as IScriptTask).repeater;
+    const result: ITasks = {
+      condition: [],
+      exclusion: [],
+      concurrent: [],
+      sequential: [],
     };
+
+    if (!repeater) {
+      const concurrent: IScript[] = [];
+      const sequential: IScript[] = [];
+
+      if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
+      if (typeof script === 'string') sequential.push(script);
+
+      concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
+      sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
+
+      const environment = { ...scriptInfo.parameters };
+
+      result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
+      result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
+      result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result.sequential.push(...this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters));
+    } else {
+      const settings = this.settings.arrays[repeater.replace(/^\$/, '')] || [];
+
+      for (const setting of settings) {
+        const task = this.expand({
+          name: scriptInfo.name,
+          inline: scriptInfo.inline,
+          parameters: { ...scriptInfo.parameters, ...setting },
+          arguments: scriptInfo.arguments,
+          script: {
+            condition: (script as IScriptTask).condition,
+            exclusion: (script as IScriptTask).exclusion,
+            repeater: '',
+            concurrent: (script as IScriptTask).concurrent,
+            sequential: (script as IScriptTask).sequential,
+          },
+        });
+
+        result.condition.push(...task.condition);
+        result.exclusion.push(...task.exclusion);
+        result.concurrent.push(...task.concurrent);
+        result.sequential.push(...task.sequential);
+      }
+    }
+
+    return result;
   }
 
   private expandConstraint(parent: string, constraints: string | string[], environment: { [name: string]: string }, args: string[]): string[] {

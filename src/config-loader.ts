@@ -23,7 +23,12 @@ interface IOptions {
 }
 
 export interface ISettings {
-  [name: string]: boolean | string | number | ISettings;
+  [name: string]: boolean | string | number | ISettings | ISettings[];
+}
+
+export interface ILaunchSetting {
+  values: { [name: string]: string };
+  arrays: { [name: string]: Array<{ [name: string]: string }> };
 }
 
 export interface IConfig {
@@ -74,6 +79,7 @@ export class Config {
   public static readonly initConfig: Partial<IConfig> = {
     scripts: {
       'serve:dev': {
+        repeater: '',
         condition: '',
         exclusion: '',
         sequential: [],

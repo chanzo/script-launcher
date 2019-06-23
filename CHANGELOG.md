@@ -1,5 +1,45 @@
 # Change Log
 
+## 1.11.0
+### Changes
+* Added support for settings arrays in conjunction with the repeater statement
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo $launch_setting_servers_name",
+          "--",
+          "echo Action: $launch_setting_command $launch_setting_servers_host",
+          ""
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      {
+        "name": "Google",
+        "host": "www.google.com"
+      },
+      {
+        "name": "DuckDuckGo",
+        "host": "duckduckgo.com"
+      },
+      {
+        "name": "Bing",
+        "host": "bing.com"
+      }
+    ]
+  }
+}
+``` 
+
+
+
 ## 1.10.3
 ### Changes
 * Update dependencies to ~ matches the most recent patch version, to fix issue with inquirer@6.4.0

@@ -1,6 +1,6 @@
 #!./node_modules/.bin/ts-node --skip-project
 
-import { Config, IConfig, ISettings } from './config-loader';
+import { Config, IConfig, ILaunchSetting, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
@@ -73,7 +73,7 @@ function disableAnsiColors() {
   }
 }
 
-function getEnviromentValues(settings: ISettings): { [name: string]: string } {
+function getEnviromentValues(): { [name: string]: string } {
   const environment = { ...process.env };
 
   for (const [key, value] of Object.entries(Colors)) {
@@ -87,22 +87,49 @@ function getEnviromentValues(settings: ISettings): { [name: string]: string } {
   delete environment.launch_time_current;
   delete environment.launch_time_elapsed;
 
-  for (const [key, value] of Object.entries(constructLaunchSetting(settings))) {
-    environment[key] = value;
-  }
-
   return environment;
 }
 
-function constructLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): { [name: string]: string } {
-  let result: { [name: string]: string } = {};
+function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILaunchSetting {
+  const result: ILaunchSetting = {
+    values: {},
+    arrays: {},
+  };
+
+  if (typeof settings === 'string') {
+
+    result.values[prefix.replace(/_$/, '')] = settings;
+
+    return result;
+  }
 
   for (const [key, value] of Object.entries(settings)) {
-    if (typeof value === 'object') {
-      result = { ...result, ...constructLaunchSetting(value, prefix + key + '_') };
-    } else {
-      result[prefix + key.toLowerCase()] = value as string;
+    if (value instanceof Array) {
+      const name = prefix + key;
+
+      result.arrays[name] = [];
+
+      for (const item of value) {
+        const settings = getLaunchSetting(item, name + '_');
+
+        result.arrays[name].push(settings.values);
+
+        if (Object.entries(settings.arrays).length > 0) throw new Error('Nested settings arrays are not supported.');
+      }
+
+      continue;
     }
+
+    if (typeof value === 'object') {
+      const settings = getLaunchSetting(value, prefix + key + '_');
+
+      result.values = { ...result.values, ...settings.values };
+      result.arrays = { ...result.arrays, ...settings.arrays };
+
+      continue;
+    }
+
+    result.values[prefix + key.toLowerCase()] = value as string;
   }
 
   return result;
@@ -137,7 +164,11 @@ async function main(): Promise<void> {
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
-    const environment = getEnviromentValues(config.settings);
+    const settings = getLaunchSetting(config.settings);
+    const environment = {
+      ...getEnviromentValues(),
+      ...settings.values,
+    };
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 
@@ -186,7 +217,7 @@ async function main(): Promise<void> {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
-      const result = await launchMenu(environment, config, commandArgs, launchArgs.interactive);
+      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -207,7 +238,7 @@ async function main(): Promise<void> {
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, environment, config.scripts, config.options.glob);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob);
 
     startTime = executor.startTime;
 
