@@ -1,11 +1,11 @@
 import * as inquirer from 'inquirer';
 import * as fs from 'fs';
-import { Config, IConfig, IMenu } from './config-loader';
+import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
-export async function launchMenu(environment: { [name: string]: string }, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     inline: false,
@@ -44,7 +44,7 @@ export async function launchMenu(environment: { [name: string]: string }, config
     console.log();
   }
 
-  const executor = new Executor(shell, environment, config.scripts, config.options.glob);
+  const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob);
 
   return {
     startTime: executor.startTime,
