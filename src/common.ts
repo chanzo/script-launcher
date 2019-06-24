@@ -11,11 +11,11 @@ export enum Colors {
   Normal = '\x1b[0m',
 }
 
-export function stringify(json): string {
-  if (typeof json !== 'string') {
-    json = JSON.stringify(json, undefined, 2);
+export function stringify(value: any, replacer?: (this: any, key: string, value: any) => any, space: string | number = 2): string {
+  if (typeof value !== 'string') {
+    value = JSON.stringify(value, replacer, space);
   }
-  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+  return value.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
     let cls = Colors.Yellow;
     if (/^"/.test(match)) {
       if (/:$/.test(match)) {

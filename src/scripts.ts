@@ -6,6 +6,10 @@ export interface IScriptTask {
   repeater: string;
   concurrent: IScript[] | string;
   sequential: IScript[] | string;
+  'concurrent-then': IScript[] | string;
+  'sequential-then': IScript[] | string;
+  'concurrent-else': IScript[] | string;
+  'sequential-else': IScript[] | string;
 }
 
 export type IScript = string | string[] | IScriptTask;
