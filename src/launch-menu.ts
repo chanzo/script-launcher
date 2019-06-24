@@ -57,6 +57,10 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
 
   if ((script as IScriptTask).concurrent) return null;
   if ((script as IScriptTask).sequential) return null;
+  if ((script as IScriptTask)['concurrent-then']) return null;
+  if ((script as IScriptTask)['sequential-then']) return null;
+  if ((script as IScriptTask)['concurrent-else']) return null;
+  if ((script as IScriptTask)['sequential-else']) return null;
 
   if (script instanceof Array) result.push(...script);
   if (typeof script === 'string') result.push(script);
@@ -117,8 +121,13 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
 function isMenuObject(object: any) {
   if (object instanceof Array) return false;
   if (typeof object === 'string') return false;
+
   if ((object as IScriptTask).concurrent && (object as IScriptTask).concurrent instanceof Array) return false;
   if ((object as IScriptTask).sequential && (object as IScriptTask).sequential instanceof Array) return false;
+  if ((object as IScriptTask)['concurrent-then'] && (object as IScriptTask)['concurrent-then'] instanceof Array) return false;
+  if ((object as IScriptTask)['sequential-then'] && (object as IScriptTask)['sequential-then'] instanceof Array) return false;
+  if ((object as IScriptTask)['concurrent-else'] && (object as IScriptTask)['concurrent-else'] instanceof Array) return false;
+  if ((object as IScriptTask)['sequential-else'] && (object as IScriptTask)['sequential-else'] instanceof Array) return false;
 
   return true;
 }

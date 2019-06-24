@@ -1,5 +1,39 @@
 # Change Log
 
+## 1.11.1
+### Changes
+* Updated the Script expanded log output
+* Added support for an else statements:
+``` JSON
+{
+  "scripts": {
+    "example": [
+      {
+        "condition": "exit 1",
+        "sequential-then": [
+          "echo Sequential then: condition action."
+        ],
+        "sequential-else": [
+          "echo Sequential else: condition action."
+        ]
+      },
+      {
+        "exclusion": "exit 1",
+        "sequential-then": [
+          "echo Sequential then: exclusion action."
+        ],
+        "sequential-else": [
+          "echo Sequential else: exclusion action."
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Fixes
+* Script scoping fix so current directory and environment variables are no longer shared between script blocks.
+
 ## 1.11.0
 ### Changes
 * Updated to deepmerge 3.3.0
