@@ -436,11 +436,13 @@ Run `npm start build-stuff` to use this example.
           "echo npm start",
           {
             "condition": "'$launch_platform'==='win32'",
-            "sequential": "rmdir node_modules_test"
+            "sequential-then": "rmdir node_modules_test",
+            "sequential-else": "echo Not running on: win32"
           },
           {
             "condition": "'$launch_platform'!=='win32'",
-            "sequential": "rm -d node_modules_test"
+            "sequential-then": "rm -d node_modules_test",
+            "sequential-else": "echo Running on: win32"
           }
         ]
       }
