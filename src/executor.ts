@@ -12,8 +12,10 @@ import { ILaunchSetting } from './config-loader';
 interface ITasks {
   condition: string[];
   exclusion: string[];
-  concurrent: Array<ITasks | string>;
-  sequential: Array<ITasks | string>;
+  'concurrent-then': Array<ITasks | string>;
+  'sequential-then': Array<ITasks | string>;
+  'concurrent-else': Array<ITasks | string>;
+  'sequential-else': Array<ITasks | string>;
 }
 
 enum Order {
@@ -24,6 +26,13 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
+  private static removeEmpties(this: any, key: string, value: any): any {
+    if (!value) return null;
+    if (value instanceof Array && value.length === 0) return undefined;
+
+    return value;
+  }
+
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
       text = text.replace(new RegExp('([^\\\\]|^)\\$' + index + '\\*', 'g'), '$1' + args.slice(index).join(' '));
@@ -83,6 +92,7 @@ export class Executor {
     if (!command) command = '';
 
     options = { ...options };
+    options.env = { ...options.env };
 
     command = Executor.expandEnvironment(command, options.env, true);
 
@@ -191,7 +201,7 @@ export class Executor {
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.info('Script args     :', scriptInfo.arguments);
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));
-    Logger.debug('Script expanded : ' + stringify(tasks));
+    Logger.debug('Script expanded : ' + stringify(tasks, Executor.removeEmpties));
     Logger.info();
     Logger.log();
 
@@ -221,8 +231,11 @@ export class Executor {
     const processes: IProcesses = [];
 
     if (await this.evaluateTask(tasks, options)) {
-      processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
-      processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
+      processes.push(...await this.executeTasks(tasks['concurrent-then'], options, Order.concurrent));
+      processes.push(...await this.executeTasks(tasks['sequential-then'], options, Order.sequential));
+    } else {
+      processes.push(...await this.executeTasks(tasks['concurrent-else'], options, Order.concurrent));
+      processes.push(...await this.executeTasks(tasks['sequential-else'], options, Order.sequential));
     }
 
     return Executor.wait(processes);
@@ -246,10 +259,12 @@ export class Executor {
     const script = scriptInfo.script;
     const repeater = (script as IScriptTask).repeater;
     const result: ITasks = {
-      condition: [],
-      exclusion: [],
-      concurrent: [],
-      sequential: [],
+      'condition': [],
+      'exclusion': [],
+      'concurrent-then': [],
+      'sequential-then': [],
+      'concurrent-else': [],
+      'sequential-else': [],
     };
     const environment = {
       ...scriptInfo.parameters,
@@ -257,14 +272,20 @@ export class Executor {
     };
 
     if (!repeater) {
-      const concurrent: IScript[] = [];
-      const sequential: IScript[] = [];
+      const concurrentThen: IScript[] = [];
+      const sequentialThen: IScript[] = [];
+      const concurrentElse: IScript[] = [];
+      const sequentialElse: IScript[] = [];
 
-      if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
-      if (typeof script === 'string') sequential.push(script);
+      if (script instanceof Array) (scriptInfo.inline ? concurrentThen : sequentialThen).push(...script);
+      if (typeof script === 'string') sequentialThen.push(script);
 
-      concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
-      sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
+      concurrentThen.push(...this.preprocessScripts((script as IScriptTask).concurrent));
+      sequentialThen.push(...this.preprocessScripts((script as IScriptTask).sequential));
+      concurrentThen.push(...this.preprocessScripts((script as IScriptTask)['concurrent-then']));
+      sequentialThen.push(...this.preprocessScripts((script as IScriptTask)['sequential-then']));
+      concurrentElse.push(...this.preprocessScripts((script as IScriptTask)['concurrent-else']));
+      sequentialElse.push(...this.preprocessScripts((script as IScriptTask)['sequential-else']));
 
       const environment = {
         ...scriptInfo.parameters,
@@ -273,8 +294,10 @@ export class Executor {
 
       result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
       result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
-      result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result.sequential.push(...this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result['concurrent-then'].push(...this.expandTasks(scriptInfo.name, concurrentThen, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result['sequential-then'].push(...this.expandTasks(scriptInfo.name, sequentialThen, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result['concurrent-else'].push(...this.expandTasks(scriptInfo.name, concurrentElse, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result['sequential-else'].push(...this.expandTasks(scriptInfo.name, sequentialElse, environment, scriptInfo.arguments, scriptInfo.parameters));
     } else {
       let array = repeater.replace(/^\$/, '');
 
@@ -282,26 +305,29 @@ export class Executor {
       array = Executor.expandEnvironment(array, environment);
 
       const settings = this.settings.arrays[array] || [];
+      const repeaterTask: IScriptInfo = {
+        name: scriptInfo.name,
+        inline: scriptInfo.inline,
+        parameters: null,
+        arguments: scriptInfo.arguments,
+        script: { ...(scriptInfo.script as IScriptTask) },
+      };
+
+      (repeaterTask.script as IScriptTask).repeater = null;
 
       for (const setting of settings) {
-        const task = this.expand({
-          name: scriptInfo.name,
-          inline: scriptInfo.inline,
-          parameters: { ...scriptInfo.parameters, ...setting },
-          arguments: scriptInfo.arguments,
-          script: {
-            condition: (script as IScriptTask).condition,
-            exclusion: (script as IScriptTask).exclusion,
-            repeater: '',
-            concurrent: (script as IScriptTask).concurrent,
-            sequential: (script as IScriptTask).sequential,
-          },
-        });
+        repeaterTask.parameters = { ...scriptInfo.parameters, ...setting };
 
-        result.condition.push(...task.condition);
-        result.exclusion.push(...task.exclusion);
-        result.concurrent.push(...task.concurrent);
-        result.sequential.push(...task.sequential);
+        const task = this.expand(repeaterTask);
+
+        result['sequential-then'].push({
+          'condition': task.condition,
+          'exclusion': task.exclusion,
+          'concurrent-then': task['concurrent-then'],
+          'sequential-then': task['sequential-then'],
+          'concurrent-else': task['concurrent-else'],
+          'sequential-else': task['sequential-else'],
+        });
       }
     }
 
@@ -371,21 +397,27 @@ export class Executor {
           if (order === Order.sequential && await commandProcess.wait() !== 0) break;
         }
       } else {
-        if (await this.evaluateTask(task, options)) {
-          const concurrentProcesses = this.executeTasks(task.concurrent, options, Order.concurrent);
-          const sequentialProcesses = this.executeTasks(task.sequential, options, Order.sequential);
+        let concurrent = task['concurrent-then'];
+        let sequential = task['sequential-then'];
 
-          processes.push(concurrentProcesses);
-          processes.push(sequentialProcesses);
+        if (!await this.evaluateTask(task, options)) {
+          concurrent = task['concurrent-else'];
+          sequential = task['sequential-else'];
+        }
 
-          if (order === Order.sequential) {
-            let exitCode = 0;
+        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent);
+        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential);
 
-            exitCode += await Executor.wait(await concurrentProcesses);
-            exitCode += await Executor.wait(await sequentialProcesses);
+        processes.push(concurrentProcesses);
+        processes.push(sequentialProcesses);
 
-            if (exitCode > 0) break;
-          }
+        if (order === Order.sequential) {
+          let exitCode = 0;
+
+          exitCode += await Executor.wait(await concurrentProcesses);
+          exitCode += await Executor.wait(await sequentialProcesses);
+
+          if (exitCode > 0) break;
         }
       }
     }
@@ -531,7 +563,11 @@ export class Executor {
           script: task,
         };
 
-        result.push(this.expand(scriptInfo));
+        if ((task as IScriptTask).repeater) {
+          result.push(...this.expand(scriptInfo)['sequential-then']);
+        } else {
+          result.push(this.expand(scriptInfo));
+        }
       }
     }
 

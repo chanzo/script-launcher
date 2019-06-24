@@ -79,15 +79,11 @@ export class Config {
   public static readonly initConfig: Partial<IConfig> = {
     scripts: {
       'serve:dev': {
-        repeater: '',
-        condition: '',
-        exclusion: '',
-        sequential: [],
         concurrent: [
           'echo Start development server',
           'serve:dev',
         ],
-      },
+      } as IScript,
       'serve:$config': 'echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url',
       'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
       'build:dev': 'build:dev',
