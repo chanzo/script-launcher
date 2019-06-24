@@ -83,6 +83,7 @@ export class Executor {
     if (!command) command = '';
 
     options = { ...options };
+    options.env = { ...options.env };
 
     command = Executor.expandEnvironment(command, options.env, true);
 
@@ -298,10 +299,12 @@ export class Executor {
           },
         });
 
-        result.condition.push(...task.condition);
-        result.exclusion.push(...task.exclusion);
-        result.concurrent.push(...task.concurrent);
-        result.sequential.push(...task.sequential);
+        result.sequential.push({
+          condition: task.condition,
+          exclusion: task.exclusion,
+          concurrent: task.concurrent,
+          sequential: task.sequential,
+        });
       }
     }
 
@@ -531,7 +534,11 @@ export class Executor {
           script: task,
         };
 
-        result.push(this.expand(scriptInfo));
+        if ((task as IScriptTask).repeater) {
+          result.push(...this.expand(scriptInfo).sequential);
+        } else {
+          result.push(this.expand(scriptInfo));
+        }
       }
     }
 
