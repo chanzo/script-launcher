@@ -71,7 +71,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
-  * [Conditions and exclusions](#conditions-and-exclusions)
+  * [Condition and exclusion constraints](#condition-and-exclusion-constraints)
   * [Repeaters](#repeaters)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
@@ -412,7 +412,7 @@ Run `npm start build-stuff` to use this example.
 ```
 
 
-### Conditions and exclusions
+### Condition and exclusion constraints
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
 * **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
 
@@ -425,24 +425,20 @@ Run `npm start build-stuff` to use this example.
     "build-stuff": [
       {
         "exclusion": "node_modules_test",
-        "sequential": [
+        "sequential-then": [
           "echo npm install",
           "mkdir node_modules_test"
         ]
       },
       {
         "condition": "node_modules_test",
-        "sequential": [
+        "sequential-then": [
           "echo npm start",
           {
             "condition": "'$launch_platform'==='win32'",
+            "sequential": "echo Test platform type.",
             "sequential-then": "rmdir node_modules_test",
-            "sequential-else": "echo Not running on: win32"
-          },
-          {
-            "condition": "'$launch_platform'!=='win32'",
-            "sequential-then": "rm -d node_modules_test",
-            "sequential-else": "echo Running on: win32"
+            "sequential-else": "rm -d node_modules_test"
           }
         ]
       }
@@ -465,7 +461,7 @@ Example using a string array. Run `npm start ping` to use this example.
       {
         "repeater": "$launch_setting_servers",
         "sequential": [
-          "echo Action: $launch_setting_command $launch_setting_servers"
+          "echo Action: $launch_setting_command $_"
         ]
       }
     ]
@@ -489,9 +485,9 @@ Example using an object array. Run `npm start ping` to use this example.
       {
         "repeater": "$launch_setting_servers",
         "sequential": [
-          "echo $launch_setting_servers_name",
+          "echo $_name",
           "--",
-          "echo Action: $launch_setting_command $launch_setting_servers_host",
+          "echo Action: $launch_setting_command $_host",
           ""
         ]
       }

@@ -1,5 +1,49 @@
 # Change Log
 
+## 1.12.0
+### Changes
+* Updated the conditions parser
+* Changed the **repeater** statements assessor variable name to **$_**
+
+### Breaking
+* The **sequential** and **concurrent** statements no longer work in conjunction with the **condition** and **exclusion** statements. Use the **sequential-then**, **sequential-else**, **concurrent-then** and **concurrent-else** when working with conditions and or exclusions. Open the [Condition and exclusion constraints](src/README.md#condition-and-exclusion-constraints) topic for examples.
+* The **sequential-then** and **concurrent-then** statements will only be processed when there is a constraint specified that evaluates to a success value.
+* When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $_ prefix. Open the [Repeaters](#repeaters) topic for examples.
+``` JSON
+{
+  "scripts": {
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo $_name",
+          "--",
+          "echo Action: $launch_setting_command $_host",
+          ""
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      {
+        "name": "Google",
+        "host": "www.google.com"
+      },
+      {
+        "name": "DuckDuckGo",
+        "host": "duckduckgo.com"
+      },
+      {
+        "name": "Bing",
+        "host": "bing.com"
+      }
+    ]
+  }
+}
+```
+
 ## 1.11.1
 ### Changes
 * Updated the Script expanded log output

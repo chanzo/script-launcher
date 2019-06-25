@@ -34,6 +34,10 @@ export class Executor {
     return value;
   }
 
+  private static containsConstraint(task: ITasks): boolean {
+    return task.condition.length > 0 || task.exclusion.length > 0;
+  }
+
   private static expandArguments(text: string, args: string[]): string {
     for (let index = 0; index < args.length; index++) {
       text = text.replace(new RegExp('([^\\\\]|^)\\$' + index + '\\*', 'g'), '$1' + args.slice(index).join(' '));
@@ -237,12 +241,14 @@ export class Executor {
     processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
     processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
 
-    if (await this.evaluateTask(tasks, options)) {
-      processes.push(...await this.executeTasks(tasks['concurrent-then'], options, Order.concurrent));
-      processes.push(...await this.executeTasks(tasks['sequential-then'], options, Order.sequential));
-    } else {
-      processes.push(...await this.executeTasks(tasks['concurrent-else'], options, Order.concurrent));
-      processes.push(...await this.executeTasks(tasks['sequential-else'], options, Order.sequential));
+    if (Executor.containsConstraint(tasks)) {
+      if (await this.evaluateTask(tasks, options)) {
+        processes.push(...await this.executeTasks(tasks['concurrent-then'], options, Order.concurrent));
+        processes.push(...await this.executeTasks(tasks['sequential-then'], options, Order.sequential));
+      } else {
+        processes.push(...await this.executeTasks(tasks['concurrent-else'], options, Order.concurrent));
+        processes.push(...await this.executeTasks(tasks['sequential-else'], options, Order.sequential));
+      }
     }
 
     return Executor.wait(processes);
@@ -412,22 +418,21 @@ export class Executor {
           if (order === Order.sequential && await commandProcess.wait() !== 0) break;
         }
       } else {
-        let concurrent = task['concurrent-then'];
-        let sequential = task['sequential-then'];
+        const concurrentProcesses = [this.executeTasks(task.concurrent, options, Order.concurrent)];
+        const sequentialProcesses = [this.executeTasks(task.sequential, options, Order.sequential)];
 
-        if (!await this.evaluateTask(task, options)) {
-          concurrent = task['concurrent-else'];
-          sequential = task['sequential-else'];
+        if (Executor.containsConstraint(task)) {
+          let concurrent = task['concurrent-then'];
+          let sequential = task['sequential-then'];
+
+          if (!await this.evaluateTask(task, options)) {
+            concurrent = task['concurrent-else'];
+            sequential = task['sequential-else'];
+          }
+
+          concurrentProcesses.push(this.executeTasks(concurrent, options, Order.concurrent));
+          sequentialProcesses.push(this.executeTasks(sequential, options, Order.sequential));
         }
-
-        const concurrentProcesses = [
-          this.executeTasks(task.concurrent, options, Order.concurrent),
-          this.executeTasks(concurrent, options, Order.concurrent),
-        ];
-        const sequentialProcesses = [
-          this.executeTasks(task.sequential, options, Order.sequential),
-          this.executeTasks(sequential, options, Order.sequential),
-        ];
 
         processes.push(...concurrentProcesses);
         processes.push(...sequentialProcesses);
