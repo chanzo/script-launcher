@@ -114,8 +114,6 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
         const settings = getLaunchSetting(item, '_');
 
         result.arrays[name].push(settings.values);
-
-        if (Object.entries(settings.arrays).length > 0) throw new Error('Nested settings arrays are not supported.');
       }
 
       continue;

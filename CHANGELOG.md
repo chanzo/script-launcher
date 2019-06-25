@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.12.1
+### Changes
+* Removed the throw exception when using a nested settings array
+
 ## 1.12.0
 ### Changes
 * Updated the conditions parser
