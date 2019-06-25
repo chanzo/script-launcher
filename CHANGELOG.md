@@ -10,7 +10,7 @@
 ### Breaking
 * The **sequential** and **concurrent** statements no longer work in conjunction with the **condition** and **exclusion** statements. Use the **sequential-then**, **sequential-else**, **concurrent-then** and **concurrent-else** when working with conditions and or exclusions. Open the [Condition and exclusion constraints](src/README.md#condition-and-exclusion-constraints) topic for examples.
 * The **sequential-then** and **concurrent-then** statements will only be processed when there is a constraint specified that evaluates to a success value.
-* When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $_ prefix. Open the [Repeaters](#repeaters) topic for examples.
+* When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $_ prefix. Open the [Repeaters](src/README.md#repeaters) topic for examples.
 ``` JSON
 {
   "scripts": {
