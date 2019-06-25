@@ -4,6 +4,8 @@
 ### Changes
 * Updated the conditions parser
 * Changed the **repeater** statements assessor variable name to **$_**
+* Minor changes to the init examples
+* Updated Script expanded log output
 
 ### Breaking
 * The **sequential** and **concurrent** statements no longer work in conjunction with the **condition** and **exclusion** statements. Use the **sequential-then**, **sequential-else**, **concurrent-then** and **concurrent-else** when working with conditions and or exclusions. Open the [Condition and exclusion constraints](src/README.md#condition-and-exclusion-constraints) topic for examples.

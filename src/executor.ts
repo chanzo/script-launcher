@@ -295,7 +295,7 @@ export class Executor {
       const sequentialElse: IScript[] = [];
 
       if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
-      if (typeof script === 'string') sequentialThen.push(script);
+      if (typeof script === 'string') sequential.push(script);
 
       concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
       sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
