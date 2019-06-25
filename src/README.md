@@ -256,7 +256,7 @@ Run `npm start build-stuff` to use this example.
   "scripts": {
     "build-stuff": {
       "condition": "echo grep example |? example",
-      "sequential": [
+      "sequential-then": [
         "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
         "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
         "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
