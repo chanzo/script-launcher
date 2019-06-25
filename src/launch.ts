@@ -105,13 +105,13 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
       for (const item of value) {
         if (typeof item !== 'object') {
           result.arrays[name].push({
-            [name]: item as string,
+            ['_']: item as string,
           });
 
           continue;
         }
 
-        const settings = getLaunchSetting(item, name + '_');
+        const settings = getLaunchSetting(item, '_');
 
         result.arrays[name].push(settings.values);
 
