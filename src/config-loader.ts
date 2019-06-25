@@ -88,8 +88,6 @@ export class Config {
       'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
       'build:dev': 'build:dev',
     },
-    options: {
-    } as IOptions,
   };
 
   public static readonly settingsConfig: Partial<IConfig> = {
@@ -104,6 +102,9 @@ export class Config {
         url: 'example.prd.com',
       },
     },
+    options: {
+      logLevel: 0,
+    } as IOptions,
   };
 
   public static readonly initMenu: Partial<IConfig> = {

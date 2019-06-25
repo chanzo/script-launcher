@@ -12,6 +12,8 @@ import { ILaunchSetting } from './config-loader';
 interface ITasks {
   condition: string[];
   exclusion: string[];
+  'concurrent': Array<ITasks | string>;
+  'sequential': Array<ITasks | string>;
   'concurrent-then': Array<ITasks | string>;
   'sequential-then': Array<ITasks | string>;
   'concurrent-else': Array<ITasks | string>;
@@ -27,10 +29,13 @@ interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
   private static removeEmpties(this: any, key: string, value: any): any {
-    if (!value) return null;
     if (value instanceof Array && value.length === 0) return undefined;
 
     return value;
+  }
+
+  private static containsConstraint(task: ITasks): boolean {
+    return task.condition.length > 0 || task.exclusion.length > 0;
   }
 
   private static expandArguments(text: string, args: string[]): string {
@@ -171,6 +176,7 @@ export class Executor {
 
     return exitCode;
   }
+
   public readonly startTime: [number, number];
 
   private readonly shell: boolean | string;
@@ -229,14 +235,21 @@ export class Executor {
     }
 
     const processes: IProcesses = [];
+    const concurrent: Array<ITasks | string> = [...tasks.concurrent];
+    const sequential: Array<ITasks | string> = [...tasks.sequential];
 
-    if (await this.evaluateTask(tasks, options)) {
-      processes.push(...await this.executeTasks(tasks['concurrent-then'], options, Order.concurrent));
-      processes.push(...await this.executeTasks(tasks['sequential-then'], options, Order.sequential));
-    } else {
-      processes.push(...await this.executeTasks(tasks['concurrent-else'], options, Order.concurrent));
-      processes.push(...await this.executeTasks(tasks['sequential-else'], options, Order.sequential));
+    if (Executor.containsConstraint(tasks)) {
+      if (await this.evaluateTask(tasks, options)) {
+        concurrent.push(...tasks['concurrent-then']);
+        sequential.push(...tasks['sequential-then']);
+      } else {
+        concurrent.push(...tasks['concurrent-else']);
+        sequential.push(...tasks['sequential-else']);
+      }
     }
+
+    processes.push(...await this.executeTasks(concurrent, options, Order.concurrent));
+    processes.push(...await this.executeTasks(sequential, options, Order.sequential));
 
     return Executor.wait(processes);
   }
@@ -261,6 +274,8 @@ export class Executor {
     const result: ITasks = {
       'condition': [],
       'exclusion': [],
+      'concurrent': [],
+      'sequential': [],
       'concurrent-then': [],
       'sequential-then': [],
       'concurrent-else': [],
@@ -272,16 +287,18 @@ export class Executor {
     };
 
     if (!repeater) {
+      const concurrent: IScript[] = [];
+      const sequential: IScript[] = [];
       const concurrentThen: IScript[] = [];
       const sequentialThen: IScript[] = [];
       const concurrentElse: IScript[] = [];
       const sequentialElse: IScript[] = [];
 
-      if (script instanceof Array) (scriptInfo.inline ? concurrentThen : sequentialThen).push(...script);
-      if (typeof script === 'string') sequentialThen.push(script);
+      if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
+      if (typeof script === 'string') sequential.push(script);
 
-      concurrentThen.push(...this.preprocessScripts((script as IScriptTask).concurrent));
-      sequentialThen.push(...this.preprocessScripts((script as IScriptTask).sequential));
+      concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
+      sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
       concurrentThen.push(...this.preprocessScripts((script as IScriptTask)['concurrent-then']));
       sequentialThen.push(...this.preprocessScripts((script as IScriptTask)['sequential-then']));
       concurrentElse.push(...this.preprocessScripts((script as IScriptTask)['concurrent-else']));
@@ -294,6 +311,8 @@ export class Executor {
 
       result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
       result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
+      result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result.sequential.push(...this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters));
       result['concurrent-then'].push(...this.expandTasks(scriptInfo.name, concurrentThen, environment, scriptInfo.arguments, scriptInfo.parameters));
       result['sequential-then'].push(...this.expandTasks(scriptInfo.name, sequentialThen, environment, scriptInfo.arguments, scriptInfo.parameters));
       result['concurrent-else'].push(...this.expandTasks(scriptInfo.name, concurrentElse, environment, scriptInfo.arguments, scriptInfo.parameters));
@@ -320,9 +339,11 @@ export class Executor {
 
         const task = this.expand(repeaterTask);
 
-        result['sequential-then'].push({
+        result.sequential.push({
           'condition': task.condition,
           'exclusion': task.exclusion,
+          'concurrent': task.concurrent,
+          'sequential': task.sequential,
           'concurrent-then': task['concurrent-then'],
           'sequential-then': task['sequential-then'],
           'concurrent-else': task['concurrent-else'],
@@ -397,12 +418,17 @@ export class Executor {
           if (order === Order.sequential && await commandProcess.wait() !== 0) break;
         }
       } else {
-        let concurrent = task['concurrent-then'];
-        let sequential = task['sequential-then'];
+        const concurrent: Array<ITasks | string> = [...task.concurrent];
+        const sequential: Array<ITasks | string> = [...task.sequential];
 
-        if (!await this.evaluateTask(task, options)) {
-          concurrent = task['concurrent-else'];
-          sequential = task['sequential-else'];
+        if (Executor.containsConstraint(task)) {
+          if (await this.evaluateTask(task, options)) {
+            concurrent.push(...task['concurrent-then']);
+            sequential.push(...task['sequential-then']);
+          } else {
+            concurrent.push(...task['concurrent-else']);
+            sequential.push(...task['sequential-else']);
+          }
         }
 
         const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent);
@@ -564,7 +590,7 @@ export class Executor {
         };
 
         if ((task as IScriptTask).repeater) {
-          result.push(...this.expand(scriptInfo)['sequential-then']);
+          result.push(...this.expand(scriptInfo).sequential);
         } else {
           result.push(this.expand(scriptInfo));
         }
