@@ -572,7 +572,7 @@ Run `npm start build:dev` , `npm start build:acc` or `npm start build:production
       {
         "repeater": "$launch_setting_${config}_server",
         "sequential": [
-          "echo Deploying to: $launch_setting_${config}_server"
+          "echo Deploying to: $_"
         ]
       }
     ]
