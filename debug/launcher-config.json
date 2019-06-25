@@ -1,14 +1,35 @@
 {
   "scripts": {
-    "build:$config": [
-      "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-      "echo $launch_time_current"
+    "test": [
+      "echo hallo"
     ],
-    "serve:$config": [
-      "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
+    "ping": [
+      {
+        "repeater": "$launch_setting_servers",
+        "sequential": [
+          "echo $launch_setting_servers_name",
+          "--",
+          "echo Action: $launch_setting_command $launch_setting_servers_host",
+          ""
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "command": "ping",
+    "servers": [
+      {
+        "name": "Google",
+        "host": "www.google.com"
+      },
+      {
+        "name": "DuckDuckGo",
+        "host": "duckduckgo.com"
+      },
+      {
+        "name": "Bing",
+        "host": "bing.com"
+      }
     ]
   }
 }
