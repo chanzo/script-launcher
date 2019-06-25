@@ -163,16 +163,14 @@ export class Executor {
     return { command, args, options };
   }
 
-  private static async wait(...processes: IProcesses[]): Promise<number> {
+  private static async wait(processes: IProcesses): Promise<number> {
     let exitCode = 0;
 
-    for (const processItem of processes) {
-      for (const item of processItem) {
-        if (item instanceof Promise) {
-          exitCode += await Executor.wait(await item);
-        } else {
-          exitCode += await item.wait();
-        }
+    for (const item of processes) {
+      if (item instanceof Promise) {
+        exitCode += await this.wait(await item);
+      } else {
+        exitCode += await item.wait();
       }
     }
 
@@ -237,19 +235,21 @@ export class Executor {
     }
 
     const processes: IProcesses = [];
-
-    processes.push(...await this.executeTasks(tasks.concurrent, options, Order.concurrent));
-    processes.push(...await this.executeTasks(tasks.sequential, options, Order.sequential));
+    const concurrent: Array<ITasks | string> = [...tasks.concurrent];
+    const sequential: Array<ITasks | string> = [...tasks.sequential];
 
     if (Executor.containsConstraint(tasks)) {
       if (await this.evaluateTask(tasks, options)) {
-        processes.push(...await this.executeTasks(tasks['concurrent-then'], options, Order.concurrent));
-        processes.push(...await this.executeTasks(tasks['sequential-then'], options, Order.sequential));
+        concurrent.push(...tasks['concurrent-then']);
+        sequential.push(...tasks['sequential-then']);
       } else {
-        processes.push(...await this.executeTasks(tasks['concurrent-else'], options, Order.concurrent));
-        processes.push(...await this.executeTasks(tasks['sequential-else'], options, Order.sequential));
+        concurrent.push(...tasks['concurrent-else']);
+        sequential.push(...tasks['sequential-else']);
       }
     }
+
+    processes.push(...await this.executeTasks(concurrent, options, Order.concurrent));
+    processes.push(...await this.executeTasks(sequential, options, Order.sequential));
 
     return Executor.wait(processes);
   }
@@ -418,30 +418,30 @@ export class Executor {
           if (order === Order.sequential && await commandProcess.wait() !== 0) break;
         }
       } else {
-        const concurrentProcesses = [this.executeTasks(task.concurrent, options, Order.concurrent)];
-        const sequentialProcesses = [this.executeTasks(task.sequential, options, Order.sequential)];
+        const concurrent: Array<ITasks | string> = [...task.concurrent];
+        const sequential: Array<ITasks | string> = [...task.sequential];
 
         if (Executor.containsConstraint(task)) {
-          let concurrent = task['concurrent-then'];
-          let sequential = task['sequential-then'];
-
-          if (!await this.evaluateTask(task, options)) {
-            concurrent = task['concurrent-else'];
-            sequential = task['sequential-else'];
+          if (await this.evaluateTask(task, options)) {
+            concurrent.push(...task['concurrent-then']);
+            sequential.push(...task['sequential-then']);
+          } else {
+            concurrent.push(...task['concurrent-else']);
+            sequential.push(...task['sequential-else']);
           }
-
-          concurrentProcesses.push(this.executeTasks(concurrent, options, Order.concurrent));
-          sequentialProcesses.push(this.executeTasks(sequential, options, Order.sequential));
         }
 
-        processes.push(...concurrentProcesses);
-        processes.push(...sequentialProcesses);
+        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent);
+        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential);
+
+        processes.push(concurrentProcesses);
+        processes.push(sequentialProcesses);
 
         if (order === Order.sequential) {
           let exitCode = 0;
 
-          exitCode += await Executor.wait(...await Promise.all(concurrentProcesses));
-          exitCode += await Executor.wait(...await Promise.all(sequentialProcesses));
+          exitCode += await Executor.wait(await concurrentProcesses);
+          exitCode += await Executor.wait(await sequentialProcesses);
 
           if (exitCode > 0) break;
         }
