@@ -9,8 +9,5 @@
       "version": "1.8.0",
       "url": "$launch_setting_name.prd.com"
     }
-  },
-  "options": {
-    "logLevel": 0
   }
 }

@@ -514,25 +514,33 @@ export class Executor {
     if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
-      const matches = constraint.match(/(.*)\|\?(.*)/);
-      let outputPattern: string = null;
+      const match = constraint.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
 
-      if (matches !== null) {
-        constraint = matches[1].trim();
-        outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
-      }
+      if (match === null) {
+        const matches = constraint.match(/(.*)\|\?(.*)/);
+        let outputPattern: string = null;
 
-      constraint = Executor.expandEnvironment(constraint, options.env, true);
-      constraint = Executor.expandGlobs(constraint, {
-        ...this.globOptions,
-        ...{ cwd: options.cwd },
-      });
+        if (matches !== null) {
+          constraint = matches[1].trim();
+          outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
+        }
 
-      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+        constraint = Executor.expandEnvironment(constraint, options.env, true);
+        constraint = Executor.expandGlobs(constraint, {
+          ...this.globOptions,
+          ...{ cwd: options.cwd },
+        });
 
-      if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
-        condition = false;
-        break;
+        Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+
+        if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
+          condition = false;
+          break;
+        }
+      } else {
+        options.env[match[1]] = match[2];
+
+        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
       }
     }
 
