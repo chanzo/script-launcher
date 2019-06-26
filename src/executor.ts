@@ -28,6 +28,8 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
+  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`;
+
   private static removeEmpties(this: any, key: string, value: any): any {
     if (value instanceof Array && value.length === 0) return undefined;
 
@@ -142,7 +144,7 @@ export class Executor {
     }
 
     // Test whether the command represents the assignment of an environment variable
-    const match = command.trim().match(`^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`);
+    const match = command.trim().match(Executor.assignmentPattern);
 
     if (match !== null) {
       options.env[match[1]] = match[2];
@@ -514,25 +516,34 @@ export class Executor {
     if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
-      const matches = constraint.match(/(.*)\|\?(.*)/);
-      let outputPattern: string = null;
-
-      if (matches !== null) {
-        constraint = matches[1].trim();
-        outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
-      }
-
       constraint = Executor.expandEnvironment(constraint, options.env, true);
-      constraint = Executor.expandGlobs(constraint, {
-        ...this.globOptions,
-        ...{ cwd: options.cwd },
-      });
+      // Test whether the command represents the assignment of an environment variable
+      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
 
-      Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+      if (assignmentMatchs === null) {
+        const outputMatches = constraint.match(/(.*)\|\?(.*)/);
+        let outputPattern: string = null;
 
-      if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
-        condition = false;
-        break;
+        if (outputMatches !== null) {
+          constraint = outputMatches[1].trim();
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+        }
+
+        constraint = Executor.expandGlobs(constraint, {
+          ...this.globOptions,
+          ...{ cwd: options.cwd },
+        });
+
+        Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+
+        if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
+          condition = false;
+          break;
+        }
+      } else {
+        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
+
+        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 
