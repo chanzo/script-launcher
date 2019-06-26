@@ -1,22 +1,14 @@
 {
   "scripts": {
-    "build-stuff": [
-      {
-        "condition": [
-          "data=10",
-          "echo $data",
-          "exit 0"
-        ],
-        "sequential-then": [
-          "echo sequential-then"
-        ],
-        "sequential-else": [
-          "echo sequential-else"
-        ]
-      }
+    "build:$config": [
+      "echo version: $launch_setting_${config}_version",
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "echo $launch_time_current"
+    ],
+    "serve:$config": [
+      "echo name: $launch_setting_name",
+      "echo version: $launch_setting_${config}_version",
+      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
     ]
-  },
-  "options": {
-    "logLevel": 2
   }
 }

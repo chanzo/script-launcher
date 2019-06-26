@@ -1,5 +1,32 @@
 # Change Log
 
+## 1.13.0
+### Changes
+* Added support for setting environment values in conditions
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      {
+        "condition": [
+          "myData=example",
+          "'$myData'==='example'"
+        ],
+        "sequential-then": [
+          "echo sequential-then"
+        ],
+        "sequential-else": [
+          "echo sequential-else"
+        ]
+      }
+    ]
+  },
+  "options": {
+    "logLevel": 2
+  }
+}
+```
+
 ## 1.12.1
 ### Changes
 * Removed the throw exception when using a nested settings array
