@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.13.1
+### Changes
+* Added support for setting environment values to exclusion conditions as well.
+
 ## 1.13.0
 ### Changes
 * Added support for setting environment values in conditions
