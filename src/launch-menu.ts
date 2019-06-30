@@ -84,8 +84,24 @@ async function saveChoiceMenu(): Promise<boolean> {
   return choice.value;
 }
 
+function createChoices(menu: IMenu): Array<inquirer.ChoiceType<{ value: string }>> {
+  const choices: Array<inquirer.ChoiceType<{ value: string }>> = [];
+
+  for (const [name, value] of Object.entries(menu)) {
+    if (name !== 'description') {
+      if (name === 'separator' && typeof value === 'string') {
+        choices.push(new inquirer.Separator(value) as any);
+      } else {
+        if (Object.keys(value).length !== 0) choices.push(name);
+      }
+    }
+  }
+
+  return choices;
+}
+
 async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
-  const choices = Object.entries(menu).filter(([name, value]) => name !== 'description' && Object.keys(value).length !== 0).map(([name, value]) => name);
+  const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
