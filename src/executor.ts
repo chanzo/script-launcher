@@ -78,6 +78,8 @@ export class Executor {
     text = text.replace(/([^\\]|^)\$\w+/g, '$1');
     text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
 
+    // text = text.replace(/\\\$/g, '$');
+
     return text;
   }
 
