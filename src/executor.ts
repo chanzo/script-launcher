@@ -404,11 +404,13 @@ export class Executor {
         options = info.options;
 
         if (info.command) {
-
-          const command = Executor.expandGlobs(info.command, {
+          let command = Executor.expandGlobs(info.command, {
             ...this.globOptions,
             ...{ cwd: options.cwd },
           });
+
+          // Remove environment and argument escaping
+          command = command.replace(/\\\$/g, '$');
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
@@ -533,6 +535,9 @@ export class Executor {
           ...this.globOptions,
           ...{ cwd: options.cwd },
         });
+
+        // Remove environment and argument escaping
+        constraint = constraint.replace(/\\\$/g, '$');
 
         Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
