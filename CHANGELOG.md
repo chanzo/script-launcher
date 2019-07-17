@@ -1,6 +1,39 @@
 # Change Log
 
 ## 1.13.0
+### Breaking
+* Added removal of environment and argument escaping
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Exmaple 1: '\\$2'",
+      "echo Exmaple 2: '\\$PATH'",
+      "echo Exmaple 3: '\\${2}'",
+      "echo Exmaple 4: '\\${PATH}'"
+    ]
+  }
+}
+```
+#### New output:
+``` bash
+Exmaple 1: \$2
+Exmaple 2: \$PATH
+Exmaple 3: \${2}
+Exmaple 4: \${PATH}
+```
+
+#### Old output:
+``` bash
+Exmaple 1: $2
+Exmaple 2: $PATH
+Exmaple 3: ${2}
+Exmaple 4: ${PATH}
+```
+
+
+## 1.13.0
 ### Changes
 * Added support for setting environment values in conditions
 ``` JSON
