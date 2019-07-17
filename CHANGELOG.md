@@ -2,7 +2,7 @@
 
 ## 1.13.0
 ### Breaking
-* Added removal of environment and argument escaping
+Added removal of environment and argument escaping. Now the first escape is for **script-launcher**, the second escape is for the shell.
 example:
 ``` JSON
 {

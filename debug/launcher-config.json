@@ -12,13 +12,8 @@
     ],
     "test": [
       "echo '<!-- version: \\$app_version (\\$project-\\$environment)-->' > index.html",
-      "#replace --quiet '\\$hallo' 'hoi'         ./test.md",
-      "cat index.html",
-      "echo Exmaple 1: \\$2",
-      "echo Exmaple 2: \\$PATH",
-      "echo Exmaple 3: \\${2}",
-      "echo Exmaple 4: \\${PATH}",
-      "echo 'test \\$app_version'"
+      "replace --quiet '\\\\$app_version' '1.0.0'         ./index.html",
+      "cat index.html"
     ]
   }
 }
