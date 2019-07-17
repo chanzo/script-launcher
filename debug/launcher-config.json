@@ -12,9 +12,8 @@
     ],
     "test": [
       "echo '!-- version: \\$app_version (\\$project-\\$environment)--' > index.html",
-      "echo '!-- version: \\$app_version (\\$project-\\$environment)--' > index.html",
-      "replace --quiet \"\\\\$app_version\" \"1.0.0\"     ./index.html",
-      "replace --quiet '\\\\$app_version' '1.0.0'         ./index.html",
+      "replace --quiet \"\\\\$app_version\" 1.0.0  ./index.html",
+      "replace --quiet  '\\\\$app_version'  1.0.0  ./index.html",
       "cat index.html"
     ]
   }
