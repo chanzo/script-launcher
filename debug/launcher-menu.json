@@ -6,6 +6,7 @@
       "development": "build:acc",
       "acceptance": "build:prd"
     },
+    "separator": "",
     "serve": {
       "description": "environment",
       "development": "serve:acc",

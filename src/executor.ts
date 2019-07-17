@@ -553,25 +553,34 @@ export class Executor {
     }
 
     for (let constraint of task.exclusion) {
-      const matches = constraint.match(/(.*)\|\?(.*)/);
-      let outputPattern: string = null;
-
-      if (matches !== null) {
-        constraint = matches[1].trim();
-        outputPattern = Executor.expandEnvironment(matches[2].trim(), options.env, true);
-      }
-
       constraint = Executor.expandEnvironment(constraint, options.env, true);
-      constraint = Executor.expandGlobs(constraint, {
-        ...this.globOptions,
-        ...{ cwd: options.cwd },
-      });
+      // Test whether the command represents the assignment of an environment variable
+      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
 
-      Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+      if (assignmentMatchs === null) {
+        const outputMatches = constraint.match(/(.*)\|\?(.*)/);
+        let outputPattern: string = null;
 
-      if (await this.evaluateConstraint(constraint, options, outputPattern)) {
-        exclusion = true;
-        break;
+        if (outputMatches !== null) {
+          constraint = outputMatches[1].trim();
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+        }
+
+        constraint = Executor.expandGlobs(constraint, {
+          ...this.globOptions,
+          ...{ cwd: options.cwd },
+        });
+
+        Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
+
+        if (await this.evaluateConstraint(constraint, options, outputPattern)) {
+          exclusion = true;
+          break;
+        }
+      } else {
+        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
+
+        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 

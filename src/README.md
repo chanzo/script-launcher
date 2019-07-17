@@ -514,8 +514,7 @@ Example using an object array. Run `npm start ping` to use this example.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. Use `launch interactive` to ignore the `launcher-custom.json` file.
-
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `launch interactive` to ignore the `launcher-custom.json` file.
 
 Run `npm start` to use this example.
 ``` JSON
@@ -537,6 +536,7 @@ Run `npm start` to use this example.
       "acceptance": "serve:uva:acc",
       "production": "serve:uva:prd"
     },
+    "separator": "",
     "hva": {
       "description": "environment",
       "development": "serve:hva:dev",
