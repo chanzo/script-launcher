@@ -16,20 +16,21 @@ example:
   }
 }
 ```
-#### New output:
-``` bash
-Exmaple 1: \$2
-Exmaple 2: \$PATH
-Exmaple 3: \${2}
-Exmaple 4: \${PATH}
-```
 
-#### Old output:
+#### New output:
 ``` bash
 Exmaple 1: $2
 Exmaple 2: $PATH
 Exmaple 3: ${2}
 Exmaple 4: ${PATH}
+```
+
+#### Old output:
+``` bash
+Exmaple 1: \$2
+Exmaple 2: \$PATH
+Exmaple 3: \${2}
+Exmaple 4: \${PATH}
 ```
 
 ## 1.14.0
