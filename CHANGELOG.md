@@ -1,5 +1,38 @@
 # Change Log
 
+## 1.14.1
+### Breaking
+Added removal of environment and argument escaping. Now the first escape is for **script-launcher**, the second escape is for the shell.
+example:
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Exmaple 1: '\\$2'",
+      "echo Exmaple 2: '\\$PATH'",
+      "echo Exmaple 3: '\\${2}'",
+      "echo Exmaple 4: '\\${PATH}'"
+    ]
+  }
+}
+```
+
+#### New output:
+``` bash
+Exmaple 1: $2
+Exmaple 2: $PATH
+Exmaple 3: ${2}
+Exmaple 4: ${PATH}
+```
+
+#### Old output:
+``` bash
+Exmaple 1: \$2
+Exmaple 2: \$PATH
+Exmaple 3: \${2}
+Exmaple 4: \${PATH}
+```
+
 ## 1.14.0
 ### Changes
 * Added support for using separators in the launcher menu.
