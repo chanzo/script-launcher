@@ -35,9 +35,7 @@ export class Executor {
     const result: string[] = [];
 
     for (let value of argv) {
-      const matches = value.trim().match(/\'(.*)\'/);
-
-      if (value.includes(' ')) value = '"' + matches.groups[1] + '"';
+      if (value.includes(' ')) value = '"' + value + '"';
 
       result.push(value);
     }
