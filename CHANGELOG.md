@@ -4,6 +4,9 @@
 ### Changes
 * Dependencies update
 
+### Breaking
+Windows only: All arguments are not surrounded by double quotes and single quoted arguments are convert to double quotes.
+
 ## 1.14.1
 ### Breaking
 Added removal of environment and argument escaping. Now the first escape is for **script-launcher**, the second escape is for the shell.
