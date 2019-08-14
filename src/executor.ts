@@ -203,6 +203,7 @@ export class Executor {
       env: this.environment,
       shell: this.shell,
       suppress: false,
+      windowsVerbatimArguments: true,
     };
 
     Logger.info('Script name     :', scriptInfo.name);

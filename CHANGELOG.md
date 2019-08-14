@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.14.2
+### Breaking
+The windows SpawnOptions [windowsVerbatimArguments](https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback) is set to **true** by default
+
 ## 1.14.1
 ### Breaking
 Added removal of environment and argument escaping. Now the first escape is for **script-launcher**, the second escape is for the shell.
