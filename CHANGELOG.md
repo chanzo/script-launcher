@@ -1,8 +1,8 @@
 # Change Log
 
 ## 1.14.2
-### Breaking
-The windows SpawnOptions [windowsVerbatimArguments](https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback) is set to **true** by default
+### Changes
+* Dependencies update
 
 ## 1.14.1
 ### Breaking

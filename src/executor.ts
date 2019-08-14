@@ -202,8 +202,7 @@ export class Executor {
       stdio: 'inherit',
       env: this.environment,
       shell: this.shell,
-      suppress: false,
-      windowsVerbatimArguments: true,
+      suppress: false
     };
 
     Logger.info('Script name     :', scriptInfo.name);

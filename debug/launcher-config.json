@@ -11,7 +11,7 @@
       "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
     ],
     "test": [
-      "echo 'arg1' \"arg2\" arg3"
+      "./test.sh 'arg 1' \"arg 2\" arg 3"
     ]
   }
 }
