@@ -28,7 +28,7 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
-  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`;
+  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
 
   private static convertSingleQuote(command: string): string {
     const argv = parseArgsStringToArgv(command);

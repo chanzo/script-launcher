@@ -3,9 +3,10 @@
 ## 1.14.2
 ### Changes
 * Dependencies update
+* **Bug fix for #65:** When parsing a config like this example, an error is returned.
 
 ### Breaking
-Windows only: All arguments are not surrounded by double quotes and single quoted arguments are convert to double quotes.
+**Windows only:** All arguments containing spaces are now surrounded by double quotes. Single quoted arguments containing spaces are convert to double quotes.
 
 ## 1.14.1
 ### Breaking
