@@ -32,8 +32,17 @@ export class Executor {
 
   private static convertSingleQuote(command: string): string {
     const argv = parseArgsStringToArgv(command);
+    const result: string[] = [];
 
-    return argv.map((item) => '"' + item + '"').join(' ');
+    for (let value of argv) {
+      const matches = value.trim().match(/\'(.*)\'/);
+
+      if (value.includes(' ')) value = '"' + matches.groups[1] + '"';
+
+      result.push(value);
+    }
+
+    return result.join(' ');
   }
 
   private static removeEmpties(this: any, key: string, value: any): any {
