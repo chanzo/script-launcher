@@ -2,7 +2,7 @@
 
 ## 1.14.2
 ### Changes
-* Dependencies update
+* Updated dependencies
 * **Bug fix for #65:** When parsing a config like this example, an error is returned.
 
 ### Breaking
