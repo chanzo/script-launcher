@@ -9,10 +9,6 @@
       "echo name: $launch_setting_name",
       "echo version: $launch_setting_${config}_version",
       "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
-    ],
-    "test1": [
-      "./test.sh 'arg 1' \"arg 2\" arg 3"
-    ],
-    "test": "echo Example: ./node_modules/\\*\\*/\\*.md"
+    ]
   }
 }
