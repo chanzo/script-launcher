@@ -5,6 +5,8 @@ import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
+type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
+
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
@@ -84,13 +86,13 @@ async function saveChoiceMenu(): Promise<boolean> {
   return choice.value;
 }
 
-function createChoices(menu: IMenu): Array<inquirer.ChoiceType<{ value: string }>> {
-  const choices: Array<inquirer.ChoiceType<{ value: string }>> = [];
+function createChoices(menu: IMenu): ChoiceType[] {
+  const choices: ChoiceType[] = [];
 
   for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
       if (name === 'separator' && typeof value === 'string') {
-        choices.push(new inquirer.Separator(value) as any);
+        choices.push(new inquirer.Separator(value));
       } else {
         if (Object.keys(value).length !== 0) choices.push(name);
       }
