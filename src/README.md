@@ -26,7 +26,7 @@ npm install script-launcher --save-dev
 Use **launch init** to create the starter **launcher-config.json** , **launcher-settings.json** and **launcher-menu.json** files.
 
 ``` bash
-"node_modules/.bin/launch" init
+npx launch init
 ```
 
 Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
@@ -555,7 +555,7 @@ Run `npm start` to use this example.
 ## Launcher arguments
 Use the help for a list of available options.
 ``` bash
-"node_modules/.bin/launch" help
+npx launch help
 ```
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.

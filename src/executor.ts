@@ -28,7 +28,20 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
-  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\~\\=\\[\\]\\{\\}]+|\".*\"|\'.*\')$`;
+  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
+
+  private static convertSingleQuote(command: string): string {
+    const argv = parseArgsStringToArgv(command);
+    const result: string[] = [];
+
+    for (let value of argv) {
+      if (value.includes(' ')) value = '"' + value + '"';
+
+      result.push(value);
+    }
+
+    return result.join(' ');
+  }
 
   private static removeEmpties(this: any, key: string, value: any): any {
     if (value instanceof Array && value.length === 0) return undefined;
@@ -411,6 +424,8 @@ export class Executor {
 
           // Remove environment and argument escaping
           command = command.replace(/\\\$/g, '$');
+
+          if (process.platform === 'win32') command = Executor.convertSingleQuote(command);
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');

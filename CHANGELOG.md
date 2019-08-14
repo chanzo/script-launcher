@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.14.2
+### Changes
+* Updated dependencies
+* **Bug fix for #65:** When parsing a config like this example, an error is returned.
+
+### Breaking
+**Windows only:** All arguments containing spaces are now surrounded by double quotes. Single quoted arguments containing spaces are convert to double quotes.
+
 ## 1.14.1
 ### Breaking
 Added removal of environment and argument escaping. Now the first escape is for **script-launcher**, the second escape is for the shell.
