@@ -80,7 +80,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
   * [Glob Options](#glob-options)
-  * [Menu defaults](#menu-defaults)
+  * [Menu options](#menu-options)
   * [Logging](#logging)
 
 ## Motivation
@@ -685,8 +685,8 @@ The default value is presented in the following example:
 }
 ```
 
-### Menu defaults
-The **menu defaultChoice** option can be used to specify the default selected entries of your menu separated by a colon. The **menu defaultScript** option can be used for auto starting a specific script, this will disable the interactive menu.
+### Menu options
+The **menu defaultChoice** option can be used to specify the default selected entries of your menu separated by a colon. The **menu defaultScript** option can be used for auto starting a specific script, this will disable the interactive menu. The **pageSize** change the number of lines that will be rendered for the menu.
 
 The default value is presented in the following example:
 ``` JSON
@@ -697,7 +697,8 @@ The default value is presented in the following example:
   "options": {
     "menu": {
       "defaultChoice": "",
-      "defaultScript": ""
+      "defaultScript": "",
+      "pageSize": 7
     }
   }
 }

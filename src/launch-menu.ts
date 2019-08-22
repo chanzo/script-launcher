@@ -19,8 +19,9 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
+    const pageSize = config.options.menu.pageSize;
 
-    script = await promptMenu(config.menu, defaultChoice, []);
+    script = await promptMenu(config.menu, pageSize, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
@@ -102,7 +103,7 @@ function createChoices(menu: IMenu): ChoiceType[] {
   return choices;
 }
 
-async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+async function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
   const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
@@ -114,6 +115,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
       default: defaults[0],
       choices: choices,
+      pageSize: pageSize,
     },
   ]);
 
@@ -133,7 +135,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     };
   }
 
-  return promptMenu(command as IMenu, defaults, choice);
+  return promptMenu(command as IMenu, pageSize, defaults, choice);
 }
 
 function isMenuObject(object: any) {

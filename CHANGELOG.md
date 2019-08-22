@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.15.0
+### Changes
+* Dev dependencies updated
+* Added the [pageSize](src/README.md#menu-options) Inquirer.js menu option.
+
 ## 1.14.2
 ### Changes
 * Updated dependencies
