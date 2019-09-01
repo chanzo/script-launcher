@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.15.1
+### Changes
+* **Windows only:** When using quoted lines on an echo commands, the quotes will be trimmed.
+
 ## 1.15.0
 ### Changes
 * Dev dependencies updated
