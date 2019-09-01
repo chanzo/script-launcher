@@ -425,7 +425,11 @@ export class Executor {
           // Remove environment and argument escaping
           command = command.replace(/\\\$/g, '$');
 
-          if (process.platform === 'win32') command = Executor.convertSingleQuote(command);
+          if (process.platform === 'win32') {
+            command = Executor.convertSingleQuote(command);
+
+            if (command.startsWith('echo')) command = 'echo ' + command.replace(/^echo\s*\"(.*)\"\s*$/g, '$1');
+          }
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
