@@ -428,7 +428,7 @@ export class Executor {
           if (process.platform === 'win32') {
             command = Executor.convertSingleQuote(command);
 
-            if (command.startsWith('echo')) command = 'echo ' + command.replace(/^echo\s*\"(.*)\"\s*$/g, '$1');
+            if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
           }
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
