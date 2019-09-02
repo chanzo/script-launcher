@@ -10,6 +10,7 @@ import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 
 interface ITasks {
+  parameters: { [name: string]: string }; // Used for debugging only
   condition: string[];
   exclusion: string[];
   'concurrent': Array<ITasks | string>;
@@ -287,6 +288,7 @@ export class Executor {
     const script = scriptInfo.script;
     const repeater = (script as IScriptTask).repeater;
     const result: ITasks = {
+      'parameters': {},
       'condition': [],
       'exclusion': [],
       'concurrent': [],
@@ -300,6 +302,12 @@ export class Executor {
       ...scriptInfo.parameters,
       ...this.settings.values,
     };
+
+    for (const [name, value] of Object.entries(scriptInfo.parameters)) {
+      if (value === undefined) {
+        throw new Error('The parameter \"' + name + '\" of script \"' + scriptInfo.name + '\" is ' + value + '.');
+      }
+    }
 
     if (!repeater) {
       const concurrent: IScript[] = [];
@@ -319,11 +327,7 @@ export class Executor {
       concurrentElse.push(...this.preprocessScripts((script as IScriptTask)['concurrent-else']));
       sequentialElse.push(...this.preprocessScripts((script as IScriptTask)['sequential-else']));
 
-      const environment = {
-        ...scriptInfo.parameters,
-        ...this.settings.values,
-      };
-
+      result.parameters = scriptInfo.parameters;
       result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
       result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
       result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
@@ -355,6 +359,7 @@ export class Executor {
         const task = this.expand(repeaterTask);
 
         result.sequential.push({
+          'parameters': repeaterTask.parameters,
           'condition': task.condition,
           'exclusion': task.exclusion,
           'concurrent': task.concurrent,
