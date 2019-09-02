@@ -1,14 +1,16 @@
 {
   "scripts": {
     "build:$config": [
-      "echo version: $launch_setting_${config}_version",
+      "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-      "echo $launch_time_current"
+      ""
     ],
     "serve:$config": [
-      "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url"
+      "build:$config",
+      "echo ${launch_style_bold}serve:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
+      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url",
+      "",
+      "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
     ]
   }
 }
