@@ -1,4 +1,8 @@
 # Change Log
+## 1.16.0
+* Added parameter debug logging
+* 
+
 ## 1.15.2
 ### Fixes
 * **Windows only:** Bug fix related to change 1.15.1
