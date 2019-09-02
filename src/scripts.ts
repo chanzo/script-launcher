@@ -55,14 +55,23 @@ export class Scripts {
     const referenceParams = reference.split(':');
     const parameters: { [name: string]: string } = {};
 
-    if (signatureParams.length !== referenceParams.length) return null;
+    // if (signatureParams.length !== referenceParams.length) return null;
+    if (signatureParams.length < referenceParams.length) return null;
 
     for (let index = 0; index < signatureParams.length; index++) {
       const signatureParam = signatureParams[index];
       const referenceParam = referenceParams[index];
 
       if (signatureParam.trim().startsWith('$')) {
-        parameters[signatureParam.trim().substr(1)] = referenceParam;
+        const columns = signatureParam.trim().substr(1).split('=');
+        const name = columns[0];
+        const value = columns[1];
+
+        parameters[name] = referenceParam ? referenceParam : value;
+
+        // const value = referenceParam ? referenceParam : columns[1];
+
+        // if (value) parameters[name] = value;
 
         continue;
       }
