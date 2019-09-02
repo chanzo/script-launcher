@@ -1,11 +1,6 @@
 {
   "scripts": {
-    "build:$enviroment:$settings22=test": [
-      "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${settings22}_version",
-      "echo ng build -c=$enviroment --deploy-url $launch_setting_${enviroment}_url",
-      ""
-    ],
-    "build2:$config": [
+    "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
       ""
