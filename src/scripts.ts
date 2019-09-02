@@ -29,7 +29,8 @@ export interface IScriptInfo {
 export class Scripts {
   public static select(scripts: IScriptInfo[], filter: string = null): IScriptInfo {
     if (scripts.length > 0) {
-      scripts = scripts.sort((itemA, itemB) => itemA.name.split('$').length - itemB.name.split('$').length);
+      // Sort by number of values and parameters
+      scripts = scripts.sort((itemA, itemB) => (Scripts.countValues(itemB.name) - Scripts.countValues(itemA.name)) * 50 + (Scripts.countParams(itemA.name) - Scripts.countParams(itemB.name)));
 
       for (const script of scripts) {
         if (script.name !== filter) return script;
@@ -50,12 +51,24 @@ export class Scripts {
     };
   }
 
+  private static countParams(name: string): number {
+    const columns = name.split(':');
+
+    return columns.filter((item) => item.startsWith('$')).length;
+  }
+
+  private static countValues(name: string): number {
+    const columns = name.split(':');
+
+    return columns.length - columns.filter((item) => item.startsWith('$')).length;
+  }
+
   private static getParameters(signature: string, reference: string): { [name: string]: string } {
     const signatureParams = signature.split(':');
     const referenceParams = reference.split(':');
     const parameters: { [name: string]: string } = {};
+    let defaultParameters = 0;
 
-    // if (signatureParams.length !== referenceParams.length) return null;
     if (signatureParams.length < referenceParams.length) return null;
 
     for (let index = 0; index < signatureParams.length; index++) {
@@ -65,19 +78,22 @@ export class Scripts {
       if (signatureParam.trim().startsWith('$')) {
         const columns = signatureParam.trim().substr(1).split('=');
         const name = columns[0];
-        const value = columns[1];
 
-        parameters[name] = referenceParam ? referenceParam : value;
+        parameters[name] = referenceParam;
 
-        // const value = referenceParam ? referenceParam : columns[1];
+        if (!referenceParam) {
+          parameters[name] = columns[1];
 
-        // if (value) parameters[name] = value;
+          if (columns[1] !== undefined && referenceParam === undefined) defaultParameters++;
+        }
 
         continue;
       }
 
       if (signatureParam !== referenceParam) return null;
     }
+
+    if (signatureParams.length !== referenceParams.length + defaultParameters) return null;
 
     return parameters;
   }

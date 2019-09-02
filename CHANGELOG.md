@@ -1,6 +1,33 @@
 # Change Log
 ## 1.16.0
-* Added parameter debug logging
+* Added support for using default function parameter values
+``` JSON
+{
+  "scripts": {
+    "serve:$config=dev": [
+      "ng serve -c=$config"
+    ]
+  }
+}
+```
+### Usage:
+``` bash
+npm start serve
+npm start serve:acc
+```
+
+
+* Added extra parameter debug logging
+``` JSON
+Script expanded : {
+  "parameters": {
+    "config": "acc"
+  },
+  "sequential": [
+    "ng serve -c=acc"
+  ]
+}
+```
 * 
 
 ## 1.15.2
