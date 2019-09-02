@@ -1,4 +1,7 @@
 # Change Log
+## 1.16.1
+* Dev dependencies updated
+
 ## 1.16.0
 * Added support for using default function parameter values
 ``` JSON
