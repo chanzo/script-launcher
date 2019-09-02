@@ -1,16 +1,16 @@
 {
   "menu": {
-    "description": "organization",
-    "build": {
-      "description": "environment",
-      "development": "build:acc",
-      "acceptance": "build:prd"
-    },
-    "separator": "",
+    "description": "action",
     "serve": {
       "description": "environment",
-      "development": "serve:acc",
-      "acceptance": "serve:prd"
+      "development": "serve:dev",
+      "production": "serve:prd"
+    },
+    "separator": "",
+    "build": {
+      "description": "environment",
+      "development": "build:dev",
+      "production": "build:prd"
     }
   }
 }
