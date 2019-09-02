@@ -198,11 +198,11 @@ Run `npm start build-stuff` to use this example.
 ### Parameters and functions
 Use the dollar-sign in the script name and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
 
-Run `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
+Run `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
 {
   "scripts": {
-    "serve:$project=uva:$config": "echo ng serve $project -c=$config"
+    "serve:$project=uva:$config=dev": "echo ng serve $project -c=$config"
   }
 }
 ```
