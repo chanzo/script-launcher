@@ -15,21 +15,21 @@
   "license": "MIT",
   "dependencies": {
     "cross-spawn": "~6.0.5",
-    "deepmerge": "~3.3.0",
+    "deepmerge": "~4.0.0",
     "glob": "~7.1.4",
-    "inquirer": "~6.4.1",
+    "inquirer": "~6.5.1",
     "pretty-time": "~1.1.0",
     "string-argv": "~0.3.0"
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.0",
     "@types/glob": "^7.1.1",
-    "@types/inquirer": "^6.0.3",
-    "@types/node": "^12.0.10",
+    "@types/inquirer": "^6.5.0",
+    "@types/node": "^12.7.2",
     "@types/pretty-time": "^1.1.0",
-    "script-launcher": "^1.14.0",
+    "script-launcher": "^1.15.2",
     "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.2"
+    "tslint": "^5.19.0",
+    "typescript": "^3.5.3"
   }
 }

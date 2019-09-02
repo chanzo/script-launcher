@@ -1,4 +1,24 @@
 # Change Log
+## 1.15.2
+### Fixes
+* **Windows only:** Bug fix related to change 1.15.1
+
+## 1.15.1
+### Changes
+* **Windows only:** When using quoted lines on an echo commands, the quotes will be trimmed.
+
+## 1.15.0
+### Changes
+* Dev dependencies updated
+* Added the [pageSize](src/README.md#menu-options) menu option.
+
+## 1.14.2
+### Changes
+* Updated dependencies
+* **Bug fix for #65:** When parsing a config like this example, an error is returned.
+
+### Breaking
+**Windows only:** All arguments containing spaces are now surrounded by double quotes. Single quoted arguments containing spaces are convert to double quotes.
 
 ## 1.14.1
 ### Breaking

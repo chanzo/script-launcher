@@ -19,6 +19,7 @@ interface IOptions {
   menu: {
     defaultScript: IScript;
     defaultChoice: string;
+    pageSize: number;
   };
 }
 
@@ -69,6 +70,7 @@ export class Config {
       menu: {
         defaultChoice: '',
         defaultScript: '',
+        pageSize: 7,
       },
     },
     settings: {

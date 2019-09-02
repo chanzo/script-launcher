@@ -26,7 +26,7 @@ npm install script-launcher --save-dev
 Use **launch init** to create the starter **launcher-config.json** , **launcher-settings.json** and **launcher-menu.json** files.
 
 ``` bash
-"node_modules/.bin/launch" init
+npx launch init
 ```
 
 Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
@@ -80,7 +80,7 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Launcher files](#launcher-files)
   * [Script shell](#script-shell)
   * [Glob Options](#glob-options)
-  * [Menu defaults](#menu-defaults)
+  * [Menu options](#menu-options)
   * [Logging](#logging)
 
 ## Motivation
@@ -555,7 +555,7 @@ Run `npm start` to use this example.
 ## Launcher arguments
 Use the help for a list of available options.
 ``` bash
-"node_modules/.bin/launch" help
+npx launch help
 ```
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
@@ -685,8 +685,10 @@ The default value is presented in the following example:
 }
 ```
 
-### Menu defaults
-The **menu defaultChoice** option can be used to specify the default selected entries of your menu separated by a colon. The **menu defaultScript** option can be used for auto starting a specific script, this will disable the interactive menu.
+### Menu options
+**defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
+**menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
+**pageSize:** Change the number of lines that will be rendered for the menu.
 
 The default value is presented in the following example:
 ``` JSON
@@ -697,7 +699,8 @@ The default value is presented in the following example:
   "options": {
     "menu": {
       "defaultChoice": "",
-      "defaultScript": ""
+      "defaultScript": "",
+      "pageSize": 7
     }
   }
 }

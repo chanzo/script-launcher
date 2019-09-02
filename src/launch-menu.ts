@@ -5,6 +5,8 @@ import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
 
+type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
+
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
@@ -17,8 +19,9 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
   if (interactive || !script.script) {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
+    const pageSize = config.options.menu.pageSize;
 
-    script = await promptMenu(config.menu, defaultChoice, []);
+    script = await promptMenu(config.menu, pageSize, defaultChoice, []);
 
     if (await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
@@ -84,13 +87,13 @@ async function saveChoiceMenu(): Promise<boolean> {
   return choice.value;
 }
 
-function createChoices(menu: IMenu): Array<inquirer.ChoiceType<{ value: string }>> {
-  const choices: Array<inquirer.ChoiceType<{ value: string }>> = [];
+function createChoices(menu: IMenu): ChoiceType[] {
+  const choices: ChoiceType[] = [];
 
   for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
       if (name === 'separator' && typeof value === 'string') {
-        choices.push(new inquirer.Separator(value) as any);
+        choices.push(new inquirer.Separator(value));
       } else {
         if (Object.keys(value).length !== 0) choices.push(name);
       }
@@ -100,7 +103,7 @@ function createChoices(menu: IMenu): Array<inquirer.ChoiceType<{ value: string }
   return choices;
 }
 
-async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+async function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
   const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
@@ -112,6 +115,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
       default: defaults[0],
       choices: choices,
+      pageSize: pageSize,
     },
   ]);
 
@@ -131,7 +135,7 @@ async function promptMenu(menu: IMenu, defaults: string[], choice: string[]): Pr
     };
   }
 
-  return promptMenu(command as IMenu, defaults, choice);
+  return promptMenu(command as IMenu, pageSize, defaults, choice);
 }
 
 function isMenuObject(object: any) {
