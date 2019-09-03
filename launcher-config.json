@@ -16,11 +16,16 @@
     "postinstall": [
       "debug",
       "npm install"
+    ],
+    "test": [
+      "tests",
+      "jest --verbose"
     ]
   },
   "menu": {
     "description": "action",
-    "build package": "build"
+    "build": "build",
+    "test": "test"
   },
   "options": {
     "logLevel": 0
