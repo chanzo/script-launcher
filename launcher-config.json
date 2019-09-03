@@ -19,6 +19,8 @@
     ],
     "test": [
       "tests",
+      "tsc",
+      "../dist-test",
       "jest --verbose"
     ]
   },
