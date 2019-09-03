@@ -20,6 +20,7 @@ interface IArgs {
   logLevel: number;
   config: string;
   ansi: boolean;
+  testmode: boolean;
 }
 
 function showLoadedFiles(files: string[]) {
@@ -64,6 +65,7 @@ function showHelp() {
     logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
+    testmode: null,
   });
 }
 
@@ -137,6 +139,7 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
 export async function main(processArgv: string[], npmConfigArgv: string): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
+  const testmode = processArgv.includes('--testmode');
 
   try {
     let config = Config.load();
@@ -151,6 +154,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       interactive: false,
       config: null,
       ansi: true,
+      testmode: false,
     });
 
     Logger.level = launchArgs.logLevel;
@@ -252,6 +256,6 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
     Logger.info('ExitCode:', exitCode);
     Logger.info('Elapsed: ' + prettyTime(timespan, 'ms'));
 
-    process.exit(exitCode);
+    if (!testmode) process.exit(exitCode);
   }
 }

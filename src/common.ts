@@ -78,6 +78,7 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
   console.log('Usage: ' + name + ' [command] [options...]');
 
   for (const description of Object.values(descriptions)) {
+    if (!description) continue;
     if (Array.isArray(description)) {
       for (const item of Object.values(description)) {
         console.log(item);
