@@ -4,13 +4,13 @@
     "build": [
       "echo Building node package...",
       "lint",
-      "rm -rf ./dist/package",
+      "rm -rf ./dist",
       "tsc --build",
-      "cp ./src/package.json ./dist/package",
-      "cp ./src/README.md ./dist/package",
-      "cp ./src/LICENSE ./dist/package",
-      "mkdir ./dist/package/bin",
-      "cp ./src/bin/launch.js ./dist/package/bin/launch.js",
+      "cp ./src/package.json ./dist",
+      "cp ./src/README.md ./dist",
+      "cp ./src/LICENSE ./dist",
+      "mkdir ./dist/bin",
+      "cp ./src/bin/launch.js ./dist/bin/launch.js",
       "echo Done..."
     ],
     "postinstall": [
@@ -19,8 +19,6 @@
     ],
     "test": [
       "test-methods",
-      "tsc",
-      "../dist-test",
       "jest --verbose"
     ]
   },

@@ -6,13 +6,13 @@
     "src/launch.ts"
   ],
   "compilerOptions": {
-    "types": [],
+    // "types": [],
     "module": "commonjs",
     "resolveJsonModule": true,
     "target": "es5",
     "noImplicitAny": false,
     "sourceMap": false,
-    "outDir": "dist/package",
+    "outDir": "dist",
     "lib": [
       "dom",
       "es2017",

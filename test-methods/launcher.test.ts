@@ -1,6 +1,5 @@
 import { Common } from "./common";
-
-const launcher = require('../dist/package/launch');
+import * as launcher from '../src/launch';
 
 describe('launcher arguments', () => {
 
@@ -17,11 +16,11 @@ describe('launcher arguments', () => {
       // expect(logMsg).toBe('hello');
 
       launcher.main([
-        null,
-        null,
+        '',
+        '',
         '--testmode',
         '--help'
-      ]);
+      ], '');
 
       expect(false).toBe(false)
     }
