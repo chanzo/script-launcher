@@ -134,14 +134,14 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
   return result;
 }
 
-async function main(): Promise<void> {
+export async function main(processArgv: string[], npmConfigArgv: string): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
 
   try {
     let config = Config.load();
-    const commandArgs: string[] = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).remain : [];
-    const argsString = process.argv.slice(2, process.argv.length - commandArgs.length);
+    const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
+    const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
     const launchArgs = parseArgs<IArgs>(argsString, {
       logLevel: config.options.logLevel,
       init: false,
@@ -255,5 +255,3 @@ async function main(): Promise<void> {
     process.exit(exitCode);
   }
 }
-
-main();

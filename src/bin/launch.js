@@ -1,4 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-require('..');
+const launcher = require('..');
+
+launcher.main(process.argv, process.env.npm_config_argv);

@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build-stuff": [
+      "echo Build step 1",
+      "echo Build step 2",
+      "echo Build step 3"
+    ]
+  }
+}
