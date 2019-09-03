@@ -1,17 +1,18 @@
+import { Common } from "./common";
+
 const launcher = require('../dist/package/launch');
 
 describe('launcher arguments', () => {
 
   test('help', () => {
-    const backConsole = {
-      log: console.log,
-      error: console.error
-    };
+    const current = Common.setConsoleFunctions({
+      log: () => { },
+      error: () => { },
+    });
+
     try {
       console.log('11111');
 
-      console.log = () => { };
-      console.error = () => { };
 
       // expect(logMsg).toBe('hello');
 
@@ -25,8 +26,7 @@ describe('launcher arguments', () => {
       expect(false).toBe(false)
     }
     finally {
-      console.log = backConsole.log;
-      console.error = backConsole.error;
+      Common.setConsoleFunctions(current);
     }
   });
   test('help2', () => {
