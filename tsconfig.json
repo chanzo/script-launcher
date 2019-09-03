@@ -11,7 +11,7 @@
     "target": "es5",
     "noImplicitAny": false,
     "sourceMap": false,
-    "outDir": "dist",
+    "outDir": "dist/package",
     "lib": [
       "dom",
       "es2017",

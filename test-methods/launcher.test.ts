@@ -1,4 +1,4 @@
-const launcher = require('../dist/launch');
+const launcher = require('../dist/package/launch');
 
 describe('launcher arguments', () => {
 

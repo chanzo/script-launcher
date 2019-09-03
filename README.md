@@ -35,7 +35,7 @@ npm start
 ### Build & Publish
 ```
 npm start build
-cd dist
+cd dist/package
 npm login
 npm whoami
 npm publish
