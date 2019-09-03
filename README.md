@@ -44,6 +44,7 @@ npm publish
 ### Resources
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
 * [Jest Testing Framework](https://jestjs.io/)
+* [TypeScript With Babel](https://iamturns.com/typescript-babel/)
 
 ### Dependencies 
 * [cross-spawn](https://www.npmjs.com/package/cross-spawn) - A cross platform solution to node's spawn and spawnSync.            
