@@ -4,7 +4,7 @@
     "lint": [
       "echo Linting sources files...",
       "tslint --project src $*",
-      "#tslint --project test-methods $*",
+      "#tslint --project tests $*",
       "echo No lint errors found...",
       ""
     ],
@@ -26,7 +26,7 @@
     ],
     "test": [
       "#rm -rf ./dist/test",
-      "#tsc --build test-methods",
+      "#tsc --build tests",
       "jest --verbose"
     ]
   },
