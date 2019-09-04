@@ -16,7 +16,7 @@ export class Common {
       info: console.info,
       error: console.error,
       trace: console.trace,
-      warn: console.warn,
+      warn: console.warn
     };
   }
 
@@ -28,5 +28,5 @@ export class Common {
     }
 
     return currentFunctions;
-  };
+  }
 }

@@ -1,10 +1,9 @@
 {
   "scripts": {
-    "lint2": "tslint --config tslint.json src/**/*.ts",
     "lint": [
       "echo Linting sources files...",
       "tslint --project src $*",
-      "#tslint --project tests $*",
+      "tslint --project tests $*",
       "echo No lint errors found...",
       ""
     ],
