@@ -24,9 +24,8 @@
       "npm install"
     ],
     "test": [
-      "test-methods",
-      "tsc",
-      "../dist-test",
+      "#tsc",
+      "#../dist-test",
       "jest --verbose"
     ]
   },

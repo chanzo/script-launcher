@@ -6,7 +6,6 @@
     "src/launch.ts"
   ],
   "compilerOptions": {
-    "types": [],
     "module": "commonjs",
     "resolveJsonModule": true,
     "target": "es5",
