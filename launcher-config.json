@@ -11,7 +11,7 @@
       "echo Building node package...",
       "lint",
       "rm -rf ./dist/package",
-      "tsc --build",
+      "tsc --build src",
       "cp src/package.json dist/package",
       "cp src/README.md dist/package",
       "cp src/LICENSE dist/package",
