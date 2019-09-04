@@ -8,7 +8,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
-import { version } from '../package.json';
+import { version } from './package.json';
 import prettyTime = require('pretty-time');
 
 interface IArgs {
