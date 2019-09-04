@@ -3,13 +3,13 @@
     "lint2": "tslint --config tslint.json src/**/*.ts",
     "lint": [
       "echo Linting sources files...",
-      "#tslint --project src $*",
+      "tslint --project src $*",
       "echo No lint errors found...",
       ""
     ],
     "build": [
-      "echo Building node package...",
       "lint",
+      "echo Building node package...",
       "rm -rf ./dist/package",
       "tsc --build src",
       "cp src/package.json dist/package",
@@ -24,8 +24,8 @@
       "npm install"
     ],
     "test": [
-      "#tsc",
-      "#../dist-test",
+      "#rm -rf ./dist/test",
+      "#tsc --build test-methods",
       "jest --verbose"
     ]
   },

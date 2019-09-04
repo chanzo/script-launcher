@@ -4,6 +4,7 @@
     "launch.ts"
   ],
   "compilerOptions": {
-    "types": []
+    "types": [],
+    "outDir": "../dist/package", /* Redirect output structure to the directory. */
   }
 }
