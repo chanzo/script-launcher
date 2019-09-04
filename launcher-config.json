@@ -4,6 +4,7 @@
     "lint": [
       "echo Linting sources files...",
       "tslint --project src $*",
+      "#tslint --project test-methods $*",
       "echo No lint errors found...",
       ""
     ],
