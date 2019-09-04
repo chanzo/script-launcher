@@ -1,16 +1,22 @@
 {
   "scripts": {
-    "lint": "tslint --config tslint.json src/**/*.ts",
+    "lint2": "tslint --config tslint.json src/**/*.ts",
+    "lint": [
+      "echo Linting sources files...",
+      "tslint --project src $*",
+      "echo No lint errors found...",
+      ""
+    ],
     "build": [
-      "echo Building node package...",
       "lint",
-      "rm -rf ./dist",
-      "tsc --build",
-      "cp ./src/package.json ./dist",
-      "cp ./src/README.md ./dist",
-      "cp ./src/LICENSE ./dist",
-      "mkdir ./dist/bin",
-      "cp ./src/bin/launch.js ./dist/bin/launch.js",
+      "echo Building node package...",
+      "rm -rf dist",
+      "tsc --build src",
+      "cp src/package.json dist",
+      "cp src/README.md dist",
+      "cp src/LICENSE dist",
+      "mkdir dist/bin",
+      "cp src/bin/launch.js dist/bin/launch.js",
       "echo Done..."
     ],
     "postinstall": [
