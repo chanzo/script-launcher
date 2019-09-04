@@ -3,7 +3,7 @@
     "lint2": "tslint --config tslint.json src/**/*.ts",
     "lint": [
       "echo Linting sources files...",
-      "tslint --project src $*",
+      "#tslint --project src $*",
       "echo No lint errors found...",
       ""
     ],
@@ -11,12 +11,12 @@
       "lint",
       "echo Building node package...",
       "rm -rf dist",
-      "tsc --build src",
-      "cp src/package.json dist",
-      "cp src/README.md dist",
-      "cp src/LICENSE dist",
-      "mkdir dist/bin",
-      "cp src/bin/launch.js dist/bin/launch.js",
+      "tsc --build",
+      "#cp src/package.json dist",
+      "#cp src/README.md dist",
+      "#cp src/LICENSE dist",
+      "#mkdir dist/bin",
+      "#cp src/bin/launch.js dist/bin/launch.js",
       "echo Done..."
     ],
     "postinstall": [
