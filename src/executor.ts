@@ -219,7 +219,7 @@ export class Executor {
       suppress: false,
     };
 
-    Logger.info('Script name     :', scriptInfo.name);
+    Logger.info('Script id       :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.info('Script args     :', scriptInfo.arguments);
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));

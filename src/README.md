@@ -40,7 +40,7 @@ Change your **package.json** start script, so it will start Script Launcher. If 
     ...
 }
 ```
-You are now ready to start use Script Launcher by running: `npm start <<launch script name>>` as described in the [examples](#implementation-examples) below.
+You are now ready to start use Script Launcher by running: `npm start <<launch script id>>` as described in the [examples](#implementation-examples) below.
 
 ## Usage examples
 
@@ -196,7 +196,7 @@ Run `npm start build-stuff` to use this example.
 ```
 
 ### Parameters and functions
-Use the dollar-sign in the script name and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
+Use the dollar-sign in the script id and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
 
 Run `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
@@ -208,7 +208,7 @@ Run `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc,
 ```
 
 ### Reference scripts
-Use an existing script name in the command section to execute another script in your config file. This feature makes it possible to reuse script from other script, with different arguments if desired.
+Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse script from other script, with different arguments if desired.
 
 Run `npm start deploy:tst` to use this example.
 ``` JSON

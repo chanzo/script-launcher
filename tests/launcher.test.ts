@@ -13,6 +13,7 @@ const helpResult = [
   '  \u001b[36minteractive  \u001b[0mForce to show menu the by ignoring the options value of defaultScript.',
   '  \u001b[36mlogLevel=    \u001b[0mSet log level.',
   '  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.',
+  '  \u001b[36mscript=      \u001b[0mLauncher script to start.',
   '  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.'
 ];
 
@@ -29,7 +30,13 @@ const helpResultNoAnsi = [
   '  interactive  Force to show menu the by ignoring the options value of defaultScript.',
   '  logLevel=    Set log level.',
   '  config=      Merge in an extra config file.',
+  '  script=      Launcher script to start.',
   '  ansi=        Enable or disable ansi color output.'
+];
+const arrayOutput = [
+  'Build step 1',
+  'Build step 2',
+  'Build step 3'
 ];
 
 const testLauncher = new TestLauncher('', '', '--testmode');
@@ -53,13 +60,25 @@ describe('Launcher commands', () => {
     expect(result.all).toStrictEqual(['1.16.2']);
   });
 
+  test('array', async () => {
+    const result = await testLauncher.launch(['--help']);
+
+    // console.log('result:', result.all);
+
+    expect(result.all).toStrictEqual(helpResultNoAnsi);
+  });
 });
 
-// describe('Simple config', () => {
-//   // launch --config=./tests/configs/launcher-config.json build-stuff
-//   test('array', async () => {
-//     const result = await testLauncher.launch(['--help']);
+describe('Simple config', () => {
+  // launch --config=./tests/configs/launcher-config.json --script=build-stuff
+  test('array2', async () => {
+    const result = await testLauncher.launch([
+      '--config=./tests/configs/launcher-config.json',
+      '--script=build-stuff'
+    ]);
 
-//     expect(result.all).toStrictEqual(helpResult);
-//   });
-// });
+    console.log('result:', result.all);
+
+    expect(result.all).toStrictEqual(arrayOutput);
+  });
+});

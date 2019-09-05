@@ -19,6 +19,7 @@ interface IArgs {
   interactive: boolean;
   logLevel: number;
   config: string;
+  script: string;
   ansi: boolean;
   testmode: boolean;
 }
@@ -64,6 +65,7 @@ function showHelp() {
     ],
     logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
+    script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     testmode: null,
   });
@@ -153,6 +155,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       version: false,
       interactive: false,
       config: null,
+      script: null,
       ansi: true,
       testmode: false,
     });
@@ -201,12 +204,12 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
     }
 
     const lifecycleEvent = environment.npm_lifecycle_event;
-    const launchCommand = lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+    const launchScript = launchArgs.script ? launchArgs.script : lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
     Logger.info('Version           :', version);
     Logger.info('Lifecycle event   :', lifecycleEvent);
-    Logger.info('Launch command    :', launchCommand);
+    Logger.info('Launch script     :', launchScript);
     Logger.debug('Process platform  :', process.platform);
     Logger.debug('Script shell      :', shell);
 
@@ -216,7 +219,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       Logger.info('Launch arguments  :', argsString);
     }
 
-    if (launchCommand === undefined || launchArgs.menu) {
+    if (launchScript === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
@@ -228,13 +231,13 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       return;
     }
 
-    const scripts = config.scripts.find(launchCommand);
+    const scripts = config.scripts.find(launchScript);
 
-    if (scripts.length === 0) throw new Error('Missing launch script: ' + launchCommand);
+    if (scripts.length === 0) throw new Error('Missing launch script: ' + launchScript);
 
     const scriptInfo = Scripts.select(scripts);
 
-    commandArgs[0] = Scripts.parse(launchCommand).command;
+    commandArgs[0] = Scripts.parse(launchScript).command;
 
     scriptInfo.arguments = commandArgs;
 

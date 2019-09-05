@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build:$config": [
+    "build:$config=dev": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
       ""
