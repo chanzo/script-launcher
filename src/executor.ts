@@ -200,13 +200,15 @@ export class Executor {
   private readonly settings: ILaunchSetting;
   private readonly scripts: Scripts;
   private readonly globOptions: glob.IOptions;
+  private readonly testmode: boolean;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions, testmode: boolean) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;
     this.scripts = scripts;
     this.globOptions = globOptions;
+    this.testmode = testmode;
     this.startTime = process.hrtime();
   }
 
@@ -217,6 +219,7 @@ export class Executor {
       env: this.environment,
       shell: this.shell,
       suppress: false,
+      testmode: this.testmode,
     };
 
     Logger.info('Script id       :', scriptInfo.name);

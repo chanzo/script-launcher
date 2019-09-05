@@ -223,7 +223,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive);
+      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, launchArgs.testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -244,7 +244,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.testmode);
 
     startTime = executor.startTime;
 

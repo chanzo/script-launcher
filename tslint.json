@@ -15,7 +15,7 @@
     ],
     "max-line-length": [
       true,
-      220
+      512
     ],
     "space-before-function-paren": [
       true,
