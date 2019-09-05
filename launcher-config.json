@@ -26,13 +26,8 @@
     "test": [
       "#rm -rf ./dist/test",
       "#tsc --build tests",
-      "jest --verbose"
+      "jest --verbose $*"
     ]
-  },
-  "menu": {
-    "description": "action",
-    "build": "build",
-    "test": "test"
   },
   "options": {
     "logLevel": 0
