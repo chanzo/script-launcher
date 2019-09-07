@@ -15,7 +15,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "Build step 1",
             "Build step 2",
@@ -38,7 +41,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
           ]
@@ -56,19 +62,28 @@
       },
       "tests": [
         {
-          "command": "--script=serve",
+          "cmd-args": [
+            "--script=serve"
+          ],
+          "npm-args": [],
           "result": [
             "ng serve uva -c=dev"
           ]
         },
         {
-          "command": "--script=serve::tst",
+          "cmd-args": [
+            "--script=serve::tst"
+          ],
+          "npm-args": [],
           "result": [
             "ng serve uva -c=tst"
           ]
         },
         {
-          "command": "--script=serve:hva:prd",
+          "cmd-args": [
+            "--script=serve:hva:prd"
+          ],
+          "npm-args": [],
           "result": [
             "ng serve hva -c=prd"
           ]
@@ -94,7 +109,11 @@
       },
       "tests": [
         {
-          "command": "--script=deploy:tst",
+          "lifecycle": "start",
+          "cmd-args": [],
+          "npm-args": [
+            "deploy:tst"
+          ],
           "result": [
             "ng build uva -c=tst",
             "firebase deploy --public dist/uva -P uva-tst",
@@ -134,7 +153,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "grep example",
             "\u001b[1mVersion:\u001b[0m 1.16.2",
@@ -170,7 +192,26 @@
           }
         }
       },
-      "tests": []
+      "tests": [
+        {
+          "lifecycle": "start",
+          "cmd-args": [],
+          "npm-args": [
+            "build-stuff",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "Node version: 10.16.3",
+            "Argument 1 : arg1",
+            "Argument 2 : arg2",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "Environment : my-env"
+          ]
+        }
+      ]
     },
     {
       "name": "Glob patterns",
@@ -187,7 +228,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js",
             "Markdown files: README.md"
@@ -230,7 +274,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "Background job : 1",
             "Background job : 2",
@@ -272,7 +319,10 @@
       },
       "tests": [
         {
-          "command": "--script=build-stuff",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [],
           "result": [
             "Background job : 1",
             "Background job : 2",

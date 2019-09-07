@@ -138,9 +138,12 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
   return result;
 }
 
-export async function main(processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
+export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
+
+  // console.log('processArgv:', processArgv);
+  // console.log('npmConfigArgv:', npmConfigArgv);
 
   try {
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
@@ -205,7 +208,6 @@ export async function main(processArgv: string[], npmConfigArgv: string, testmod
       return;
     }
 
-    const lifecycleEvent = environment.npm_lifecycle_event;
     const launchScript = launchArgs.script ? launchArgs.script : lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
 
     Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);

@@ -4,8 +4,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface ITests {
-  command: string;
-  arguments: string[];
+  'cmd-args': string[];
+  'npm-args': string[];
+  lifecycle: string;
   result: string[];
 }
 
@@ -28,12 +29,12 @@ export class TestLauncher {
     this._configs = {};
   }
 
-  public async launch(directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
+  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
     const testDirectory = path.join(this.tempPath, directory);
 
     const interceptor = new ConsoleInterceptor();
 
-    await launcher.main([...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
+    await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
 
     interceptor.close();
 

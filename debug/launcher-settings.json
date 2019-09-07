@@ -11,6 +11,6 @@
     }
   },
   "options": {
-    "logLevel": 0
+    "logLevel": 3
   }
 }

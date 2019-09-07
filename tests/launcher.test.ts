@@ -9,7 +9,8 @@ const testLauncher = new TestLauncher(tempFiles, '', '');
 async function main() {
   let index = 0;
 
-  testLauncher.load(testFiles, 'Reference scripts'); // , 'Reference scripts'
+  // testLauncher.load(testFiles, 'Reference scripts|Environment and command line argument values'); // , 'Reference scripts'
+  testLauncher.load(testFiles, ''); // , 'Reference scripts'
 
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
@@ -22,19 +23,21 @@ async function main() {
           if (config.tests.length === 0) test.todo('command');
 
           for (const item of config.tests) {
-            const name = ('launch ' + item.command).replace('launch --script=', '').padEnd(32);
+            let name = '';
 
-            test(name, async () => {
-              if (item.arguments !== undefined) {
-                // ...
-              }
+            if (item["cmd-args"] !== undefined && item["cmd-args"].length > 0) {
+              name = 'launch ' + item["cmd-args"].join(' ');
+            } else {
+              name = item["npm-args"].join(' ');
+            }
 
-              const result = await testLauncher.launch(directory, [
-                item.command
-              ]);
-              // , JSON.stringify({
-              //   remain: item.command
-              // }));
+
+            test(name.padEnd(32), async () => {
+              const result = await testLauncher.launch(item.lifecycle, directory, [
+                ...item["cmd-args"],
+                ...item["npm-args"]
+              ], JSON.stringify({ remain: item["npm-args"] }));
+
               // console.log('result.all:', result.all);
               // console.log('item.result:', item.result);
               expect(result.all).toStrictEqual(item.result);
