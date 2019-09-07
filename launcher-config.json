@@ -24,6 +24,7 @@
       "npm install"
     ],
     "test": [
+      "lint",
       "#rm -rf ./dist/test",
       "#tsc --build tests",
       "jest --verbose $*"

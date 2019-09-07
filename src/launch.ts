@@ -21,10 +21,10 @@ interface IArgs {
   config: string;
   script: string;
   ansi: boolean;
-  testmode: boolean;
+  directory: string;
 }
 
-function showLoadedFiles(files: string[]) {
+function showLoadedFiles(files: string[]): void {
   for (const file of files) {
     if (file) {
       const absolutePath = path.resolve(file);
@@ -67,7 +67,7 @@ function showHelp() {
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
-    testmode: null,
+    directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
   });
 }
 
@@ -138,17 +138,15 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
   return result;
 }
 
-export async function main(processArgv: string[], npmConfigArgv: string): Promise<void> {
+export async function main(processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
-  const testmode = processArgv.includes('--testmode');
 
   try {
-    let config = Config.load();
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
     const launchArgs = parseArgs<IArgs>(argsString, {
-      logLevel: config.options.logLevel,
+      logLevel: undefined,
       init: false,
       help: false,
       menu: false,
@@ -157,8 +155,12 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       config: null,
       script: null,
       ansi: true,
-      testmode: false,
+      directory: process.cwd(),
     });
+
+    let config = Config.load(launchArgs.directory);
+
+    if (launchArgs.logLevel === undefined) launchArgs.logLevel = config.options.logLevel;
 
     Logger.level = launchArgs.logLevel;
 
@@ -219,11 +221,17 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
       Logger.info('Launch arguments  :', argsString);
     }
 
+    if (Object.entries(config.scripts.scripts).length === 0) {
+      Logger.info();
+      Logger.info('Warning: No launcher scripts loaded.');
+      Logger.info();
+    }
+
     if (launchScript === undefined || launchArgs.menu) {
       Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, launchArgs.testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -244,7 +252,7 @@ export async function main(processArgv: string[], npmConfigArgv: string): Promis
     Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
 
     startTime = executor.startTime;
 

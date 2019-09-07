@@ -4,12 +4,12 @@ import * as path from 'path';
 const testFiles = path.join(__dirname, 'configs'); // , '*.json'
 const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
 
-const testLauncher = new TestLauncher(tempFiles, '', '', '--testmode');
+const testLauncher = new TestLauncher(tempFiles, '', '');
 
 async function main() {
   let index = 0;
 
-  testLauncher.load(testFiles);
+  testLauncher.load(testFiles); // , 'Help|Sequential');
 
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
@@ -34,12 +34,10 @@ async function main() {
         });
       }
     });
-
-
   }
 }
 main();
 
 afterAll(() => {
-  console.log('afterAll:', new Date().toISOString());
+  // console.log('afterAll:', new Date().toISOString());
 }, 10000);

@@ -22,7 +22,8 @@
             "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
             "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
             "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
-            "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output."
+            "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
+            "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded."
           ]
         }
       ]

@@ -1,14 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-
-
-
-
 const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
-
-
-
 
 function deleteFiles(directory: string, pattern: RegExp) {
   for (const fileName of fs.readdirSync(directory)) {
@@ -19,6 +12,5 @@ function deleteFiles(directory: string, pattern: RegExp) {
     }
   }
 }
-
 
 deleteFiles(tempFiles, /json$/);

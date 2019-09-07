@@ -4,14 +4,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface ITests {
-  command: string,
-  result: string[]
+  command: string;
+  result: string[];
 }
 
 export interface ITestConfig {
-  name: string,
-  files: { [name: string]: any },
-  tests: ITests[]
+  name: string;
+  files: { [name: string]: any };
+  tests: ITests[];
 }
 
 export class TestLauncher {
@@ -24,7 +24,7 @@ export class TestLauncher {
 
   constructor(private readonly tempPath: string, ...defaultArgs: string[]) {
     this.defaultArgs = defaultArgs;
-    this._configs = {}
+    this._configs = {};
   }
 
   public async launch(directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
@@ -37,7 +37,7 @@ export class TestLauncher {
 
       const interceptor = new ConsoleInterceptor();
 
-      await launcher.main([...this.defaultArgs, ...processArgv], npmConfigArgv);
+      await launcher.main([...this.defaultArgs, ...processArgv], npmConfigArgv, true);
 
       interceptor.close();
 
@@ -47,47 +47,35 @@ export class TestLauncher {
     }
   }
 
-  load(testFiles: string): void {
+  public load(testFiles: string, filter: string = ''): void {
     const files = fs.readdirSync(testFiles);
     const result = this._configs;
+    const expression = new RegExp(filter);
 
     for (const file of files) {
       if (file.endsWith('.json') && !file.endsWith('launcher-config.json')) {
         const content = fs.readFileSync(path.join(testFiles, file));
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 
-        for (let [name, config] of Object.entries(configs)) {
+        for (const [name, config] of Object.entries(configs)) {
           if (result[name] === undefined) result[name] = [];
 
-          result[name].push(...config);
+          const tests = config.filter((item) => item.name.match(expression));
+
+          result[name].push(...tests);
         }
       }
     }
   }
 
-  private deleteFiles(directory: string, pattern: RegExp) {
-    for (const fileName of fs.readdirSync(directory)) {
-      if (fileName.match(pattern)) {
-        const filePath = path.join(directory, fileName);
-
-        fs.unlinkSync(filePath);
-      }
-    }
-  }
-
-  create(directory: string, files: { [name: string]: any }) {
+  public create(directory: string, files: { [name: string]: any }) {
     const testDirectory = path.join(this.tempPath, directory);
 
-    try {
-      fs.mkdirSync(testDirectory, {
-        recursive: true
-      });
-    } catch{
+    fs.mkdirSync(testDirectory, {
+      recursive: true
+    });
 
-    }
-
-
-    this.deleteFiles(testDirectory, /json$/);
+    this.deleteFiles(testDirectory, 'json$');
 
     for (const [name, content] of Object.entries(files)) {
       const fileName = path.join(testDirectory, name + '.json');
@@ -95,4 +83,15 @@ export class TestLauncher {
     }
   }
 
+  private deleteFiles(directory: string, pattern: string) {
+    const expression = new RegExp(pattern);
+
+    for (const fileName of fs.readdirSync(directory)) {
+      if (fileName.match(expression)) {
+        const filePath = path.join(directory, fileName);
+
+        fs.unlinkSync(filePath);
+      }
+    }
+  }
 }

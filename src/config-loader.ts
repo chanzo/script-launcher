@@ -2,6 +2,7 @@ import { existsSync } from 'fs';
 import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
 import { IScript, IScripts, Scripts } from './scripts';
+import * as path from 'path';
 import glob = require('glob');
 
 export interface IMenu {
@@ -133,7 +134,7 @@ export class Config {
 
   };
 
-  public static load(): Config {
+  public static load(directory: string): Config {
     const hash = new Set<string>();
     let config = new Config(Config.default);
     let files = Config.default.options.files;
@@ -144,7 +145,9 @@ export class Config {
 
       for (const file of files) {
         if (file && !hash.has(file)) {
-          if (existsSync(resolve(file))) config = config.merge(file);
+          const fullPath = path.join(directory, file);
+
+          if (existsSync(resolve(fullPath))) config = config.merge(fullPath);
 
           hash.add(file);
 
