@@ -1,17 +1,24 @@
-import * as launcher from '../src/launch';
-import { ConsoleInterceptor } from './console-interceptor';
-import { format } from 'util';
+import * as fs from 'fs';
+import * as path from 'path';
 
-const interceptor = new ConsoleInterceptor();
 
-// launcher.main([
-//   '',
-//   '',
-//   '--testmode',
-//   '--help'
-// ], '');
 
-console.log('hallo1', 10, 20);
-console.log('hallo2');
 
-interceptor.close();
+
+const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
+
+
+
+
+function deleteFiles(directory: string, pattern: RegExp) {
+  for (const fileName of fs.readdirSync(directory)) {
+    if (fileName.match(pattern)) {
+      const filePath = path.join(tempFiles, fileName);
+
+      fs.unlinkSync(filePath);
+    }
+  }
+}
+
+
+deleteFiles(tempFiles, /json$/);

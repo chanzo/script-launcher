@@ -1,0 +1,49 @@
+{
+  "basic": [
+    {
+      "name": "Sequential scripts",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "sequential-scripts": [
+              "echo Build step 1",
+              "echo Build step 2",
+              "echo Build step 3"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "command": "sequential-scripts",
+          "result": [
+            "Build step 1\u001b[0m",
+            "Build step 2\u001b[0m",
+            "Build step 3\u001b[0m"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Change directory",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "change-directory": [
+              "../../../node_modules/script-launcher",
+              "dir"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "command": "change-directory",
+          "result": [
+            "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js\u001b[0m"
+          ]
+        }
+      ]
+    }
+  ]
+}

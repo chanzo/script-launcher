@@ -1,6 +1,6 @@
 import { format } from 'util';
 
-export type ConsoleFunction = (message?: any, ...optionalParams: any[]) => void;
+export type ConsoleFunction = (...args: any[]) => void;
 
 type LogTargets = 'log' | 'debug' | 'info' | 'error' | 'trace' | 'warn';
 
@@ -35,12 +35,12 @@ export class ConsoleInterceptor implements IIntercepted {
 
   constructor() {
     this.functions = ConsoleInterceptor.setConsoleFunctions({
-      log: (message?: any, ...optionalParams: any[]) => { this.recordLog('log', message, ...optionalParams); },
-      debug: (message?: any, ...optionalParams: any[]) => { this.recordLog('debug', message, ...optionalParams); },
-      info: (message?: any, ...optionalParams: any[]) => { this.recordLog('info', message, ...optionalParams); },
-      error: (message?: any, ...optionalParams: any[]) => { this.recordLog('error', message, ...optionalParams); },
-      trace: (message?: any, ...optionalParams: any[]) => { this.recordLog('trace', message, ...optionalParams); },
-      warn: (message?: any, ...optionalParams: any[]) => { this.recordLog('warn', message, ...optionalParams); }
+      log: (...args: any[]) => { this.recordConsole('log', ...args); },
+      debug: (...args: any[]) => { this.recordConsole('debug', ...args); },
+      info: (...args: any[]) => { this.recordConsole('info', ...args); },
+      error: (...args: any[]) => { this.recordConsole('error', ...args); },
+      trace: (...args: any[]) => { this.recordConsole('trace', ...args); },
+      warn: (...args: any[]) => { this.recordConsole('warn', ...args); }
     });
   }
 
@@ -69,8 +69,8 @@ export class ConsoleInterceptor implements IIntercepted {
     return currentFunctions;
   }
 
-  private recordLog(name: LogTargets, message?: any, ...optionalParams: any[]) {
-    const value = format(message, ...optionalParams);
+  private recordConsole(name: LogTargets, ...args: any[]) {
+    const value = (format as (...args: any[]) => string)(...args); // Unsing as for typing bug fix
 
     this.all.push(value);
 

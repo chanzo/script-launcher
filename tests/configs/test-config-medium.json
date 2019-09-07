@@ -1,0 +1,22 @@
+{
+  "basic": [
+    {
+      "name": "Parameters and functions",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "parameters-and-functions:$project=uva:$config=dev": "echo ng serve $project -c=$config"
+          }
+        }
+      },
+      "tests": [
+        {
+          "command": "parameters-and-functions",
+          "result": [
+            "ng serve uva -c=dev\u001b[0m"
+          ]
+        }
+      ]
+    }
+  ]
+}

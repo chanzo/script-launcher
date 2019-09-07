@@ -1,4 +1,6 @@
 import { TestLauncher } from './test-launcher';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const helpResult = [
   'Usage: launch [command] [options...]',
@@ -33,14 +35,27 @@ const helpResultNoAnsi = [
   '  script=      Launcher script to start.',
   '  ansi=        Enable or disable ansi color output.'
 ];
-const arrayOutput = [
+const sequentialScripts = [
   'Build step 1',
   'Build step 2',
   'Build step 3'
 ];
+const changeDirectory = ['bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js'];
 
-const testLauncher = new TestLauncher('', '', '--testmode');
+const parametersAndFunctions1 = [
+  'ng serve uva -c=dev'
+];
+const parametersAndFunctions2 = [
+  'ng serve uva -c=tst'
+];
+const parametersAndFunctions3 = [
+  'ng serve hva -c=prd'
+];
 
+const testFiles = path.join(__dirname, 'configs'); // , '*.json'
+const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
+const testLauncher = new TestLauncher(tempFiles, testFiles, '', '', '--testmode');
+/*
 describe('Launcher commands', () => {
 
   test('help', async () => {
@@ -68,17 +83,86 @@ describe('Launcher commands', () => {
     expect(result.all).toStrictEqual(helpResultNoAnsi);
   });
 });
+*/
 
-describe('Simple config', () => {
-  // launch --config=./tests/configs/launcher-config.json --script=build-stuff
-  test('array2', async () => {
-    const result = await testLauncher.launch([
-      '--config=./tests/configs/launcher-config.json',
-      '--script=build-stuff'
-    ]);
 
-    console.log('result:', result.all);
+async function main() {
+  const configGroups = testLauncher.load();
 
-    // expect(result.all).toStrictEqual(arrayOutput);
-  });
-});
+  for (const [name, configs] of Object.entries(configGroups)) {
+    describe(name, () => {
+      // console.log('d1', new Date().toISOString());
+      for (const config of configs) {
+        const id = config.name.toLowerCase().replace(/ /, '-');
+
+        testLauncher.create(id, config.files);
+
+        for (const item of config.tests) {
+          test(config.name + ' (' + item.command + ')', async () => {
+            const result = await testLauncher.launch(id, [
+              '--script=' + item.command
+            ]);
+            // console.log('result.all:', result.all);
+            // console.log('item.result:', item.result);
+            expect(result.all).toStrictEqual(item.result);
+            // expect(true).toStrictEqual(true);
+          });
+        }
+        // expect(result.all).toStrictEqual(sequentialScripts);
+      }
+      // console.log('d2', new Date().toISOString());
+    });
+
+
+  }
+}
+
+// describe('Simple config', () => {
+//   test('Sequential scripts', async () => {
+//     const result = await testLauncher.launch([
+//       '--config=./tests/configs/launcher-config.json',
+//       '--script=sequential-scripts'
+//     ]);
+
+//     expect(result.all).toStrictEqual(sequentialScripts);
+//   });
+
+//   test('Change directory', async () => {
+//     const result = await testLauncher.launch([
+//       '--config=./tests/configs/launcher-config.json',
+//       '--script=change-directory'
+//     ]);
+
+//     expect(result.all).toStrictEqual(changeDirectory);
+//   });
+
+//   test('Parameters and functions', async () => {
+//     const result = await testLauncher.launch([
+//       '--config=./tests/configs/launcher-config.json',
+//       '--script=parameters-and-functions'
+//     ]);
+
+//     expect(result.all).toStrictEqual(parametersAndFunctions1);
+//   });
+
+//   test('Parameters and functions', async () => {
+//     const result = await testLauncher.launch([
+//       '--config=./tests/configs/launcher-config.json',
+//       '--script=parameters-and-functions::tst'
+//     ]);
+
+//     expect(result.all).toStrictEqual(parametersAndFunctions2);
+//   });
+
+//   test('Parameters and functions', async () => {
+//     const result = await testLauncher.launch([
+//       '--config=./tests/configs/launcher-config.json',
+//       '--script=parameters-and-functions:hva:prd'
+//     ]);
+
+//     expect(result.all).toStrictEqual(parametersAndFunctions3);
+//   });
+
+
+// });
+main();

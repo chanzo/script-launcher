@@ -165,12 +165,13 @@ export class Process {
   }
 
   private testOutputData(childProcess: ChildProcess): void {
+
     childProcess.stdout.on('data', (data) => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stdout += content;
 
-        Logger.log(content + Colors.Normal);
+        console.log(content + Colors.Normal);
       }
     });
 
@@ -179,7 +180,7 @@ export class Process {
       if (content) {
         this._stderr += content;
 
-        Logger.error(content + Colors.Normal);
+        console.error(content + Colors.Normal);
       }
     });
   }
