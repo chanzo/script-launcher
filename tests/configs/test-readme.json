@@ -215,14 +215,14 @@
             ],
             "build-stuff": {
               "concurrent": [
-                "background:1:3000",
-                "background:2:5000"
+                "background:1:300",
+                "background:2:500"
               ],
               "sequential": [
                 "echo Sequential job : 3",
-                "sleep:1000",
+                "sleep:100",
                 "echo Sequential job : 4",
-                "sleep:1000"
+                "sleep:100"
               ]
             }
           }
@@ -255,15 +255,15 @@
             ],
             "build-stuff": [
               [
-                "background:1:3000",
-                "background:2:5000"
+                "background:1:300",
+                "background:2:500"
               ],
               {
                 "sequential": [
                   "echo Sequential job : 3",
-                  "sleep:1000",
+                  "sleep:100",
                   "echo Sequential job : 4",
-                  "sleep:1000"
+                  "sleep:100"
                 ]
               }
             ]

@@ -9,7 +9,7 @@ const testLauncher = new TestLauncher(tempFiles, '', '');
 async function main() {
   let index = 0;
 
-  testLauncher.load(testFiles); // , 'Reference scripts'
+  testLauncher.load(testFiles, 'Reference scripts'); // , 'Reference scripts'
 
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
@@ -32,6 +32,9 @@ async function main() {
               const result = await testLauncher.launch(directory, [
                 item.command
               ]);
+              // , JSON.stringify({
+              //   remain: item.command
+              // }));
               // console.log('result.all:', result.all);
               // console.log('item.result:', item.result);
               expect(result.all).toStrictEqual(item.result);

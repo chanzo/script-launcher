@@ -228,7 +228,6 @@ export async function main(processArgv: string[], npmConfigArgv: string, testmod
     }
 
     if (launchScript === undefined || launchArgs.menu) {
-      Logger.info('Command arguments :', commandArgs);
       Logger.info();
 
       const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, testmode);
@@ -249,7 +248,6 @@ export async function main(processArgv: string[], npmConfigArgv: string, testmod
 
     scriptInfo.arguments = commandArgs;
 
-    Logger.info('Command arguments :', commandArgs);
     Logger.info();
 
     const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
