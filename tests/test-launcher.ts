@@ -44,7 +44,6 @@ export class TestLauncher {
   load(): { [name: string]: ITestConfig[] } {
     const files = fs.readdirSync(this.testFiles);
     const result: { [name: string]: ITestConfig[] } = {};
-    let index = 1;
 
     for (const file of files) {
       if (file.endsWith('.json') && !file.endsWith('launcher-config.json')) {
@@ -52,9 +51,9 @@ export class TestLauncher {
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 
         for (let [name, config] of Object.entries(configs)) {
-          if (result[name]) name += ':' + index++;
+          if (result[name] === undefined) result[name] = [];
 
-          result[name] = config;
+          result[name].push(...config);
         }
       }
     }

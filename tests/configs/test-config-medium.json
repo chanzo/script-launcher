@@ -1,19 +1,61 @@
 {
-  "basic": [
+  "Implementation examples": [
     {
       "name": "Parameters and functions",
       "files": {
         "launcher-config": {
           "scripts": {
-            "parameters-and-functions:$project=uva:$config=dev": "echo ng serve $project -c=$config"
+            "serve:$project=uva:$config=dev": "echo ng serve $project -c=$config"
           }
         }
       },
       "tests": [
         {
-          "command": "parameters-and-functions",
+          "command": "--script=serve",
           "result": [
             "ng serve uva -c=dev\u001b[0m"
+          ]
+        },
+        {
+          "command": "--script=serve::tst",
+          "result": [
+            "ng serve uva -c=tst\u001b[0m"
+          ]
+        },
+        {
+          "command": "--script=serve:hva:prd",
+          "result": [
+            "ng serve hva -c=prd\u001b[0m"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Parameters and functions",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project=uva:$config=dev": "echo ng serve $project -c=$config"
+          }
+        }
+      },
+      "tests": [
+        {
+          "command": "--script=serve",
+          "result": [
+            "ng serve uva -c=dev\u001b[0m"
+          ]
+        },
+        {
+          "command": "--script=serve::tst",
+          "result": [
+            "ng serve uva -c=tst\u001b[0m"
+          ]
+        },
+        {
+          "command": "--script=serve:hva:prd",
+          "result": [
+            "ng serve hva -c=prd\u001b[0m"
           ]
         }
       ]

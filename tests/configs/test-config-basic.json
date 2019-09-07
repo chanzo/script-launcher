@@ -1,5 +1,32 @@
 {
-  "basic": [
+  "Implementation examples": [
+    {
+      "name": "Help",
+      "files": {
+        "launcher-config": {}
+      },
+      "tests": [
+        {
+          "command": "--help",
+          "result": [
+            "Usage: launch [command] [options...]",
+            "",
+            "Commands:",
+            "  \u001b[36minit         \u001b[0mCreate starter config files.",
+            "  \u001b[36mhelp         \u001b[0mShow this help.",
+            "  \u001b[36mmenu         \u001b[0mShow interactive menu.",
+            "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
+            "",
+            "Options:",
+            "  \u001b[36minteractive  \u001b[0mForce to show menu the by ignoring the options value of defaultScript.",
+            "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
+            "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
+            "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
+            "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output."
+          ]
+        }
+      ]
+    },
     {
       "name": "Sequential scripts",
       "files": {
@@ -15,7 +42,7 @@
       },
       "tests": [
         {
-          "command": "sequential-scripts",
+          "command": "--script=sequential-scripts",
           "result": [
             "Build step 1\u001b[0m",
             "Build step 2\u001b[0m",
@@ -38,7 +65,7 @@
       },
       "tests": [
         {
-          "command": "change-directory",
+          "command": "--script=change-directory",
           "result": [
             "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js\u001b[0m"
           ]
