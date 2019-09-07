@@ -5,6 +5,7 @@ import * as path from 'path';
 
 export interface ITests {
   command: string;
+  arguments: string[];
   result: string[];
 }
 
