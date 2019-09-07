@@ -28,23 +28,15 @@ export class TestLauncher {
   }
 
   public async launch(directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
-    const currentDirectory = process.cwd();
+    const testDirectory = path.join(this.tempPath, directory);
 
-    try {
-      const testDirectory = path.join(this.tempPath, directory);
+    const interceptor = new ConsoleInterceptor();
 
-      process.chdir(testDirectory);
+    await launcher.main([...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
 
-      const interceptor = new ConsoleInterceptor();
+    interceptor.close();
 
-      await launcher.main([...this.defaultArgs, ...processArgv], npmConfigArgv, true);
-
-      interceptor.close();
-
-      return interceptor;
-    } finally {
-      process.chdir(currentDirectory);
-    }
+    return interceptor;
   }
 
   public load(testFiles: string, filter: string = ''): void {

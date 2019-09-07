@@ -171,7 +171,7 @@ export class Process {
       if (content) {
         this._stdout += content;
 
-        console.log(content + Colors.Normal);
+        console.log(content);
       }
     });
 
@@ -180,7 +180,7 @@ export class Process {
       if (content) {
         this._stderr += content;
 
-        console.error(content + Colors.Normal);
+        console.error(content);
       }
     });
   }

@@ -1,4 +1,9 @@
 # Change Log
+## 1.17.0
+### Changes
+* Added integration tests
+* Added **directory** argument to specify the configuration files load location
+
 ## 1.16.1
 * Dev dependencies updated
 

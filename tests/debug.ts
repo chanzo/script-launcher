@@ -1,16 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import * as launcher from '../src/launch';
 
-const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
-
-function deleteFiles(directory: string, pattern: RegExp) {
-  for (const fileName of fs.readdirSync(directory)) {
-    if (fileName.match(pattern)) {
-      const filePath = path.join(tempFiles, fileName);
-
-      fs.unlinkSync(filePath);
-    }
-  }
+async function main() {
+  await launcher.main(['', '', '--directory=temp/0000', '--script=sequential-scripts'], '', true);
 }
 
-deleteFiles(tempFiles, /json$/);
+main();

@@ -1,16 +1,9 @@
 {
   "scripts": {
-    "build:$config=dev": [
-      "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-      ""
-    ],
-    "serve:$config": [
-      "build:$config",
-      "echo ${launch_style_bold}serve:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
-      "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url",
-      "",
-      "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
+    "sequential-scripts": [
+      "echo Build step 1",
+      "echo Build step 2",
+      "echo Build step 3"
     ]
   }
 }

@@ -45,9 +45,9 @@
         {
           "command": "--script=sequential-scripts",
           "result": [
-            "Build step 1\u001b[0m",
-            "Build step 2\u001b[0m",
-            "Build step 3\u001b[0m"
+            "Build step 1",
+            "Build step 2",
+            "Build step 3"
           ]
         }
       ]
@@ -58,7 +58,7 @@
         "launcher-config": {
           "scripts": {
             "change-directory": [
-              "../../../node_modules/script-launcher",
+              "node_modules/script-launcher",
               "dir"
             ]
           }
@@ -68,7 +68,7 @@
         {
           "command": "--script=change-directory",
           "result": [
-            "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js\u001b[0m"
+            "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
           ]
         }
       ]

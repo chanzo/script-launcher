@@ -13,19 +13,19 @@
         {
           "command": "--script=serve",
           "result": [
-            "ng serve uva -c=dev\u001b[0m"
+            "ng serve uva -c=dev"
           ]
         },
         {
           "command": "--script=serve::tst",
           "result": [
-            "ng serve uva -c=tst\u001b[0m"
+            "ng serve uva -c=tst"
           ]
         },
         {
           "command": "--script=serve:hva:prd",
           "result": [
-            "ng serve hva -c=prd\u001b[0m"
+            "ng serve hva -c=prd"
           ]
         }
       ]
@@ -43,19 +43,19 @@
         {
           "command": "--script=serve",
           "result": [
-            "ng serve uva -c=dev\u001b[0m"
+            "ng serve uva -c=dev"
           ]
         },
         {
           "command": "--script=serve::tst",
           "result": [
-            "ng serve uva -c=tst\u001b[0m"
+            "ng serve uva -c=tst"
           ]
         },
         {
           "command": "--script=serve:hva:prd",
           "result": [
-            "ng serve hva -c=prd\u001b[0m"
+            "ng serve hva -c=prd"
           ]
         }
       ]

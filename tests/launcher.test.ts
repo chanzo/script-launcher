@@ -9,7 +9,7 @@ const testLauncher = new TestLauncher(tempFiles, '', '');
 async function main() {
   let index = 0;
 
-  testLauncher.load(testFiles); // , 'Help|Sequential');
+  testLauncher.load(testFiles); // |Help
 
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
