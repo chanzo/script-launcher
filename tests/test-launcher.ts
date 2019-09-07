@@ -16,9 +16,15 @@ export interface ITestConfig {
 
 export class TestLauncher {
   private readonly defaultArgs: string[];
+  private readonly _configs: { [name: string]: ITestConfig[] };
 
-  constructor(private readonly tempPath: string, private readonly testFiles: string, ...defaultArgs: string[]) {
+  public get configs(): Array<[string, ITestConfig[]]> {
+    return Object.entries(this._configs);
+  }
+
+  constructor(private readonly tempPath: string, ...defaultArgs: string[]) {
     this.defaultArgs = defaultArgs;
+    this._configs = {}
   }
 
   public async launch(directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
@@ -41,13 +47,13 @@ export class TestLauncher {
     }
   }
 
-  load(): { [name: string]: ITestConfig[] } {
-    const files = fs.readdirSync(this.testFiles);
-    const result: { [name: string]: ITestConfig[] } = {};
+  load(testFiles: string): void {
+    const files = fs.readdirSync(testFiles);
+    const result = this._configs;
 
     for (const file of files) {
       if (file.endsWith('.json') && !file.endsWith('launcher-config.json')) {
-        const content = fs.readFileSync(path.join(this.testFiles, file));
+        const content = fs.readFileSync(path.join(testFiles, file));
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 
         for (let [name, config] of Object.entries(configs)) {
@@ -57,8 +63,6 @@ export class TestLauncher {
         }
       }
     }
-
-    return result;
   }
 
   private deleteFiles(directory: string, pattern: RegExp) {

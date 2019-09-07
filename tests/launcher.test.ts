@@ -4,13 +4,14 @@ import * as path from 'path';
 const testFiles = path.join(__dirname, 'configs'); // , '*.json'
 const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
 
-const testLauncher = new TestLauncher(tempFiles, testFiles, '', '', '--testmode');
+const testLauncher = new TestLauncher(tempFiles, '', '', '--testmode');
 
 async function main() {
-  const configGroups = testLauncher.load();
   let index = 0;
 
-  for (const [name, configs] of Object.entries(configGroups)) {
+  testLauncher.load(testFiles);
+
+  for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
       for (const config of configs) {
         const directory = (index++).toString().padStart(4, '0');
