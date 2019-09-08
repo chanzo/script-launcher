@@ -16,7 +16,6 @@
       "tests": [
         {
           "lifecycle": "start",
-          "cmd-args": [],
           "npm-args": [
             "build-stuff",
             "data1",
@@ -46,9 +45,7 @@
         },
         {
           "lifecycle": "start",
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
+          "cmd-args": "--script=build-stuff",
           "npm-args": [
             "data1",
             "data2"
@@ -135,14 +132,12 @@
           ]
         },
         {
-          "lifecycle": "",
           "cmd-args": [
             "--script=build-stuff",
             "--",
             "data1",
             "data2"
           ],
-          "npm-args": [],
           "result": [
             "Argument 1 : data1",
             "Argument 2 : data2",

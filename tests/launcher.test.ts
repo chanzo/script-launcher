@@ -23,19 +23,8 @@ async function main() {
           if (config.tests.length === 0) test.todo('command');
 
           for (const item of config.tests) {
-            if ((item['cmd-args'].length > 0 || item['npm-args'].length > 0)) {
-
-              let name = 'launch  ' + item['cmd-args'].join(' ');
-
-              if (item.lifecycle) {
-                name = 'npm ';
-
-                if (item.lifecycle !== 'start') name += 'run   ';
-
-                name += item.lifecycle + ' ' + item['npm-args'].join(' ');
-              }
-
-              test(name.padEnd(48), async () => {
+            if ((item['cmd-args'].length > 0 || item['npm-args'].length > 0) && item.result !== undefined) {
+              test(item.name.padEnd(48), async () => {
                 const result = await testLauncher.launch(item.lifecycle, directory, [
                   ...item['cmd-args'],
                   ...item['npm-args']
@@ -46,7 +35,7 @@ async function main() {
                 expect(result.all).toStrictEqual(item.result);
               }, 10000);
             } else {
-              test.todo('command');
+              test.todo(item.name);
             }
           }
         });

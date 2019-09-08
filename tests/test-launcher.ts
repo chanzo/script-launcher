@@ -4,14 +4,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface ITests {
+  name?: string;
   'cmd-args': string[];
   'npm-args': string[];
-  lifecycle: string;
-  result: string[];
+  lifecycle?: string;
+  result?: string[];
 }
 
 export interface ITestConfig {
-  name: string;
+  name?: string;
   files: { [name: string]: any };
   tests: ITests[];
 }
@@ -41,22 +42,43 @@ export class TestLauncher {
     return interceptor;
   }
 
-  public load(testFiles: string, filter: string = ''): void {
+  public load(testFiles: string): void {
     const files = fs.readdirSync(testFiles);
     const result = this._configs;
-    const expression = new RegExp(filter);
 
     for (const file of files) {
       if (file.endsWith('.test.json') && !file.endsWith('launcher-config.json')) {
         const content = fs.readFileSync(path.join(testFiles, file));
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 
-        for (const [name, config] of Object.entries(configs)) {
+        for (const [name, testConfigs] of Object.entries(configs)) {
           if (result[name] === undefined) result[name] = [];
 
-          const tests = config.filter((item) => item.name.match(expression));
+          for (const testConfig of testConfigs) {
+            if (testConfig.tests === undefined) testConfig.tests = [];
 
-          result[name].push(...tests);
+            for (const test of testConfig.tests) {
+              if (test['cmd-args'] === undefined) test['cmd-args'] = [];
+              if (test['npm-args'] === undefined) test['npm-args'] = [];
+
+              if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
+              if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
+
+              if (!test.name) {
+                test.name = 'launch  ' + test['cmd-args'].join(' ');
+
+                if (test.lifecycle) {
+                  test.name = 'npm ';
+
+                  if (test.lifecycle !== 'start') test.name += 'run   ';
+
+                  test.name += test.lifecycle + ' ' + test['npm-args'].join(' ');
+                }
+              }
+            }
+          }
+
+          result[name].push(...testConfigs);
         }
       }
     }
@@ -76,6 +98,18 @@ export class TestLauncher {
       fs.writeFileSync(fileName, JSON.stringify(content));
     }
   }
+
+  // private static readonly arrayTypes = new Set([
+  //   'cmd-args',
+  //   'npm-args',
+  //   'result'
+  // ]);
+
+  // private static configReviver(key: string, value: any): any {
+  //   if (TestLauncher.arrayTypes.has(key) && !Array.isArray(value)) return [value];
+
+  //   return value;
+  // }
 
   private deleteFiles(directory: string, pattern: string) {
     const expression = new RegExp(pattern);
