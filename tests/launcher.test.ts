@@ -1,16 +1,15 @@
 import { TestLauncher } from './test-launcher';
 import * as path from 'path';
 
-const testFiles = path.join(__dirname, 'configs'); // , '*.json'
-const tempFiles = path.join(__dirname, 'temp'); // , '*.json'
+const testFiles = path.join(__dirname, 'configs');
+const tempFiles = path.join(__dirname, 'temp');
 
 const testLauncher = new TestLauncher(tempFiles, '', '');
 
 async function main() {
   let index = 0;
 
-  // testLauncher.load(testFiles, 'Reference scripts|Environment and command line argument values'); // , 'Reference scripts'
-  testLauncher.load(testFiles, ''); // , 'Reference scripts'
+  testLauncher.load(testFiles);
 
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
@@ -24,14 +23,12 @@ async function main() {
 
           for (const item of config.tests) {
             if ((item['cmd-args'].length > 0 || item['npm-args'].length > 0) && item.result !== undefined) {
-              test(item.name.padEnd(48), async () => {
+              test(item.name.padEnd(56), async () => {
                 const result = await testLauncher.launch(item.lifecycle, directory, [
                   ...item['cmd-args'],
                   ...item['npm-args']
                 ], JSON.stringify({ remain: item['npm-args'] }));
 
-                // console.log('result.all:', result.all);
-                // console.log('item.result:', item.result);
                 expect(result.all).toStrictEqual(item.result);
               }, 10000);
             } else {

@@ -1,5 +1,5 @@
 {
-  "Implementation examples": [
+  "Implementation examples (readme.md)": [
     {
       "name": "Sequential scripts",
       "files": {
@@ -242,9 +242,57 @@
     {
       "name": "Launch arguments, command arguments, parameters and arguments",
       "files": {
-        "launcher-config": {}
+        "launcher-config": {
+          "scripts": {
+            "myFunc:$funcParam1:$funcParam2": [
+              "echo Function Parameter 1: $funcParam1",
+              "echo Function Parameter 2: $funcParam2",
+              "echo Function Arguments 1: $1",
+              "echo Function Arguments 2: $2",
+              "echo Function All arguments: $*"
+            ],
+            "build-stuff:$myParam1:$myParam2": [
+              "--",
+              "echo Parameter 1: $myParam1",
+              "echo Parameter 2: ${myParam2}",
+              "echo Arguments 1: $1",
+              "echo Arguments 2: $2",
+              "echo All arguments: $*",
+              "echo Offset arguments: $2*",
+              "--",
+              "myFunc:$myParam1:funcParam funcArg $1",
+              "--"
+            ]
+          }
+        }
       },
-      "tests": []
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff:param1:param2",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "",
+            "Parameter 1: param1",
+            "Parameter 2: param2",
+            "Arguments 1: arg1",
+            "Arguments 2: arg2",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "",
+            "Function Parameter 1: param1",
+            "Function Parameter 2: funcParam",
+            "Function Arguments 1: funcArg",
+            "Function Arguments 2: arg1",
+            "Function All arguments: funcArg arg1",
+            ""
+          ]
+        }
+      ]
     },
     {
       "name": "Concurrent scripts",
@@ -337,16 +385,87 @@
     {
       "name": "Condition and exclusion constraints",
       "files": {
-        "launcher-config": {}
+        "launcher-config": {
+          "scripts": {
+            "build-stuff": [
+              {
+                "exclusion": "node_modules_test",
+                "sequential-then": [
+                  "echo npm install",
+                  "mkdir node_modules_test"
+                ]
+              },
+              {
+                "condition": "node_modules_test",
+                "sequential-then": [
+                  "echo npm start",
+                  {
+                    "condition": "'$launch_platform'==='win32'",
+                    "sequential": "echo Test platform type.",
+                    "sequential-then": "rmdir node_modules_test",
+                    "sequential-else": "rm -d node_modules_test"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "logLevel": 0
+          }
+        }
       },
-      "tests": []
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff"
+          ],
+          "result": [
+            "/bin/sh: 1: node_modules_test: not found",
+            "npm install",
+            "npm start",
+            "Test platform type."
+          ]
+        }
+      ]
     },
     {
       "name": "Repeaters",
       "files": {
-        "launcher-config": {}
+        "launcher-config": {
+          "scripts": {
+            "ping": [
+              {
+                "repeater": "$launch_setting_servers",
+                "sequential": [
+                  "echo Action: $launch_setting_command $_"
+                ]
+              }
+            ]
+          },
+          "settings": {
+            "command": "ping",
+            "servers": [
+              "www.google.com",
+              "duckduckgo.com",
+              "bing.com"
+            ]
+          }
+        }
       },
-      "tests": []
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "ping"
+          ],
+          "result": [
+            "Action: ping www.google.com",
+            "Action: ping duckduckgo.com",
+            "Action: ping bing.com"
+          ]
+        }
+      ]
     },
     {
       "name": "Interactive menu",
@@ -354,6 +473,98 @@
         "launcher-config": {}
       },
       "tests": []
+    },
+    {
+      "name": "Launcher settings",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:$config": [
+              "echo name: $launch_setting_name",
+              "echo version: $launch_setting_${config}_version",
+              "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+              "",
+              {
+                "repeater": "$launch_setting_${config}_server",
+                "sequential": [
+                  "echo Deploying to: $_"
+                ]
+              }
+            ]
+          },
+          "settings": {
+            "name": "example",
+            "dev": {
+              "version": "2.0.0",
+              "url": "$launch_setting_name.dev.com",
+              "server": [
+                "server1.dev.com",
+                "server2.dev.com"
+              ]
+            },
+            "acc": {
+              "version": "1.9.0",
+              "url": "$launch_setting_name.acc.com",
+              "server": [
+                "server1.acc.com",
+                "server2.acc.com"
+              ]
+            },
+            "production": {
+              "version": "1.8.0",
+              "url": "$launch_setting_name.prd.com",
+              "server": [
+                "server1.prd.com",
+                "server2.prd.com"
+              ]
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build:dev"
+          ],
+          "result": [
+            "name: example",
+            "version: 2.0.0",
+            "ng build -c=dev --deploy-url example.dev.com",
+            "",
+            "Deploying to: server1.dev.com",
+            "Deploying to: server2.dev.com"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build:acc"
+          ],
+          "result": [
+            "name: example",
+            "version: 1.9.0",
+            "ng build -c=acc --deploy-url example.acc.com",
+            "",
+            "Deploying to: server1.acc.com",
+            "Deploying to: server2.acc.com"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build:production"
+          ],
+          "result": [
+            "name: example",
+            "version: 1.8.0",
+            "ng build -c=production --deploy-url example.prd.com",
+            "",
+            "Deploying to: server1.prd.com",
+            "Deploying to: server2.prd.com"
+          ]
+        }
+      ]
     }
   ]
 }
