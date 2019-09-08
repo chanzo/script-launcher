@@ -15,10 +15,8 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
           "result": [
             "Build step 1",
             "Build step 2",
@@ -41,13 +39,9 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
-          "result": [
-            "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
-          ]
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
         }
       ]
     },
@@ -62,31 +56,19 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=serve"
-          ],
-          "npm-args": [],
-          "result": [
-            "ng serve uva -c=dev"
-          ]
+          "lifecycle": "start",
+          "npm-args": "serve",
+          "result": "ng serve uva -c=dev"
         },
         {
-          "cmd-args": [
-            "--script=serve::tst"
-          ],
-          "npm-args": [],
-          "result": [
-            "ng serve uva -c=tst"
-          ]
+          "lifecycle": "start",
+          "npm-args": "serve::tst",
+          "result": "ng serve uva -c=tst"
         },
         {
-          "cmd-args": [
-            "--script=serve:hva:prd"
-          ],
-          "npm-args": [],
-          "result": [
-            "ng serve hva -c=prd"
-          ]
+          "lifecycle": "start",
+          "npm-args": "serve:hva:prd",
+          "result": "ng serve hva -c=prd"
         }
       ]
     },
@@ -153,10 +135,8 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
           "result": [
             "grep example",
             "\u001b[1mVersion:\u001b[0m 1.16.2",
@@ -195,7 +175,6 @@
       "tests": [
         {
           "lifecycle": "start",
-          "cmd-args": [],
           "npm-args": [
             "build-stuff",
             "arg1",
@@ -228,10 +207,8 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
           "result": [
             "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js",
             "Markdown files: README.md"
@@ -322,10 +299,8 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
           "result": [
             "Background job : 1",
             "Background job : 2",
@@ -367,10 +342,8 @@
       },
       "tests": [
         {
-          "cmd-args": [
-            "--script=build-stuff"
-          ],
-          "npm-args": [],
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
           "result": [
             "Background job : 1",
             "Background job : 2",
@@ -417,9 +390,7 @@
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": [
-            "build-stuff"
-          ],
+          "npm-args": "build-stuff",
           "result": [
             "/bin/sh: 1: node_modules_test: not found",
             "npm install",
@@ -456,9 +427,7 @@
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": [
-            "ping"
-          ],
+          "npm-args": "ping",
           "result": [
             "Action: ping www.google.com",
             "Action: ping duckduckgo.com",
@@ -524,9 +493,7 @@
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": [
-            "build:dev"
-          ],
+          "npm-args": "build:dev",
           "result": [
             "name: example",
             "version: 2.0.0",
@@ -538,9 +505,7 @@
         },
         {
           "lifecycle": "start",
-          "npm-args": [
-            "build:acc"
-          ],
+          "npm-args": "build:acc",
           "result": [
             "name: example",
             "version: 1.9.0",
@@ -552,9 +517,7 @@
         },
         {
           "lifecycle": "start",
-          "npm-args": [
-            "build:production"
-          ],
+          "npm-args": "build:production",
           "result": [
             "name: example",
             "version: 1.8.0",

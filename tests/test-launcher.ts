@@ -63,6 +63,7 @@ export class TestLauncher {
 
               if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
+              if (!Array.isArray(test['result']) && test['result'] !== undefined) test['result'] = [test['result']];
 
               if (!test.name) {
                 test.name = 'launch  ' + test['cmd-args'].join(' ');
