@@ -40,6 +40,8 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
   const validArguments = Object.keys(defaultData);
 
   for (const arg of argv) {
+    if (arg === '--') break;
+
     const columns = arg.split('=', 2);
     const name = columns[0].replace(/^--/, '');
     let value: string | boolean | number = true;

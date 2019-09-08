@@ -47,7 +47,7 @@ export class TestLauncher {
     const expression = new RegExp(filter);
 
     for (const file of files) {
-      if (file.endsWith('.json') && !file.endsWith('launcher-config.json')) {
+      if (file.endsWith('.test.json') && !file.endsWith('launcher-config.json')) {
         const content = fs.readFileSync(path.join(testFiles, file));
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 

@@ -4,6 +4,9 @@
 * Added integration tests
 * Added **directory** argument to specify the configuration files load location
 
+### Fixes
+* Argument bug fix when using run scripts
+
 ## 1.16.1
 * Dev dependencies updated
 

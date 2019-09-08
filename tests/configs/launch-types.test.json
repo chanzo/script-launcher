@@ -1,0 +1,155 @@
+{
+  "Launch types": [
+    {
+      "name": "Start script",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build-stuff": [
+              "echo Argument 1 : $1",
+              "echo Argument 2 : $2",
+              "echo Argument 3 : $3"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "cmd-args": [],
+          "npm-args": [
+            "build-stuff",
+            "data1",
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "cmd-args": [
+            "--",
+            "data1"
+          ],
+          "npm-args": [
+            "build-stuff",
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [
+            "data1",
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "cmd-args": [
+            "--script=build-stuff",
+            "--",
+            "data1"
+          ],
+          "npm-args": [
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "build-stuff",
+          "cmd-args": [],
+          "npm-args": [
+            "data1",
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "build-stuff",
+          "cmd-args": [
+            "--",
+            "data1"
+          ],
+          "npm-args": [
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "build",
+          "cmd-args": [
+            "--script=build-stuff"
+          ],
+          "npm-args": [
+            "data1",
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "build",
+          "cmd-args": [
+            "--script=build-stuff",
+            "--",
+            "data1"
+          ],
+          "npm-args": [
+            "data2"
+          ],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        },
+        {
+          "lifecycle": "",
+          "cmd-args": [
+            "--script=build-stuff",
+            "--",
+            "data1",
+            "data2"
+          ],
+          "npm-args": [],
+          "result": [
+            "Argument 1 : data1",
+            "Argument 2 : data2",
+            "Argument 3 :"
+          ]
+        }
+      ]
+    }
+  ]
+}

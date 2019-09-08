@@ -137,6 +137,13 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
 
   return result;
 }
+function getRemaining(args: string[]): string[] {
+  const index = args.indexOf('--');
+
+  if (index === -1) return [];
+
+  return args.slice(index + 1);
+}
 
 export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
   let exitCode = 1;
@@ -208,7 +215,21 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
 
-    const launchScript = launchArgs.script ? launchArgs.script : lifecycleEvent === 'start' ? commandArgs[0] : lifecycleEvent;
+    let launchScript = lifecycleEvent;
+    let scriptId = '';
+
+    if (!launchArgs.script) {
+      if (lifecycleEvent === 'start') {
+        launchScript = commandArgs[0];
+        scriptId = commandArgs.shift();
+      }
+    } else {
+      launchScript = launchArgs.script;
+    }
+
+    commandArgs.unshift(...getRemaining(argsString));
+
+    if (scriptId) commandArgs.unshift(scriptId);
 
     Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
     Logger.info('Version           :', version);
@@ -246,7 +267,11 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    commandArgs[0] = Scripts.parse(launchScript).command;
+    if (!launchArgs.script && lifecycleEvent === 'start') {
+      commandArgs[0] = Scripts.parse(launchScript).command;
+    } else {
+      commandArgs.unshift(Scripts.parse(launchScript).command);
+    }
 
     scriptInfo.arguments = commandArgs;
 

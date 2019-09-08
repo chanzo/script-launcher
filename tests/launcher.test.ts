@@ -23,24 +23,31 @@ async function main() {
           if (config.tests.length === 0) test.todo('command');
 
           for (const item of config.tests) {
-            let name = '';
+            if ((item['cmd-args'].length > 0 || item['npm-args'].length > 0)) {
 
-            if (item['cmd-args'] !== undefined && item['cmd-args'].length > 0) {
-              name = 'launch ' + item['cmd-args'].join(' ');
+              let name = 'launch  ' + item['cmd-args'].join(' ');
+
+              if (item.lifecycle) {
+                name = 'npm ';
+
+                if (item.lifecycle !== 'start') name += 'run   ';
+
+                name += item.lifecycle + ' ' + item['npm-args'].join(' ');
+              }
+
+              test(name.padEnd(48), async () => {
+                const result = await testLauncher.launch(item.lifecycle, directory, [
+                  ...item['cmd-args'],
+                  ...item['npm-args']
+                ], JSON.stringify({ remain: item['npm-args'] }));
+
+                // console.log('result.all:', result.all);
+                // console.log('item.result:', item.result);
+                expect(result.all).toStrictEqual(item.result);
+              }, 10000);
             } else {
-              name = item['npm-args'].join(' ');
+              test.todo('command');
             }
-
-            test(name.padEnd(32), async () => {
-              const result = await testLauncher.launch(item.lifecycle, directory, [
-                ...item['cmd-args'],
-                ...item['npm-args']
-              ], JSON.stringify({ remain: item['npm-args'] }));
-
-              // console.log('result.all:', result.all);
-              // console.log('item.result:', item.result);
-              expect(result.all).toStrictEqual(item.result);
-            }, 10000);
           }
         });
       }
