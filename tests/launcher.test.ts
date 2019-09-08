@@ -25,18 +25,17 @@ async function main() {
           for (const item of config.tests) {
             let name = '';
 
-            if (item["cmd-args"] !== undefined && item["cmd-args"].length > 0) {
-              name = 'launch ' + item["cmd-args"].join(' ');
+            if (item['cmd-args'] !== undefined && item['cmd-args'].length > 0) {
+              name = 'launch ' + item['cmd-args'].join(' ');
             } else {
-              name = item["npm-args"].join(' ');
+              name = item['npm-args'].join(' ');
             }
-
 
             test(name.padEnd(32), async () => {
               const result = await testLauncher.launch(item.lifecycle, directory, [
-                ...item["cmd-args"],
-                ...item["npm-args"]
-              ], JSON.stringify({ remain: item["npm-args"] }));
+                ...item['cmd-args'],
+                ...item['npm-args']
+              ], JSON.stringify({ remain: item['npm-args'] }));
 
               // console.log('result.all:', result.all);
               // console.log('item.result:', item.result);
