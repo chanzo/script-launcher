@@ -91,6 +91,6 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
   }
 }
 
-export function getCurrentTime(): string {
-  return new Date(Date.now() + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
+export function formatLocalTime(time: number = Date.now()): string {
+  return new Date(time + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
 }

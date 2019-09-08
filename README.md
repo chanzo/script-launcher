@@ -34,6 +34,7 @@ npm start
 
 ### Build & Publish
 ```
+npm start test
 npm start build
 cd dist/package
 npm login

@@ -115,6 +115,7 @@
               "sequential-then": [
                 "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
                 "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
+                "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
                 "--",
                 "echo Color: ${launch_style_blue}Blue$launch_style_normal",
                 "echo Color: ${launch_style_bold}Bold$launch_style_normal",
@@ -127,7 +128,9 @@
                 "echo Color: ${launch_style_green}Green$launch_style_normal",
                 "echo Color: ${launch_style_red}Red$launch_style_normal",
                 "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
-                "--"
+                "--",
+                "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
+                "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
               ]
             }
           }
@@ -141,7 +144,8 @@
             "grep example",
             "\u001b[1mVersion:\u001b[0m 1.16.2",
             "\u001b[1mPlatform:\u001b[0m linux",
-            "",
+            "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
+            "--------------------------------",
             "Color: \u001b[94mBlue\u001b[0m",
             "Color: \u001b[1mBold\u001b[0m",
             "Color: \u001b[36mCyan\u001b[0m",
@@ -150,7 +154,9 @@
             "Color: \u001b[32mGreen\u001b[0m",
             "Color: \u001b[31mRed\u001b[0m",
             "Color: \u001b[33mYellow\u001b[0m",
-            ""
+            "--------------------------------",
+            "\u001b[1mCurrent:\u001b[0m 2019-09-16 10:33:42.285",
+            "\u001b[1mElapsed:\u001b[0m 137ms"
           ]
         }
       ]
@@ -253,20 +259,20 @@
             "arg3"
           ],
           "result": [
-            "",
+            "--------------------------------",
             "Parameter 1: param1",
             "Parameter 2: param2",
             "Arguments 1: arg1",
             "Arguments 2: arg2",
             "All arguments: arg1 arg2 arg3",
             "Offset arguments: arg2 arg3",
-            "",
+            "--------------------------------",
             "Function Parameter 1: param1",
             "Function Parameter 2: funcParam",
             "Function Arguments 1: funcArg",
             "Function Arguments 2: arg1",
             "Function All arguments: funcArg arg1",
-            ""
+            "--------------------------------"
           ]
         }
       ]
@@ -284,14 +290,14 @@
             ],
             "build-stuff": {
               "concurrent": [
-                "background:1:300",
-                "background:2:500"
+                "background:1:100",
+                "background:2:300"
               ],
               "sequential": [
                 "echo Sequential job : 3",
-                "sleep:100",
+                "sleep:25",
                 "echo Sequential job : 4",
-                "sleep:100"
+                "sleep:25"
               ]
             }
           }
@@ -325,15 +331,15 @@
             ],
             "build-stuff": [
               [
-                "background:1:300",
-                "background:2:500"
+                "background:1:100",
+                "background:2:300"
               ],
               {
                 "sequential": [
                   "echo Sequential job : 3",
-                  "sleep:100",
+                  "sleep:25",
                   "echo Sequential job : 4",
-                  "sleep:100"
+                  "sleep:25"
                 ]
               }
             ]

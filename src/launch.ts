@@ -6,7 +6,7 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getCurrentTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
@@ -84,7 +84,7 @@ function getEnviromentValues(): { [name: string]: string } {
     environment['launch_style_' + key.toLowerCase()] = value;
   }
 
-  environment.launch_time_start = getCurrentTime();
+  environment.launch_time_start = formatLocalTime();
   environment.launch_platform = process.platform;
   environment.launch_version = version;
 
@@ -187,6 +187,8 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       ...getEnviromentValues(),
       ...settings.values,
     };
+
+    if (testmode) environment.launch_time_start = formatLocalTime(new Date('2019-09-16T10:33:20.628').getTime());
 
     showLoadedFiles([...config.options.files, launchArgs.config]);
 
