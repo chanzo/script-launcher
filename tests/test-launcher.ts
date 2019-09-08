@@ -2,6 +2,7 @@ import * as launcher from '../src/launch';
 import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 import * as fs from 'fs';
 import * as path from 'path';
+import { MarkdownParser } from './markdown-parser';
 
 export interface ITests {
   name?: string;
@@ -85,6 +86,40 @@ export class TestLauncher {
     }
   }
 
+  public markdown(testFiles: string, category: string, exclude: string[] = []): void {
+    const markdownParser = new MarkdownParser(testFiles, exclude);
+    const sections = markdownParser.getSectionTests();
+    let configs = this._configs[category];
+
+    if (configs === undefined) {
+      configs = [];
+      this._configs[category] = configs;
+    }
+
+    for (const section of sections) {
+      let config = configs.find((item) => item.name === section.title);
+
+      if (config === undefined) {
+        config = {
+          name: section.title,
+          files: undefined,
+          tests: []
+        };
+
+        configs.push(config);
+      }
+
+      if (config.files !== undefined) {
+        console.error('Config file block \"' + section.title + '\" is not empty!');
+        continue;
+      }
+
+      config.files = {
+        'launcher-config': section.config
+      };
+    }
+  }
+
   public create(directory: string, files: { [name: string]: any }) {
     const testDirectory = path.join(this.tempPath, directory);
 
@@ -99,18 +134,6 @@ export class TestLauncher {
       fs.writeFileSync(fileName, JSON.stringify(content));
     }
   }
-
-  // private static readonly arrayTypes = new Set([
-  //   'cmd-args',
-  //   'npm-args',
-  //   'result'
-  // ]);
-
-  // private static configReviver(key: string, value: any): any {
-  //   if (TestLauncher.arrayTypes.has(key) && !Array.isArray(value)) return [value];
-
-  //   return value;
-  // }
 
   private deleteFiles(directory: string, pattern: string) {
     const expression = new RegExp(pattern);

@@ -15,6 +15,7 @@
         "esSpecCompliant": true
       }
     ],
+    "no-conditional-assignment": false,
     "member-ordering": [
       true,
       {

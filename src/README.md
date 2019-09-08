@@ -167,7 +167,7 @@ To test an example, copy the json content from the example to the file named **l
 ### Sequential scripts
 This example uses square brackets to start multiple script one by one. This feature can makes long script lines more readable.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -183,7 +183,7 @@ Run `npm start build-stuff` to use this example.
 ### Change directory
 Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from a different location.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -198,7 +198,7 @@ Run `npm start build-stuff` to use this example.
 ### Parameters and functions
 Use the dollar-sign in the script id and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
 
-Run `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
+**Run**: `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
 ``` JSON
 {
   "scripts": {
@@ -210,7 +210,7 @@ Run `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc,
 ### Reference scripts
 Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse script from other script, with different arguments if desired.
 
-Run `npm start deploy:tst` to use this example.
+**Run**: `npm start deploy:tst` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -250,7 +250,7 @@ Run `npm start deploy:tst` to use this example.
 | **"#"**                 | Command     | Added at the begining for a line to disable execution |
 | **"\|?"**               | Command     | Grep like functionality                               |
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ```JSON
 {
   "scripts": {
@@ -284,7 +284,7 @@ Run `npm start build-stuff` to use this example.
 ### Environment and command line argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables.
 
-Run `npm start build-stuff arg1 arg2 arg3` to use this example.
+**Run**: `npm start build-stuff arg1 arg2 arg3` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -304,7 +304,7 @@ Run `npm start build-stuff arg1 arg2 arg3` to use this example.
 ### Glob patterns
 Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -323,7 +323,7 @@ Run `npm start build-stuff` to use this example.
 * **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
 
-Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
+**Run**: `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 
 ``` JSON
 {
@@ -354,7 +354,7 @@ Run `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
 ### Concurrent scripts
 This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -383,7 +383,7 @@ Run `npm start build-stuff` to use this example.
 ### Inline script blocks
 This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -418,7 +418,7 @@ Run `npm start build-stuff` to use this example.
 
 The value of the **condition** and **exclusion** statement can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
 
-Run `npm start build-stuff` to use this example.
+**Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -453,7 +453,7 @@ Run `npm start build-stuff` to use this example.
 ### Repeaters
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
 
-Example using a string array. Run `npm start ping` to use this example.
+Example using a string array. **Run**: `npm start ping` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -477,7 +477,7 @@ Example using a string array. Run `npm start ping` to use this example.
 }
 ```
 
-Example using an object array. Run `npm start ping` to use this example.
+Example using an object array. **Run**: `npm start ping` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -516,7 +516,7 @@ Example using an object array. Run `npm start ping` to use this example.
 ### Interactive menu
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `launch interactive` to ignore the `launcher-custom.json` file.
 
-Run `npm start` to use this example.
+**Run**: `npm start` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -560,7 +560,7 @@ npx launch help
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
 
-Run `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
+**Run**: `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
 {
   "scripts": {
