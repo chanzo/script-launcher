@@ -32,10 +32,9 @@ export class MarkdownParser {
       let config: any = {};
 
       try {
-        config = JSON.parse(configContent ? configContent.join('\n') : '{}')
+        config = JSON.parse(configContent ? configContent.join('\n') : '{}');
       } catch (error) {
         console.error('Unable to load \"' + title + '\" example config:' + error.message);
-        //throw new Error('Unable to load \"' + title + '\" example config:' + error.message);
       }
 
       result.push({
@@ -75,8 +74,13 @@ export class MarkdownParser {
       const matches = line.match(expression);
 
       if (matches !== null) {
+        const key = matches[matches.length - 1].trim();
+
         block = [];
-        result.set(matches[matches.length - 1].trim(), block);
+
+        if (result.has(key)) console.error('Duplicate section key detected:', key);
+
+        result.set(key, block);
       } else {
         block.push(line);
       }

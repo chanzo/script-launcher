@@ -10,6 +10,7 @@
       "es2017",
       "esnext.asynciterable"
     ],
+    "downlevelIteration": true,
     /* Specify library files to be included in the compilation. */
     "resolveJsonModule": true, /* 	Include modules imported with .json extension. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
