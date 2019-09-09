@@ -1,11 +1,11 @@
 {
-  "Implementation examples": [
+  "Command line": [
     {
       "name": "Help",
       "files": {},
       "tests": [
         {
-          "command": "--help",
+          "cmd-args": "--help",
           "result": [
             "Usage: launch [command] [options...]",
             "",
@@ -23,50 +23,11 @@
             "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
             "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded."
           ]
-        }
-      ]
-    },
-    {
-      "name": "Sequential scripts",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "sequential-scripts": [
-              "echo Build step 1",
-              "echo Build step 2",
-              "echo Build step 3"
-            ]
-          }
-        }
-      },
-      "tests": [
+        },
         {
-          "command": "--script=sequential-scripts",
+          "cmd-args": "--version",
           "result": [
-            "Build step 1",
-            "Build step 2",
-            "Build step 3"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Change directory",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "change-directory": [
-              "node_modules/script-launcher",
-              "dir"
-            ]
-          }
-        }
-      },
-      "tests": [
-        {
-          "command": "--script=change-directory",
-          "result": [
-            "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
+            "1.17.0"
           ]
         }
       ]
