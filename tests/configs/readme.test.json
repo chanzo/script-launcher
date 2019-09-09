@@ -1,18 +1,7 @@
 {
-  "Implementation examples (readme.md)": [
+  "Implementation examples (readme.md)2": [
     {
       "name": "Sequential scripts",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": [
-              "echo Build step 1",
-              "echo Build step 2",
-              "echo Build step 3"
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -27,18 +16,9 @@
     },
     {
       "name": "Change directory",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": [
-              "node_modules/script-launcher",
-              "dir"
-            ]
-          }
-        }
-      },
       "tests": [
         {
+          "name": "npm start build-stuff",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
@@ -47,13 +27,6 @@
     },
     {
       "name": "Parameters and functions",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "serve:$project=uva:$config=dev": "echo ng serve $project -c=$config"
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -74,21 +47,6 @@
     },
     {
       "name": "Reference scripts",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build:$project:$config": "echo ng build $project -c=$config",
-            "deploy:$project:$config": [
-              "build:$project:$config",
-              "echo firebase deploy --public dist/$project -P $project-$config"
-            ],
-            "deploy:$config": [
-              "deploy:uva:$config",
-              "deploy:hva:$config"
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -107,35 +65,6 @@
     },
     {
       "name": "Environment values and special commands",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": {
-              "condition": "echo grep example |? example",
-              "sequential-then": [
-                "echo ${launch_style_bold}Version:$launch_style_normal $launch_version",
-                "echo ${launch_style_bold}Platform:$launch_style_normal $launch_platform",
-                "echo ${launch_style_bold}Time:$launch_style_normal $launch_time_start",
-                "--",
-                "echo Color: ${launch_style_blue}Blue$launch_style_normal",
-                "echo Color: ${launch_style_bold}Bold$launch_style_normal",
-                "echo",
-                "echo Color: ${launch_style_cyan}Cyan$launch_style_normal",
-                "echo Color: ${launch_style_dim}Dim$launch_style_normal",
-                "",
-                "# The error of the next action will be suppressed",
-                "exit 1 || true",
-                "echo Color: ${launch_style_green}Green$launch_style_normal",
-                "echo Color: ${launch_style_red}Red$launch_style_normal",
-                "echo Color: ${launch_style_yellow}Yellow$launch_style_normal",
-                "--",
-                "echo ${launch_style_bold}Current:$launch_style_normal $launch_time_current",
-                "echo ${launch_style_bold}Elapsed:$launch_style_normal $launch_time_elapsed"
-              ]
-            }
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -163,21 +92,6 @@
     },
     {
       "name": "Environment and command line argument values",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": [
-              "environment=my-env",
-              "echo Node version: $npm_config_node_version",
-              "echo Argument 1 : $1",
-              "echo Argument 2 : $2",
-              "echo All arguments: $*",
-              "echo Offset arguments: $2*",
-              "echo Environment : $environment"
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -200,17 +114,6 @@
     },
     {
       "name": "Glob patterns",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": [
-              "node_modules/script-launcher",
-              "echo All files: *",
-              "echo Markdown files: **/*.md"
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -224,31 +127,6 @@
     },
     {
       "name": "Launch arguments, command arguments, parameters and arguments",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "myFunc:$funcParam1:$funcParam2": [
-              "echo Function Parameter 1: $funcParam1",
-              "echo Function Parameter 2: $funcParam2",
-              "echo Function Arguments 1: $1",
-              "echo Function Arguments 2: $2",
-              "echo Function All arguments: $*"
-            ],
-            "build-stuff:$myParam1:$myParam2": [
-              "--",
-              "echo Parameter 1: $myParam1",
-              "echo Parameter 2: ${myParam2}",
-              "echo Arguments 1: $1",
-              "echo Arguments 2: $2",
-              "echo All arguments: $*",
-              "echo Offset arguments: $2*",
-              "--",
-              "myFunc:$myParam1:funcParam funcArg $1",
-              "--"
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -279,30 +157,6 @@
     },
     {
       "name": "Concurrent scripts",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
-            "background:$job:$time": [
-              "echo Background job : $job",
-              "sleep:$time",
-              "echo Completed job : $job"
-            ],
-            "build-stuff": {
-              "concurrent": [
-                "background:1:100",
-                "background:2:300"
-              ],
-              "sequential": [
-                "echo Sequential job : 3",
-                "sleep:25",
-                "echo Sequential job : 4",
-                "sleep:25"
-              ]
-            }
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -320,32 +174,6 @@
     },
     {
       "name": "Inline script blocks",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
-            "background:$job:$time": [
-              "echo Background job : $job",
-              "sleep:$time",
-              "echo Completed job : $job"
-            ],
-            "build-stuff": [
-              [
-                "background:1:100",
-                "background:2:300"
-              ],
-              {
-                "sequential": [
-                  "echo Sequential job : 3",
-                  "sleep:25",
-                  "echo Sequential job : 4",
-                  "sleep:25"
-                ]
-              }
-            ]
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -363,36 +191,6 @@
     },
     {
       "name": "Condition and exclusion constraints",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build-stuff": [
-              {
-                "exclusion": "node_modules_test",
-                "sequential-then": [
-                  "echo npm install",
-                  "mkdir node_modules_test"
-                ]
-              },
-              {
-                "condition": "node_modules_test",
-                "sequential-then": [
-                  "echo npm start",
-                  {
-                    "condition": "'$launch_platform'==='win32'",
-                    "sequential": "echo Test platform type.",
-                    "sequential-then": "rmdir node_modules_test",
-                    "sequential-else": "rm -d node_modules_test"
-                  }
-                ]
-              }
-            ]
-          },
-          "options": {
-            "logLevel": 0
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",
@@ -407,29 +205,7 @@
       ]
     },
     {
-      "name": "Repeaters",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "ping": [
-              {
-                "repeater": "$launch_setting_servers",
-                "sequential": [
-                  "echo Action: $launch_setting_command $_"
-                ]
-              }
-            ]
-          },
-          "settings": {
-            "command": "ping",
-            "servers": [
-              "www.google.com",
-              "duckduckgo.com",
-              "bing.com"
-            ]
-          }
-        }
-      },
+      "name": "Repeaters (String)",
       "tests": [
         {
           "lifecycle": "start",
@@ -443,59 +219,34 @@
       ]
     },
     {
+      "name": "Repeaters (Object)",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "ping",
+          "result": [
+            "Google",
+            "--------------------------------",
+            "Action: ping www.google.com",
+            "",
+            "DuckDuckGo",
+            "--------------------------------",
+            "Action: ping duckduckgo.com",
+            "",
+            "Bing",
+            "--------------------------------",
+            "Action: ping bing.com",
+            ""
+          ]
+        }
+      ]
+    },
+    {
       "name": "Interactive menu",
-      "files": {
-        "launcher-config": {}
-      },
       "tests": []
     },
     {
       "name": "Launcher settings",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "build:$config": [
-              "echo name: $launch_setting_name",
-              "echo version: $launch_setting_${config}_version",
-              "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
-              "",
-              {
-                "repeater": "$launch_setting_${config}_server",
-                "sequential": [
-                  "echo Deploying to: $_"
-                ]
-              }
-            ]
-          },
-          "settings": {
-            "name": "example",
-            "dev": {
-              "version": "2.0.0",
-              "url": "$launch_setting_name.dev.com",
-              "server": [
-                "server1.dev.com",
-                "server2.dev.com"
-              ]
-            },
-            "acc": {
-              "version": "1.9.0",
-              "url": "$launch_setting_name.acc.com",
-              "server": [
-                "server1.acc.com",
-                "server2.acc.com"
-              ]
-            },
-            "production": {
-              "version": "1.8.0",
-              "url": "$launch_setting_name.prd.com",
-              "server": [
-                "server1.prd.com",
-                "server2.prd.com"
-              ]
-            }
-          }
-        }
-      },
       "tests": [
         {
           "lifecycle": "start",

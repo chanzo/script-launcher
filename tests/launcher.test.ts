@@ -10,8 +10,8 @@ const testLauncher = new TestLauncher(tempFiles, '', '');
 async function main() {
   let index = 0;
 
-  testLauncher.load(testFiles);
-  testLauncher.markdown(readmeFile, 'Implementation examples (readme.md)2', [
+  testLauncher.loadConfig(testFiles);
+  testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)2', [
     'Installation',
     'Usage examples',
     'Motivation',
@@ -19,7 +19,10 @@ async function main() {
     'Launcher files',
     'Script shell',
     'Menu options',
-    'Logging'
+    'Logging',
+    'Launcher arguments',
+    'Launcher options',
+    'Glob Options'
   ]);
 
   for (const [name, configs] of testLauncher.configs) {
@@ -35,15 +38,17 @@ async function main() {
         testLauncher.create(directory, config.files);
 
         describe(config.name, () => {
-          if (config.tests.length === 0) test.todo('command');
+          if (config.tests.length === 0) test.todo('test command');
 
           for (const item of config.tests) {
-            if ((item['cmd-args'].length === 0 && item['npm-args'].length === 0) || item.result === undefined) {
+            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0) || item.result === undefined) && !item.error) {
               test.todo(item.name);
               continue;
             }
 
             test(item.name.padEnd(56), async () => {
+              if (item.error) throw new Error(item.error);
+
               const result = await testLauncher.launch(item.lifecycle, directory, [
                 ...item['cmd-args'],
                 ...item['npm-args']

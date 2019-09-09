@@ -6,6 +6,7 @@ import { MarkdownParser } from './markdown-parser';
 
 export interface ITests {
   name?: string;
+  error?: string;
   'cmd-args': string[];
   'npm-args': string[];
   lifecycle?: string;
@@ -43,7 +44,7 @@ export class TestLauncher {
     return interceptor;
   }
 
-  public load(testFiles: string): void {
+  public loadConfig(testFiles: string): void {
     const files = fs.readdirSync(testFiles);
     const result = this._configs;
 
@@ -86,9 +87,13 @@ export class TestLauncher {
     }
   }
 
-  public markdown(testFiles: string, category: string, exclude: string[] = []): void {
+  public loadMarkdown(testFiles: string, category: string, exclude: string[] = []): void {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
+    const failedTest: ITests = {
+      'npm-args': [],
+      'cmd-args': [],
+    };
     let configs = this._configs[category];
 
     if (configs === undefined) {
@@ -110,8 +115,24 @@ export class TestLauncher {
       }
 
       if (config.files !== undefined) {
-        console.error('Config file block \"' + section.title + '\" is not empty!');
+        for (const test of config.tests) {
+          config.tests = [{
+            name: test.name,
+            error: 'The file section of a markdown test should be empty!',
+            ...failedTest
+          }];
+        }
         continue;
+      }
+
+      for (const command of section.commands) {
+        const test = config.tests.find((item) => item.name === command);
+
+        if (!test) config.tests.push({
+          name: command,
+          error: 'Markdown example is missing test command: ' + command,
+          ...failedTest
+        });
       }
 
       config.files = {

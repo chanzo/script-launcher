@@ -72,7 +72,8 @@ Basically you can now use `npm start` instead of `npm run`.
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
   * [Condition and exclusion constraints](#condition-and-exclusion-constraints)
-  * [Repeaters](#repeaters)
+  * [Repeaters (String)](#repeaters-string)
+  * [Repeaters (Object)](#repeaters-object)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
 * [Launcher settings](#launcher-settings)
@@ -366,14 +367,14 @@ This example uses the **concurrent** keyword to run multiple script in parallel 
     ],
     "build-stuff": {
       "concurrent": [
-        "background:1:3000",
-        "background:2:5000"
+        "background:1:400",
+        "background:2:800"
       ],
       "sequential": [
         "echo Sequential job : 3",
-        "sleep:1000",
+        "sleep:200",
         "echo Sequential job : 4",
-        "sleep:1000"
+        "sleep:200"
       ]
     }
   }
@@ -395,15 +396,15 @@ This example uses the inline script blocks to run multiple script in parallel an
     ],
     "build-stuff": [
       [
-        "background:1:3000",
-        "background:2:5000"
+        "background:1:400",
+        "background:2:800"
       ],
       {
         "sequential": [
           "echo Sequential job : 3",
-          "sleep:1000",
+          "sleep:200",
           "echo Sequential job : 4",
-          "sleep:1000"
+          "sleep:200"
         ]
       }
     ]
@@ -445,12 +446,12 @@ The value of the **condition** and **exclusion** statement can be a string or an
     ]
   },
   "options": {
-    "logLevel": 2
+    "logLevel": 0
   }
 }
 ```
 
-### Repeaters
+### Repeaters (String)
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
 
 Example using a string array. **Run**: `npm start ping` to use this example.
@@ -477,6 +478,7 @@ Example using a string array. **Run**: `npm start ping` to use this example.
 }
 ```
 
+### Repeaters (Object)
 Example using an object array. **Run**: `npm start ping` to use this example.
 ``` JSON
 {
