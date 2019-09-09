@@ -21,7 +21,7 @@
           "name": "npm start build-stuff",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
+          "result": "bin\t\t  executor.js\t  LICENSE\tpackage.json  spawn-process.js\ncommon.js\t  launch.js\t  logger.js\tREADME.md\nconfig-loader.js  launch-menu.js  node_modules\tscripts.js"
         }
       ]
     },
@@ -71,7 +71,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.17.0",
+            "\u001b[1mVersion:\u001b[0m 1.17.1",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -119,8 +119,8 @@
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js",
-            "Markdown files: README.md"
+            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js node_modules package.json README.md scripts.js spawn-process.js",
+            "Markdown files: node_modules/cross-spawn/CHANGELOG.md node_modules/cross-spawn/README.md README.md"
           ]
         }
       ]

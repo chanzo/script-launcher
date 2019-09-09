@@ -1,4 +1,8 @@
 # Change Log
+## 1.17.1
+### Changes
+* Dev dependencies updated
+
 ## 1.17.0
 ### Changes
 * Added integration tests
@@ -10,9 +14,11 @@
 * Argument bug fix when using `npm run script`
 
 ## 1.16.1
+### Changes
 * Dev dependencies updated
 
 ## 1.16.0
+### Changes
 * Added support for using default function parameter values
 ``` JSON
 {
