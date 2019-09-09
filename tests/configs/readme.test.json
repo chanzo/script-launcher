@@ -50,10 +50,7 @@
       "tests": [
         {
           "lifecycle": "start",
-          "cmd-args": [],
-          "npm-args": [
-            "deploy:tst"
-          ],
+          "npm-args": "deploy:tst",
           "result": [
             "ng build uva -c=tst",
             "firebase deploy --public dist/uva -P uva-tst",
