@@ -1,4 +1,17 @@
 # Change Log
+## 1.17.0
+### Changes
+* Added integration tests
+* Added **directory** argument to specify the configuration files load location
+* Added **script** argument to specify a script to start form the command line
+
+
+### Fixes
+* Argument bug fix when using `npm run script`
+
+## 1.16.1
+* Dev dependencies updated
+
 ## 1.16.0
 * Added support for using default function parameter values
 ``` JSON

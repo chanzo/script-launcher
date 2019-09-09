@@ -40,6 +40,8 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
   const validArguments = Object.keys(defaultData);
 
   for (const arg of argv) {
+    if (arg === '--') break;
+
     const columns = arg.split('=', 2);
     const name = columns[0].replace(/^--/, '');
     let value: string | boolean | number = true;
@@ -78,6 +80,7 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
   console.log('Usage: ' + name + ' [command] [options...]');
 
   for (const description of Object.values(descriptions)) {
+    if (!description) continue;
     if (Array.isArray(description)) {
       for (const item of Object.values(description)) {
         console.log(item);
@@ -88,6 +91,6 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
   }
 }
 
-export function getCurrentTime(): string {
-  return new Date(Date.now() + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
+export function formatLocalTime(time: number = Date.now()): string {
+  return new Date(time + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
 }

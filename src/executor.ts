@@ -4,7 +4,7 @@ import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { getCurrentTime, stringify, Colors } from './common';
+import { formatLocalTime, stringify, Colors } from './common';
 import glob = require('glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
@@ -140,7 +140,11 @@ export class Executor {
     }
 
     if (command === '--') {
-      console.log(''.padEnd(process.stdout.columns, '-'));
+      if (options.testmode) {
+        console.log(''.padEnd(32, '-'));
+      } else {
+        console.log(''.padEnd(process.stdout.columns, '-'));
+      }
 
       return { command: null, args, options };
     }
@@ -200,13 +204,15 @@ export class Executor {
   private readonly settings: ILaunchSetting;
   private readonly scripts: Scripts;
   private readonly globOptions: glob.IOptions;
+  private readonly testmode: boolean;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions, testmode: boolean) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;
     this.scripts = scripts;
     this.globOptions = globOptions;
+    this.testmode = testmode;
     this.startTime = process.hrtime();
   }
 
@@ -217,9 +223,10 @@ export class Executor {
       env: this.environment,
       shell: this.shell,
       suppress: false,
+      testmode: this.testmode,
     };
 
-    Logger.info('Script name     :', scriptInfo.name);
+    Logger.info('Script id       :', scriptInfo.name);
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.info('Script args     :', scriptInfo.arguments);
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));
@@ -414,8 +421,13 @@ export class Executor {
       options.suppress = suppress;
 
       if (typeof task === 'string') {
-        options.env.launch_time_current = getCurrentTime();
+        options.env.launch_time_current = formatLocalTime();
         options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
+
+        if (options.testmode) {
+          options.env.launch_time_current = formatLocalTime(new Date('2019-09-16T10:33:42.285').getTime());
+          options.env.launch_time_elapsed = '137ms';
+        }
 
         const info = Executor.getCommandInfo(task, options);
 

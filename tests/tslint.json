@@ -1,0 +1,47 @@
+{
+  "extends": [
+    "../tslint.json"
+  ],
+  "rules": {
+    "trailing-comma": [
+      true,
+      {
+        "multiline": {
+          "objects": "never",
+          "arrays": "never",
+          "functions": "never",
+          "typeLiterals": "never"
+        },
+        "esSpecCompliant": true
+      }
+    ],
+    "no-conditional-assignment": false,
+    "curly": [
+      false,
+      "ignore-same-line"
+    ],
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "public-instance-field",
+          "protected-static-field",
+          "protected-instance-field",
+          "private-static-field",
+          "private-instance-field",
+          "public-static-method",
+          "public-constructor",
+          "public-instance-method",
+          "protected-static-method",
+          "protected-constructor",
+          "protected-instance-method",
+          "private-static-method",
+          "private-constructor",
+          "private-instance-method"
+        ],
+        "alphabetize": false
+      }
+    ]
+  }
+}

@@ -1,26 +1,34 @@
 {
   "scripts": {
-    "lint": "tslint --config tslint.json src/**/*.ts",
+    "lint": [
+      "echo Linting sources files...",
+      "tslint --project src $*",
+      "tslint --project tests $*",
+      "echo No lint errors found...",
+      ""
+    ],
     "build": [
-      "echo Building node package...",
       "lint",
-      "rm -rf ./dist",
-      "tsc --build",
-      "cp ./src/package.json ./dist/",
-      "cp ./src/README.md ./dist",
-      "cp ./src/LICENSE ./dist",
-      "mkdir ./dist/bin",
-      "cp ./src/bin/launch.js ./dist/bin/launch.js",
+      "echo Building node package...",
+      "rm -rf ./dist/package",
+      "tsc --build src",
+      "cp src/package.json dist/package",
+      "cp src/README.md dist/package",
+      "cp src/LICENSE dist/package",
+      "mkdir dist/package/bin",
+      "cp src/bin/launch.js dist/package/bin/launch.js",
       "echo Done..."
     ],
     "postinstall": [
       "debug",
       "npm install"
+    ],
+    "test": [
+      "lint",
+      "#rm -rf ./dist/test",
+      "#tsc --build tests",
+      "jest --verbose $*"
     ]
-  },
-  "menu": {
-    "description": "action",
-    "build package": "build"
   },
   "options": {
     "logLevel": 0
