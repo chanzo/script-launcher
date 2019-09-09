@@ -1,5 +1,7 @@
-import { TestLauncher } from './test-launcher';
+import { TestLauncher, TransformCallback } from './test-launcher';
 import * as path from 'path';
+import { IConfig } from '../src/config-loader';
+import { IScript, IScriptTask } from '../src/scripts';
 
 const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
@@ -11,7 +13,7 @@ async function main() {
   let index = 0;
 
   testLauncher.loadConfig(testFiles);
-  testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)2', [
+  testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)', [
     'Installation',
     'Usage examples',
     'Motivation',
@@ -25,17 +27,37 @@ async function main() {
     'Glob Options'
   ]);
 
+  const transforms: { [name: string]: TransformCallback } = {
+    concurrentScripts: (name: string, config: IConfig) => {
+      ((config.scripts['build-stuff'] as IScriptTask).concurrent as IScript[])[0] = 'background:1:100';
+      ((config.scripts['build-stuff'] as IScriptTask).concurrent as IScript[])[1] = 'background:2:200';
+      ((config.scripts['build-stuff'] as IScriptTask).sequential as IScript[])[1] = 'sleep:25';
+      ((config.scripts['build-stuff'] as IScriptTask).sequential as IScript[])[3] = 'sleep:25';
+
+      return config;
+    },
+    inlineScriptBlocks: (name: string, config: IConfig) => {
+      config.scripts['build-stuff'][0][0] = 'background:1:100';
+      config.scripts['build-stuff'][0][1] = 'background:2:200';
+      config.scripts['build-stuff'][1].sequential[1] = 'sleep:25';
+      config.scripts['build-stuff'][1].sequential[3] = 'sleep:25';
+      return config;
+    },
+    conditionAndExclusionConstraints: (name: string, config: IConfig) => {
+      config.options.logLevel = 0;
+
+      return config;
+    }
+  };
+
+  testLauncher.transformConfigs(transforms);
+
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
       for (const config of configs) {
         const directory = (index++).toString().padStart(4, '0');
 
-        if (config.files === undefined) {
-          test.todo(config.name);
-          continue;
-        }
-
-        testLauncher.create(directory, config.files);
+        if (config.files !== undefined) testLauncher.create(directory, config.files);
 
         describe(config.name, () => {
           if (config.tests.length === 0) test.todo('test command');

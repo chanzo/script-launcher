@@ -367,14 +367,14 @@ This example uses the **concurrent** keyword to run multiple script in parallel 
     ],
     "build-stuff": {
       "concurrent": [
-        "background:1:400",
-        "background:2:800"
+        "background:1:3000",
+        "background:2:5000"
       ],
       "sequential": [
         "echo Sequential job : 3",
-        "sleep:200",
+        "sleep:1000",
         "echo Sequential job : 4",
-        "sleep:200"
+        "sleep:1000"
       ]
     }
   }
@@ -396,15 +396,15 @@ This example uses the inline script blocks to run multiple script in parallel an
     ],
     "build-stuff": [
       [
-        "background:1:400",
-        "background:2:800"
+        "background:1:3000",
+        "background:2:5000"
       ],
       {
         "sequential": [
           "echo Sequential job : 3",
-          "sleep:200",
+          "sleep:1000",
           "echo Sequential job : 4",
-          "sleep:200"
+          "sleep:1000"
         ]
       }
     ]
@@ -422,7 +422,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON
 {
-  "scripts": {
+ "scripts": {
     "build-stuff": [
       {
         "exclusion": "node_modules_test",
@@ -446,7 +446,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
     ]
   },
   "options": {
-    "logLevel": 0
+    "logLevel": 2
   }
 }
 ```
@@ -454,7 +454,8 @@ The value of the **condition** and **exclusion** statement can be a string or an
 ### Repeaters (String)
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
 
-Example using a string array. **Run**: `npm start ping` to use this example.
+Example using a string array.
+**Run**: `npm start ping` to use this example.
 ``` JSON
 {
   "scripts": {
@@ -479,7 +480,8 @@ Example using a string array. **Run**: `npm start ping` to use this example.
 ```
 
 ### Repeaters (Object)
-Example using an object array. **Run**: `npm start ping` to use this example.
+Example using an object array. 
+**Run**: `npm start ping` to use this example.
 ``` JSON
 {
   "scripts": {

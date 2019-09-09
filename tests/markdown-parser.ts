@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { ConfigContent } from './test-launcher';
+import { IConfig } from '../src/config-loader';
 
 export interface ISectionTest {
   title: string;
-  config: ConfigContent;
+  config: IConfig;
   commands: string[];
   error?: string;
 }
@@ -14,14 +14,19 @@ export class MarkdownParser {
   constructor(fileName: string, exclude: string[] = []) {
     const buffer = fs.readFileSync(fileName);
     const fileContent = buffer.toString().split('\n');
-    const sections = MarkdownParser.getSections(fileContent, '^(###|##) (.*)');
 
     this.sections = new Map();
 
-    for (const [key, value] of sections) {
-      if (exclude.includes(key)) continue;
+    try {
+      const sections = MarkdownParser.getSections(fileContent, '^(###|##) (.*)');
 
-      this.sections.set(key, value);
+      for (const [key, value] of sections) {
+        if (exclude.includes(key)) continue;
+
+        this.sections.set(key, value);
+      }
+    } catch (error) {
+      console.error('Error loading \"' + fileName + '\" markdown file ', error.message);
     }
   }
 
@@ -30,7 +35,7 @@ export class MarkdownParser {
 
     for (const [title, content] of this.sections) {
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
-      let config: ConfigContent = {};
+      let config: IConfig = {} as any;
       let sectionError: string = null;
 
       try {

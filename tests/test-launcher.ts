@@ -3,6 +3,7 @@ import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 import * as fs from 'fs';
 import * as path from 'path';
 import { MarkdownParser } from './markdown-parser';
+import { IConfig } from '../src/config-loader';
 
 export interface ITests {
   name?: string;
@@ -13,24 +14,18 @@ export interface ITests {
   result?: string[];
 }
 
-export type ConfigContent = any;
-type TransformCallback = (name: string, config: ConfigContent) => ConfigContent;
+export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
   name?: string;
-  transform?: string,
-  files: { [name: string]: ConfigContent };
+  transformer?: string;
+  files: { [name: string]: IConfig };
   tests: ITests[];
 }
 
 export class TestLauncher {
   private readonly defaultArgs: string[];
   private readonly _configs: { [name: string]: ITestConfig[] };
-  private readonly transforms: { [name: string]: TransformCallback } = {
-    sequentialScripts: (name: string, config: ConfigContent) => {
-      return config;
-    }
-  }
 
   public get configs(): Array<[string, ITestConfig[]]> {
     return Object.entries(this._configs);
@@ -39,6 +34,16 @@ export class TestLauncher {
   constructor(private readonly tempPath: string, ...defaultArgs: string[]) {
     this.defaultArgs = defaultArgs;
     this._configs = {};
+
+    for (const directory of fs.readdirSync(tempPath)) {
+      const fullDirectoryName = path.join(tempPath, directory);
+
+      for (const file of fs.readdirSync(fullDirectoryName)) {
+        const fullFileName = path.join(fullDirectoryName, file);
+        fs.unlinkSync(fullFileName);
+      }
+
+    }
   }
 
   public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
@@ -123,36 +128,56 @@ export class TestLauncher {
         configs.push(config);
       }
 
+      if (section.commands.length === 0) {
+        config.tests = [{
+          name: 'Missing command',
+          error: 'Markdown section is missing test commands!',
+          ...emptyTest
+        }];
+        continue;
+      }
+
       if (section.error) {
+        config.tests = [];
         for (const test of config.tests) {
-          config.tests = [{
+          config.tests.push({
             name: test.name,
             error: section.error,
             ...emptyTest
-          }];
+          });
         }
         continue;
       }
 
       if (config.files !== undefined) {
+        config.tests = [];
         for (const test of config.tests) {
-          config.tests = [{
+          config.tests.push({
             name: test.name,
             error: 'The file section of a markdown test should be empty!',
             ...emptyTest
-          }];
+          });
         }
         continue;
       }
 
-      for (const command of section.commands) {
-        const test = config.tests.find((item) => item.name === command);
+      if (config.tests.length > 0) {
+        for (const command of section.commands) {
+          const test = config.tests.find((item) => item.name === command);
 
-        if (!test) config.tests.push({
-          name: command,
-          error: 'Markdown example is missing test command: ' + command,
-          ...emptyTest
-        });
+          if (!test) config.tests.push({
+            name: command,
+            error: 'Markdown example is missing test command: ' + command,
+            ...emptyTest
+          });
+        }
+      } else {
+        for (const command of section.commands) {
+          config.tests.push({
+            name: command,
+            ...emptyTest
+          });
+        }
       }
 
       config.files = {
@@ -161,7 +186,43 @@ export class TestLauncher {
     }
   }
 
-  public create(directory: string, files: { [name: string]: ConfigContent }) {
+  public transformConfigs(transforms: { [name: string]: TransformCallback }): void {
+
+    for (const [name, configs] of Object.entries(this._configs)) {
+      for (const testConfig of configs) {
+        if (testConfig.transformer) {
+          const transform = transforms[testConfig.transformer];
+
+          if (!transform) {
+            for (const test of testConfig.tests) {
+              if (!test.error) test.error = 'Transform not found: ' + testConfig.transformer;
+            }
+            continue;
+          }
+
+          if (!testConfig.files) {
+            for (const test of testConfig.tests) {
+              if (!test.error) test.error = 'No files to transform: ' + testConfig.transformer;
+            }
+            continue;
+          }
+
+          for (const [name, config] of Object.entries(testConfig.files)) {
+            try {
+              transform(name, config);
+            } catch (error) {
+              for (const test of testConfig.tests) {
+                if (!test.error) test.error = 'Transform error: ' + error.message;
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public create(directory: string, files: { [name: string]: IConfig }) {
     const testDirectory = path.join(this.tempPath, directory);
 
     fs.mkdirSync(testDirectory, {

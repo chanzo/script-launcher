@@ -1,8 +1,7 @@
 {
-  "Implementation examples (readme.md)2": [
+  "Implementation examples (readme.md)": [
     {
       "name": "Sequential scripts",
-      "transformer": "sequentialScripts",
       "tests": [
         {
           "lifecycle": "start",
@@ -158,6 +157,7 @@
     },
     {
       "name": "Concurrent scripts",
+      "transformer": "concurrentScripts",
       "tests": [
         {
           "lifecycle": "start",
@@ -175,6 +175,7 @@
     },
     {
       "name": "Inline script blocks",
+      "transformer": "inlineScriptBlocks",
       "tests": [
         {
           "lifecycle": "start",
@@ -192,6 +193,7 @@
     },
     {
       "name": "Condition and exclusion constraints",
+      "transformer": "conditionAndExclusionConstraints",
       "tests": [
         {
           "lifecycle": "start",
