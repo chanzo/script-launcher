@@ -15,7 +15,7 @@
     ],
     "max-line-length": [
       true,
-      220
+      512
     ],
     "space-before-function-paren": [
       true,
@@ -43,7 +43,7 @@
     "no-shadowed-variable": false,
     "max-classes-per-file": [
       true,
-      2
+      1
     ]
   },
   "rulesDirectory": []

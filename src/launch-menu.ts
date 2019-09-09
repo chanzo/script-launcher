@@ -7,7 +7,7 @@ import { Colors } from './common';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
-export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     inline: false,
@@ -47,7 +47,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     console.log();
   }
 
-  const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob);
+  const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
 
   return {
     startTime: executor.startTime,

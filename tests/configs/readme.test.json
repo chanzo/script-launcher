@@ -1,0 +1,297 @@
+{
+  "Implementation examples (readme.md)": [
+    {
+      "name": "Sequential scripts",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "Build step 1",
+            "Build step 2",
+            "Build step 3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Change directory",
+      "tests": [
+        {
+          "name": "npm start build-stuff",
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
+        }
+      ]
+    },
+    {
+      "name": "Parameters and functions",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "serve",
+          "result": "ng serve uva -c=dev"
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "serve::tst",
+          "result": "ng serve uva -c=tst"
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "serve:hva:prd",
+          "result": "ng serve hva -c=prd"
+        }
+      ]
+    },
+    {
+      "name": "Reference scripts",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "cmd-args": [],
+          "npm-args": [
+            "deploy:tst"
+          ],
+          "result": [
+            "ng build uva -c=tst",
+            "firebase deploy --public dist/uva -P uva-tst",
+            "ng build hva -c=tst",
+            "firebase deploy --public dist/hva -P hva-tst"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Environment values and special commands",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "grep example",
+            "\u001b[1mVersion:\u001b[0m 1.17.0",
+            "\u001b[1mPlatform:\u001b[0m linux",
+            "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
+            "--------------------------------",
+            "Color: \u001b[94mBlue\u001b[0m",
+            "Color: \u001b[1mBold\u001b[0m",
+            "Color: \u001b[36mCyan\u001b[0m",
+            "Color: \u001b[2mDim\u001b[0m",
+            "",
+            "Color: \u001b[32mGreen\u001b[0m",
+            "Color: \u001b[31mRed\u001b[0m",
+            "Color: \u001b[33mYellow\u001b[0m",
+            "--------------------------------",
+            "\u001b[1mCurrent:\u001b[0m 2019-09-16 10:33:42.285",
+            "\u001b[1mElapsed:\u001b[0m 137ms"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Environment and command line argument values",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "Node version: 10.16.2",
+            "Argument 1 : arg1",
+            "Argument 2 : arg2",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "Environment : my-env"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Glob patterns",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js",
+            "Markdown files: README.md"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Launch arguments, command arguments, parameters and arguments",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff:param1:param2",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "--------------------------------",
+            "Parameter 1: param1",
+            "Parameter 2: param2",
+            "Arguments 1: arg1",
+            "Arguments 2: arg2",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "--------------------------------",
+            "Function Parameter 1: param1",
+            "Function Parameter 2: funcParam",
+            "Function Arguments 1: funcArg",
+            "Function Arguments 2: arg1",
+            "Function All arguments: funcArg arg1",
+            "--------------------------------"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Concurrent scripts",
+      "transformer": "concurrentScripts",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "Background job : 1",
+            "Background job : 2",
+            "Sequential job : 3",
+            "Sequential job : 4",
+            "Completed job : 1",
+            "Completed job : 2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inline script blocks",
+      "transformer": "inlineScriptBlocks",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "Background job : 1",
+            "Background job : 2",
+            "Completed job : 1",
+            "Completed job : 2",
+            "Sequential job : 3",
+            "Sequential job : 4"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Condition and exclusion constraints",
+      "transformer": "conditionAndExclusionConstraints",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "/bin/sh: 1: node_modules_test: not found",
+            "npm install",
+            "npm start",
+            "Test platform type."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Repeaters (String)",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "ping",
+          "result": [
+            "Action: ping www.google.com",
+            "Action: ping duckduckgo.com",
+            "Action: ping bing.com"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Repeaters (Object)",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "ping",
+          "result": [
+            "Google",
+            "--------------------------------",
+            "Action: ping www.google.com",
+            "",
+            "DuckDuckGo",
+            "--------------------------------",
+            "Action: ping duckduckgo.com",
+            "",
+            "Bing",
+            "--------------------------------",
+            "Action: ping bing.com",
+            ""
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactive menu",
+      "tests": [
+        {
+          "name": "npm start"
+        }
+      ]
+    },
+    {
+      "name": "Launcher settings",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build:dev",
+          "result": [
+            "name: example",
+            "version: 2.0.0",
+            "ng build -c=dev --deploy-url example.dev.com",
+            "",
+            "Deploying to: server1.dev.com",
+            "Deploying to: server2.dev.com"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build:acc",
+          "result": [
+            "name: example",
+            "version: 1.9.0",
+            "ng build -c=acc --deploy-url example.acc.com",
+            "",
+            "Deploying to: server1.acc.com",
+            "Deploying to: server2.acc.com"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build:production",
+          "result": [
+            "name: example",
+            "version: 1.8.0",
+            "ng build -c=production --deploy-url example.prd.com",
+            "",
+            "Deploying to: server1.prd.com",
+            "Deploying to: server2.prd.com"
+          ]
+        }
+      ]
+    }
+  ]
+}

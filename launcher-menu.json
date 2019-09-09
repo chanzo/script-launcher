@@ -1,0 +1,10 @@
+{
+  "menu": {
+    "description": "action",
+    "build": "build",
+    "test": {
+      "run": "test",
+      "watch": "test --watchAll"
+    }
+  }
+}
