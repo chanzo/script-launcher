@@ -45,7 +45,7 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
 
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
 
-  console.log('Created file: ' + fileName);
+  console.log('Created file: ' + fileName.replace(process.cwd(), '.'));
 }
 
 function showHelp() {
@@ -209,9 +209,9 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.init) {
-      createExampleFile('launcher-config.json', Config.initConfig);
-      createExampleFile('launcher-settings.json', Config.settingsConfig);
-      createExampleFile('launcher-menu.json', Config.initMenu);
+      createExampleFile(path.join(launchArgs.directory, 'launcher-config.json'), Config.initConfig);
+      createExampleFile(path.join(launchArgs.directory, 'launcher-settings.json'), Config.settingsConfig);
+      createExampleFile(path.join(launchArgs.directory, 'launcher-menu.json'), Config.initMenu);
       Logger.log();
       exitCode = 0;
       return;
