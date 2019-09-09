@@ -16,6 +16,10 @@
       }
     ],
     "no-conditional-assignment": false,
+    "curly": [
+      false,
+      "ignore-same-line"
+    ],
     "member-ordering": [
       true,
       {

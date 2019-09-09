@@ -1,9 +1,11 @@
 import * as fs from 'fs';
+import { ConfigContent } from './test-launcher';
 
 export interface ISectionTest {
   title: string;
-  config: any;
+  config: ConfigContent;
   commands: string[];
+  error?: string;
 }
 
 export class MarkdownParser {
@@ -27,20 +29,23 @@ export class MarkdownParser {
     const result: ISectionTest[] = [];
 
     for (const [title, content] of this.sections) {
-      const configContent = MarkdownParser.getSections(content, '^```(.*)').get('JSON');
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
-      let config: any = {};
+      let config: ConfigContent = {};
+      let sectionError: string = null;
 
       try {
+        const configContent = MarkdownParser.getSections(content, '^```(.*)').get('JSON');
+
         config = JSON.parse(configContent ? configContent.join('\n') : '{}');
       } catch (error) {
-        console.error('Unable to load \"' + title + '\" example config:' + error.message);
+        sectionError = 'Unable to load markdown example: ' + error.message;
       }
 
       result.push({
         title: title,
         config: config,
-        commands: commands
+        commands: commands,
+        error: sectionError
       });
     }
 
@@ -78,7 +83,7 @@ export class MarkdownParser {
 
         block = [];
 
-        if (result.has(key)) console.error('Duplicate section key detected:', key);
+        if (result.has(key)) throw new Error('Duplicate section key: ' + key);
 
         result.set(key, block);
       } else {

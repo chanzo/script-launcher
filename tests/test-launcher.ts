@@ -13,15 +13,24 @@ export interface ITests {
   result?: string[];
 }
 
+export type ConfigContent = any;
+type TransformCallback = (name: string, config: ConfigContent) => ConfigContent;
+
 export interface ITestConfig {
   name?: string;
-  files: { [name: string]: any };
+  transform?: string,
+  files: { [name: string]: ConfigContent };
   tests: ITests[];
 }
 
 export class TestLauncher {
   private readonly defaultArgs: string[];
   private readonly _configs: { [name: string]: ITestConfig[] };
+  private readonly transforms: { [name: string]: TransformCallback } = {
+    sequentialScripts: (name: string, config: ConfigContent) => {
+      return config;
+    }
+  }
 
   public get configs(): Array<[string, ITestConfig[]]> {
     return Object.entries(this._configs);
@@ -90,9 +99,9 @@ export class TestLauncher {
   public loadMarkdown(testFiles: string, category: string, exclude: string[] = []): void {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
-    const failedTest: ITests = {
+    const emptyTest: ITests = {
       'npm-args': [],
-      'cmd-args': [],
+      'cmd-args': []
     };
     let configs = this._configs[category];
 
@@ -114,12 +123,23 @@ export class TestLauncher {
         configs.push(config);
       }
 
+      if (section.error) {
+        for (const test of config.tests) {
+          config.tests = [{
+            name: test.name,
+            error: section.error,
+            ...emptyTest
+          }];
+        }
+        continue;
+      }
+
       if (config.files !== undefined) {
         for (const test of config.tests) {
           config.tests = [{
             name: test.name,
             error: 'The file section of a markdown test should be empty!',
-            ...failedTest
+            ...emptyTest
           }];
         }
         continue;
@@ -131,7 +151,7 @@ export class TestLauncher {
         if (!test) config.tests.push({
           name: command,
           error: 'Markdown example is missing test command: ' + command,
-          ...failedTest
+          ...emptyTest
         });
       }
 
@@ -141,7 +161,7 @@ export class TestLauncher {
     }
   }
 
-  public create(directory: string, files: { [name: string]: any }) {
+  public create(directory: string, files: { [name: string]: ConfigContent }) {
     const testDirectory = path.join(this.tempPath, directory);
 
     fs.mkdirSync(testDirectory, {

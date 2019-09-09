@@ -2,6 +2,7 @@
   "Implementation examples (readme.md)2": [
     {
       "name": "Sequential scripts",
+      "transformer": "sequentialScripts",
       "tests": [
         {
           "lifecycle": "start",
@@ -102,7 +103,7 @@
             "arg3"
           ],
           "result": [
-            "Node version: 10.16.3",
+            "Node version: 10.16.2",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
             "All arguments: arg1 arg2 arg3",
@@ -243,7 +244,11 @@
     },
     {
       "name": "Interactive menu",
-      "tests": []
+      "tests": [
+        {
+          "name": "npm start"
+        }
+      ]
     },
     {
       "name": "Launcher settings",
