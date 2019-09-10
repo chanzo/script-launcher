@@ -8,7 +8,7 @@ import { promisify } from 'util';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
-export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
     inline: false,
@@ -17,12 +17,13 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     script: config.options.menu.defaultScript,
   };
   const shell = Config.evaluateShellOption(config.options.script.shell, true);
-  const timeout: number = 2000;
 
   if (interactive || !script.script) {
     const pageSize = config.options.menu.pageSize;
 
     script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
+
+    // await promisify(setTimeout)(1000 * 60); // Debug test
 
     if (timeout === 0 && await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
@@ -129,22 +130,34 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
   if (timeout > 0) {
     const defaultValue = (async () => {
-
-      // https://stackoverflow.com/questions/10585683/how-do-you-edit-existing-text-and-move-the-cursor-around-in-the-terminal
-      // Save cursor position: \033[s
-      //   Restore cursor position: \033[u
+      process.stdin.on('keypress', (char, key) => {
+        timeout = Number.MAX_VALUE;
+        process.stdout.write('\x1b[s'); // Save cursor position
+        console.info();
+        console.info();
+        process.stdout.write('\x1b[K');
+        process.stdout.write('\x1b[u'); // Restore cursor position
+      });
 
       do {
-        // Bold = '\x1b[1m',
-        process.stdout.write('\x21[s');
+        process.stdout.write('\x1b[s'); // Save cursor position
         console.info();
         console.info();
-        process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + Math.round(timeout / 1000) + '  \r');
-        process.stdout.write('\x21[u');
+        process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + timeout);
+        process.stdout.write('\x1b[u'); // Restore cursor position
 
         await promisify(setTimeout)(1000);
-        timeout -= 1000;
+
+        if (timeout === Number.MAX_VALUE) {
+          await promisify(setTimeout)(1000 * 60 * 60); // User pressed a key wait infinite (1 Hour)
+          return;
+        }
+
+        timeout--;
+
       } while (timeout > 0);
+
+      console.info();
 
       return {
         name: defaultChoice,

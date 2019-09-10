@@ -42,11 +42,6 @@ async function main() {
       config.scripts['build-stuff'][1].sequential[1] = 'sleep:25';
       config.scripts['build-stuff'][1].sequential[3] = 'sleep:25';
       return config;
-    },
-    conditionAndExclusionConstraints: (name: string, config: IConfig) => {
-      config.options.logLevel = 0;
-
-      return config;
     }
   };
 

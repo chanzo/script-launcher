@@ -15,7 +15,9 @@
   },
   "options": {
     "menu": {
-      "defaultChoice": "serve:production"
-    }
+      "defaultChoice": "serve:production",
+      "timeout": 6
+    },
+    "logLevel": 0
   }
 }

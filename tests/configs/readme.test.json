@@ -190,7 +190,14 @@
     },
     {
       "name": "Condition and exclusion constraints",
-      "transformer": "conditionAndExclusionConstraints",
+      "transformer2": "conditionAndExclusionConstraints",
+      "files": {
+        "launcher-settings": {
+          "options": {
+            "logLevel": 0
+          }
+        }
+      },
       "tests": [
         {
           "lifecycle": "start",
@@ -243,9 +250,22 @@
     },
     {
       "name": "Interactive menu",
-      "tests": [
+      "files2": {
+        "launcher-settings": {
+          "options": {
+            "menu": {
+              "timeout": 2
+            }
+          }
+        }
+      },
+      "tests2": [
         {
-          "name": "npm start"
+          "lifecycle": "start",
+          "cmd-args": "--menuTimeout=2",
+          "result": [
+            "ss"
+          ]
         }
       ]
     },

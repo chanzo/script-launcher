@@ -121,7 +121,7 @@ export class TestLauncher {
       if (config === undefined) {
         config = {
           name: section.title,
-          files: undefined,
+          files: {},
           tests: []
         };
 
@@ -139,9 +139,9 @@ export class TestLauncher {
 
       if (section.error) {
         config.tests = [];
-        for (const test of config.tests) {
+        for (const command of section.commands) {
           config.tests.push({
-            name: test.name,
+            name: command,
             error: section.error,
             ...emptyTest
           });
@@ -149,12 +149,17 @@ export class TestLauncher {
         continue;
       }
 
-      if (config.files !== undefined) {
+      // if (section.title === 'Condition and exclusion constraints') {
+
+      //   console.log('*******************', config.files);
+      // }
+
+      if (config.files !== undefined && config.files['launcher-config'] !== undefined) {
         config.tests = [];
-        for (const test of config.tests) {
+        for (const command of section.commands) {
           config.tests.push({
-            name: test.name,
-            error: 'The file section of a markdown test should be empty!',
+            name: command,
+            error: 'A markdown test should not have a \"launcher-config\" file content!',
             ...emptyTest
           });
         }
@@ -181,7 +186,8 @@ export class TestLauncher {
       }
 
       config.files = {
-        'launcher-config': section.config
+        ...config.files,
+        ...{ 'launcher-config': section.config }
       };
     }
   }

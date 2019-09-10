@@ -2,6 +2,17 @@
 ## 1.17.1
 ### Changes
 * Dev dependencies updated
+* Added menuTimeout argument
+* Added menu timeout option
+``` JSON
+{
+  "options": {
+    "menu": {
+      "timeout": 6
+    }
+  }
+}
+```
 
 ## 1.17.0
 ### Changes

@@ -22,6 +22,7 @@ interface IArgs {
   script: string;
   ansi: boolean;
   directory: string;
+  menuTimeout: number;
 }
 
 function showLoadedFiles(files: string[]): void {
@@ -68,6 +69,7 @@ function showHelp() {
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
+    menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
   });
 }
 
@@ -166,11 +168,13 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       script: null,
       ansi: true,
       directory: process.cwd(),
+      menuTimeout: undefined,
     });
 
     let config = Config.load(launchArgs.directory);
 
     if (launchArgs.logLevel === undefined) launchArgs.logLevel = config.options.logLevel;
+    if (launchArgs.menuTimeout === undefined) launchArgs.menuTimeout = config.options.menu.timeout;
 
     Logger.level = launchArgs.logLevel;
 
@@ -255,7 +259,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript === undefined || launchArgs.menu) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, launchArgs.menuTimeout, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
