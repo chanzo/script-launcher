@@ -12,5 +12,10 @@
       "development": "build:dev",
       "production": "build:prd"
     }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "serve:production"
+    }
   }
 }

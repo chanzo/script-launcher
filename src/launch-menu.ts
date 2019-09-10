@@ -4,6 +4,7 @@ import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
+import { promisify } from 'util';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
@@ -16,14 +17,14 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     script: config.options.menu.defaultScript,
   };
   const shell = Config.evaluateShellOption(config.options.script.shell, true);
+  const timeout: number = 0;
 
   if (interactive || !script.script) {
-    const defaultChoice = config.options.menu.defaultChoice.split(':');
     const pageSize = config.options.menu.pageSize;
 
-    script = await promptMenu(config.menu, pageSize, defaultChoice, []);
+    script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
-    if (await saveChoiceMenu()) {
+    if (timeout === 0 && await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
         menu: {},
         options: {
@@ -101,6 +102,56 @@ function createChoices(menu: IMenu): ChoiceType[] {
   }
 
   return choices;
+}
+
+function getDefaultScript(menu: IMenu, choices: string[]): IScript {
+  let index = 0;
+
+  do {
+    const choice = choices[index++];
+    const [key, value] = Object.entries(menu).find(([key, value]) => key !== 'description' && (!choice || key === choice));
+
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value;
+
+    menu = value as IMenu;
+
+  } while (index < 30);
+
+  return '';
+}
+
+async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo> {
+  const choices = defaultChoice.split(':');
+  const promises: Array<Promise<IScriptInfo>> = [
+    promptMenu(menu, pageSize, choices, []),
+  ];
+
+  if (timeout > 0) {
+    const defaultValue = (async () => {
+      // console.info();
+      // console.info();
+
+      do {
+        // process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + Math.round(timeout / 1000) + '  \r');
+
+        await promisify(setTimeout)(1000);
+        timeout -= 1000;
+      } while (timeout > 0);
+
+      return {
+        name: defaultChoice,
+        inline: false,
+        parameters: {},
+        arguments: [],
+        script: getDefaultScript(menu, choices),
+      };
+    })();
+
+    promises.push(defaultValue);
+  }
+
+  return Promise.race(promises);
 }
 
 async function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
