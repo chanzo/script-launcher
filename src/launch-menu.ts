@@ -17,7 +17,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     script: config.options.menu.defaultScript,
   };
   const shell = Config.evaluateShellOption(config.options.script.shell, true);
-  const timeout: number = 0;
+  const timeout: number = 2000;
 
   if (interactive || !script.script) {
     const pageSize = config.options.menu.pageSize;
@@ -129,11 +129,18 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
   if (timeout > 0) {
     const defaultValue = (async () => {
-      // console.info();
-      // console.info();
+
+      // https://stackoverflow.com/questions/10585683/how-do-you-edit-existing-text-and-move-the-cursor-around-in-the-terminal
+      // Save cursor position: \033[s
+      //   Restore cursor position: \033[u
 
       do {
-        // process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + Math.round(timeout / 1000) + '  \r');
+        // Bold = '\x1b[1m',
+        process.stdout.write('\x21[s');
+        console.info();
+        console.info();
+        process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + Math.round(timeout / 1000) + '  \r');
+        process.stdout.write('\x21[u');
 
         await promisify(setTimeout)(1000);
         timeout -= 1000;
