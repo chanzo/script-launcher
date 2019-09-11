@@ -71,9 +71,12 @@ async function main() {
                 ...item['npm-args']
               ], JSON.stringify({ remain: item['npm-args'] }));
 
-              // console.log('result.all:', result.all)
-
-              expect(result.all).toStrictEqual(item.result);
+              try {
+                expect(result.all).toStrictEqual(item.result);
+              } catch (error) {
+                console.log('result.all:', result.all);
+                throw error;
+              }
             }, 10000);
           }
         });

@@ -32,6 +32,8 @@ export class ConsoleInterceptor implements IIntercepted {
   public readonly all: string[] = [];
 
   private readonly functions: IConsoleFunctions;
+  // private readonly stdoutWrite: (buffer: Uint8Array | string, cb?: (err?: Error | null) => void) => boolean;
+  private readonly stdoutWrite: (buffer: Uint8Array | string, cb?: any) => boolean;
 
   constructor() {
     this.functions = ConsoleInterceptor.setConsoleFunctions({
@@ -42,12 +44,17 @@ export class ConsoleInterceptor implements IIntercepted {
       trace: (...args: any[]) => { this.recordConsole('trace', ...args); },
       warn: (...args: any[]) => { this.recordConsole('warn', ...args); }
     });
+    this.stdoutWrite = process.stdout.write;
 
-    // process.stdout.write = (...args: any[]) => { this.recordConsole('log', ...args); return true; };
+    process.stdout.write = (buffer: any, cb: any) => {
+      this.recordConsole('log', buffer);
+      return true; // this.backup(buffer, cb);
+    };
   }
 
   public close() {
     if (this.functions) ConsoleInterceptor.setConsoleFunctions(this.functions);
+    process.stdout.write = this.stdoutWrite;
   }
 
   private static getConsoleFunctions(): IConsoleFunctions {

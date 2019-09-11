@@ -8,6 +8,10 @@ import { promisify } from 'util';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
+interface IMenuPromis extends Promise<IScriptInfo> {
+  close(): void;
+}
+
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
@@ -182,12 +186,12 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   return Promise.race(promises);
 }
 
-function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): IMenuPromis {
   const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  const promise = inquirer.prompt<{ value: string }>([
+  const menuPromise = inquirer.prompt<{ value: string }>([
     {
       type: 'list',
       name: 'value',
@@ -198,8 +202,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     },
   ]);
 
-  const resultPromise = (async () => {
-    const answer = await promise;
+  const resultPromise = menuPromise.then((answer) => {
     const command = menu[answer.value];
 
     choice.push(answer.value);
@@ -217,50 +220,11 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     }
 
     return promptMenu(command as IMenu, pageSize, defaults, choice);
-  })();
+  }) as IMenuPromis;
 
-  (resultPromise as any).close = () => {
-    console.log('Cklose me');
-    (promise.ui as any).close();
-  };
+  resultPromise.close = (menuPromise.ui as any).close.bind(menuPromise.ui);
 
   return resultPromise;
-}
-
-async function promptMenuOld(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
-  const choices = createChoices(menu);
-
-  if (choices.length === 0) throw new Error('No menu entries available.');
-
-  const promise = inquirer.prompt<{ value: string }>([
-    {
-      type: 'list',
-      name: 'value',
-      message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
-      default: defaults[0],
-      choices: choices,
-      pageSize: pageSize,
-    },
-  ]);
-
-  const answer = await promise;
-  const command = menu[answer.value];
-
-  choice.push(answer.value);
-
-  defaults.shift();
-
-  if (!isMenuObject(command)) {
-    return {
-      name: 'menu:' + choice.join(':'),
-      inline: false,
-      parameters: {},
-      arguments: [],
-      script: command as IScript,
-    };
-  }
-
-  return promptMenu(command as IMenu, pageSize, defaults, choice);
 }
 
 function isMenuObject(object: any) {
