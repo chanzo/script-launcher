@@ -42,6 +42,8 @@ export class ConsoleInterceptor implements IIntercepted {
       trace: (...args: any[]) => { this.recordConsole('trace', ...args); },
       warn: (...args: any[]) => { this.recordConsole('warn', ...args); }
     });
+
+    // process.stdout.write = (...args: any[]) => { this.recordConsole('log', ...args); return true; };
   }
 
   public close() {

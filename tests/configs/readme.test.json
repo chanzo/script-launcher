@@ -99,7 +99,7 @@
             "arg3"
           ],
           "result": [
-            "Node version: 10.16.2",
+            "Node version: 10.16.3",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
             "All arguments: arg1 arg2 arg3",
@@ -250,7 +250,7 @@
     },
     {
       "name": "Interactive menu",
-      "files2": {
+      "files": {
         "launcher-settings": {
           "options": {
             "menu": {

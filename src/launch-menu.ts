@@ -109,8 +109,15 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
   let index = 0;
 
   do {
+    const filtered = Object.entries(menu).filter(([key, value]) => key !== 'description' && key !== 'separator' && !!value && Object.entries(value).length > 0);
+
     const choice = choices[index++];
-    const [key, value] = Object.entries(menu).find(([key, value]) => key !== 'description' && (!choice || key === choice));
+    let result = filtered.find(([key, value]) => key === choice);
+
+    if (result === undefined) result = filtered[0];
+    if (result === undefined) return '';
+
+    const [key, value] = result;
 
     if (typeof value === 'string') return value;
     if (Array.isArray(value)) return value;
@@ -124,9 +131,8 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
 
 async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo> {
   const choices = defaultChoice.split(':');
-  const promises: Array<Promise<IScriptInfo>> = [
-    promptMenu(menu, pageSize, choices, []),
-  ];
+  const menuPromise = promptMenu(menu, pageSize, choices, []);
+  const promises: Array<Promise<IScriptInfo>> = [menuPromise];
 
   if (timeout > 0) {
     const defaultValue = (async () => {
@@ -159,6 +165,8 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
       console.info();
 
+      (menuPromise as any).close();
+
       return {
         name: defaultChoice,
         inline: false,
@@ -174,12 +182,12 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   return Promise.race(promises);
 }
 
-async function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
   const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  const answer = await inquirer.prompt<{ value: string }>([
+  const promise = inquirer.prompt<{ value: string }>([
     {
       type: 'list',
       name: 'value',
@@ -190,6 +198,52 @@ async function promptMenu(menu: IMenu, pageSize: number, defaults: string[], cho
     },
   ]);
 
+  const resultPromise = (async () => {
+    const answer = await promise;
+    const command = menu[answer.value];
+
+    choice.push(answer.value);
+
+    defaults.shift();
+
+    if (!isMenuObject(command)) {
+      return {
+        name: 'menu:' + choice.join(':'),
+        inline: false,
+        parameters: {},
+        arguments: [],
+        script: command as IScript,
+      };
+    }
+
+    return promptMenu(command as IMenu, pageSize, defaults, choice);
+  })();
+
+  (resultPromise as any).close = () => {
+    console.log('Cklose me');
+    (promise.ui as any).close();
+  };
+
+  return resultPromise;
+}
+
+async function promptMenuOld(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> {
+  const choices = createChoices(menu);
+
+  if (choices.length === 0) throw new Error('No menu entries available.');
+
+  const promise = inquirer.prompt<{ value: string }>([
+    {
+      type: 'list',
+      name: 'value',
+      message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
+      default: defaults[0],
+      choices: choices,
+      pageSize: pageSize,
+    },
+  ]);
+
+  const answer = await promise;
   const command = menu[answer.value];
 
   choice.push(answer.value);

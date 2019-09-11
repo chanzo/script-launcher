@@ -1,21 +1,23 @@
 import * as launcher from '../src/launch';
 
 async function main() {
-  await launcher.main('start', [
-    '', '', '--directory=temp/0008', '--script=deploy:tst', '11', '22', '33'// , '--script=deploy:tst'
-  ], JSON.stringify(
+  const npmConfigArgv = JSON.stringify(
     {
       remain: [
-        'deploy:tst', '11', '22', '33'
+        ''
       ],
       cooked: [
-        'start', 'deploy:tst', '11', '22', '33'
+        ''
       ],
       original: [
-        'start', 'deploy:tst', '11', '22', '33'
+        ''
       ]
     }
-  )
+  );
+
+  await launcher.main(undefined, [
+    '', '', '--directory=temp/0016' // '--script=deploy:tst'// , '--script=deploy:tst'
+  ], undefined
     , true);
 }
 

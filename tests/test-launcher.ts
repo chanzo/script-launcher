@@ -35,6 +35,10 @@ export class TestLauncher {
     this.defaultArgs = defaultArgs;
     this._configs = {};
 
+    fs.mkdirSync(tempPath, {
+      recursive: true
+    });
+
     for (const directory of fs.readdirSync(tempPath)) {
       const fullDirectoryName = path.join(tempPath, directory);
 
@@ -89,7 +93,7 @@ export class TestLauncher {
 
                   if (test.lifecycle !== 'start') test.name += 'run   ';
 
-                  test.name += test.lifecycle + ' ' + test['npm-args'].join(' ');
+                  test.name += (test.lifecycle + ' ' + test['npm-args'].join(' ')).trim();
                 }
               }
             }
@@ -149,22 +153,9 @@ export class TestLauncher {
         continue;
       }
 
-      // if (section.title === 'Condition and exclusion constraints') {
-
-      //   console.log('*******************', config.files);
+      // if (section.title === 'Interactive menu') {
+      //   console.log('*******************', config);
       // }
-
-      if (config.files !== undefined && config.files['launcher-config'] !== undefined) {
-        config.tests = [];
-        for (const command of section.commands) {
-          config.tests.push({
-            name: command,
-            error: 'A markdown test should not have a \"launcher-config\" file content!',
-            ...emptyTest
-          });
-        }
-        continue;
-      }
 
       if (config.tests.length > 0) {
         for (const command of section.commands) {
@@ -183,6 +174,13 @@ export class TestLauncher {
             ...emptyTest
           });
         }
+      }
+
+      if (config.files !== undefined && config.files['launcher-config'] !== undefined) {
+        for (const test of config.tests) {
+          test.error = 'A markdown test should not have a \"launcher-config\" file content!';
+        }
+        continue;
       }
 
       config.files = {
