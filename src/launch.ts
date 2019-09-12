@@ -151,6 +151,9 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
   let exitCode = 1;
   let startTime = process.hrtime();
 
+  // console.log('processArgv:', processArgv);
+  // console.log('npmConfigArgv:', npmConfigArgv);
+
   try {
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
@@ -250,6 +253,10 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (Object.entries(config.scripts.scripts).length === 0) {
       Logger.info();
       Logger.info('Warning: No launcher scripts loaded.');
+      Logger.info();
+    }
+
+    if (launchScript === undefined || launchArgs.menu) {
       Logger.info();
     }
 
