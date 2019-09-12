@@ -8,10 +8,6 @@ import { promisify } from 'util';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
-interface IMenuPromis extends Promise<IScriptInfo> {
-  close(): void;
-}
-
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo = {
     name: config.options.menu.defaultChoice,
@@ -186,7 +182,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   return Promise.race(promises);
 }
 
-function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): IMenuPromis {
+function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> & { close: () => void } {
   const choices = createChoices(menu);
 
   if (choices.length === 0) throw new Error('No menu entries available.');
@@ -220,7 +216,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     }
 
     return promptMenu(command as IMenu, pageSize, defaults, choice);
-  }) as IMenuPromis;
+  }) as Promise<IScriptInfo> & { close: () => void };
 
   resultPromise.close = (menuPromise.ui as any).close.bind(menuPromise.ui);
 
