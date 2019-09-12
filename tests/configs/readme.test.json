@@ -254,7 +254,7 @@
         "launcher-settings": {
           "options": {
             "menu": {
-              "timeout": 2
+              "timeout": 1
             }
           }
         }
@@ -262,17 +262,11 @@
       "tests": [
         {
           "lifecycle": "start",
-          "cmd-args": "--menuTimeout=2",
           "result": [
             "",
             "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ",
             "\u001b[6D",
             "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m2",
-            "\u001b[u",
             "\u001b[s",
             "",
             "",

@@ -58,10 +58,12 @@ async function main() {
           if (config.tests.length === 0) test.todo('test command');
 
           for (const item of config.tests) {
-            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0) || item.result === undefined) && !item.error) {
+            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
               test.todo(item.name);
               continue;
             }
+
+            // if (item.name !== 'npm start') continue;
 
             test(item.name.padEnd(56), async () => {
               if (item.error) throw new Error(item.error);

@@ -151,9 +151,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
   let exitCode = 1;
   let startTime = process.hrtime();
 
-  // console.log('processArgv:', processArgv);
-  // console.log('npmConfigArgv:', npmConfigArgv);
-
   try {
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
