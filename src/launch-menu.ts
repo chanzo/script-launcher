@@ -4,17 +4,17 @@ import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
-import { promisify } from 'util';
 
 type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
 
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
-  let script: IScriptInfo = {
+  let script: IScriptInfo & { timedout: boolean } = {
     name: config.options.menu.defaultChoice,
     inline: false,
     parameters: {},
     arguments: args,
     script: config.options.menu.defaultScript,
+    timedout: false
   };
   const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
@@ -23,9 +23,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
     script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
-    // await promisify(setTimeout)(1000 * 60); // Debug test
-
-    if (timeout === 0 && await saveChoiceMenu()) {
+    if (!script.timedout && await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
         menu: {},
         options: {
@@ -129,10 +127,22 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
   return '';
 }
 
-async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo> {
+function wait(time: number): Promise<void> & { handle: NodeJS.Timeout } {
+  let handle: NodeJS.Timeout;
+  const promis = new Promise(resolve => {
+    handle = setTimeout(resolve, time) as any;
+  }) as Promise<void> & { handle: NodeJS.Timeout };
+
+  promis.handle = handle;
+
+  return promis;
+}
+
+async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo & { timedout: boolean }> {
   const choices = defaultChoice.split(':');
   const menuPromise = promptMenu(menu, pageSize, choices, []);
   const promises: Array<Promise<IScriptInfo>> = [menuPromise];
+  let waitPromise: Promise<void> & { handle: NodeJS.Timeout };
 
   if (timeout > 0) {
     const defaultValue = (async () => {
@@ -152,10 +162,11 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
         process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + timeout);
         process.stdout.write('\x1b[u'); // Restore cursor position
 
-        await promisify(setTimeout)(1000);
+        await (waitPromise = wait(1000));
 
         if (timeout === Number.MAX_VALUE) {
-          await promisify(setTimeout)(1000 * 60 * 60); // User pressed a key wait infinite (1 Hour)
+          await (waitPromise = wait(1000 * 60 * 60)); // User pressed a key wait infinite (1 Hour)
+
           return;
         }
 
@@ -164,8 +175,6 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
       } while (timeout > 0);
 
       console.info();
-
-      (menuPromise as any).close();
 
       return {
         name: defaultChoice,
@@ -179,7 +188,19 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
     promises.push(defaultValue);
   }
 
-  return Promise.race(promises);
+  const scriptInfo = await Promise.race(promises);
+
+  if (waitPromise) {
+    (menuPromise as any).close();
+    clearTimeout(waitPromise.handle);
+  }
+
+  return {
+    ...scriptInfo,
+    ...{
+      timedout: !(timeout > 0)
+    }
+  };
 }
 
 function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> & { close: () => void } {
