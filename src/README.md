@@ -518,7 +518,7 @@ Example using an object array.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `launch interactive` to ignore the `launcher-custom.json` file.
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `launch interactive` to ignore the `launcher-custom.json` file. The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information.
 
 **Run**: `npm start` to use this example.
 ``` JSON
@@ -690,9 +690,10 @@ The default value is presented in the following example:
 ```
 
 ### Menu options
-**defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
-**menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
-**pageSize:** Change the number of lines that will be rendered for the menu.
+* **defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
+* **menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
+* **pageSize:** Change the number of lines that will be rendered for the menu.
+* **timeout:** Auto close/select a menu value after a specified time.
 
 The default value is presented in the following example:
 ``` JSON
@@ -704,7 +705,8 @@ The default value is presented in the following example:
     "menu": {
       "defaultChoice": "",
       "defaultScript": "",
-      "pageSize": 7
+      "pageSize": 7,
+      "timeout": 0
     }
   }
 }
