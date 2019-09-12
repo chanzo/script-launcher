@@ -258,10 +258,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (launchScript === undefined || launchArgs.menu) {
       Logger.info();
-    }
-
-    if (launchScript === undefined || launchArgs.menu) {
-      Logger.info();
 
       const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, launchArgs.menuTimeout, testmode);
 
