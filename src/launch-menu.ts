@@ -14,7 +14,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     parameters: {},
     arguments: args,
     script: config.options.menu.defaultScript,
-    timedout: false
+    timedout: false,
   };
   const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
@@ -129,8 +129,8 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
 
 function wait(time: number): Promise<void> & { handle: NodeJS.Timeout } {
   let handle: NodeJS.Timeout;
-  const promis = new Promise(resolve => {
-    handle = setTimeout(resolve, time) as any;
+  const promis = new Promise((resolve) => {
+    handle = setTimeout(resolve, time);
   }) as Promise<void> & { handle: NodeJS.Timeout };
 
   promis.handle = handle;
@@ -198,8 +198,8 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   return {
     ...scriptInfo,
     ...{
-      timedout: !(timeout > 0)
-    }
+      timedout: !(timeout > 0),
+    },
   };
 }
 
