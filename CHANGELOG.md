@@ -1,4 +1,21 @@
 # Change Log
+## 1.17.1
+### Changes
+* Dev dependencies updated
+* Added menu integration test
+* Added init integration test
+* Added menuTimeout argument
+* Added menu timeout option
+``` JSON
+{
+  "options": {
+    "menu": {
+      "timeout": 6
+    }
+  }
+}
+```
+
 ## 1.17.0
 ### Changes
 * Added integration tests
@@ -10,9 +27,11 @@
 * Argument bug fix when using `npm run script`
 
 ## 1.16.1
+### Changes
 * Dev dependencies updated
 
 ## 1.16.0
+### Changes
 * Added support for using default function parameter values
 ``` JSON
 {
