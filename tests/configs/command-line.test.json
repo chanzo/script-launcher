@@ -21,13 +21,43 @@
             "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
             "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
             "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
-            "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded."
+            "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded.",
+            "  \u001b[36mmenuTimeout= \u001b[0mSet menu timeout in seconds."
           ]
         },
         {
           "cmd-args": "--version",
           "result": [
-            "1.17.0"
+            "1.17.1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Init",
+      "files": {},
+      "tests": [
+        {
+          "cmd-args": "init",
+          "result": [
+            "Created file: ./tests/temp/0001/launcher-config.json",
+            "Created file: ./tests/temp/0001/launcher-settings.json",
+            "Created file: ./tests/temp/0001/launcher-menu.json"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "serve:dev",
+          "result": [
+            "Start development server",
+            "ng serve --configuration=dev --deploy-url example.dev.com"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build:production",
+          "result": [
+            "ng build --configuration=production --deploy-url example.prd.com"
           ]
         }
       ]

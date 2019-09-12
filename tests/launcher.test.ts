@@ -42,11 +42,6 @@ async function main() {
       config.scripts['build-stuff'][1].sequential[1] = 'sleep:25';
       config.scripts['build-stuff'][1].sequential[3] = 'sleep:25';
       return config;
-    },
-    conditionAndExclusionConstraints: (name: string, config: IConfig) => {
-      config.options.logLevel = 0;
-
-      return config;
     }
   };
 
@@ -63,10 +58,12 @@ async function main() {
           if (config.tests.length === 0) test.todo('test command');
 
           for (const item of config.tests) {
-            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0) || item.result === undefined) && !item.error) {
+            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
               test.todo(item.name);
               continue;
             }
+
+            // if (item.name !== 'npm start') continue;
 
             test(item.name.padEnd(56), async () => {
               if (item.error) throw new Error(item.error);
@@ -76,7 +73,12 @@ async function main() {
                 ...item['npm-args']
               ], JSON.stringify({ remain: item['npm-args'] }));
 
-              expect(result.all).toStrictEqual(item.result);
+              try {
+                expect(result.all).toStrictEqual(item.result);
+              } catch (error) {
+                console.log('result.all:', result.all);
+                throw error;
+              }
             }, 10000);
           }
         });

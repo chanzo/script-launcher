@@ -35,6 +35,10 @@ export class TestLauncher {
     this.defaultArgs = defaultArgs;
     this._configs = {};
 
+    fs.mkdirSync(tempPath, {
+      recursive: true
+    });
+
     for (const directory of fs.readdirSync(tempPath)) {
       const fullDirectoryName = path.join(tempPath, directory);
 
@@ -89,7 +93,7 @@ export class TestLauncher {
 
                   if (test.lifecycle !== 'start') test.name += 'run   ';
 
-                  test.name += test.lifecycle + ' ' + test['npm-args'].join(' ');
+                  test.name += (test.lifecycle + ' ' + test['npm-args'].join(' ')).trim();
                 }
               }
             }
@@ -121,7 +125,7 @@ export class TestLauncher {
       if (config === undefined) {
         config = {
           name: section.title,
-          files: undefined,
+          files: {},
           tests: []
         };
 
@@ -139,9 +143,9 @@ export class TestLauncher {
 
       if (section.error) {
         config.tests = [];
-        for (const test of config.tests) {
+        for (const command of section.commands) {
           config.tests.push({
-            name: test.name,
+            name: command,
             error: section.error,
             ...emptyTest
           });
@@ -149,17 +153,9 @@ export class TestLauncher {
         continue;
       }
 
-      if (config.files !== undefined) {
-        config.tests = [];
-        for (const test of config.tests) {
-          config.tests.push({
-            name: test.name,
-            error: 'The file section of a markdown test should be empty!',
-            ...emptyTest
-          });
-        }
-        continue;
-      }
+      // if (section.title === 'Interactive menu') {
+      //   console.log('*******************', config);
+      // }
 
       if (config.tests.length > 0) {
         for (const command of section.commands) {
@@ -180,8 +176,16 @@ export class TestLauncher {
         }
       }
 
+      if (config.files !== undefined && config.files['launcher-config'] !== undefined) {
+        for (const test of config.tests) {
+          test.error = 'A markdown test should not have a \"launcher-config\" file content!';
+        }
+        continue;
+      }
+
       config.files = {
-        'launcher-config': section.config
+        ...config.files,
+        ...{ 'launcher-config': section.config }
       };
     }
   }
