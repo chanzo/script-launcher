@@ -2,6 +2,8 @@
 ## 1.17.1
 ### Changes
 * Dev dependencies updated
+* Added menu integration test
+* Added init integration test
 * Added menuTimeout argument
 * Added menu timeout option
 ``` JSON
