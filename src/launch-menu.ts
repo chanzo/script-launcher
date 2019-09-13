@@ -143,6 +143,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   const menuPromise = promptMenu(menu, pageSize, choices, []);
   const promises: Array<Promise<IScriptInfo>> = [menuPromise];
   let waitPromise: Promise<void> & { handle: NodeJS.Timeout };
+  let timedout = false;
 
   if (timeout > 0) {
     const defaultValue = (async () => {
@@ -176,6 +177,8 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
       console.info();
 
+      timedout = true;
+
       return {
         name: defaultChoice,
         inline: false,
@@ -198,7 +201,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   return {
     ...scriptInfo,
     ...{
-      timedout: !(timeout > 0),
+      timedout: timedout,
     },
   };
 }

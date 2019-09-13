@@ -6,7 +6,7 @@ import { MarkdownParser } from './markdown-parser';
 import { IConfig } from '../src/config-loader';
 
 export interface ITests {
-  name?: string;
+  name: string;
   error?: string;
   'cmd-args': string[];
   'npm-args': string[];
@@ -17,7 +17,7 @@ export interface ITests {
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
-  name?: string;
+  name: string;
   transformer?: string;
   files: { [name: string]: IConfig };
   tests: ITests[];
@@ -109,6 +109,7 @@ export class TestLauncher {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
     const emptyTest: ITests = {
+      'name': 'empty',
       'npm-args': [],
       'cmd-args': []
     };

@@ -1,4 +1,18 @@
 # Change Log
+## 1.17.2
+### Changes
+* Removed lib entries from **tsconfig.json**
+``` JSON
+"lib": [
+  "dom",
+  "es2017",
+  "esnext.asynciterable"
+]
+```
+
+### Fixes
+* Save selection bug fix
+
 ## 1.17.1
 ### Changes
 * Dev dependencies updated
