@@ -14,9 +14,7 @@ import prettyTime = require('pretty-time');
 interface IArgs {
   init: boolean;
   help: boolean;
-  menu: boolean;
   version: boolean;
-  interactive: boolean;
   logLevel: number;
   config: string;
   script: string;
@@ -57,14 +55,11 @@ function showHelp() {
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
     ],
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
-    menu: '  ' + Colors.Cyan + 'menu         ' + Colors.Normal + 'Show interactive menu.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
-    interactive: [
+    logLevel: [
       '',
-      'Options:',
-      '  ' + Colors.Cyan + 'interactive  ' + Colors.Normal + 'Force to show menu the by ignoring the options value of defaultScript.',
+      'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     ],
-    logLevel: '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
@@ -161,15 +156,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       logLevel: undefined,
       init: false,
       help: false,
-      menu: false,
       version: false,
-      interactive: false,
       config: null,
       script: null,
       ansi: true,
       directory: process.cwd(),
       menuTimeout: undefined,
     });
+    let interactive = false;
 
     let config = Config.load(launchArgs.directory);
 
@@ -256,18 +250,23 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       Logger.info();
     }
 
-    if (launchScript === undefined || launchArgs.menu) {
+    const scripts = config.scripts.find(launchScript);
+
+    if (launchScript === 'menu' && scripts.length === 0) {
+      interactive = true;
+      launchScript = undefined;
+    }
+
+    if (launchScript === undefined) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, launchArgs.interactive, launchArgs.menuTimeout, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.menuTimeout, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
 
       return;
     }
-
-    const scripts = config.scripts.find(launchScript);
 
     if (scripts.length === 0) throw new Error('Missing launch script: ' + launchScript);
 

@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { MarkdownParser } from './markdown-parser';
 import { IConfig } from '../src/config-loader';
+import { promisify } from 'util';
 
 export interface ITests {
   name: string;
@@ -56,6 +57,8 @@ export class TestLauncher {
     const interceptor = new ConsoleInterceptor();
 
     await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
+
+    await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
 
     interceptor.close();
 

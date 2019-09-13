@@ -34,11 +34,10 @@ export async function launchMenu(environment: { [name: string]: string }, settin
         },
       } as IConfig);
     }
+    console.log();
   } else {
-    console.log(Colors.Bold + 'Auto launching: ' + Colors.Normal + script.name);
+    console.log(Colors.Bold + 'Auto menu: ' + Colors.Dim + script.name.padEnd(28) + Colors.Normal + Colors.Dim + '  (Use the menu by running:' + Colors.Bold + ' npm start menu' + Colors.Normal + Colors.Dim + ')' + Colors.Normal);
   }
-
-  console.log();
 
   const command = getStartCommand(script.script, config.scripts);
 
@@ -231,7 +230,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
     if (!isMenuObject(command)) {
       return {
-        name: 'menu:' + choice.join(':'),
+        name: choice.join(':'),
         inline: false,
         parameters: {},
         arguments: [],

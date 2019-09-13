@@ -9,6 +9,11 @@
   "esnext.asynciterable"
 ]
 ```
+* Added a build in script **menu** to force to show menu the by ignoring the options value of defaultScript
+
+### Breaking
+* Replaced the **--interactive** argument for a build in script that can be overloaded.
+* Removed the **--menu** launch argument.
 
 ### Fixes
 * Save selection bug fix
