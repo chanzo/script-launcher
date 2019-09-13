@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.16.1",
+  "version": "1.17.1",
   "description": "Enhance your package.json scripts with features like: menus, functions, arrays, concurrency and many more.",
   "main": "launch.js",
   "keywords": [
@@ -26,7 +26,7 @@
   "author": "Chanzo Wazi",
   "license": "MIT",
   "dependencies": {
-    "cross-spawn": "~6.0.5",
+    "cross-spawn": "~7.0.0",
     "deepmerge": "~4.0.0",
     "glob": "~7.1.4",
     "inquirer": "~7.0.0",

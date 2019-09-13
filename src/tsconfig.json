@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "include": [
+    "launch.ts"
+  ],
+  "compilerOptions": {
+    "types": [],
+    "outDir": "../dist/package", /* Redirect output structure to the directory. */
+  }
+}

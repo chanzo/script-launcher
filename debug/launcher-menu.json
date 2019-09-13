@@ -12,5 +12,11 @@
       "development": "build:dev",
       "production": "build:prd"
     }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "serve:production",
+      "timeout": 6
+    }
   }
 }

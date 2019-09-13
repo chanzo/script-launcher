@@ -7,12 +7,13 @@ import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
+  testmode?: boolean;
   extraLogInfo?: (process: Process) => string;
 }
 
 export class Process {
   public static spawn(command: string, args: string[], options: ISpawnOptions): Process {
-    if (Logger.level > 1 && options) {
+    if ((Logger.level > 1 || options.testmode) && options) {
       options = { ...options };
       options.stdio = ['inherit', 'pipe', 'pipe'];
     }
@@ -67,6 +68,8 @@ export class Process {
       Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
 
       this.showOutputData(childProcess);
+    } else {
+      if (options.testmode) this.testOutputData(childProcess);
     }
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
@@ -157,6 +160,27 @@ export class Process {
         Logger.log(Colors.Red + content + Colors.Normal);
 
         this.outputCount++;
+      }
+    });
+  }
+
+  private testOutputData(childProcess: ChildProcess): void {
+
+    childProcess.stdout.on('data', (data) => {
+      const content = (data.toString() as string).trim();
+      if (content) {
+        this._stdout += content;
+
+        console.log(content);
+      }
+    });
+
+    childProcess.stderr.on('data', (data) => {
+      const content = (data.toString() as string).trim();
+      if (content) {
+        this._stderr += content;
+
+        console.error(content);
       }
     });
   }
