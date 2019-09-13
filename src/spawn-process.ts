@@ -171,7 +171,7 @@ export class Process {
       if (content) {
         this._stdout += content;
 
-        console.log(content);
+        process.stdout.write(content);
       }
     });
 
@@ -180,7 +180,7 @@ export class Process {
       if (content) {
         this._stderr += content;
 
-        console.error(content);
+        process.stderr.write(content);
       }
     });
   }
