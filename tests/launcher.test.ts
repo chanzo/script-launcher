@@ -7,7 +7,9 @@ const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
 const readmeFile = path.join(__dirname, '..', 'src', 'README.md');
 
-const testLauncher = new TestLauncher(tempFiles, '', '');
+const testLauncher = new TestLauncher(tempFiles, ['', ''], [
+  '\u001b[?25l'
+]);
 
 async function main() {
   let index = 0;
@@ -76,7 +78,7 @@ async function main() {
               try {
                 expect(result.all).toStrictEqual(item.result);
               } catch (error) {
-                console.log('result.all:', result.all);
+                console.log('result.all (' + directory + '):', result.all);
                 throw error;
               }
             }, 10000);

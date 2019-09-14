@@ -25,13 +25,7 @@ interface IArgs {
 
 function showLoadedFiles(files: string[]): void {
   for (const file of files) {
-    if (file) {
-      const absolutePath = path.resolve(file);
-
-      if (fs.existsSync(absolutePath)) {
-        Logger.info('Loaded config: ', absolutePath);
-      }
-    }
+    Logger.info('Loaded config: ', file);
   }
   Logger.info();
 }
@@ -163,16 +157,22 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       directory: process.cwd(),
       menuTimeout: undefined,
     });
+    const configLoad = Config.load(launchArgs.directory);
+    let config = configLoad.config;
     let interactive = false;
-
-    let config = Config.load(launchArgs.directory);
 
     if (launchArgs.logLevel === undefined) launchArgs.logLevel = config.options.logLevel;
     if (launchArgs.menuTimeout === undefined) launchArgs.menuTimeout = config.options.menu.timeout;
 
     Logger.level = launchArgs.logLevel;
 
-    if (launchArgs.config) config = config.merge(launchArgs.config);
+    if (launchArgs.config) {
+      const fileName = path.join(launchArgs.directory, launchArgs.config);
+
+      config = config.merge(fileName);
+
+      configLoad.files.push(fileName);
+    }
 
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
@@ -188,7 +188,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (testmode) environment.launch_time_start = formatLocalTime(new Date('2019-09-16T10:33:20.628').getTime());
 
-    showLoadedFiles([...config.options.files, launchArgs.config]);
+    showLoadedFiles(configLoad.files);
 
     Logger.debug('Config: ', stringify(config));
 
