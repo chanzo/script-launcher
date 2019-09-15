@@ -39,6 +39,8 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     console.log(Colors.Bold + 'Auto menu: ' + Colors.Dim + script.name.padEnd(28) + Colors.Normal + Colors.Dim + '  (Use the menu by running:' + Colors.Bold + ' npm start menu' + Colors.Normal + Colors.Dim + ')' + Colors.Normal);
   }
 
+  if (!script.name.startsWith('menu:')) script.name = 'menu:' + script.name;
+
   const command = getStartCommand(script.script, config.scripts);
 
   if (command && environment.npm_lifecycle_event === 'start') {

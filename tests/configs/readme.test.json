@@ -351,6 +351,80 @@
       "files": {
         "launcher-config": {
           "scripts": {
+            "serve": "echo Serve script",
+            "build": "echo Build script"
+          },
+          "menu": {
+            "serve": "serve",
+            "build": "build"
+          },
+          "options": {
+            "menu": {
+              "defaultChoice": "build",
+              "defaultScript": "build"
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "result": [
+            "\u001b[1mAuto menu: \u001b[2mbuild                       \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
+            "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
+            "",
+            "Build script"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactive menu",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve": "echo Serve script",
+            "build": "echo Build script"
+          },
+          "menu": {
+            "serve": "serve",
+            "build": "build"
+          },
+          "options": {
+            "menu": {
+              "defaultChoice": "build",
+              "timeout": 1
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "result": [
+            "",
+            "\u001b[32m?\u001b[39m \u001b[1mSelect:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  serve \n\u001b[36m❯ build\u001b[39m ",
+            "\u001b[8D",
+            "\u001b[8C",
+            "\u001b[s",
+            "",
+            "",
+            "\u001b[1mAuto select in: \u001b[0m1",
+            "\u001b[u",
+            "",
+            "",
+            "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
+            "",
+            "Build script"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactive menu",
+      "files": {
+        "launcher-config": {
+          "scripts": {
             "serve:$project:dev": {
               "concurrent": [
                 "echo Start development server",
