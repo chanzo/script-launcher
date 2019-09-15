@@ -1,6 +1,7 @@
 # Change Log
 ## 1.17.2
 ### Changes
+* Added integration tests
 * Removed lib entries from **tsconfig.json**
 ``` JSON
 "lib": [
@@ -9,7 +10,7 @@
   "esnext.asynciterable"
 ]
 ```
-* Added a build in script **menu** to force to show menu the by ignoring the options value of defaultScript
+* Added a build in script **menu**, to force an interactive menu. This will ignoring the options value of defaultScript
 
 ### Breaking
 * Replaced the **--interactive** argument for a build in script that can be overloaded.

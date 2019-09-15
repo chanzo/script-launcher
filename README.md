@@ -44,9 +44,9 @@ npm publish
 
 ### Run spesific tests
 ``` bash
+npx jest --clearCache
 npm start test -- -t "'launch  --version'"
 npm start test -- ./tests/debug.test.ts
-clear && npx jest --clearCache && npx jest ./tests/debug.test.ts
 ```
 
 ### Resources
