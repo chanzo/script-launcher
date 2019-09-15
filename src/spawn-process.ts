@@ -3,7 +3,6 @@ import { ChildProcess, SpawnOptions, StdioOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
 import prettyTime = require('pretty-time');
-import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
@@ -28,7 +27,7 @@ export class Process {
   private static getStdioOption(stdio: StdioOptions, index: number): string {
     if (typeof stdio === 'string') return stdio;
 
-    if (index < stdio.length) return stdio[index].toString();
+    if (stdio !== undefined && index < stdio.length) return stdio[index].toString();
 
     return '';
   }
@@ -65,7 +64,11 @@ export class Process {
     this.pid = childProcess.pid;
 
     if (Logger.level > 1) {
-      Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
+      if (options.testmode) {
+        Logger.log('Process pid     : ' + Colors.Yellow + 11111 + Colors.Normal);
+      } else {
+        Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
+      }
 
       this.showOutputData(childProcess);
     } else {
@@ -74,6 +77,16 @@ export class Process {
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
+        childProcess.on('close', (code, signal) => {
+          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
+            if (childProcess.stdout) childProcess.stdout.removeAllListeners('data');
+            if (childProcess.stderr) childProcess.stderr.removeAllListeners('data');
+
+            if (options.suppress) code = 0;
+
+            resolve(code);
+          });
+        });
 
         childProcess.on('exit', (code, signal) => {
           this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
@@ -85,13 +98,13 @@ export class Process {
 
           const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
 
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          if (options.testmode) {
+            Logger.log('Process exited  : pid=' + 11111 + '  code=' + code + '  signal=' + signal, '  elapsed=4ms' + extraInfo);
+          } else {
+            Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          }
           Logger.log();
           Logger.log();
-
-          if (options.suppress) code = 0;
-
-          resolve(code);
         });
 
         childProcess.on('error', (error) => {
@@ -104,19 +117,23 @@ export class Process {
 
           const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
 
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
-          Logger.log();
-          Logger.log();
-
-          if (options.suppress) {
-            resolve(0);
+          if (options.testmode) {
+            Logger.log('Process error   : pid=' + 11111 + `  code=${error}`, '  elapsed=5ms' + extraInfo);
           } else {
-            reject(error);
+            Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           }
+
+          Logger.log();
+          Logger.log();
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
-        Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
+
+        if (options.testmode) {
+          Logger.error('Process failed  : pid=' + 11111 + `  failed to attach event emitters, ${error}.`);
+        } else {
+          Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
+        }
         Logger.log();
         Logger.log();
         reject(error);
@@ -171,7 +188,7 @@ export class Process {
       if (content) {
         this._stdout += content;
 
-        console.log(content);
+        process.stdout.write(content);
       }
     });
 
@@ -180,7 +197,7 @@ export class Process {
       if (content) {
         this._stderr += content;
 
-        console.error(content);
+        process.stderr.write(content);
       }
     });
   }

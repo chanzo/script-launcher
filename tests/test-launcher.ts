@@ -4,9 +4,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { MarkdownParser } from './markdown-parser';
 import { IConfig } from '../src/config-loader';
+import { promisify } from 'util';
 
 export interface ITests {
-  name?: string;
+  name: string;
   error?: string;
   'cmd-args': string[];
   'npm-args': string[];
@@ -14,25 +15,36 @@ export interface ITests {
   result?: string[];
 }
 
+interface ITestsConfigFile {
+  name: string;
+  error?: string;
+  'cmd-args': string[] | string;
+  'npm-args': string[] | string;
+  lifecycle?: string;
+  [name: string]: string[] | string;
+}
+
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
-  name?: string;
+  name: string;
   transformer?: string;
   files: { [name: string]: IConfig };
   tests: ITests[];
 }
 
 export class TestLauncher {
-  private readonly defaultArgs: string[];
   private readonly _configs: { [name: string]: ITestConfig[] };
 
   public get configs(): Array<[string, ITestConfig[]]> {
     return Object.entries(this._configs);
   }
 
-  constructor(private readonly tempPath: string, ...defaultArgs: string[]) {
-    this.defaultArgs = defaultArgs;
+  constructor(
+    private readonly tempPath: string,
+    private readonly defaultArgs: string[],
+    private readonly excludes: string[] = []
+  ) {
     this._configs = {};
 
     fs.mkdirSync(tempPath, {
@@ -51,13 +63,18 @@ export class TestLauncher {
   }
 
   public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
-    const testDirectory = path.join(this.tempPath, directory);
+    const testDirectory = path.join(this.tempPath, directory).replace(process.cwd(), '.');
+    const interceptor = new ConsoleInterceptor(this.excludes);
 
-    const interceptor = new ConsoleInterceptor();
+    try {
+      await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
 
-    await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
-
-    interceptor.close();
+      // await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
+      // await promisify(setTimeout)(10);
+      // await promisify(setImmediate)();
+    } finally {
+      interceptor.close();
+    }
 
     return interceptor;
   }
@@ -77,13 +94,20 @@ export class TestLauncher {
           for (const testConfig of testConfigs) {
             if (testConfig.tests === undefined) testConfig.tests = [];
 
-            for (const test of testConfig.tests) {
+            for (const test of testConfig.tests as ITestsConfigFile[]) {
               if (test['cmd-args'] === undefined) test['cmd-args'] = [];
               if (test['npm-args'] === undefined) test['npm-args'] = [];
 
               if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
-              if (!Array.isArray(test.result) && test.result !== undefined) test.result = [test.result];
+
+              let result = test.result;
+
+              if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
+
+              if (!Array.isArray(result) && result !== undefined) result = [result];
+
+              test.result = result;
 
               if (!test.name) {
                 test.name = 'launch  ' + test['cmd-args'].join(' ');
@@ -109,6 +133,7 @@ export class TestLauncher {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
     const emptyTest: ITests = {
+      'name': 'empty',
       'npm-args': [],
       'cmd-args': []
     };

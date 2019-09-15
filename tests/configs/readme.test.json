@@ -20,7 +20,7 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "bin\t\t  executor.js\t  LICENSE\tREADME.md\ncommon.js\t  launch.js\t  logger.js\tscripts.js\nconfig-loader.js  launch-menu.js  package.json\tspawn-process.js"
+          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js"
         }
       ]
     },
@@ -67,7 +67,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.17.1",
+            "\u001b[1mVersion:\u001b[0m 1.17.2",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -75,6 +75,24 @@
             "Color: \u001b[1mBold\u001b[0m",
             "Color: \u001b[36mCyan\u001b[0m",
             "Color: \u001b[2mDim\u001b[0m",
+            "",
+            "Color: \u001b[32mGreen\u001b[0m",
+            "Color: \u001b[31mRed\u001b[0m",
+            "Color: \u001b[33mYellow\u001b[0m",
+            "--------------------------------",
+            "\u001b[1mCurrent:\u001b[0m 2019-09-16 10:33:42.285",
+            "\u001b[1mElapsed:\u001b[0m 137ms"
+          ],
+          "result:win32": [
+            "grep example",
+            "\u001b[1mVersion:\u001b[0m 1.17.2",
+            "\u001b[1mPlatform:\u001b[0m win32",
+            "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
+            "--------------------------------",
+            "Color: \u001b[94mBlue\u001b[0m",
+            "Color: \u001b[1mBold\u001b[0m",
+            "Color: \u001b[36mCyan\u001b[0m",
+            "Color: \u001b[90mDim\u001b[0m",
             "",
             "Color: \u001b[32mGreen\u001b[0m",
             "Color: \u001b[31mRed\u001b[0m",
@@ -206,6 +224,12 @@
             "npm install",
             "npm start",
             "Test platform type."
+          ],
+          "result:win32": [
+            "'node_modules_test' is not recognized as an internal or external command,\r\noperable program or batch file.",
+            "npm install",
+            "npm start",
+            "Test platform type."
           ]
         }
       ]
@@ -277,6 +301,138 @@
             "",
             "Start development server",
             "ng serve hva -c=dev"
+          ],
+          "result:win32": [
+            "",
+            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
+            "\u001b[6D",
+            "\u001b[6C",
+            "\u001b[s",
+            "",
+            "",
+            "\u001b[1mAuto select in: \u001b[0m1",
+            "\u001b[u",
+            "",
+            "",
+            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactive menu",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project:dev": {
+              "concurrent": [
+                "echo Start development server",
+                "echo ng serve $project -c=dev"
+              ]
+            },
+            "serve:$project:$config": "echo ng serve $project -c=$config"
+          },
+          "menu": {
+            "description": "organization",
+            "uva": {
+              "description": "environment",
+              "development": "serve:uva:dev",
+              "acceptance": "serve:uva:acc",
+              "production": "serve:uva:prd"
+            },
+            "separator": "",
+            "hva": {
+              "description": "environment",
+              "development": "serve:hva:dev",
+              "acceptance": "serve:hva:acc",
+              "production": "serve:hva:prd"
+            }
+          },
+          "options": {
+            "menu": {
+              "defaultScript": "serve:hva:dev",
+              "defaultChoice": "hva:development",
+              "timeout": 1
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "result": [
+            "\u001b[1mAuto menu: \u001b[2mhva:development             \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
+            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ],
+          "result:win32": [
+            "\u001b[1mAuto menu: \u001b[90mhva:development             \u001b[0m\u001b[90m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[90m)\u001b[0m",
+            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "",
+            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ",
+            "\u001b[6D",
+            "\u001b[6C",
+            "\u001b[s",
+            "",
+            "",
+            "\u001b[1mAuto select in: \u001b[0m1",
+            "\u001b[u",
+            "",
+            "",
+            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ],
+          "result:win32": [
+            "",
+            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
+            "\u001b[6D",
+            "\u001b[6C",
+            "\u001b[s",
+            "",
+            "",
+            "\u001b[1mAuto select in: \u001b[0m1",
+            "\u001b[u",
+            "",
+            "",
+            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactive menu",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "menu": "echo Menu script"
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "Menu script"
           ]
         }
       ]
