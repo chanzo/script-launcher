@@ -10,13 +10,12 @@
     "build": [
       "lint",
       "echo Building node package...",
-      "rm -rf ./dist/package",
+      "rimraf ./dist/package",
       "tsc --build src",
-      "cp src/package.json dist/package",
-      "cp src/README.md dist/package",
-      "cp src/LICENSE dist/package",
-      "mkdir dist/package/bin",
-      "cp src/bin/launch.js dist/package/bin/launch.js",
+      "cpx src/package.json dist/package",
+      "cpx src/README.md dist/package",
+      "cpx src/LICENSE dist/package",
+      "cpx src/bin/launch.js dist/package/bin",
       "echo Done..."
     ],
     "postinstall": [
@@ -25,7 +24,7 @@
     ],
     "test": [
       "lint",
-      "#rm -rf ./dist/test",
+      "#rimraf ./dist/test",
       "#tsc --build tests",
       "jest --verbose $*"
     ]

@@ -352,6 +352,23 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 }
 ```
 
+### Escaping
+Use a backslash in the script command, to escaping variables.
+
+**Run**: `npm start escaping arg1` to use this example.
+``` JSON
+{
+  "scripts": {
+    "escaping": [
+      "echo '\\$1                        ' : '$1'",
+      "echo '\\$npm_config_node_version  ' : '$npm_config_node_version'",
+      "echo '\\${1}                      ' : '${1}'",
+      "echo '\\${npm_config_node_version}' : '${npm_config_node_version}'"
+    ]
+  }
+}
+```
+
 ### Concurrent scripts
 This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
 
