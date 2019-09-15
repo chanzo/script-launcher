@@ -25,9 +25,7 @@
         },
         {
           "cmd-args": "--version",
-          "result": [
-            "1.17.2"
-          ]
+          "result": "1.17.2"
         }
       ]
     },

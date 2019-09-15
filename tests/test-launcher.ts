@@ -15,6 +15,15 @@ export interface ITests {
   result?: string[];
 }
 
+interface ITestsConfigFile {
+  name: string;
+  error?: string;
+  'cmd-args': string[] | string;
+  'npm-args': string[] | string;
+  lifecycle?: string;
+  [name: string]: string[] | string;
+}
+
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
@@ -85,13 +94,20 @@ export class TestLauncher {
           for (const testConfig of testConfigs) {
             if (testConfig.tests === undefined) testConfig.tests = [];
 
-            for (const test of testConfig.tests) {
+            for (const test of testConfig.tests as ITestsConfigFile[]) {
               if (test['cmd-args'] === undefined) test['cmd-args'] = [];
               if (test['npm-args'] === undefined) test['npm-args'] = [];
 
               if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
-              if (!Array.isArray(test.result) && test.result !== undefined) test.result = [test.result];
+
+              let result = test.result;
+
+              if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
+
+              if (!Array.isArray(result) && result !== undefined) result = [result];
+
+              test.result = result;
 
               if (!test.name) {
                 test.name = 'launch  ' + test['cmd-args'].join(' ');

@@ -190,7 +190,7 @@ Specify an existing directory as an script command and it will change to that di
   "scripts": {
     "build-stuff": [
       "node_modules/script-launcher",
-      "dir"
+      "echo *"
     ]
   }
 }
