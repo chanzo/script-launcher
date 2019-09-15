@@ -1,5 +1,3 @@
-#!./node_modules/.bin/ts-node --skip-project
-
 import { Config, IConfig, ILaunchSetting, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
