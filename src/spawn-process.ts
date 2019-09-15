@@ -3,7 +3,6 @@ import { ChildProcess, SpawnOptions, StdioOptions } from 'child_process';
 import { Logger } from './logger';
 import { Colors } from './common';
 import prettyTime = require('pretty-time');
-import { Readable } from 'stream';
 
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
@@ -28,7 +27,7 @@ export class Process {
   private static getStdioOption(stdio: StdioOptions, index: number): string {
     if (typeof stdio === 'string') return stdio;
 
-    if (index < stdio.length) return stdio[index].toString();
+    if (stdio !== undefined && index < stdio.length) return stdio[index].toString();
 
     return '';
   }
@@ -74,6 +73,16 @@ export class Process {
 
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
+        childProcess.on('close', (code, signal) => {
+          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
+            childProcess.stdout.removeAllListeners('data');
+            childProcess.stderr.removeAllListeners('data');
+
+            if (options.suppress) code = 0;
+
+            resolve(code);
+          });
+        });
 
         childProcess.on('exit', (code, signal) => {
           this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
@@ -88,10 +97,6 @@ export class Process {
           Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
-
-          if (options.suppress) code = 0;
-
-          resolve(code);
         });
 
         childProcess.on('error', (error) => {
@@ -108,11 +113,13 @@ export class Process {
           Logger.log();
           Logger.log();
 
-          if (options.suppress) {
-            resolve(0);
-          } else {
-            reject(error);
-          }
+          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
+            if (options.suppress) {
+              resolve(0);
+            } else {
+              reject(error);
+            }
+          });
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));

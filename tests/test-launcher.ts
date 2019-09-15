@@ -25,15 +25,17 @@ export interface ITestConfig {
 }
 
 export class TestLauncher {
-  private readonly defaultArgs: string[];
   private readonly _configs: { [name: string]: ITestConfig[] };
 
   public get configs(): Array<[string, ITestConfig[]]> {
     return Object.entries(this._configs);
   }
 
-  constructor(private readonly tempPath: string, ...defaultArgs: string[]) {
-    this.defaultArgs = defaultArgs;
+  constructor(
+    private readonly tempPath: string,
+    private readonly defaultArgs: string[],
+    private readonly excludes: string[] = []
+  ) {
     this._configs = {};
 
     fs.mkdirSync(tempPath, {
@@ -53,14 +55,17 @@ export class TestLauncher {
 
   public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
     const testDirectory = path.join(this.tempPath, directory);
+    const interceptor = new ConsoleInterceptor(this.excludes);
 
-    const interceptor = new ConsoleInterceptor();
+    try {
+      await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
 
-    await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
-
-    await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
-
-    interceptor.close();
+      // await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
+      // await promisify(setTimeout)(10);
+      // await promisify(setImmediate)();
+    } finally {
+      interceptor.close();
+    }
 
     return interceptor;
   }
