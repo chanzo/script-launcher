@@ -2,6 +2,7 @@
 ## 1.17.3
 ### Changes
 * Added integration tests
+* Added **Escaping** example
 * Add support for build the package on windows
 
 ### Fixes
