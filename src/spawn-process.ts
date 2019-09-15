@@ -112,14 +112,6 @@ export class Process {
           Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
           Logger.log();
           Logger.log();
-
-          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
-            if (options.suppress) {
-              resolve(0);
-            } else {
-              reject(error);
-            }
-          });
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
