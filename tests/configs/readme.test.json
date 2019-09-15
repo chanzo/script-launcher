@@ -374,6 +374,12 @@
             "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
             "",
             "Build script"
+          ],
+          "result:win32": [
+            "\u001b[1mAuto menu: \u001b[90mbuild                       \u001b[0m\u001b[90m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[90m)\u001b[0m",
+            "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
+            "",
+            "Build script"
           ]
         }
       ]
@@ -414,6 +420,22 @@
             "",
             "",
             "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
+            "",
+            "Build script"
+          ],
+          "result:win32": [
+            "",
+            "\u001b[32m?\u001b[39m \u001b[1mSelect:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  serve \n\u001b[36m> build\u001b[39m ",
+            "\u001b[8D",
+            "\u001b[8C",
+            "\u001b[s",
+            "",
+            "",
+            "\u001b[1mAuto select in: \u001b[0m1",
+            "\u001b[u",
+            "",
+            "",
+            "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
             "",
             "Build script"
           ]
