@@ -11,6 +11,22 @@
       "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url",
       "",
       "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
+    ],
+    "assignments:$value1=A": [
+      "value1=B",
+      "value2=B",
+      "echo value1: $value1",
+      "echo value2: $value2",
+      "--",
+      [
+        "value1=C",
+        "value2=$value1-$value2-C",
+        "echo value1: $value1",
+        "echo value2: $value2"
+      ],
+      "--",
+      "echo value1: $value1",
+      "echo value2: $value2"
     ]
   }
 }

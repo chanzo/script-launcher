@@ -342,6 +342,61 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Variable assignments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "assignments:$value1=A": [
+              "value1=B",
+              "value2=B",
+              "echo value1: $value1",
+              "echo value2: $value2",
+              "--",
+              [
+                "value1=C",
+                "value2=$value1-$value2-C",
+                "echo value1: $value1",
+                "echo value2: $value2"
+              ],
+              "--",
+              "echo value1: $value1",
+              "echo value2: $value2"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments",
+          "result": [
+            "value1: A",
+            "value2: B",
+            "--------------------------------",
+            "value1: A",
+            "value2: A-B-C",
+            "--------------------------------",
+            "value1: A",
+            "value2: B"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:B",
+          "result": [
+            "value1: B",
+            "value2: B",
+            "--------------------------------",
+            "value1: B",
+            "value2: B-B-C",
+            "--------------------------------",
+            "value1: B",
+            "value2: B"
+          ]
+        }
+      ]
     }
   ]
 }

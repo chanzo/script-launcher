@@ -170,6 +170,24 @@
       ]
     },
     {
+      "name": "Escaping",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "escaping",
+            "arg1"
+          ],
+          "result": [
+            "$1                         : arg1",
+            "$npm_config_node_version   : 10.16.3",
+            "${1}                       : arg1",
+            "${npm_config_node_version} : 10.16.3"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
