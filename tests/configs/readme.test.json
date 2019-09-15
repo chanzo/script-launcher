@@ -183,6 +183,12 @@
             "$npm_config_node_version   : 10.16.3",
             "${1}                       : arg1",
             "${npm_config_node_version} : 10.16.3"
+          ],
+          "result:win32": [
+            "\"$1                        \" : arg1",
+            "\"$npm_config_node_version  \" : 10.16.3",
+            "\"${1}                      \" : arg1",
+            "${npm_config_node_version} : 10.16.3"
           ]
         }
       ]
