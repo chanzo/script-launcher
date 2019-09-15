@@ -64,7 +64,11 @@ export class Process {
     this.pid = childProcess.pid;
 
     if (Logger.level > 1) {
-      Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
+      if (options.testmode) {
+        Logger.log('Process pid     : ' + Colors.Yellow + 11111 + Colors.Normal);
+      } else {
+        Logger.log('Process pid     : ' + Colors.Yellow + childProcess.pid + Colors.Normal);
+      }
 
       this.showOutputData(childProcess);
     } else {
@@ -94,7 +98,11 @@ export class Process {
 
           const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
 
-          Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          if (options.testmode) {
+            Logger.log('Process exited  : pid=' + 11111 + '  code=' + code + '  signal=' + signal, '  elapsed=4ms' + extraInfo);
+          } else {
+            Logger.log('Process exited  : pid=' + childProcess.pid + '  code=' + code + '  signal=' + signal, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          }
           Logger.log();
           Logger.log();
         });
@@ -109,13 +117,23 @@ export class Process {
 
           const extraInfo = options.extraLogInfo ? '  ' + options.extraLogInfo(this) : '';
 
-          Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          if (options.testmode) {
+            Logger.log('Process error   : pid=' + 11111 + `  code=${error}`, '  elapsed=5ms' + extraInfo);
+          } else {
+            Logger.log('Process error   : pid=' + childProcess.pid + `  code=${error}`, '  elapsed=' + prettyTime(timespan, 'ms') + extraInfo);
+          }
+
           Logger.log();
           Logger.log();
         });
       } catch (error) {
         if (this.outputCount !== 0) Logger.log(''.padEnd(process.stdout.columns, '-'));
-        Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
+
+        if (options.testmode) {
+          Logger.error('Process failed  : pid=' + 11111 + `  failed to attach event emitters, ${error}.`);
+        } else {
+          Logger.error('Process failed  : pid=' + childProcess.pid + `  failed to attach event emitters, ${error}.`);
+        }
         Logger.log();
         Logger.log();
         reject(error);

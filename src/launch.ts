@@ -155,6 +155,9 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       directory: process.cwd(),
       menuTimeout: undefined,
     });
+
+    launchArgs.directory = path.join(launchArgs.directory); // remove starting ./
+
     const configLoad = Config.load(launchArgs.directory);
     let config = configLoad.config;
     let interactive = false;
@@ -288,11 +291,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
   } catch (error) {
     Logger.error(`${error}`);
   } finally {
-    const timespan = process.hrtime(startTime);
+    let timespan = process.hrtime(startTime);
 
     if (Logger.level < 2) Logger.info('');
 
     Logger.info('ExitCode:', exitCode);
+
+    if (testmode) timespan = [0, 237 * 1000 * 1000];
+
     Logger.info('Elapsed: ' + prettyTime(timespan, 'ms'));
 
     if (!testmode) process.exit(exitCode);
