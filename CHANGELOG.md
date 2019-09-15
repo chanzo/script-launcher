@@ -1,4 +1,8 @@
 # Change Log
+## 1.17.3
+### Changes
+* Added integration tests
+
 ## 1.17.2
 ### Changes
 * Added integration tests
