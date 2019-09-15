@@ -1,0 +1,30 @@
+{
+  "Other tests": [
+    {
+      "name": "Exit code",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build-stuff": [
+              "echo Command 1",
+              "exit 1 || true",
+              "echo Command 2",
+              "exit 1",
+              "echo Command 3"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "Command 1",
+            "Command 2"
+          ]
+        }
+      ]
+    }
+  ]
+}

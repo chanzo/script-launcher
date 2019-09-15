@@ -75,8 +75,8 @@ export class Process {
       try {
         childProcess.on('close', (code, signal) => {
           setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
-            childProcess.stdout.removeAllListeners('data');
-            childProcess.stderr.removeAllListeners('data');
+            if (childProcess.stdout) childProcess.stdout.removeAllListeners('data');
+            if (childProcess.stderr) childProcess.stderr.removeAllListeners('data');
 
             if (options.suppress) code = 0;
 
