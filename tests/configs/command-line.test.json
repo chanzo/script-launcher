@@ -41,9 +41,9 @@
             "Created file: tests/temp/0001/launcher-menu.json"
           ],
           "result:win32": [
-            "Created file: .\\tests\\temp\\0001\\launcher-config.json",
-            "Created file: .\\tests\\temp\\0001\\launcher-settings.json",
-            "Created file: .\\tests\\temp\\0001\\launcher-menu.json"
+            "Created file: tests\\temp\\0001\\launcher-config.json",
+            "Created file: tests\\temp\\0001\\launcher-settings.json",
+            "Created file: tests\\temp\\0001\\launcher-menu.json"
           ]
         },
         {
