@@ -33,13 +33,20 @@ npm start
 ```
 
 ### Build & Publish
-```
+``` bash
 npm start test
 npm start build
 cd dist/package
 npm login
 npm whoami
 npm publish
+```
+
+### Run spesific tests
+``` bash
+npx jest --clearCache
+npm start test -- -t "'launch  --version'"
+npm start test -- ./tests/debug.test.ts
 ```
 
 ### Resources

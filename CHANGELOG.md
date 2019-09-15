@@ -1,4 +1,24 @@
 # Change Log
+## 1.17.2
+### Changes
+* Added integration tests
+* Removed lib entries from **tsconfig.json**
+``` JSON
+"lib": [
+  "dom",
+  "es2017",
+  "esnext.asynciterable"
+]
+```
+* Added a build in script **menu**, to force an interactive menu. This will ignoring the options value of defaultScript
+
+### Breaking
+* Replaced the **--interactive** argument for a build in script that can be overloaded.
+* Removed the **--menu** launch argument.
+
+### Fixes
+* Save selection bug fix
+
 ## 1.17.1
 ### Changes
 * Dev dependencies updated

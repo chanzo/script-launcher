@@ -136,11 +136,14 @@ export class Config {
 
   };
 
-  public static load(directory: string): Config {
+  public static load(directory: string): { files: string[], config: Config } {
     const hash = new Set<string>();
     let config = new Config(Config.default);
     let files = Config.default.options.files;
     let loaded: number;
+    const loadedFiles = [];
+
+    if (!existsSync(directory)) throw Error('Directory \"' + directory + '\" not found.');
 
     do {
       loaded = 0;
@@ -149,7 +152,10 @@ export class Config {
         if (file && !hash.has(file)) {
           const fullPath = path.join(directory, file);
 
-          if (existsSync(resolve(fullPath))) config = config.merge(fullPath);
+          if (existsSync(resolve(fullPath))) {
+            config = config.merge(fullPath);
+            loadedFiles.push(fullPath);
+          }
 
           hash.add(file);
 
@@ -159,7 +165,10 @@ export class Config {
       files = config.options.files;
     } while (loaded > 0);
 
-    return config;
+    return {
+      files: loadedFiles,
+      config: config,
+    };
   }
 
   public static evaluateShellOption(shellOption: (boolean | string) | { [platform: string]: boolean | string }, defaultOption: boolean | string): boolean | string {

@@ -145,6 +145,82 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Launcher files",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-config.json"
+            ],
+            "build-stuff-string": "echo launcher-config.json"
+          }
+        },
+        "launcher-scripts": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-scripts.json"
+            ],
+            "build-stuff-string": "echo launcher-scripts.json"
+          }
+        },
+        "launcher-settings": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-settings.json"
+            ],
+            "build-stuff-string": "echo launcher-settings.json"
+          }
+        },
+        "launcher-menu": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-menu.json"
+            ],
+            "build-stuff-string": "echo launcher-menu.json"
+          }
+        },
+        "launcher-custom": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-custom.json"
+            ],
+            "build-stuff-string": "echo launcher-custom.json"
+          }
+        },
+        "launcher-cli": {
+          "scripts": {
+            "build-stuff-array": [
+              "echo launcher-cli.json"
+            ],
+            "build-stuff-string": "echo launcher-cli.json"
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff-array",
+          "cmd-args": "--config=launcher-cli.json",
+          "result": [
+            "launcher-config.json",
+            "launcher-scripts.json",
+            "launcher-settings.json",
+            "launcher-menu.json",
+            "launcher-custom.json",
+            "launcher-cli.json"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff-string",
+          "cmd-args": "--config=launcher-cli.json",
+          "result": [
+            "launcher-cli.json"
+          ]
+        }
+      ]
     }
   ]
 }

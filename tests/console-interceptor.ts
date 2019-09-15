@@ -38,8 +38,9 @@ export class ConsoleInterceptor implements IIntercepted {
 
   private readonly functions: IConsoleFunctions;
   private readonly stdoutWrite: IStdoutWrite;
+  private readonly stderrWrite: IStdoutWrite;
 
-  constructor() {
+  constructor(private readonly excludes: string[] = []) {
     this.functions = ConsoleInterceptor.setConsoleFunctions({
       log: (...args: any[]) => { this.recordConsole('log', ...args); },
       debug: (...args: any[]) => { this.recordConsole('debug', ...args); },
@@ -49,16 +50,24 @@ export class ConsoleInterceptor implements IIntercepted {
       warn: (...args: any[]) => { this.recordConsole('warn', ...args); }
     });
     this.stdoutWrite = process.stdout.write;
+    this.stderrWrite = process.stderr.write;
 
     process.stdout.write = (buffer: any, cb: any) => {
       this.recordConsole('log', buffer);
+      return true;
+    };
+
+    process.stderr.write = (buffer: any, cb: any) => {
+      this.recordConsole('error', buffer);
       return true;
     };
   }
 
   public close() {
     if (this.functions) ConsoleInterceptor.setConsoleFunctions(this.functions);
+
     process.stdout.write = this.stdoutWrite;
+    process.stderr.write = this.stderrWrite;
   }
 
   private static getConsoleFunctions(): IConsoleFunctions {
@@ -85,9 +94,11 @@ export class ConsoleInterceptor implements IIntercepted {
   private recordConsole(name: LogTargets, ...args: any[]) {
     const value = (format as (...args: any[]) => string)(...args); // Unsing as for typing bug fix
 
-    this.all.push(value);
+    if (!this.excludes.includes(value)) {
+      this.all.push(value);
 
-    this[name].push(value);
+      this[name].push(value);
+    }
+
   }
-
 }

@@ -12,11 +12,9 @@
             "Commands:",
             "  \u001b[36minit         \u001b[0mCreate starter config files.",
             "  \u001b[36mhelp         \u001b[0mShow this help.",
-            "  \u001b[36mmenu         \u001b[0mShow interactive menu.",
             "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
             "",
             "Options:",
-            "  \u001b[36minteractive  \u001b[0mForce to show menu the by ignoring the options value of defaultScript.",
             "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
             "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
             "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
@@ -27,9 +25,7 @@
         },
         {
           "cmd-args": "--version",
-          "result": [
-            "1.17.1"
-          ]
+          "result": "1.17.2"
         }
       ]
     },
@@ -40,9 +36,14 @@
         {
           "cmd-args": "init",
           "result": [
-            "Created file: ./tests/temp/0001/launcher-config.json",
-            "Created file: ./tests/temp/0001/launcher-settings.json",
-            "Created file: ./tests/temp/0001/launcher-menu.json"
+            "Created file: tests/temp/0001/launcher-config.json",
+            "Created file: tests/temp/0001/launcher-settings.json",
+            "Created file: tests/temp/0001/launcher-menu.json"
+          ],
+          "result:win32": [
+            "Created file: tests\\temp\\0001\\launcher-config.json",
+            "Created file: tests\\temp\\0001\\launcher-settings.json",
+            "Created file: tests\\temp\\0001\\launcher-menu.json"
           ]
         },
         {

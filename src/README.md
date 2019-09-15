@@ -190,7 +190,7 @@ Specify an existing directory as an script command and it will change to that di
   "scripts": {
     "build-stuff": [
       "node_modules/script-launcher",
-      "dir"
+      "echo *"
     ]
   }
 }
@@ -319,7 +319,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 ```
 
 ### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch interactive`
+* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
 * **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
 * **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
@@ -518,7 +518,7 @@ Example using an object array.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `launch interactive` to ignore the `launcher-custom.json` file. The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information.
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `npm start menu` to ignore the `defaultScript` options value. The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information.
 
 **Run**: `npm start` to use this example.
 ``` JSON
@@ -550,7 +550,7 @@ Use the **menu** section to create an interactive landing menu, so a new develop
   },
   "options": {
     "menu": {
-      "defaultChoice": "hva:dev"
+      "defaultChoice": "hva:development"
     }
   }
 }
