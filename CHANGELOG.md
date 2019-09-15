@@ -1,4 +1,13 @@
 # Change Log
+## 1.17.3
+### Changes
+* Added integration tests
+* Added **Escaping** example
+* Add support for build the package on windows
+
+### Fixes
+* Fix for `Circular script reference detected.`
+
 ## 1.17.2
 ### Changes
 * Added integration tests
