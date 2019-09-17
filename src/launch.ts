@@ -36,32 +36,39 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
 
   fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
 
-  console.log('Created file: ' + fileName.replace(process.cwd(), '.'));
+  console.log(Colors.Bold + 'Created file: ' + Colors.Normal + fileName.replace(process.cwd(), '.'));
 }
 
 function updatePackageJson(directory: string): void {
   const fileName = path.join(directory, 'package.json');
 
+  console.log();
+
   if (!fs.existsSync(fileName)) {
-    console.log('Update package.json failed: file not found.');
+    console.log(Colors.Bold + 'Update package.json failed:' + Colors.Normal + ' file not found.');
     return;
   }
 
-  const buffer = fs.readFileSync(fileName);
-  const content = JSON.parse(buffer.toString());
+  try {
 
-  if (content.scripts && content.scripts.start !== undefined) {
-    console.log('Package.json not updated: start script already present.');
+    const buffer = fs.readFileSync(fileName);
+    const content = JSON.parse(buffer.toString());
 
-    return;
+    if (content.scripts && content.scripts.start !== undefined) {
+      console.log(Colors.Bold + 'Skipped update package.json: ' + Colors.Normal + 'start script already present.');
+
+      return;
+    }
+    if (!content.scripts) content.scripts = {};
+
+    content.scripts.start = 'launch';
+
+    fs.writeFileSync(fileName, JSON.stringify(content, null, 2));
+
+    console.log(Colors.Bold + 'Start script of package.json updated.' + Colors.Normal);
+  } catch (error) {
+    console.log(Colors.Bold + 'Update package.json failed: ' + Colors.Normal + error.message);
   }
-  if (!content.scripts) content.scripts = {};
-
-  content.scripts.start = 'launch';
-
-  fs.writeFileSync(fileName, JSON.stringify(content, null, 2));
-
-  console.log('Start script of Package.json updated.');
 }
 
 function showHelp() {

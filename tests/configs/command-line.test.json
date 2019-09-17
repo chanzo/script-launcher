@@ -9,16 +9,18 @@
         {
           "cmd-args": "init",
           "result": [
-            "Created file: tests/temp/0000/launcher-config.json",
-            "Created file: tests/temp/0000/launcher-settings.json",
-            "Created file: tests/temp/0000/launcher-menu.json",
-            "Start script of Package.json updated."
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0000/launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0000/launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0000/launcher-menu.json",
+            "",
+            "\u001b[1mStart script of package.json updated.\u001b[0m"
           ],
           "result:win32": [
-            "Created file: tests\\temp\\0000\\launcher-config.json",
-            "Created file: tests\\temp\\0000\\launcher-settings.json",
-            "Created file: tests\\temp\\0000\\launcher-menu.json",
-            "Start script of Package.json updated."
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0000\\launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0000\\launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0000\\launcher-menu.json",
+            "",
+            "\u001b[1mStart script of package.json updated.\u001b[0m"
           ]
         }
       ]
@@ -36,16 +38,18 @@
         {
           "cmd-args": "init",
           "result": [
-            "Created file: tests/temp/0001/launcher-config.json",
-            "Created file: tests/temp/0001/launcher-settings.json",
-            "Created file: tests/temp/0001/launcher-menu.json",
-            "Package.json not updated: start script already present."
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0001/launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0001/launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0001/launcher-menu.json",
+            "",
+            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
           ],
           "result:win32": [
-            "Created file: tests\\temp\\0001\\launcher-config.json",
-            "Created file: tests\\temp\\0001\\launcher-settings.json",
-            "Created file: tests\\temp\\0001\\launcher-menu.json",
-            "Package.json not updated: start script already present."
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0001\\launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0001\\launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0001\\launcher-menu.json",
+            "",
+            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
           ]
         }
       ]
@@ -86,16 +90,18 @@
         {
           "cmd-args": "init",
           "result": [
-            "Created file: tests/temp/0003/launcher-config.json",
-            "Created file: tests/temp/0003/launcher-settings.json",
-            "Created file: tests/temp/0003/launcher-menu.json",
-            "Update package.json failed: file not found."
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0003/launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0003/launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests/temp/0003/launcher-menu.json",
+            "",
+            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ],
           "result:win32": [
-            "Created file: tests\\temp\\0003\\launcher-config.json",
-            "Created file: tests\\temp\\0003\\launcher-settings.json",
-            "Created file: tests\\temp\\0003\\launcher-menu.json",
-            "Update package.json failed: file not found."
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0003\\launcher-config.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0003\\launcher-settings.json",
+            "\u001b[1mCreated file: \u001b[0mtests\\temp\\0003\\launcher-menu.json",
+            "",
+            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ]
         },
         {
