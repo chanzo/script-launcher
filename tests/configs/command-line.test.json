@@ -1,6 +1,56 @@
 {
   "Command line": [
     {
+      "name": "Init",
+      "files": {
+        "package": {}
+      },
+      "tests": [
+        {
+          "cmd-args": "init",
+          "result": [
+            "Created file: tests/temp/0000/launcher-config.json",
+            "Created file: tests/temp/0000/launcher-settings.json",
+            "Created file: tests/temp/0000/launcher-menu.json",
+            "Start script of Package.json updated."
+          ],
+          "result:win32": [
+            "Created file: tests\\temp\\0000\\launcher-config.json",
+            "Created file: tests\\temp\\0000\\launcher-settings.json",
+            "Created file: tests\\temp\\0000\\launcher-menu.json",
+            "Start script of Package.json updated."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Init",
+      "files": {
+        "package": {
+          "scripts": {
+            "start": "aaa"
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": "init",
+          "result": [
+            "Created file: tests/temp/0001/launcher-config.json",
+            "Created file: tests/temp/0001/launcher-settings.json",
+            "Created file: tests/temp/0001/launcher-menu.json",
+            "Package.json not updated: start script already present."
+          ],
+          "result:win32": [
+            "Created file: tests\\temp\\0001\\launcher-config.json",
+            "Created file: tests\\temp\\0001\\launcher-settings.json",
+            "Created file: tests\\temp\\0001\\launcher-menu.json",
+            "Package.json not updated: start script already present."
+          ]
+        }
+      ]
+    },
+    {
       "name": "Help",
       "files": {},
       "tests": [
@@ -36,14 +86,16 @@
         {
           "cmd-args": "init",
           "result": [
-            "Created file: tests/temp/0001/launcher-config.json",
-            "Created file: tests/temp/0001/launcher-settings.json",
-            "Created file: tests/temp/0001/launcher-menu.json"
+            "Created file: tests/temp/0003/launcher-config.json",
+            "Created file: tests/temp/0003/launcher-settings.json",
+            "Created file: tests/temp/0003/launcher-menu.json",
+            "Update package.json failed: file not found."
           ],
           "result:win32": [
-            "Created file: tests\\temp\\0001\\launcher-config.json",
-            "Created file: tests\\temp\\0001\\launcher-settings.json",
-            "Created file: tests\\temp\\0001\\launcher-menu.json"
+            "Created file: tests\\temp\\0003\\launcher-config.json",
+            "Created file: tests\\temp\\0003\\launcher-settings.json",
+            "Created file: tests\\temp\\0003\\launcher-menu.json",
+            "Update package.json failed: file not found."
           ]
         },
         {

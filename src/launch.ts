@@ -39,6 +39,31 @@ function createExampleFile(fileName: string, config: Partial<IConfig>): void {
   console.log('Created file: ' + fileName.replace(process.cwd(), '.'));
 }
 
+function updatePackageJson(directory: string): void {
+  const fileName = path.join(directory, 'package.json');
+
+  if (!fs.existsSync(fileName)) {
+    console.log('Update package.json failed: file not found.');
+    return;
+  }
+
+  const buffer = fs.readFileSync(fileName);
+  const content = JSON.parse(buffer.toString());
+
+  if (content.scripts && content.scripts.start) {
+    console.log('Package.json not updated: start script already present.');
+
+    return;
+  }
+  if (!content.scripts) content.scripts = {};
+
+  content.scripts.start = 'launch';
+
+  fs.writeFileSync(fileName, JSON.stringify(content, null, 2));
+
+  console.log('Start script of Package.json updated.');
+}
+
 function showHelp() {
   showArgsHelp<IArgs>('launch', {
     init: [
@@ -211,6 +236,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       createExampleFile(path.join(launchArgs.directory, 'launcher-config.json'), Config.initConfig);
       createExampleFile(path.join(launchArgs.directory, 'launcher-settings.json'), Config.settingsConfig);
       createExampleFile(path.join(launchArgs.directory, 'launcher-menu.json'), Config.initMenu);
+      updatePackageJson(launchArgs.directory);
       Logger.log();
       exitCode = 0;
       return;
