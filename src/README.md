@@ -29,7 +29,7 @@ Use **launch init** to create the starter **launcher-config.json** , **launcher-
 npx launch init
 ```
 
-Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
+If not already done to, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add custom run scripts for starting Script Launcher.
 ``` JSON
 {
     ...

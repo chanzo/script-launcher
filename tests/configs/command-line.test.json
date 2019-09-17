@@ -28,7 +28,7 @@
       "files": {
         "package": {
           "scripts": {
-            "start": "aaa"
+            "start": ""
           }
         }
       },
@@ -75,7 +75,7 @@
         },
         {
           "cmd-args": "--version",
-          "result": "1.17.3"
+          "result": "1.18.0"
         }
       ]
     },

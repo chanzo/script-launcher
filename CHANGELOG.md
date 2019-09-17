@@ -1,4 +1,8 @@
 # Change Log
+## 1.18.0
+### Changes
+* `launch init` now updates the **package.json** file
+
 ## 1.17.3
 ### Changes
 * Added integration tests

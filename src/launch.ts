@@ -50,7 +50,7 @@ function updatePackageJson(directory: string): void {
   const buffer = fs.readFileSync(fileName);
   const content = JSON.parse(buffer.toString());
 
-  if (content.scripts && content.scripts.start) {
+  if (content.scripts && content.scripts.start !== undefined) {
     console.log('Package.json not updated: start script already present.');
 
     return;
