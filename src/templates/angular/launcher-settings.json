@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "dev": {
+      "url": "example.dev.com"
+    },
+    "acc": {
+      "url": "example.acc.com"
+    },
+    "production": {
+      "url": "example.prd.com"
+    }
+  },
+  "options": {
+    "logLevel": 0
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "menu": {
+    "description": "action"
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": ""
+    }
+  }
+}

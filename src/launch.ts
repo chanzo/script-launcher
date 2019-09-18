@@ -18,6 +18,7 @@ interface IArgs {
   script: string;
   ansi: boolean;
   directory: string;
+  template: string;
   menuTimeout: number;
 }
 
@@ -28,15 +29,27 @@ function showLoadedFiles(files: string[]): void {
   Logger.info();
 }
 
-function createExampleFile(fileName: string, config: Partial<IConfig>): void {
-  if (fs.existsSync(fileName)) {
-    Logger.error('The file \'' + fileName + '\' already exists.');
-    return;
+function copyTemplateFiles(template: string, directory: string): void {
+  const templatePath = path.join(__dirname, 'templates', template);
+
+  console.log(Colors.Bold + 'Create starter config with template:' + Colors.Normal, template);
+  console.log();
+
+  if (!fs.existsSync(templatePath) || !fs.statSync(templatePath).isDirectory()) {
+    throw new Error('Template not found.');
   }
 
-  fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
+  for (const fileName of fs.readdirSync(templatePath)) {
+    const sourceFile = path.join(templatePath, fileName);
+    const targetFile = path.join(directory, fileName);
 
-  console.log(Colors.Bold + 'Created file: ' + Colors.Normal + fileName.replace(process.cwd(), '.'));
+    if (!fs.existsSync(targetFile)) {
+      console.log(Colors.Bold + 'Createing:' + Colors.Normal, targetFile);
+      fs.copyFileSync(sourceFile, targetFile);
+    } else {
+      console.log(Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ', already exists.');
+    }
+  }
 }
 
 function updatePackageJson(directory: string): void {
@@ -88,6 +101,7 @@ function showHelp() {
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
+    template: '  ' + Colors.Cyan + 'template=    ' + Colors.Normal + 'The template to use for the starter config files.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
   });
 }
@@ -185,6 +199,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       script: null,
       ansi: true,
       directory: process.cwd(),
+      template: 'basic',
       menuTimeout: undefined,
     });
 
@@ -240,9 +255,8 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.init) {
-      createExampleFile(path.join(launchArgs.directory, 'launcher-config.json'), Config.initConfig);
-      createExampleFile(path.join(launchArgs.directory, 'launcher-settings.json'), Config.settingsConfig);
-      createExampleFile(path.join(launchArgs.directory, 'launcher-menu.json'), Config.initMenu);
+      copyTemplateFiles(launchArgs.template, launchArgs.directory);
+
       updatePackageJson(launchArgs.directory);
       Logger.log();
       exitCode = 0;

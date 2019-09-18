@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "serve:dev": {
+      "concurrent": [
+        "echo Start development server",
+        "serve:dev"
+      ]
+    },
+    "serve:$config": "echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url",
+    "build:$config": "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url",
+    "build:dev": "build:dev"
+  }
+}

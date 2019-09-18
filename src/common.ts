@@ -56,6 +56,8 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
       if (isNaN(value)) value = columns[1];
 
       if (columns[1] === 'true' || columns[1] === 'false') value = columns[1] === 'true';
+
+      // if (typeof defaultData[name] !== typeof value) throw new Error('Unexpected type \"' + typeof value + '\" for argument \"' + name + '\". The argument should be of type \"' + typeof defaultData[name] + '\".');
     } else {
       if (!validArguments.includes(name)) throw new Error('The specified command (\"' + name + '\") is invalid.');
     }
