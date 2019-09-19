@@ -32,12 +32,21 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
   });
 }
 
-export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null = null): T {
-  const result: T = {} as T;
+interface IArguments<T> {
+  arguments: T;
+  optionals: string[];
+}
+
+export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() => IArguments<T>) | null = null): IArguments<T> {
+  const result: IArguments<T> = {
+    arguments: {} as T,
+    optionals: [],
+  };
 
   defaultData = defaultData instanceof Function ? defaultData() : defaultData;
 
-  const validArguments = Object.keys(defaultData);
+  const validArguments = Object.keys(defaultData.arguments);
+  let commandFound = false;
 
   for (const arg of argv) {
     if (arg === '--') break;
@@ -59,10 +68,16 @@ export function parseArgs<T>(argv: string[], defaultData: T | (() => T) | null =
 
       // if (typeof defaultData[name] !== typeof value) throw new Error('Unexpected type \"' + typeof value + '\" for argument \"' + name + '\". The argument should be of type \"' + typeof defaultData[name] + '\".');
     } else {
-      if (!validArguments.includes(name)) throw new Error('The specified command (\"' + name + '\") is invalid.');
+      if (!commandFound) {
+        if (!validArguments.includes(name)) throw new Error('The specified command \"' + name + '\" is invalid.');
+        commandFound = true;
+      } else {
+        result.optionals.push(name);
+        continue;
+      }
     }
 
-    result[name] = value;
+    result.arguments[name] = value;
   }
 
   if (result !== null) {

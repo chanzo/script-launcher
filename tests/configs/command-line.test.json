@@ -9,7 +9,7 @@
         {
           "cmd-args": "init",
           "result": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-menu.json",
@@ -17,7 +17,7 @@
             "\u001b[1mStart script of package.json updated.\u001b[0m"
           ],
           "result:win32": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-menu.json",
@@ -40,7 +40,7 @@
         {
           "cmd-args": "init",
           "result": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-menu.json",
@@ -48,7 +48,7 @@
             "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
           ],
           "result:win32": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-menu.json",
@@ -95,7 +95,7 @@
         {
           "cmd-args": "init",
           "result": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-menu.json",
@@ -103,7 +103,7 @@
             "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ],
           "result:win32": [
-            "\u001b[1mCreate starter config with template:\u001b[0m basic",
+            "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-menu.json",

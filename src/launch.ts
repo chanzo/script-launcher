@@ -32,7 +32,7 @@ function showLoadedFiles(files: string[]): void {
 function copyTemplateFiles(template: string, directory: string): void {
   const templatePath = path.join(__dirname, 'templates', template);
 
-  console.log(Colors.Bold + 'Create starter config with template:' + Colors.Normal, template);
+  console.log(Colors.Bold + 'Create starter config:' + Colors.Normal, template);
   console.log();
 
   if (!fs.existsSync(templatePath) || !fs.statSync(templatePath).isDirectory()) {
@@ -191,31 +191,34 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
     const launchArgs = parseArgs<IArgs>(argsString, {
-      logLevel: undefined,
-      init: false,
-      help: false,
-      version: false,
-      config: null,
-      script: null,
-      ansi: true,
-      directory: process.cwd(),
-      template: 'basic',
-      menuTimeout: undefined,
+      arguments: {
+        logLevel: undefined,
+        init: false,
+        help: false,
+        version: false,
+        config: null,
+        script: null,
+        ansi: true,
+        directory: process.cwd(),
+        template: 'basic',
+        menuTimeout: undefined,
+      },
+      optionals: [],
     });
 
-    launchArgs.directory = path.join(launchArgs.directory); // remove starting ./
+    launchArgs.arguments.directory = path.join(launchArgs.arguments.directory); // remove starting ./
 
-    const configLoad = Config.load(launchArgs.directory);
+    const configLoad = Config.load(launchArgs.arguments.directory);
     let config = configLoad.config;
     let interactive = false;
 
-    if (launchArgs.logLevel === undefined) launchArgs.logLevel = config.options.logLevel;
-    if (launchArgs.menuTimeout === undefined) launchArgs.menuTimeout = config.options.menu.timeout;
+    if (launchArgs.arguments.logLevel === undefined) launchArgs.arguments.logLevel = config.options.logLevel;
+    if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
 
-    Logger.level = launchArgs.logLevel;
+    Logger.level = launchArgs.arguments.logLevel;
 
-    if (launchArgs.config) {
-      const fileName = path.join(launchArgs.directory, launchArgs.config);
+    if (launchArgs.arguments.config) {
+      const fileName = path.join(launchArgs.arguments.directory, launchArgs.arguments.config);
 
       config = config.merge(fileName);
 
@@ -224,7 +227,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
-    if (!launchArgs.ansi) disableAnsiColors();
+    if (!launchArgs.arguments.ansi) disableAnsiColors();
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
@@ -240,24 +243,24 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.debug('Config: ', stringify(config));
 
-    if (launchArgs.version) {
+    if (launchArgs.arguments.version) {
       console.log(version);
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.help) {
+    if (launchArgs.arguments.help) {
       showHelp();
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.init) {
-      copyTemplateFiles(launchArgs.template, launchArgs.directory);
+    if (launchArgs.arguments.init) {
+      copyTemplateFiles(launchArgs.arguments.template, launchArgs.arguments.directory);
 
-      updatePackageJson(launchArgs.directory);
+      updatePackageJson(launchArgs.arguments.directory);
       Logger.log();
       exitCode = 0;
       return;
@@ -266,13 +269,13 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     let launchScript = lifecycleEvent;
     let scriptId = '';
 
-    if (!launchArgs.script) {
+    if (!launchArgs.arguments.script) {
       if (lifecycleEvent === 'start') {
         launchScript = commandArgs[0];
         scriptId = commandArgs.shift();
       }
     } else {
-      launchScript = launchArgs.script;
+      launchScript = launchArgs.arguments.script;
     }
 
     commandArgs.unshift(...getRemaining(argsString));
@@ -308,7 +311,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript === undefined) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.menuTimeout, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -320,7 +323,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    if (!launchArgs.script && lifecycleEvent === 'start') {
+    if (!launchArgs.arguments.script && lifecycleEvent === 'start') {
       commandArgs[0] = Scripts.parse(launchScript).command;
     } else {
       commandArgs.unshift(Scripts.parse(launchScript).command);
