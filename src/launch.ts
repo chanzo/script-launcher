@@ -18,7 +18,6 @@ interface IArgs {
   script: string;
   ansi: boolean;
   directory: string;
-  template: string;
   menuTimeout: number;
 }
 
@@ -27,6 +26,18 @@ function showLoadedFiles(files: string[]): void {
     Logger.info('Loaded config: ', file);
   }
   Logger.info();
+}
+
+function showTemplates() {
+  const templatePath = path.join(__dirname, 'templates');
+
+  console.log(Colors.Bold + 'Available templates:' + Colors.Normal);
+  console.log();
+
+  for (const fileName of fs.readdirSync(templatePath)) {
+    console.log(fileName);
+  }
+
 }
 
 function copyTemplateFiles(template: string, directory: string): void {
@@ -89,7 +100,7 @@ function showHelp() {
     init: [
       '',
       'Commands:',
-      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
+      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
@@ -101,7 +112,6 @@ function showHelp() {
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
-    template: '  ' + Colors.Cyan + 'template=    ' + Colors.Normal + 'The template to use for the starter config files.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
   });
 }
@@ -200,7 +210,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         script: null,
         ansi: true,
         directory: process.cwd(),
-        template: 'basic',
         menuTimeout: undefined,
       },
       optionals: [],
@@ -258,7 +267,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.arguments.init) {
-      copyTemplateFiles(launchArgs.arguments.template, launchArgs.arguments.directory);
+      const template = launchArgs.optionals[0];
+
+      if (!template) {
+        showTemplates();
+        return;
+      }
+
+      copyTemplateFiles(template, launchArgs.arguments.directory);
 
       updatePackageJson(launchArgs.arguments.directory);
       Logger.log();

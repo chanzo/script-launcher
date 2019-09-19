@@ -7,7 +7,10 @@
       },
       "tests": [
         {
-          "cmd-args": "init",
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
@@ -38,7 +41,10 @@
       },
       "tests": [
         {
-          "cmd-args": "init",
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
@@ -68,7 +74,7 @@
             "Usage: launch [command] [options...]",
             "",
             "Commands:",
-            "  \u001b[36minit         \u001b[0mCreate starter config files.",
+            "  \u001b[36minit         \u001b[0m[template] Create starter config files.",
             "  \u001b[36mhelp         \u001b[0mShow this help.",
             "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
             "",
@@ -78,7 +84,6 @@
             "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
             "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
             "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded.",
-            "  \u001b[36mtemplate=    \u001b[0mThe template to use for the starter config files.",
             "  \u001b[36mmenuTimeout= \u001b[0mSet menu timeout in seconds."
           ]
         },
@@ -93,7 +98,10 @@
       "files": {},
       "tests": [
         {
-          "cmd-args": "init",
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
