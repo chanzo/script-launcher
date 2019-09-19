@@ -397,6 +397,62 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Variable assignments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "assignments:$value1=": [
+              "echo value1: $value1"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments",
+          "result": [
+            "value1:"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:B",
+          "result": [
+            "value1: B"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Variable assignments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "assignments:$value1": [
+              "echo value1: $value1"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments",
+          "result": [
+            "Error: Missing launch script: assignments"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:B",
+          "result": [
+            "value1: B"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,7 +1,5 @@
 {
-  "menu": {
-    "description": "action"
-  },
+  "menu": {},
   "options": {
     "menu": {
       "defaultChoice": ""

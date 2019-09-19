@@ -1,16 +1,16 @@
 {
   "settings": {
+    "": {
+      "base_href": "/"
+    },
     "dev": {
-      "url": "example.dev.com"
+      "base_href": "/"
     },
     "acc": {
-      "url": "example.acc.com"
+      "base_href": "/"
     },
     "production": {
-      "url": "example.prd.com"
+      "base_href": "/"
     }
-  },
-  "options": {
-    "logLevel": 0
   }
 }

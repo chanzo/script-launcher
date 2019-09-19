@@ -2,12 +2,13 @@
   "scripts": {
     "serve:dev": {
       "concurrent": [
-        "echo Start development server",
-        "serve:dev"
+        "echo Start development backend api...",
+        "",
+        "serve:"
       ]
     },
-    "serve:$config": "echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url",
-    "build:$config": "echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url",
-    "build:dev": "build:dev"
+    "serve:$config=": "ng serve --configuration=$config",
+    "build:$config=": "ng build --configuration=$config --base-href $launch_setting_${config}_base_href",
+    "build:dev": "build:"
   }
 }
