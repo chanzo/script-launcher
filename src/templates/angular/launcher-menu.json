@@ -1,0 +1,22 @@
+{
+  "menu": {
+    "description": "action",
+    "serve": {
+      "description": "environment",
+      "development": "serve:dev",
+      "acceptance": "serve:acc",
+      "production": "serve:production"
+    },
+    "build": {
+      "description": "environment",
+      "development": "build:dev",
+      "acceptance": "build:acc",
+      "production": "build:production"
+    }
+  },
+  "options": {
+    "menu": {
+      "defaultChoice": "serve:development"
+    }
+  }
+}

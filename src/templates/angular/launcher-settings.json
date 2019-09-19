@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "": {
+      "base_href": "/"
+    },
+    "dev": {
+      "base_href": "/"
+    },
+    "acc": {
+      "base_href": "/"
+    },
+    "production": {
+      "base_href": "/"
+    }
+  }
+}

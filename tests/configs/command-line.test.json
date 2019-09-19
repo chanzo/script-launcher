@@ -1,6 +1,70 @@
 {
   "Command line": [
     {
+      "name": "Init",
+      "files": {
+        "package": {}
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
+          "result": [
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-menu.json",
+            "",
+            "\u001b[1mStart script of package.json updated.\u001b[0m"
+          ],
+          "result:win32": [
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-menu.json",
+            "",
+            "\u001b[1mStart script of package.json updated.\u001b[0m"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Init",
+      "files": {
+        "package": {
+          "scripts": {
+            "start": ""
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
+          "result": [
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-menu.json",
+            "",
+            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
+          ],
+          "result:win32": [
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-menu.json",
+            "",
+            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
+          ]
+        }
+      ]
+    },
+    {
       "name": "Help",
       "files": {},
       "tests": [
@@ -10,7 +74,7 @@
             "Usage: launch [command] [options...]",
             "",
             "Commands:",
-            "  \u001b[36minit         \u001b[0mCreate starter config files.",
+            "  \u001b[36minit         \u001b[0m[template] Create starter config files.",
             "  \u001b[36mhelp         \u001b[0mShow this help.",
             "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
             "",
@@ -25,7 +89,7 @@
         },
         {
           "cmd-args": "--version",
-          "result": "1.17.3"
+          "result": "1.18.0"
         }
       ]
     },
@@ -34,31 +98,39 @@
       "files": {},
       "tests": [
         {
-          "cmd-args": "init",
+          "cmd-args": [
+            "init",
+            "basic"
+          ],
           "result": [
-            "Created file: tests/temp/0001/launcher-config.json",
-            "Created file: tests/temp/0001/launcher-settings.json",
-            "Created file: tests/temp/0001/launcher-menu.json"
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-menu.json",
+            "",
+            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ],
           "result:win32": [
-            "Created file: tests\\temp\\0001\\launcher-config.json",
-            "Created file: tests\\temp\\0001\\launcher-settings.json",
-            "Created file: tests\\temp\\0001\\launcher-menu.json"
+            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-menu.json",
+            "",
+            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ]
         },
         {
           "lifecycle": "start",
           "npm-args": "serve:dev",
           "result": [
-            "Start development server",
-            "ng serve --configuration=dev --deploy-url example.dev.com"
+            "Serve dev command."
           ]
         },
         {
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
-            "ng build --configuration=production --deploy-url example.prd.com"
+            "Build production command."
           ]
         }
       ]

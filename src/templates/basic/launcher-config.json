@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "serve:$config": "echo Serve $config command.",
+    "build:$config": "echo Build $config command."
+  }
+}

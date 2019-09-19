@@ -28,15 +28,71 @@ function showLoadedFiles(files: string[]): void {
   Logger.info();
 }
 
-function createExampleFile(fileName: string, config: Partial<IConfig>): void {
-  if (fs.existsSync(fileName)) {
-    Logger.error('The file \'' + fileName + '\' already exists.');
+function showTemplates() {
+  const templatePath = path.join(__dirname, 'templates');
+
+  console.log(Colors.Bold + 'Available templates:' + Colors.Normal);
+  console.log();
+
+  for (const fileName of fs.readdirSync(templatePath)) {
+    console.log(fileName);
+  }
+
+}
+
+function copyTemplateFiles(template: string, directory: string): void {
+  const templatePath = path.join(__dirname, 'templates', template);
+
+  console.log(Colors.Bold + 'Create starter config:' + Colors.Normal, template);
+  console.log();
+
+  if (!fs.existsSync(templatePath) || !fs.statSync(templatePath).isDirectory()) {
+    throw new Error('Template not found.');
+  }
+
+  for (const fileName of fs.readdirSync(templatePath)) {
+    const sourceFile = path.join(templatePath, fileName);
+    const targetFile = path.join(directory, fileName);
+
+    if (!fs.existsSync(targetFile)) {
+      console.log(Colors.Bold + 'Createing:' + Colors.Normal, targetFile);
+      fs.copyFileSync(sourceFile, targetFile);
+    } else {
+      console.log(Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ', already exists.');
+    }
+  }
+}
+
+function updatePackageJson(directory: string): void {
+  const fileName = path.join(directory, 'package.json');
+
+  console.log();
+
+  if (!fs.existsSync(fileName)) {
+    console.log(Colors.Bold + 'Update package.json failed:' + Colors.Normal + ' file not found.');
     return;
   }
 
-  fs.writeFileSync(fileName, JSON.stringify(config, null, 2));
+  try {
 
-  console.log('Created file: ' + fileName.replace(process.cwd(), '.'));
+    const buffer = fs.readFileSync(fileName);
+    const content = JSON.parse(buffer.toString());
+
+    if (content.scripts && content.scripts.start !== undefined) {
+      console.log(Colors.Bold + 'Skipped update package.json: ' + Colors.Normal + 'start script already present.');
+
+      return;
+    }
+    if (!content.scripts) content.scripts = {};
+
+    content.scripts.start = 'launch';
+
+    fs.writeFileSync(fileName, JSON.stringify(content, null, 2));
+
+    console.log(Colors.Bold + 'Start script of package.json updated.' + Colors.Normal);
+  } catch (error) {
+    console.log(Colors.Bold + 'Update package.json failed: ' + Colors.Normal + error.message);
+  }
 }
 
 function showHelp() {
@@ -44,7 +100,7 @@ function showHelp() {
     init: [
       '',
       'Commands:',
-      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + 'Create starter config files.',
+      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
@@ -145,30 +201,33 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
     const launchArgs = parseArgs<IArgs>(argsString, {
-      logLevel: undefined,
-      init: false,
-      help: false,
-      version: false,
-      config: null,
-      script: null,
-      ansi: true,
-      directory: process.cwd(),
-      menuTimeout: undefined,
+      arguments: {
+        logLevel: undefined,
+        init: false,
+        help: false,
+        version: false,
+        config: null,
+        script: null,
+        ansi: true,
+        directory: process.cwd(),
+        menuTimeout: undefined,
+      },
+      optionals: [],
     });
 
-    launchArgs.directory = path.join(launchArgs.directory); // remove starting ./
+    launchArgs.arguments.directory = path.join(launchArgs.arguments.directory); // remove starting ./
 
-    const configLoad = Config.load(launchArgs.directory);
+    const configLoad = Config.load(launchArgs.arguments.directory);
     let config = configLoad.config;
     let interactive = false;
 
-    if (launchArgs.logLevel === undefined) launchArgs.logLevel = config.options.logLevel;
-    if (launchArgs.menuTimeout === undefined) launchArgs.menuTimeout = config.options.menu.timeout;
+    if (launchArgs.arguments.logLevel === undefined) launchArgs.arguments.logLevel = config.options.logLevel;
+    if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
 
-    Logger.level = launchArgs.logLevel;
+    Logger.level = launchArgs.arguments.logLevel;
 
-    if (launchArgs.config) {
-      const fileName = path.join(launchArgs.directory, launchArgs.config);
+    if (launchArgs.arguments.config) {
+      const fileName = path.join(launchArgs.arguments.directory, launchArgs.arguments.config);
 
       config = config.merge(fileName);
 
@@ -177,7 +236,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
-    if (!launchArgs.ansi) disableAnsiColors();
+    if (!launchArgs.arguments.ansi) disableAnsiColors();
 
     if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
 
@@ -193,24 +252,31 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.debug('Config: ', stringify(config));
 
-    if (launchArgs.version) {
+    if (launchArgs.arguments.version) {
       console.log(version);
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.help) {
+    if (launchArgs.arguments.help) {
       showHelp();
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.init) {
-      createExampleFile(path.join(launchArgs.directory, 'launcher-config.json'), Config.initConfig);
-      createExampleFile(path.join(launchArgs.directory, 'launcher-settings.json'), Config.settingsConfig);
-      createExampleFile(path.join(launchArgs.directory, 'launcher-menu.json'), Config.initMenu);
+    if (launchArgs.arguments.init) {
+      const template = launchArgs.optionals[0];
+
+      if (!template) {
+        showTemplates();
+        return;
+      }
+
+      copyTemplateFiles(template, launchArgs.arguments.directory);
+
+      updatePackageJson(launchArgs.arguments.directory);
       Logger.log();
       exitCode = 0;
       return;
@@ -219,13 +285,13 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     let launchScript = lifecycleEvent;
     let scriptId = '';
 
-    if (!launchArgs.script) {
+    if (!launchArgs.arguments.script) {
       if (lifecycleEvent === 'start') {
         launchScript = commandArgs[0];
         scriptId = commandArgs.shift();
       }
     } else {
-      launchScript = launchArgs.script;
+      launchScript = launchArgs.arguments.script;
     }
 
     commandArgs.unshift(...getRemaining(argsString));
@@ -261,7 +327,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript === undefined) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.menuTimeout, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -273,7 +339,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    if (!launchArgs.script && lifecycleEvent === 'start') {
+    if (!launchArgs.arguments.script && lifecycleEvent === 'start') {
       commandArgs[0] = Scripts.parse(launchScript).command;
     } else {
       commandArgs.unshift(Scripts.parse(launchScript).command);
