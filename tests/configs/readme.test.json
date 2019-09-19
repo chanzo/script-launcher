@@ -20,7 +20,7 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js"
+          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates"
         }
       ]
     },
@@ -67,7 +67,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.17.3",
+            "\u001b[1mVersion:\u001b[0m 1.18.0",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -85,7 +85,7 @@
           ],
           "result:win32": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.17.3",
+            "\u001b[1mVersion:\u001b[0m 1.18.0",
             "\u001b[1mPlatform:\u001b[0m win32",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -133,7 +133,7 @@
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js",
+            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates",
             "Markdown files: README.md"
           ]
         }

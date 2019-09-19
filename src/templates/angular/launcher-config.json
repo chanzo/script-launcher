@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "serve:dev": {
+      "concurrent": [
+        "echo Start development backend api...",
+        "",
+        "serve:"
+      ]
+    },
+    "serve:$config=": "ng serve --configuration=$config",
+    "build:$config=": "ng build --configuration=$config --base-href $launch_setting_${config}_base_href",
+    "build:dev": "build:"
+  }
+}

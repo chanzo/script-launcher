@@ -10,7 +10,7 @@
 
 # Script Launcher
 
-Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with team mates on Mac, Linux and Windows can be a seamless experience. 
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows will be seamless experience. 
 
 Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
@@ -23,13 +23,13 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create the starter **launcher-config.json** , **launcher-settings.json** and **launcher-menu.json** files.
+Use **launch init** to create a starter configuration.
 
 ``` bash
-npx launch init
+npx launch init basic
 ```
 
-Change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also use custom scripts for starting Script Launcher.
+If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add custom run scripts for starting Script Launcher.
 ``` JSON
 {
     ...
