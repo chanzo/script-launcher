@@ -81,61 +81,6 @@ export class Config {
     },
   };
 
-  public static readonly initConfig: Partial<IConfig> = {
-    scripts: {
-      'serve:dev': {
-        concurrent: [
-          'echo Start development server',
-          'serve:dev',
-        ],
-      } as IScript,
-      'serve:$config': 'echo ng serve --configuration=$config --deploy-url $launch_setting_${config}_url',
-      'build:$config': 'echo ng build --configuration=$config --deploy-url $launch_setting_${config}_url',
-      'build:dev': 'build:dev',
-    },
-  };
-
-  public static readonly settingsConfig: Partial<IConfig> = {
-    settings: {
-      dev: {
-        url: 'example.dev.com',
-      },
-      acc: {
-        url: 'example.acc.com',
-      },
-      production: {
-        url: 'example.prd.com',
-      },
-    },
-    options: {
-      logLevel: 0,
-    } as IOptions,
-  };
-
-  public static readonly initMenu: Partial<IConfig> = {
-    menu: {
-      description: 'action',
-      serve: {
-        description: 'environment',
-        development: 'serve:dev',
-        acceptance: 'serve:acc',
-        production: 'serve:production',
-      },
-      build: {
-        description: 'environment',
-        development: 'build:dev',
-        acceptance: 'build:acc',
-        production: 'build:production',
-      },
-    },
-    options: {
-      menu: {
-        defaultChoice: 'serve:development',
-      },
-    } as IOptions,
-
-  };
-
   public static load(directory: string): { files: string[], config: Config } {
     const hash = new Set<string>();
     let config = new Config(Config.default);
