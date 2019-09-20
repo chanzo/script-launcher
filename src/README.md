@@ -10,7 +10,7 @@
 
 # Script Launcher
 
-Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows will be seamless experience. 
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience. 
 
 Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
@@ -540,11 +540,9 @@ Use the **menu** section to create an interactive landing menu, so a new develop
 * **description** keyword is used as a description of presented values.
 * **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. 
 
-Use `npm start menu` to ignore the `defaultScript` options value so the menu will be interactive. 
+Use `npm start` to show the menu, after selecting your desired action you will have the option to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file. Use `npm start menu` to ignore the `defaultScript` options value so the menu will always be interactive. 
 
 The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information on the available options.
-
-After selecting your desired action you will be asked to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file.
 
 **Run**: `npm start` to use this example.
 ``` JSON
