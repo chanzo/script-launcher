@@ -1,16 +1,18 @@
-import { Config, IConfig, ILaunchSetting, ISettings } from './config-loader';
+import { Config, ILaunchSetting, IMenu, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
-import { Scripts } from './scripts';
+import { IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
+import inquirer = require('inquirer');
 
 interface IArgs {
   init: boolean;
+  migrate: boolean;
   help: boolean;
   version: boolean;
   logLevel: number;
@@ -20,6 +22,40 @@ interface IArgs {
   directory: string;
   menuTimeout: number;
 }
+
+const npmScripts = [
+  'prepublish',
+  'prepare',
+  'prepublishOnly',
+  'prepack',
+  'postpack',
+  'publish',
+  'postpublish',
+  'preinstall',
+  'install',
+  'postinstall',
+  'preuninstall',
+  'uninstall',
+  'postuninstall',
+  'preversion',
+  'version',
+  'postversion',
+  'pretest',
+  'test',
+  'posttest',
+  'prestop',
+  'stop',
+  'poststop',
+  'prestart',
+  'start',
+  'poststart',
+  'prerestart',
+  'restart',
+  'postrestart',
+  'preshrinkwrap',
+  'shrinkwrap',
+  'postshrinkwrap',
+];
 
 function showLoadedFiles(files: string[]): void {
   for (const file of files) {
@@ -55,17 +91,158 @@ function copyTemplateFiles(template: string, directory: string): void {
     const targetFile = path.join(directory, fileName);
 
     if (!fs.existsSync(targetFile)) {
-      console.log(Colors.Bold + 'Createing:' + Colors.Normal, targetFile);
+      console.log(Colors.Bold + 'Createing:' + Colors.Normal, targetFile.replace(process.cwd() + path.sep, ''));
       fs.copyFileSync(sourceFile, targetFile);
     } else {
-      console.log(Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ', already exists.');
+      console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ' already exists.');
     }
+  }
+}
+
+async function areYouSure(): Promise<boolean> {
+  const choice = await inquirer.prompt<{ value: boolean }>([
+    {
+      type: 'confirm',
+      name: 'value',
+      default: false,
+      message: 'Are you sure:',
+    },
+  ]);
+
+  return choice.value;
+}
+
+function splitCommand(command: string): string[] {
+  const result = [];
+  let last = 0;
+  let index = 0;
+
+  while (index < command.length) {
+    const value = command.substr(index);
+
+    if (value.startsWith('&&')) {
+      result.push(command.substr(last, index - last).trim());
+      index++;
+
+      last = index + 1;
+    }
+
+    if (value.startsWith('(')) {
+      let open = 1;
+
+      while (open > 0 && ++index < command.length) {
+        if (command[index] === '(') open++;
+        if (command[index] === ')') open--;
+      }
+    }
+
+    if (value.startsWith('\"')) {
+      while (++index < command.length && command[index] !== '\"');
+    }
+
+    index++;
+  }
+
+  result.push(command.substr(last, index - last).trim());
+
+  return result;
+}
+
+async function migratePackageJson(directory: string, testmode: boolean): Promise<void> {
+  const menuFile = path.join(directory, 'launcher-menu.json');
+  const configFile = path.join(directory, 'launcher-config.json');
+  const packageFile = path.join(directory, 'package.json');
+
+  console.log(Colors.Bold + 'Migrating: ' + Colors.Normal + 'package.json');
+  console.log();
+
+  if (fs.existsSync(menuFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
+    return;
+  }
+
+  if (fs.existsSync(configFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-config.json already exists.');
+    return;
+  }
+
+  const buffer = fs.readFileSync(packageFile);
+  const content = JSON.parse(buffer.toString()) as { scripts: { [name: string]: string } };
+  const sourceScripts: { [name: string]: string } = {};
+  const targetScripts: IScripts = {};
+  const menuEntries: IMenu = {
+    description: '',
+  };
+
+  if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
+    return;
+  }
+
+  for (const [key, value] of Object.entries(content.scripts)) {
+    const values = splitCommand(value);
+    const entries = key.split(':');
+    let currMenu = menuEntries;
+    let nextMenu = menuEntries;
+    let entry = key;
+
+    for (const item of entries) {
+      entry = item;
+
+      currMenu = nextMenu;
+
+      if (currMenu[item] === undefined) {
+        currMenu[item] = {
+          description: '',
+        };
+      }
+
+      nextMenu = currMenu[item] as any;
+    }
+
+    currMenu[entry] = key;
+
+    if (values.length > 1) {
+      targetScripts[key] = values.map((item) => item.trim().replace('npm run ', ''));
+    } else {
+      targetScripts[key] = value;
+    }
+
+    if (npmScripts.includes(key)) sourceScripts[key] = 'launch';
+  }
+
+  const targetCount = Object.entries(targetScripts).length;
+  const sourceCount = Object.entries(sourceScripts).length;
+
+  console.log('Script to remove:', targetCount - sourceCount);
+  console.log('Script to update:', sourceCount + 1);
+  console.log();
+
+  sourceScripts.start = 'launch';
+  content.scripts = sourceScripts;
+
+  if (testmode || await areYouSure()) {
+    console.log();
+    console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
+    fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
+
+    console.log(Colors.Bold + 'Creating:' + Colors.Normal, menuFile.replace(process.cwd() + path.sep, ''));
+    fs.writeFileSync(menuFile, JSON.stringify({
+      menu: menuEntries,
+    }, null, 2));
+
+    console.log(Colors.Bold + 'Creating:' + Colors.Normal, configFile.replace(process.cwd() + path.sep, ''));
+    fs.writeFileSync(configFile, JSON.stringify({
+      scripts: targetScripts,
+    }, null, 2));
+
   }
 }
 
 function updatePackageJson(directory: string): void {
   const fileName = path.join(directory, 'package.json');
 
+  console.log(Colors.Bold + 'Updating package.json.' + Colors.Normal);
   console.log();
 
   if (!fs.existsSync(fileName)) {
@@ -78,8 +255,8 @@ function updatePackageJson(directory: string): void {
     const buffer = fs.readFileSync(fileName);
     const content = JSON.parse(buffer.toString());
 
-    if (content.scripts && content.scripts.start !== undefined) {
-      console.log(Colors.Bold + 'Skipped update package.json: ' + Colors.Normal + 'start script already present.');
+    if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
+      console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal + ' start script already present.');
 
       return;
     }
@@ -102,6 +279,8 @@ function showHelp() {
       'Commands:',
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
+
+    migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
@@ -182,6 +361,7 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
 
   return result;
 }
+
 function getRemaining(args: string[]): string[] {
   const index = args.indexOf('--');
 
@@ -204,6 +384,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       arguments: {
         logLevel: undefined,
         init: false,
+        migrate: false,
         help: false,
         version: false,
         config: null,
@@ -276,9 +457,18 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
       copyTemplateFiles(template, launchArgs.arguments.directory);
 
+      console.log();
+
       updatePackageJson(launchArgs.arguments.directory);
       Logger.log();
       exitCode = 0;
+      return;
+    }
+    if (launchArgs.arguments.migrate) {
+      await migratePackageJson(launchArgs.arguments.directory, testmode);
+      Logger.log();
+      exitCode = 0;
+
       return;
     }
 

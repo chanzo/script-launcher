@@ -10,7 +10,7 @@
 
 # Script Launcher
 
-Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows will be seamless experience. 
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience. 
 
 Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
 
@@ -56,9 +56,19 @@ npm start build:production
 ```
 Basically you can now use `npm start` instead of `npm run`.
 
+## Migrate package.json scripts
+Make sure all your repository changes are fully committed, so you can undo the changes easily if they do not suit your needs.  Remove the **launcher-config.json** and **launcher-menu.json**, remove the start script from your **package.json**
+
+Now your are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
+``` bash
+npx launch migrate
+```
+
+
 # Table of Contents
 * [Installation](#installation)
 * [Usage examples](#usage-examples)
+* [Migrate package.json scripts](#migrate-package.json-scripts)
 * [Motivation](#motivation)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
@@ -535,7 +545,14 @@ Example using an object array.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. The value of the **description** keyword is used as a description of presented values. The value of the **separator** keyword takes a facultative String value that'll be use as the separator. If omitted, the separator will be --------. Use `npm start menu` to ignore the `defaultScript` options value. The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information.
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. 
+
+* **description** keyword is used as a description of presented values.
+* **separator** keyword takes a facultative String value that'll be use as the separator. If the value is empty, the separator will be --------. 
+
+Use `npm start` to show the menu, after selecting your desired action you will have the option to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file. Use `npm start menu` to ignore the `defaultScript` option, in the `launcher-custom.json` file, so the menu will be interactive. 
+
+The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information on all the available options.
 
 **Run**: `npm start` to use this example.
 ``` JSON

@@ -26,7 +26,8 @@ async function main() {
     'Logging',
     'Launcher arguments',
     'Launcher options',
-    'Glob Options'
+    'Glob Options',
+    'Migrate package.json scripts'
   ]);
 
   const transforms: { [name: string]: TransformCallback } = {
