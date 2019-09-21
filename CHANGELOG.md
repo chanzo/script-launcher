@@ -1,4 +1,8 @@
 # Change Log
+## 1.19.0
+### Changes
+* Added the [migrate argument](#migrate-package.json-scripts) to migrate your **package.json** to **launcher-config.json**
+
 ## 1.18.0
 ### Changes
 * `launch init` now updates the **package.json** file

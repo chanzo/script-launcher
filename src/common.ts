@@ -15,6 +15,7 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
   if (typeof value !== 'string') {
     value = JSON.stringify(value, replacer, space);
   }
+
   return value.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
     let cls = Colors.Yellow;
     if (/^"/.test(match)) {

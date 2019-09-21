@@ -1,6 +1,36 @@
 {
   "Command line": [
     {
+      "name": "Help",
+      "files": {},
+      "tests": [
+        {
+          "cmd-args": "--help",
+          "result": [
+            "Usage: launch [command] [options...]",
+            "",
+            "Commands:",
+            "  \u001b[36minit         \u001b[0m[template] Create starter config files.",
+            "  \u001b[36mmigrate      \u001b[0mMigrate your package.json scripts.",
+            "  \u001b[36mhelp         \u001b[0mShow this help.",
+            "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
+            "",
+            "Options:",
+            "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
+            "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
+            "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
+            "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
+            "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded.",
+            "  \u001b[36mmenuTimeout= \u001b[0mSet menu timeout in seconds."
+          ]
+        },
+        {
+          "cmd-args": "--version",
+          "result": "1.19.0"
+        }
+      ]
+    },
+    {
       "name": "Init",
       "files": {
         "package": {}
@@ -14,16 +44,20 @@
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0000/launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-menu.json",
+            "",
+            "\u001b[1mUpdating package.json.\u001b[0m",
             "",
             "\u001b[1mStart script of package.json updated.\u001b[0m"
           ],
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0000\\launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-menu.json",
+            "",
+            "\u001b[1mUpdating package.json.\u001b[0m",
             "",
             "\u001b[1mStart script of package.json updated.\u001b[0m"
           ]
@@ -48,48 +82,23 @@
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0002/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/0002/launcher-menu.json",
             "",
-            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
+            "\u001b[1mUpdating package.json.\u001b[0m",
+            "",
+            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already present."
           ],
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0002\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0002\\launcher-menu.json",
             "",
-            "\u001b[1mSkipped update package.json: \u001b[0mstart script already present."
+            "\u001b[1mUpdating package.json.\u001b[0m",
+            "",
+            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already present."
           ]
-        }
-      ]
-    },
-    {
-      "name": "Help",
-      "files": {},
-      "tests": [
-        {
-          "cmd-args": "--help",
-          "result": [
-            "Usage: launch [command] [options...]",
-            "",
-            "Commands:",
-            "  \u001b[36minit         \u001b[0m[template] Create starter config files.",
-            "  \u001b[36mhelp         \u001b[0mShow this help.",
-            "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
-            "",
-            "Options:",
-            "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
-            "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
-            "  \u001b[36mscript=      \u001b[0mLauncher script to start.",
-            "  \u001b[36mansi=        \u001b[0mEnable or disable ansi color output.",
-            "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded.",
-            "  \u001b[36mmenuTimeout= \u001b[0mSet menu timeout in seconds."
-          ]
-        },
-        {
-          "cmd-args": "--version",
-          "result": "1.18.0"
         }
       ]
     },
@@ -108,6 +117,8 @@
             "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-menu.json",
             "",
+            "\u001b[1mUpdating package.json.\u001b[0m",
+            "",
             "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ],
           "result:win32": [
@@ -115,6 +126,8 @@
             "",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-config.json",
             "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-menu.json",
+            "",
+            "\u001b[1mUpdating package.json.\u001b[0m",
             "",
             "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
           ]
@@ -131,6 +144,84 @@
           "npm-args": "build:production",
           "result": [
             "Build production command."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Migrate",
+      "files": {
+        "package": {
+          "scripts": {
+            "build:uva:dev": "echo ng build uva --prod -c=dev",
+            "build:uva:tst": "echo ng build uva --prod -c=tst",
+            "build:uva:acc": "echo ng build uva --prod -c=acc",
+            "build:uva:prd": "echo ng build uva --prod -c=prd",
+            "build:hva:dev": "echo ng build hva --prod -c=dev",
+            "build:hva:tst": "echo ng build hva --prod -c=tst",
+            "build:hva:acc": "echo ng build hva --prod -c=acc",
+            "build:hva:prd": "echo ng build hva --prod -c=prd",
+            "deploy:uva:dev": "npm run build:uva:dev && echo firebase deploy --public dist/uva --project status-uva-dev",
+            "deploy:uva:tst": "npm run build:uva:tst && echo firebase deploy --public dist/uva --project status-uva-tst",
+            "deploy:uva:acc": "npm run build:uva:acc && echo firebase deploy --public dist/uva --project status-uva-acc",
+            "deploy:uva:prd": "npm run build:uva:prd && echo firebase deploy --public dist/uva --project status-uva-prd",
+            "deploy:hva:dev": "npm run build:hva:dev && echo firebase deploy --public dist/hva --project status-hva-dev",
+            "deploy:hva:tst": "npm run build:hva:tst && echo firebase deploy --public dist/hva --project status-hva-tst",
+            "deploy:hva:acc": "npm run build:hva:acc && echo firebase deploy --public dist/hva --project status-hva-acc",
+            "deploy:hva:prd": "npm run build:hva:prd && echo firebase deploy --public dist/hva --project status-hva-prd",
+            "deploy:dev": "npm run deploy:uva:dev && npm run deploy:hva:dev",
+            "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
+            "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
+            "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd"
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "migrate"
+          ],
+          "result": [
+            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "",
+            "Script to remove: 20",
+            "Script to update: 1",
+            "",
+            "",
+            "\u001b[1mUpdating:\u001b[0m tests/temp/0004/package.json",
+            "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-menu.json",
+            "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-config.json"
+          ],
+          "result:win32": [
+            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "",
+            "Script to remove: 20",
+            "Script to update: 1",
+            "",
+            "",
+            "\u001b[1mUpdating:\u001b[0m tests\\temp\\0004\\package.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-menu.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-config.json"
+          ]
+        },
+        {
+          "cmd-args": [
+            "migrate"
+          ],
+          "result": [
+            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "",
+            "\u001b[31m\u001b[1mFailed:\u001b[0m launcher-menu.json already exists."
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "deploy:acc",
+          "result": [
+            "ng build uva --prod -c=acc",
+            "firebase deploy --public dist/uva --project status-uva-acc",
+            "ng build hva --prod -c=acc",
+            "firebase deploy --public dist/hva --project status-hva-acc"
           ]
         }
       ]
