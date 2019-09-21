@@ -68,7 +68,7 @@ npx launch migrate
 # Table of Contents
 * [Installation](#installation)
 * [Usage examples](#usage-examples)
-* [Migrate package.json scripts](#migrate-package.json-scripts)
+* [Migrate package.json scripts](#migrate-packagejson-scripts)
 * [Motivation](#motivation)
 * [Implementation examples](#implementation-examples)
   * [Sequential scripts](#sequential-scripts)
