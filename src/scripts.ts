@@ -35,8 +35,6 @@ export class Scripts {
       for (const script of scripts) {
         if (script.name !== filter) return script;
       }
-
-      throw new Error('Circular script reference detected.');
     }
 
     return null;
