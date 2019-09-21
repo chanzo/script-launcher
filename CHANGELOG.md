@@ -1,4 +1,9 @@
 # Change Log
+
+## 1.19.1
+### Fixes
+* Fix for the "Circular script reference detected.' error
+
 ## 1.19.0
 ### Changes
 * Added the [migrate argument](#migrate-package.json-scripts) to migrate your **package.json** to **launcher-config.json**
