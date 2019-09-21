@@ -191,6 +191,17 @@
             "\u001b[1mUpdating:\u001b[0m tests/temp/0004/package.json",
             "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-menu.json",
             "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-config.json"
+          ],
+          "result:win32": [
+            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "",
+            "Script to remove: 20",
+            "Script to update: 1",
+            "",
+            "",
+            "\u001b[1mUpdating:\u001b[0m tests\\temp\\0004\\package.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-menu.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-config.json"
           ]
         },
         {
