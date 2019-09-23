@@ -534,6 +534,55 @@
         "launcher-config": {
           "scripts": {
             "echo": [
+              "echo "
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": []
+        }
+      ]
+    },
+    {
+      "name": "Auto arguments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "echo": [
+              "echo",
+              "echo"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": []
+        }
+      ]
+    },
+    {
+      "name": "Auto arguments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "echo": [
               "echo $2*"
             ]
           }
