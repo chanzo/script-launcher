@@ -159,9 +159,9 @@ export class TestLauncher {
 
       if (section.commands.length === 0) {
         config.tests = [{
+          ...emptyTest,
           name: 'Missing command',
-          error: 'Markdown section is missing test commands!',
-          ...emptyTest
+          error: 'Markdown section is missing test commands!'
         }];
         continue;
       }
@@ -170,33 +170,29 @@ export class TestLauncher {
         config.tests = [];
         for (const command of section.commands) {
           config.tests.push({
+            ...emptyTest,
             name: command,
-            error: section.error,
-            ...emptyTest
+            error: section.error
           });
         }
         continue;
       }
-
-      // if (section.title === 'Interactive menu') {
-      //   console.log('*******************', config);
-      // }
 
       if (config.tests.length > 0) {
         for (const command of section.commands) {
           const test = config.tests.find((item) => item.name === command);
 
           if (!test) config.tests.push({
+            ...emptyTest,
             name: command,
-            error: 'Markdown example is missing test command: ' + command,
-            ...emptyTest
+            error: 'Markdown example is missing test command: ' + command
           });
         }
       } else {
         for (const command of section.commands) {
           config.tests.push({
-            name: command,
-            ...emptyTest
+            ...emptyTest,
+            name: command
           });
         }
       }

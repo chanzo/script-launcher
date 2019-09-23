@@ -639,6 +639,8 @@ export class Executor {
 
           result.push(this.expand(scriptInfo));
         } else {
+          if (tasks.length === 1 && task === parent) task = Executor.expandArguments(task + ' $*', args);
+
           result.push(task);
         }
       } else {
