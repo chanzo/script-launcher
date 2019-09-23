@@ -67,7 +67,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.1",
+            "\u001b[1mVersion:\u001b[0m 1.19.2",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -85,7 +85,7 @@
           ],
           "result:win32": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.1",
+            "\u001b[1mVersion:\u001b[0m 1.19.2",
             "\u001b[1mPlatform:\u001b[0m win32",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -123,6 +123,18 @@
             "Offset arguments: arg2 arg3",
             "Environment : my-env"
           ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "arg1 arg2 arg3"
+          ]
         }
       ]
     },
@@ -152,12 +164,12 @@
           ],
           "result": [
             "--------------------------------",
-            "Parameter 1: param1",
-            "Parameter 2: param2",
-            "Arguments 1: arg1",
-            "Arguments 2: arg2",
-            "All arguments: arg1 arg2 arg3",
-            "Offset arguments: arg2 arg3",
+            "Main Parameter 1: param1",
+            "Main Parameter 2: param2",
+            "Main Arguments 1: arg1",
+            "Main Arguments 2: arg2",
+            "Main All arguments: arg1 arg2 arg3",
+            "Main Offset arguments: arg2 arg3",
             "--------------------------------",
             "Function Parameter 1: param1",
             "Function Parameter 2: funcParam",
@@ -170,7 +182,7 @@
       ]
     },
     {
-      "name": "Escaping",
+      "name": "Escaping characters",
       "tests": [
         {
           "lifecycle": "start",

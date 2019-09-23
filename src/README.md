@@ -75,10 +75,11 @@ npx launch migrate
   * [Change directory](#change-directory)
   * [Parameters and functions](#parameters-and-functions)
   * [Reference scripts](#reference-scripts)
-  * [Environment values and special commands](#environment-values-and-special-commands)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
-  * [Glob patterns](#glob-patterns)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
+  * [Escaping characters](#escaping-characters)
+  * [Environment values and special commands](#environment-values-and-special-commands)
+  * [Glob patterns](#glob-patterns)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
   * [Condition and exclusion constraints](#condition-and-exclusion-constraints)
@@ -238,6 +239,81 @@ Use an existing script id in the command section to execute another script in yo
 }
 ```
 
+### Environment and command line argument values
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables. 
+
+For compatibility reasons: when using a script name that is equal to the command being executed, all arguments are appended automatically.
+
+**Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "environment=my-env",
+      "echo Node version: $npm_config_node_version",
+      "echo Argument 1 : $1",
+      "echo Argument 2 : $2",
+      "echo",
+      "echo All arguments: $*",
+      "echo Offset arguments: $2*",
+      "echo Environment : $environment"
+    ],
+    "echo": "echo"
+  }
+}
+```
+
+### Launch arguments, command arguments, parameters and arguments
+* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
+* **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
+* **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
+* **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
+
+**Run**: `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
+
+``` JSON
+{
+  "scripts": {
+    "myFunc:$funcParam1:$funcParam2": [
+      "echo Function Parameter 1: $funcParam1",
+      "echo Function Parameter 2: $funcParam2",
+      "echo Function Arguments 1: $1",
+      "echo Function Arguments 2: $2",
+      "echo Function All arguments: $*"
+    ],
+    "build-stuff:$myParam1:$myParam2": [
+      "--",
+      "echo Main Parameter 1: $myParam1",
+      "echo Main Parameter 2: ${myParam2}",
+      "echo Main Arguments 1: $1",
+      "echo Main Arguments 2: $2",
+      "echo Main All arguments: $*",
+      "echo Main Offset arguments: $2*",
+      "--",
+      "myFunc:$myParam1:funcParam funcArg $1",
+      "--"
+    ]
+  }
+}
+```
+
+### Escaping characters
+Use a backslash in the script command, to escaping variables.
+
+**Run**: `npm start escaping arg1` to use this example.
+``` JSON
+{
+  "scripts": {
+    "escaping": [
+      "echo '\\$1                        ' : '$1'",
+      "echo '\\$npm_config_node_version  ' : '$npm_config_node_version'",
+      "echo '\\${1}                      ' : '${1}'",
+      "echo '\\${npm_config_node_version}' : '${npm_config_node_version}'"
+    ]
+  }
+}
+```
+
 ### Environment values and special commands
 | Pattern                 | Type        | Description                                           |
 | ----------------------- | ----------- | ----------------------------------------------------- |
@@ -292,26 +368,6 @@ Use an existing script id in the command section to execute another script in yo
 }
 ```
 
-### Environment and command line argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables.
-
-**Run**: `npm start build-stuff arg1 arg2 arg3` to use this example.
-``` JSON
-{
-  "scripts": {
-    "build-stuff": [
-      "environment=my-env",
-      "echo Node version: $npm_config_node_version",
-      "echo Argument 1 : $1",
-      "echo Argument 2 : $2",
-      "echo All arguments: $*",
-      "echo Offset arguments: $2*",
-      "echo Environment : $environment"
-    ]
-  }
-}
-```
-
 ### Glob patterns
 Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
@@ -323,57 +379,6 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
       "node_modules/script-launcher",
       "echo All files: *",
       "echo Markdown files: **/*.md"
-    ]
-  }
-}
-```
-
-### Launch arguments, command arguments, parameters and arguments
-* **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
-* **Command arguments:** These are values passed from the command line that was used to start the script, for example: `npm start build my-arg1 my-arg2`
-* **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
-* **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
-
-**Run**: `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
-
-``` JSON
-{
-  "scripts": {
-    "myFunc:$funcParam1:$funcParam2": [
-      "echo Function Parameter 1: $funcParam1",
-      "echo Function Parameter 2: $funcParam2",
-      "echo Function Arguments 1: $1",
-      "echo Function Arguments 2: $2",
-      "echo Function All arguments: $*"
-    ],
-    "build-stuff:$myParam1:$myParam2": [
-      "--",
-      "echo Parameter 1: $myParam1",
-      "echo Parameter 2: ${myParam2}",
-      "echo Arguments 1: $1",
-      "echo Arguments 2: $2",
-      "echo All arguments: $*",
-      "echo Offset arguments: $2*",
-      "--",
-      "myFunc:$myParam1:funcParam funcArg $1",
-      "--"
-    ]
-  }
-}
-```
-
-### Escaping
-Use a backslash in the script command, to escaping variables.
-
-**Run**: `npm start escaping arg1` to use this example.
-``` JSON
-{
-  "scripts": {
-    "escaping": [
-      "echo '\\$1                        ' : '$1'",
-      "echo '\\$npm_config_node_version  ' : '$npm_config_node_version'",
-      "echo '\\${1}                      ' : '${1}'",
-      "echo '\\${npm_config_node_version}' : '${npm_config_node_version}'"
     ]
   }
 }
