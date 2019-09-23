@@ -153,6 +153,12 @@
       "files": {
         "package": {
           "scripts": {
+            "ng": "echo ng",
+            "serve": "echo ng serve",
+            "build": "echo ng build",
+            "test": "echo ng test",
+            "lint": "echo ng lint",
+            "e2e": "echo ng e2e",
             "build:uva:dev": "echo ng build uva --prod -c=dev",
             "build:uva:tst": "echo ng build uva --prod -c=tst",
             "build:uva:acc": "echo ng build uva --prod -c=acc",
@@ -172,7 +178,8 @@
             "deploy:dev": "npm run deploy:uva:dev && npm run deploy:hva:dev",
             "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
             "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
-            "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd"
+            "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd",
+            "deploy": "echo Deploy all"
           }
         }
       },
@@ -184,8 +191,8 @@
           "result": [
             "\u001b[1mMigrating: \u001b[0mpackage.json",
             "",
-            "Script to remove: 20",
-            "Script to update: 1",
+            "Script to remove: 26",
+            "Script to update: 2",
             "",
             "",
             "\u001b[1mUpdating:\u001b[0m tests/temp/0004/package.json",
@@ -195,8 +202,8 @@
           "result:win32": [
             "\u001b[1mMigrating: \u001b[0mpackage.json",
             "",
-            "Script to remove: 20",
-            "Script to update: 1",
+            "Script to remove: 26",
+            "Script to update: 2",
             "",
             "",
             "\u001b[1mUpdating:\u001b[0m tests\\temp\\0004\\package.json",

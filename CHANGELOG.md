@@ -1,4 +1,7 @@
 # Change Log
+## 1.19.3
+### Fixes
+* Fix for migrate menu name conflict
 
 ## 1.19.2
 ### Changes
