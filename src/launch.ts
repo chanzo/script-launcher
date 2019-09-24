@@ -191,14 +191,18 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
 
       currMenu = nextMenu;
 
-      if (currMenu[item] === undefined) {
-        currMenu[item] = {
+      while (typeof currMenu[entry] === 'string') entry += ':menu';
+
+      if (nextMenu[entry] === undefined) {
+        nextMenu[entry] = {
           description: '',
         };
       }
 
-      nextMenu = currMenu[item] as any;
+      nextMenu = nextMenu[entry] as any;
     }
+
+    if (Object.entries(currMenu[entry]).length > 1) entry += ':command';
 
     currMenu[entry] = key;
 

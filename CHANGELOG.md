@@ -1,4 +1,11 @@
 # Change Log
+## 1.19.3
+### Fixes
+* Fix for migrate menu name conflict
+
+## 1.19.2
+### Changes
+* For compatibility reasons: when using a script name that is equal to the command being executed, all arguments are appended automatically.
 
 ## 1.19.1
 ### Fixes
