@@ -1,11 +1,10 @@
-import * as inquirer from 'inquirer';
+import * as prompts from 'prompts';
 import * as fs from 'fs';
 import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
-
-type ChoiceType = { value: string } | string | inquirer.SeparatorOptions;
+import { promisify } from 'util';
 
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo & { timedout: boolean } = {
@@ -76,27 +75,30 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
 }
 
 async function saveChoiceMenu(): Promise<boolean> {
-  const choice = await inquirer.prompt<{ value: boolean }>([
-    {
-      type: 'confirm',
-      name: 'value',
-      default: false,
-      message: 'Save selection:',
-    },
-  ]);
+  const choice = await prompts({
+    type: 'confirm',
+    name: 'value',
+    initial: false,
+    message: 'Save selection:',
+  });
 
-  return choice.value;
+  return choice.value as boolean;
 }
 
-function createChoices(menu: IMenu): ChoiceType[] {
-  const choices: ChoiceType[] = [];
+function createChoices(menu: IMenu): prompts.Choice[] {
+  const choices: prompts.Choice[] = [];
 
   for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
       if (name === 'separator' && typeof value === 'string') {
-        choices.push(new inquirer.Separator(value));
+        // choices.push(new inquirer.Separator(value));
       } else {
-        if (Object.keys(value).length !== 0) choices.push(name);
+        if (Object.keys(value).length !== 0) {
+          choices.push({
+            title: name,
+            value: name,
+          });
+        }
       }
     }
   }
@@ -195,9 +197,11 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   const scriptInfo = await Promise.race(promises);
 
   if (waitPromise) {
-    (menuPromise as any).close();
+    // (menuPromise as any).close();
     clearTimeout(waitPromise.handle);
   }
+
+  await promisify(setTimeout)(10000);
 
   return {
     ...scriptInfo,
@@ -212,16 +216,16 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  const menuPromise = inquirer.prompt<{ value: string }>([
+  const menuPromise = prompts(
     {
-      type: 'list',
+      type: 'select',
       name: 'value',
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
-      default: defaults[0],
+      // initial: defaults[0],
       choices: choices,
-      pageSize: pageSize,
+      // pageSize: pageSize
     },
-  ]);
+  );
 
   const resultPromise = menuPromise.then((answer) => {
     const command = menu[answer.value];
@@ -243,7 +247,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     return promptMenu(command as IMenu, pageSize, defaults, choice);
   }) as Promise<IScriptInfo> & { close: () => void };
 
-  resultPromise.close = (menuPromise.ui as any).close.bind(menuPromise.ui);
+  // resultPromise.close = (menuPromise.ui as any).close.bind(menuPromise.ui);
 
   return resultPromise;
 }
