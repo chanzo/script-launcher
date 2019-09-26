@@ -4,7 +4,6 @@ import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { Colors } from './common';
-import { promisify } from 'util';
 import { SelectPrompt } from 'prompts/lib/elements';
 import { Prompt } from 'prompts/lib/elements';
 import { IOptions } from 'prompts/lib';
@@ -212,11 +211,9 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   const scriptInfo = await Promise.race(promises);
 
   if (waitPromise) {
-    // (menuPromise as any).close();
+    (menuPromise as any).close();
     clearTimeout(waitPromise.handle);
   }
-
-  await promisify(setTimeout)(10000);
 
   return {
     ...scriptInfo,
@@ -255,9 +252,9 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
   const menuPromise = toPromise(selectMenu);
 
   const resultPromise = menuPromise.then((answer) => {
-    const command = menu[answer.value];
+    const command = menu[answer[0]];
 
-    choice.push(answer.value);
+    choice.push(answer[0]);
 
     defaults.shift();
 
@@ -274,7 +271,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     return promptMenu(command as IMenu, pageSize, defaults, choice);
   }) as Promise<IScriptInfo> & { close: () => void };
 
-  // resultPromise.close = (menuPromise.ui as any).close.bind(menuPromise.ui);
+  resultPromise.close = selectMenu.abort.bind(selectMenu);
 
   return resultPromise;
 }
