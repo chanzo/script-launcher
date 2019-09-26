@@ -20,6 +20,7 @@ function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> {
     prompt.on('abort', (args) => reject(onAbort(args)));
   });
 }
+
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   let script: IScriptInfo & { timedout: boolean } = {
     name: config.options.menu.defaultChoice,
@@ -144,87 +145,66 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
   return '';
 }
 
-function wait(time: number): Promise<void> & { handle: NodeJS.Timeout } {
-  let handle: NodeJS.Timeout;
-  const promis = new Promise((resolve) => {
-    handle = setTimeout(resolve, time);
-  }) as Promise<void> & { handle: NodeJS.Timeout };
-
-  promis.handle = handle;
-
-  return promis;
-}
-
 async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo & { timedout: boolean }> {
   const choices = defaultChoice.split(':');
   const menuPromise = promptMenu(menu, pageSize, choices, []);
-  const promises: Array<Promise<IScriptInfo>> = [menuPromise];
-  let waitPromise: Promise<void> & { handle: NodeJS.Timeout };
-  let timedout = false;
+  let timeoutId: NodeJS.Timeout = null;
 
   if (timeout > 0) {
-    const defaultValue = (async () => {
-      process.stdin.on('keypress', (char, key) => {
-        timeout = Number.MAX_VALUE;
-        process.stdout.write('\x1b[s'); // Save cursor position
-        console.info();
-        console.info();
-        process.stdout.write('\x1b[K');
-        process.stdout.write('\x1b[u'); // Restore cursor position
-      });
-
-      do {
+    timeoutId = setInterval(() => {
+      if (--timeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
         console.info();
         console.info();
         process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + timeout);
         process.stdout.write('\x1b[u'); // Restore cursor position
 
-        await (waitPromise = wait(1000));
+        return;
+      }
 
-        if (timeout === Number.MAX_VALUE) {
-          await (waitPromise = wait(1000 * 60 * 60)); // User pressed a key wait infinite (1 Hour)
+      clearTimeout(timeoutId);
 
-          return;
-        }
+      timeoutId = null;
 
-        timeout--;
+      menuPromise.close();
+    }, 1000);
 
-      } while (timeout > 0);
-
+    process.stdin.on('keypress', (char, key) => {
+      clearTimeout(timeoutId);
+      process.stdout.write('\x1b[s'); // Save cursor position
       console.info();
-
-      timedout = true;
-
-      return {
-        name: defaultChoice,
-        inline: false,
-        parameters: {},
-        arguments: [],
-        script: getDefaultScript(menu, choices),
-      };
-    })();
-
-    promises.push(defaultValue);
+      console.info();
+      process.stdout.write('\x1b[K');
+      process.stdout.write('\x1b[u'); // Restore cursor position
+    });
   }
 
-  const scriptInfo = await Promise.race(promises);
+  const scriptInfo = await menuPromise;
 
-  if (waitPromise) {
-    (menuPromise as any).close();
-    clearTimeout(waitPromise.handle);
+  if (timeoutId) clearTimeout(timeoutId);
+
+  if (scriptInfo === null) {
+    return {
+      name: defaultChoice,
+      inline: false,
+      parameters: {},
+      arguments: [],
+      script: getDefaultScript(menu, choices),
+      timedout: true,
+    };
   }
 
   return {
     ...scriptInfo,
     ...{
-      timedout: timedout,
+      timedout: false,
     },
   };
 }
 
 function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> & { close: () => void } {
   const choices = createChoices(menu);
+  let close = false;
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
@@ -258,6 +238,8 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
     defaults.shift();
 
+    if (close) return null;
+
     if (!isMenuObject(command)) {
       return {
         name: choice.join(':'),
@@ -271,7 +253,10 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     return promptMenu(command as IMenu, pageSize, defaults, choice);
   }) as Promise<IScriptInfo> & { close: () => void };
 
-  resultPromise.close = selectMenu.abort.bind(selectMenu);
+  resultPromise.close = () => {
+    close = true;
+    selectMenu.submit();
+  };
 
   return resultPromise;
 }

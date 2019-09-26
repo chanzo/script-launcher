@@ -323,21 +323,15 @@
           "lifecycle": "start",
           "result": [
             "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4muva\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n   hva\u001b[90m\u001b[39m",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
             "\u001b[2K\u001b[1G",
-            "\u001b[31m✖\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m uva",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m uva",
             "\n",
             "\u001b[?25h",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
+            "\u001b[1mExecuting: \u001b[2mnpm start serve:uva:dev\u001b[0m",
             "",
             "Start development server",
-            "ng serve hva -c=dev"
+            "ng serve uva -c=dev"
           ],
           "result:win32": [
             "",
@@ -422,20 +416,14 @@
           "lifecycle": "start",
           "result": [
             "\u001b[36m?\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4mserve\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n   build\u001b[90m\u001b[39m",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
             "\u001b[2K\u001b[1G",
-            "\u001b[31m✖\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m›\u001b[39m serve",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m›\u001b[39m serve",
             "\n",
             "\u001b[?25h",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
+            "\u001b[1mExecuting: \u001b[2mnpm start serve\u001b[0m",
             "",
-            "Build script"
+            "Serve script"
           ],
           "result:win32": [
             "",
@@ -517,21 +505,15 @@
           "npm-args": "menu",
           "result": [
             "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4muva\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n   hva\u001b[90m\u001b[39m",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
             "\u001b[2K\u001b[1G",
-            "\u001b[31m✖\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m uva",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m uva",
             "\n",
             "\u001b[?25h",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
+            "\u001b[1mExecuting: \u001b[2mnpm start serve:uva:dev\u001b[0m",
             "",
             "Start development server",
-            "ng serve hva -c=dev"
+            "ng serve uva -c=dev"
           ],
           "result:win32": [
             "",
