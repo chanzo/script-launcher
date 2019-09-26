@@ -1,4 +1,8 @@
 # Change Log
+
+Removed pageSize
+Removed seperator
+
 ## 1.19.3
 ### Fixes
 * Fix for migrate menu name conflict

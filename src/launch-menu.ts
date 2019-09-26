@@ -152,6 +152,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
   if (timeout > 0) {
     timeoutId = setInterval(() => {
+
       if (--timeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
         console.info();
@@ -206,6 +207,8 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
   const choices = createChoices(menu);
   let close = false;
 
+  defaults = [...defaults];
+
   if (choices.length === 0) throw new Error('No menu entries available.');
 
   // const menuPromise = prompts(
@@ -225,6 +228,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
       name: 'value',
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
       // initial: defaults[0],
+      initial: choices.findIndex((item) => item.title === defaults[0]),
       choices: choices,
       // pageSize: pageSize
     },

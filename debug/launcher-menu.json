@@ -11,7 +11,16 @@
       "description": "environment",
       "development": "build:dev",
       "production": "build:prd"
-    }
+    },
+    "item1": "echo 1",
+    "item2": "echo 1",
+    "item3": "echo 1",
+    "item4": "echo 1",
+    "item5": "echo 1",
+    "item6": "echo 1",
+    "item7": "echo 1",
+    "item8": "echo 1",
+    "item9": "echo 1"
   },
   "options": {
     "menu": {
