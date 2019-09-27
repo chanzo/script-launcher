@@ -28,7 +28,7 @@
       ]
     },
     {
-      "id": "0008",
+      "id": "$id",
       "name": "Log output",
       "files": {
         "launcher-config": {
@@ -557,7 +557,10 @@
             "arg2",
             "arg3"
           ],
-          "result": []
+          "result": [],
+          "result:win32": [
+            "ECHO is on."
+          ]
         }
       ]
     },

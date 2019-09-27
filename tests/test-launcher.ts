@@ -128,7 +128,8 @@ export class TestLauncher {
               for (let index = 0; index < result.length; index++) {
                 (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
                   id: testConfig.id,
-                  version: version
+                  version: version,
+                  node_version: process.version.replace(/^v/, '')
                 });
               }
 
@@ -295,8 +296,8 @@ export class TestLauncher {
       previousText = text;
 
       for (const [name, value] of Object.entries(environment)) {
-        text = text.replace(new RegExp('([^\\\\]|^)\\$' + name + '([^\\w]|$)', 'g'), '$1' + value + '$2');
-        text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + name + '\\}', 'g'), '$1' + value);
+        text = text.replace(new RegExp('(.|^)\\$' + name + '([^\\w]|$)', 'g'), '$1' + value + '$2');
+        text = text.replace(new RegExp('(.|^)\\$\\{' + name + '\\}', 'g'), '$1' + value);
 
         if (text.match(/([^\\]|^)\$/) === null) break;
       }

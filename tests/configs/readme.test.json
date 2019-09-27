@@ -122,9 +122,19 @@
             "arg3"
           ],
           "result": [
-            "Node version: 10.16.3",
+            "Node version: $node_version",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
+            "ECHO is on.",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "Environment : my-env"
+          ],
+          "result:win32": [
+            "Node version: $node_version",
+            "Argument 1 : arg1",
+            "Argument 2 : arg2",
+            "ECHO is on.",
             "All arguments: arg1 arg2 arg3",
             "Offset arguments: arg2 arg3",
             "Environment : my-env"
@@ -201,15 +211,15 @@
           ],
           "result": [
             "$1                         : arg1",
-            "$npm_config_node_version   : 10.16.3",
+            "$npm_config_node_version   : $node_version",
             "${1}                       : arg1",
-            "${npm_config_node_version} : 10.16.3"
+            "${npm_config_node_version} : $node_version"
           ],
           "result:win32": [
             "\"$1                        \" : arg1",
-            "\"$npm_config_node_version  \" : 10.16.3",
+            "\"$npm_config_node_version  \" : $node_version",
             "\"${1}                      \" : arg1",
-            "${npm_config_node_version} : 10.16.3"
+            "${npm_config_node_version} : $node_version"
           ]
         }
       ]
@@ -349,16 +359,11 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
             "",
@@ -443,16 +448,11 @@
             "Build script"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  serve \n\u001b[36m> build\u001b[39m ",
-            "\u001b[8D",
-            "\u001b[8C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   serve\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m»\u001b[39m build",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
             "",
@@ -534,16 +534,11 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
             "",
