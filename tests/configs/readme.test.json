@@ -1,6 +1,7 @@
 {
   "Implementation examples (readme.md)": [
     {
+      "id": "0018",
       "name": "Sequential scripts",
       "tests": [
         {
@@ -15,6 +16,7 @@
       ]
     },
     {
+      "id": "0019",
       "name": "Change directory",
       "tests": [
         {
@@ -25,6 +27,7 @@
       ]
     },
     {
+      "id": "0020",
       "name": "Parameters and functions",
       "tests": [
         {
@@ -45,6 +48,7 @@
       ]
     },
     {
+      "id": "0021",
       "name": "Reference scripts",
       "tests": [
         {
@@ -60,6 +64,7 @@
       ]
     },
     {
+      "id": "0022",
       "name": "Environment values and special commands",
       "tests": [
         {
@@ -67,7 +72,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.3",
+            "\u001b[1mVersion:\u001b[0m $version",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -85,7 +90,7 @@
           ],
           "result:win32": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.3",
+            "\u001b[1mVersion:\u001b[0m $version",
             "\u001b[1mPlatform:\u001b[0m win32",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -105,6 +110,7 @@
       ]
     },
     {
+      "id": "0023",
       "name": "Environment and command line argument values",
       "tests": [
         {
@@ -139,6 +145,7 @@
       ]
     },
     {
+      "id": "0024",
       "name": "Glob patterns",
       "tests": [
         {
@@ -152,6 +159,7 @@
       ]
     },
     {
+      "id": "0025",
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
@@ -182,6 +190,7 @@
       ]
     },
     {
+      "id": "0026",
       "name": "Escaping characters",
       "tests": [
         {
@@ -206,6 +215,7 @@
       ]
     },
     {
+      "id": "0027",
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
@@ -224,6 +234,7 @@
       ]
     },
     {
+      "id": "0028",
       "name": "Inline script blocks",
       "transformer": "inlineScriptBlocks",
       "tests": [
@@ -242,6 +253,7 @@
       ]
     },
     {
+      "id": "0029",
       "name": "Condition and exclusion constraints",
       "transformer2": "conditionAndExclusionConstraints",
       "files": {
@@ -271,6 +283,7 @@
       ]
     },
     {
+      "id": "0030",
       "name": "Repeaters (String)",
       "tests": [
         {
@@ -285,6 +298,7 @@
       ]
     },
     {
+      "id": "0031",
       "name": "Repeaters (Object)",
       "tests": [
         {
@@ -308,6 +322,7 @@
       ]
     },
     {
+      "id": "0032",
       "name": "Interactive menu",
       "files": {
         "launcher-settings": {
@@ -354,6 +369,7 @@
       ]
     },
     {
+      "id": "0033",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -392,6 +408,7 @@
       ]
     },
     {
+      "id": "0034",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -445,6 +462,7 @@
       ]
     },
     {
+      "id": "0035",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -536,6 +554,7 @@
       ]
     },
     {
+      "id": "0036",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -555,6 +574,7 @@
       ]
     },
     {
+      "id": "0037",
       "name": "Launcher settings",
       "tests": [
         {

@@ -12,8 +12,6 @@ const testLauncher = new TestLauncher(tempFiles, ['', ''], [
 ]);
 
 async function main() {
-  let index = 0;
-
   testLauncher.loadConfig(testFiles);
   testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)', [
     'Installation',
@@ -53,7 +51,7 @@ async function main() {
   for (const [name, configs] of testLauncher.configs) {
     describe(name, () => {
       for (const config of configs) {
-        const directory = (index++).toString().padStart(4, '0');
+        const directory = config.id.toString().padStart(4, '0');
 
         if (config.files !== undefined) testLauncher.create(directory, config.files);
 
@@ -79,7 +77,7 @@ async function main() {
               try {
                 expect(result.all).toStrictEqual(item.result);
               } catch (error) {
-                console.log('result.all (' + directory + '):', result.all);
+                console.log('result (' + directory + '):', JSON.stringify(result.all, null, 2));
                 throw error;
               }
             }, 10000);

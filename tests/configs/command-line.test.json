@@ -1,6 +1,7 @@
 {
   "Command line": [
     {
+      "id": "0000",
       "name": "Help",
       "files": {},
       "tests": [
@@ -26,11 +27,12 @@
         },
         {
           "cmd-args": "--version",
-          "result": "1.19.3"
+          "result": "$version"
         }
       ]
     },
     {
+      "id": "0001",
       "name": "Init",
       "files": {
         "package": {}
@@ -44,8 +46,8 @@
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0001/launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -54,8 +56,8 @@
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0001\\launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -65,6 +67,7 @@
       ]
     },
     {
+      "id": "0002",
       "name": "Init",
       "files": {
         "package": {
@@ -82,8 +85,8 @@
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0002/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0002/launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -92,8 +95,8 @@
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0002\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0002\\launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -103,6 +106,7 @@
       ]
     },
     {
+      "id": "0003",
       "name": "Init",
       "files": {},
       "tests": [
@@ -114,8 +118,8 @@
           "result": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/0003/launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -124,8 +128,8 @@
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\0003\\launcher-menu.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
+            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
@@ -149,6 +153,7 @@
       ]
     },
     {
+      "id": "0004",
       "name": "Migrate",
       "files": {
         "package": {
@@ -195,9 +200,9 @@
             "Script to update: 2",
             "",
             "",
-            "\u001b[1mUpdating:\u001b[0m tests/temp/0004/package.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/0004/launcher-config.json"
+            "\u001b[1mUpdating:\u001b[0m tests/temp/$id/package.json",
+            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-menu.json",
+            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-config.json"
           ],
           "result:win32": [
             "\u001b[1mMigrating: \u001b[0mpackage.json",
@@ -206,9 +211,9 @@
             "Script to update: 2",
             "",
             "",
-            "\u001b[1mUpdating:\u001b[0m tests\\temp\\0004\\package.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\0004\\launcher-config.json"
+            "\u001b[1mUpdating:\u001b[0m tests\\temp\\$id\\package.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
+            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-config.json"
           ]
         },
         {
