@@ -37,6 +37,13 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
     script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
+    if (script === null) {
+      return {
+        startTime: [0, 0],
+        exitCode: 1,
+      };
+    }
+
     if (!script.timedout && await saveChoiceMenu()) {
       saveCustomConfig(config.customFile, {
         menu: {},
