@@ -238,13 +238,13 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
   const menuPromise = toPromise(selectMenu);
 
   const resultPromise = menuPromise.then((answer) => {
+    if (close || answer.length === 0) return null;
+
     const command = menu[answer[0]];
 
     choice.push(answer[0]);
 
     defaults.shift();
-
-    if (close) return null;
 
     if (!isMenuObject(command)) {
       return {
