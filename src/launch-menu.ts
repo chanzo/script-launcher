@@ -106,7 +106,7 @@ function createChoices(menu: IMenu): prompts.Choice[] {
   for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
       if (name === 'separator' && typeof value === 'string') {
-        // choices.push(new inquirer.Separator(value));
+        // Separator not supported by prompts
       } else {
         if (Object.keys(value).length !== 0) {
           choices.push({
@@ -149,15 +149,16 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   const choices = defaultChoice.split(':');
   const menuPromise = promptMenu(menu, pageSize, choices, []);
   let timeoutId: NodeJS.Timeout = null;
+  let currentTimeout = timeout;
 
-  if (timeout > 0) {
+  if (currentTimeout > 0) {
     timeoutId = setInterval(() => {
 
-      if (--timeout > 0) {
+      if (--currentTimeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
         console.info();
         console.info();
-        process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + timeout);
+        process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + currentTimeout);
         process.stdout.write('\x1b[u'); // Restore cursor position
 
         return;
@@ -172,35 +173,42 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
     process.stdin.on('keypress', (char, key) => {
       clearTimeout(timeoutId);
-      process.stdout.write('\x1b[s'); // Save cursor position
-      console.info();
-      console.info();
-      process.stdout.write('\x1b[K');
-      process.stdout.write('\x1b[u'); // Restore cursor position
+
+      if (currentTimeout !== timeout) {
+        process.stdout.write('\x1b[s'); // Save cursor position
+        console.info();
+        console.info();
+        process.stdout.write('\x1b[K');
+        process.stdout.write('\x1b[u'); // Restore cursor position
+      }
     });
   }
 
-  const scriptInfo = await menuPromise;
+  try {
+    const scriptInfo = await menuPromise;
 
-  if (timeoutId) clearTimeout(timeoutId);
+    if (scriptInfo === null) {
+      return {
+        name: defaultChoice,
+        inline: false,
+        parameters: {},
+        arguments: [],
+        script: getDefaultScript(menu, choices),
+        timedout: true,
+      };
+    }
 
-  if (scriptInfo === null) {
     return {
-      name: defaultChoice,
-      inline: false,
-      parameters: {},
-      arguments: [],
-      script: getDefaultScript(menu, choices),
-      timedout: true,
+      ...scriptInfo,
+      ...{
+        timedout: false,
+      },
     };
+  } catch {
+    return null;
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
   }
-
-  return {
-    ...scriptInfo,
-    ...{
-      timedout: false,
-    },
-  };
 }
 
 function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> & { close: () => void } {
@@ -211,26 +219,13 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
-  // const menuPromise = prompts(
-  //   {
-  //     type: 'select',
-  //     name: 'value',
-  //     message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
-  //     // initial: defaults[0],
-  //     choices: choices,
-  //     // pageSize: pageSize
-  //   },
-  // );
-
   const selectMenu = new SelectPrompt(
     {
       type: 'select',
       name: 'value',
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
-      // initial: defaults[0],
       initial: choices.findIndex((item) => item.title === defaults[0]),
       choices: choices,
-      // pageSize: pageSize
     },
   );
   const menuPromise = toPromise(selectMenu);
