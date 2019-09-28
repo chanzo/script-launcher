@@ -123,6 +123,7 @@
           ],
           "result": [
             "Node version: $node_version",
+            "Node version: $node_version",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
             "All arguments: arg1 arg2 arg3",
@@ -130,6 +131,7 @@
             "Environment : my-env"
           ],
           "result:win32": [
+            "Node version: $node_version",
             "Node version: $node_version",
             "Argument 1 : arg1",
             "Argument 2 : arg2",

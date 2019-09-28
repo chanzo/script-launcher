@@ -240,7 +240,7 @@ Use an existing script id in the command section to execute another script in yo
 ```
 
 ### Environment and command line argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables. 
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases. 
 
 For compatibility reasons: when using a script name that is equal to the command being executed, all arguments are appended automatically.
 
@@ -250,6 +250,8 @@ For compatibility reasons: when using a script name that is equal to the command
   "scripts": {
     "build-stuff": [
       "environment=my-env",
+      "node=$npm_config_node",
+      "echo Node version: $node_version",
       "echo Node version: $npm_config_node_version",
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
@@ -608,9 +610,10 @@ The launcher settings can be used to specify named values that can be used by th
 {
   "scripts": {
     "build:$config": [
+      "settings=$launch_setting_${config}",
       "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "echo version: $settings_version",
+      "echo ng build -c=$config --deploy-url $settings_url",
       "",
       {
         "repeater": "$launch_setting_${config}_server",
