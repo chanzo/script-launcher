@@ -28,7 +28,7 @@
       ]
     },
     {
-      "id": "$id",
+      "id": "0008",
       "name": "Log output",
       "files": {
         "launcher-config": {
