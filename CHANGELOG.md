@@ -1,8 +1,18 @@
 # Change Log
-
-Removed pageSize
-Removed seperator
-Added Environment alias support
+* Switch form **Inquirer.js** to **prompts**
+  * Removed **pageSize** options
+  * Removed support for the **seperator** in a menu 
+* Added support for using environment value aliases. More examples at [Environment and command line argument values](#environment-and-command-line-argument-values) and [Launcher settings](#launcher-settings)
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "node=$npm_config_node",
+      "echo Node version: $node_version"
+    ]
+  }
+}
+```
 
 ## 1.19.3
 ### Fixes
@@ -18,7 +28,7 @@ Added Environment alias support
 
 ## 1.19.0
 ### Changes
-* Added the [migrate argument](#migrate-package.json-scripts) to migrate your **package.json** to **launcher-config.json**
+* Added the [migrate argument](#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
 
 ## 1.18.0
 ### Changes

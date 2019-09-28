@@ -734,7 +734,6 @@ The default value is presented in the following example:
 ### Menu options
 * **defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
 * **menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
-* **pageSize:** Change the number of lines that will be rendered for the menu.
 * **timeout:** Auto close/select a menu value after a specified time.
 
 The default value is presented in the following example:
@@ -747,7 +746,6 @@ The default value is presented in the following example:
     "menu": {
       "defaultChoice": "",
       "defaultScript": "",
-      "pageSize": 7,
       "timeout": 0
     }
   }
