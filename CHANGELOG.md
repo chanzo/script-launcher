@@ -1,4 +1,11 @@
 # Change Log
+## 1.22.0
+### Changes
+* Added an argument for a Basic `Basic yes/no prompt.` 
+``` bash
+npx launch --confirm 'Are you sure'
+```
+
 ## 1.21.0
 ### Changes
 * Added support for help texts in [menus](#interactive-menu).
