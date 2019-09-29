@@ -29,7 +29,7 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
-  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
+  private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
 
   private static convertSingleQuote(command: string): string {
     const argv = parseArgsStringToArgv(command);
@@ -73,7 +73,7 @@ export class Executor {
     return text;
   }
 
-  private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
+  private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
     let previousText: string;
 
     do {
@@ -87,12 +87,43 @@ export class Executor {
       }
     } while (text.match(/([^\\]|^)\$/) !== null && text !== previousText);
 
-    if (!remove) return text;
+    return text;
+  }
 
+  private static removeEnvironment(text: string) {
     text = text.replace(/([^\\]|^)\$\w+/g, '$1');
     text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
 
     return text;
+  }
+
+  private static extendEnvironment(environment: { [name: string]: string }, command: string): boolean {
+    const match = command.trim().match(Executor.assignmentPattern);
+
+    if (match !== null) {
+      if (match[2].startsWith('$')) {
+        const environmentValue = match[2].replace('$', '');
+        const settings = Object.entries(environment).filter(([key]) => key.startsWith(environmentValue + '_'));
+
+        for (const [key, value] of settings) {
+          if (key.startsWith(environmentValue)) {
+            const environmentKey = match[1] + key.replace(environmentValue, '');
+
+            environment[environmentKey] = value;
+
+            Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + environmentKey + '=' + value + '\'' + Colors.Normal);
+          }
+        }
+      } else {
+        environment[match[1]] = match[2];
+
+        Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   private static expandGlobs(pattern: string, options?: glob.IOptions): string {
@@ -115,7 +146,7 @@ export class Executor {
     options = { ...options };
     options.env = { ...options.env };
 
-    command = Executor.expandEnvironment(command, options.env, true);
+    command = Executor.expandEnvironment(command, options.env);
 
     if (!options.cwd) options.cwd = '';
 
@@ -161,16 +192,7 @@ export class Executor {
       options.suppress = true;
     }
 
-    // Test whether the command represents the assignment of an environment variable
-    const match = command.trim().match(Executor.assignmentPattern);
-
-    if (match !== null) {
-      options.env[match[1]] = match[2];
-
-      Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
-
-      return { command: null, args, options };
-    }
+    if (Executor.extendEnvironment(options.env, command)) return { command: null, args, options };
 
     const fullPath = path.join(path.resolve(options.cwd), command);
 
@@ -439,6 +461,8 @@ export class Executor {
             ...{ cwd: options.cwd },
           });
 
+          command = Executor.removeEnvironment(command);
+
           // Remove environment and argument escaping
           command = command.replace(/\\\$/g, '$');
 
@@ -554,23 +578,24 @@ export class Executor {
     if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
-      constraint = Executor.expandEnvironment(constraint, options.env, true);
-      // Test whether the command represents the assignment of an environment variable
-      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
+      constraint = Executor.expandEnvironment(constraint, options.env);
 
-      if (assignmentMatchs === null) {
+      if (!Executor.extendEnvironment(options.env, constraint)) {
         const outputMatches = constraint.match(/(.*)\|\?(.*)/);
         let outputPattern: string = null;
 
         if (outputMatches !== null) {
           constraint = outputMatches[1].trim();
-          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env);
+          outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
           ...{ cwd: options.cwd },
         });
+
+        constraint = Executor.removeEnvironment(constraint);
 
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
@@ -581,25 +606,20 @@ export class Executor {
           condition = false;
           break;
         }
-      } else {
-        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
-
-        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 
     for (let constraint of task.exclusion) {
-      constraint = Executor.expandEnvironment(constraint, options.env, true);
-      // Test whether the command represents the assignment of an environment variable
-      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
+      constraint = Executor.expandEnvironment(constraint, options.env);
 
-      if (assignmentMatchs === null) {
+      if (!Executor.extendEnvironment(options.env, constraint)) {
         const outputMatches = constraint.match(/(.*)\|\?(.*)/);
         let outputPattern: string = null;
 
         if (outputMatches !== null) {
           constraint = outputMatches[1].trim();
-          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env);
+          outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
         constraint = Executor.expandGlobs(constraint, {
@@ -607,16 +627,14 @@ export class Executor {
           ...{ cwd: options.cwd },
         });
 
+        constraint = Executor.removeEnvironment(constraint);
+
         Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
         if (await this.evaluateConstraint(constraint, options, outputPattern)) {
           exclusion = true;
           break;
         }
-      } else {
-        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
-
-        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 

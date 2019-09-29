@@ -1,6 +1,7 @@
 {
   "Implementation examples (readme.md)": [
     {
+      "id": "0018",
       "name": "Sequential scripts",
       "tests": [
         {
@@ -15,6 +16,7 @@
       ]
     },
     {
+      "id": "0019",
       "name": "Change directory",
       "tests": [
         {
@@ -25,6 +27,7 @@
       ]
     },
     {
+      "id": "0020",
       "name": "Parameters and functions",
       "tests": [
         {
@@ -45,6 +48,7 @@
       ]
     },
     {
+      "id": "0021",
       "name": "Reference scripts",
       "tests": [
         {
@@ -60,6 +64,7 @@
       ]
     },
     {
+      "id": "0022",
       "name": "Environment values and special commands",
       "tests": [
         {
@@ -67,7 +72,7 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.3",
+            "\u001b[1mVersion:\u001b[0m $version",
             "\u001b[1mPlatform:\u001b[0m linux",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -85,7 +90,7 @@
           ],
           "result:win32": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m 1.19.3",
+            "\u001b[1mVersion:\u001b[0m $version",
             "\u001b[1mPlatform:\u001b[0m win32",
             "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -105,6 +110,7 @@
       ]
     },
     {
+      "id": "0023",
       "name": "Environment and command line argument values",
       "tests": [
         {
@@ -116,9 +122,20 @@
             "arg3"
           ],
           "result": [
-            "Node version: 10.16.3",
+            "Node version: $node_version",
+            "Node version: $node_version",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
+            "All arguments: arg1 arg2 arg3",
+            "Offset arguments: arg2 arg3",
+            "Environment : my-env"
+          ],
+          "result:win32": [
+            "Node version: $node_version",
+            "Node version: $node_version",
+            "Argument 1 : arg1",
+            "Argument 2 : arg2",
+            "ECHO is on.",
             "All arguments: arg1 arg2 arg3",
             "Offset arguments: arg2 arg3",
             "Environment : my-env"
@@ -139,6 +156,7 @@
       ]
     },
     {
+      "id": "0024",
       "name": "Glob patterns",
       "tests": [
         {
@@ -152,6 +170,7 @@
       ]
     },
     {
+      "id": "0025",
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
@@ -182,6 +201,7 @@
       ]
     },
     {
+      "id": "0026",
       "name": "Escaping characters",
       "tests": [
         {
@@ -192,20 +212,21 @@
           ],
           "result": [
             "$1                         : arg1",
-            "$npm_config_node_version   : 10.16.3",
+            "$npm_config_node_version   : $node_version",
             "${1}                       : arg1",
-            "${npm_config_node_version} : 10.16.3"
+            "${npm_config_node_version} : $node_version"
           ],
           "result:win32": [
             "\"$1                        \" : arg1",
-            "\"$npm_config_node_version  \" : 10.16.3",
+            "\"$npm_config_node_version  \" : $node_version",
             "\"${1}                      \" : arg1",
-            "${npm_config_node_version} : 10.16.3"
+            "${npm_config_node_version} : $node_version"
           ]
         }
       ]
     },
     {
+      "id": "0027",
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
@@ -224,6 +245,7 @@
       ]
     },
     {
+      "id": "0028",
       "name": "Inline script blocks",
       "transformer": "inlineScriptBlocks",
       "tests": [
@@ -242,6 +264,7 @@
       ]
     },
     {
+      "id": "0029",
       "name": "Condition and exclusion constraints",
       "transformer2": "conditionAndExclusionConstraints",
       "files": {
@@ -271,6 +294,7 @@
       ]
     },
     {
+      "id": "0030",
       "name": "Repeaters (String)",
       "tests": [
         {
@@ -285,6 +309,7 @@
       ]
     },
     {
+      "id": "0031",
       "name": "Repeaters (Object)",
       "tests": [
         {
@@ -308,6 +333,7 @@
       ]
     },
     {
+      "id": "0032",
       "name": "Interactive menu",
       "files": {
         "launcher-settings": {
@@ -322,16 +348,11 @@
         {
           "lifecycle": "start",
           "result": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
             "",
@@ -339,16 +360,11 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
             "",
@@ -359,6 +375,7 @@
       ]
     },
     {
+      "id": "0033",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -397,6 +414,7 @@
       ]
     },
     {
+      "id": "0034",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -420,32 +438,22 @@
         {
           "lifecycle": "start",
           "result": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  serve \n\u001b[36m❯ build\u001b[39m ",
-            "\u001b[8D",
-            "\u001b[8C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   serve\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m›\u001b[39m build",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
             "",
             "Build script"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  serve \n\u001b[36m> build\u001b[39m ",
-            "\u001b[8D",
-            "\u001b[8C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   serve\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect:\u001b[22m \u001b[90m»\u001b[39m build",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
             "",
@@ -455,6 +463,7 @@
       ]
     },
     {
+      "id": "0035",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -514,16 +523,11 @@
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m›\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
             "",
@@ -531,16 +535,11 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "",
-            "\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m> hva\u001b[39m ",
-            "\u001b[6D",
-            "\u001b[6C",
-            "\u001b[s",
-            "",
-            "",
-            "\u001b[1mAuto select in: \u001b[0m1",
-            "\u001b[u",
-            "",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[32m√\u001b[39m \u001b[1mSelect organization:\u001b[22m \u001b[90m»\u001b[39m hva",
+            "\n",
+            "\u001b[?25h",
             "",
             "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
             "",
@@ -551,6 +550,7 @@
       ]
     },
     {
+      "id": "0036",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -570,6 +570,7 @@
       ]
     },
     {
+      "id": "0037",
       "name": "Launcher settings",
       "tests": [
         {

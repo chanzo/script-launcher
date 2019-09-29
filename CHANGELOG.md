@@ -1,4 +1,19 @@
 # Change Log
+* Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
+  * Removed **pageSize** options
+  * Removed support for the **seperator** in a menu 
+* Added support for using environment value aliases. More examples at [Environment and command line argument values](#environment-and-command-line-argument-values) and [Launcher settings](#launcher-settings)
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "node=$npm_config_node",
+      "echo Node version: $node_version"
+    ]
+  }
+}
+```
+
 ## 1.19.3
 ### Fixes
 * Fix for migrate menu name conflict
@@ -13,7 +28,7 @@
 
 ## 1.19.0
 ### Changes
-* Added the [migrate argument](#migrate-package.json-scripts) to migrate your **package.json** to **launcher-config.json**
+* Added the [migrate argument](#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
 
 ## 1.18.0
 ### Changes
