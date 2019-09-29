@@ -22,59 +22,59 @@ function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> {
 }
 
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
-  let script: IScriptInfo & { timedout: boolean } = {
-    name: config.options.menu.defaultChoice,
-    inline: false,
-    parameters: {},
-    arguments: args,
-    script: config.options.menu.defaultScript,
-    timedout: false,
-  };
-  const shell = Config.evaluateShellOption(config.options.script.shell, true);
+  try {
+    let script: IScriptInfo & { timedout: boolean } = {
+      name: config.options.menu.defaultChoice,
+      inline: false,
+      parameters: {},
+      arguments: args,
+      script: config.options.menu.defaultScript,
+      timedout: false,
+    };
+    const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
-  if (interactive || !script.script) {
-    const pageSize = config.options.menu.pageSize;
+    if (interactive || !script.script) {
+      const pageSize = config.options.menu.pageSize;
 
-    script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
+      script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
-    if (script === null) {
-      return {
-        startTime: [0, 0],
-        exitCode: 1,
-      };
-    }
-
-    if (!script.timedout && await saveChoiceMenu()) {
-      saveCustomConfig(config.customFile, {
-        menu: {},
-        options: {
-          menu: {
-            defaultChoice: script.name,
-            defaultScript: script.script,
+      if (!script.timedout && await saveChoiceMenu()) {
+        saveCustomConfig(config.customFile, {
+          menu: {},
+          options: {
+            menu: {
+              defaultChoice: script.name,
+              defaultScript: script.script,
+            },
           },
-        },
-      } as IConfig);
+        } as IConfig);
+      }
+      console.log();
+    } else {
+      console.log(Colors.Bold + 'Auto menu: ' + Colors.Dim + script.name.padEnd(28) + Colors.Normal + Colors.Dim + '  (Use the menu by running:' + Colors.Bold + ' npm start menu' + Colors.Normal + Colors.Dim + ')' + Colors.Normal);
     }
-    console.log();
-  } else {
-    console.log(Colors.Bold + 'Auto menu: ' + Colors.Dim + script.name.padEnd(28) + Colors.Normal + Colors.Dim + '  (Use the menu by running:' + Colors.Bold + ' npm start menu' + Colors.Normal + Colors.Dim + ')' + Colors.Normal);
+
+    if (!script.name.startsWith('menu:')) script.name = 'menu:' + script.name;
+
+    const command = getStartCommand(script.script, config.scripts);
+
+    if (command && environment.npm_lifecycle_event === 'start') {
+      console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
+      console.log();
+    }
+
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
+
+    return {
+      startTime: executor.startTime,
+      exitCode: await executor.execute(script),
+    };
+  } catch {
+    return {
+      startTime: [0, 0],
+      exitCode: 0,
+    };
   }
-
-  if (!script.name.startsWith('menu:')) script.name = 'menu:' + script.name;
-
-  const command = getStartCommand(script.script, config.scripts);
-
-  if (command && environment.npm_lifecycle_event === 'start') {
-    console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
-    console.log();
-  }
-
-  const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
-
-  return {
-    startTime: executor.startTime,
-    exitCode: await executor.execute(script),
-  };
 }
 
 function getStartCommand(script: IScript, scripts: Scripts): string {
@@ -103,6 +103,8 @@ async function saveChoiceMenu(): Promise<boolean> {
     initial: false,
     message: 'Save selection:',
   });
+
+  if (choice.value === undefined) throw new Error('User aborted.');
 
   return choice.value as boolean;
 }
@@ -211,8 +213,6 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
         timedout: false,
       },
     };
-  } catch {
-    return null;
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
   }
@@ -226,12 +226,16 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
   if (choices.length === 0) throw new Error('No menu entries available.');
 
+  let initialIndex = choices.findIndex((item) => item.title === defaults[0]);
+
+  if (initialIndex === -1) initialIndex = 0;
+
   const selectMenu = new SelectPrompt(
     {
       type: 'select',
       name: 'value',
       message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
-      initial: choices.findIndex((item) => item.title === defaults[0]),
+      initial: initialIndex,
       choices: choices,
     },
   );
