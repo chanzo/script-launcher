@@ -8,7 +8,7 @@ import { formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './c
 import { IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
-import inquirer = require('inquirer');
+import * as prompts from 'prompts';
 
 interface IArgs {
   init: boolean;
@@ -100,16 +100,14 @@ function copyTemplateFiles(template: string, directory: string): void {
 }
 
 async function areYouSure(): Promise<boolean> {
-  const choice = await inquirer.prompt<{ value: boolean }>([
-    {
-      type: 'confirm',
-      name: 'value',
-      default: false,
-      message: 'Are you sure:',
-    },
-  ]);
+  const choice = await prompts({
+    type: 'confirm',
+    name: 'value',
+    initial: false,
+    message: 'Are you sure:',
+  });
 
-  return choice.value;
+  return choice.value as boolean;
 }
 
 function splitCommand(command: string): string[] {
