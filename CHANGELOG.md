@@ -1,4 +1,5 @@
 # Change Log
+## 1.20.0
 * Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
   * Removed **pageSize** options
   * Removed support for the **seperator** in a menu 
