@@ -1,7 +1,9 @@
 {
   "menu": {
     "description": "action",
+    "build:help": "Build node package.",
     "build": "build",
+    "test:help": "Test node package.",
     "test": {
       "run": "test",
       "watch": "test --watchAll"
