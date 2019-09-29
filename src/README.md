@@ -555,7 +555,6 @@ Example using an object array.
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. 
 
 * **description** keyword is used as a description of presented values.
-* **separator** keyword takes a facultative String value that'll be use as the separator. If the value is empty, the separator will be --------. 
 
 Use `npm start` to show the menu, after selecting your desired action you will have the option to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file. Use `npm start menu` to ignore the `defaultScript` option, in the `launcher-custom.json` file, so the menu will be interactive. 
 
@@ -575,17 +574,21 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
   },
   "menu": {
     "description": "organization",
+    "uva:help": "University of Amsterdam",
     "uva": {
       "description": "environment",
       "development": "serve:uva:dev",
       "acceptance": "serve:uva:acc",
       "production": "serve:uva:prd"
     },
-    "separator": "",
+    "hva:help": "Amsterdam University of Applied Sciences",
     "hva": {
       "description": "environment",
+      "development:help": "Builds and serves your app for development.",
       "development": "serve:hva:dev",
+      "acceptance:help": "Builds and serves your app for acceptance.",
       "acceptance": "serve:hva:acc",
+      "production:help": "Builds and serves your app for production.",
       "production": "serve:hva:prd"
     }
   },

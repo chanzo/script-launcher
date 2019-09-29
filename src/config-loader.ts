@@ -6,7 +6,7 @@ import * as path from 'path';
 import glob = require('glob');
 
 export interface IMenu {
-  description: string;
+  description?: string;
   [entry: string]: IScript | IMenu;
 }
 

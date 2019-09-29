@@ -1,5 +1,13 @@
 # Change Log
+## 1.21.0
+### Changes
+* Added support for help texts in [menus](#interactive-menu).
+
+### Fixes
+* Menu ui update bug fix
+
 ## 1.20.0
+### Changes
 * Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
   * Removed **pageSize** options
   * Removed support for the **seperator** in a menu 

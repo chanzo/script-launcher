@@ -111,8 +111,13 @@ async function saveChoiceMenu(): Promise<boolean> {
 
 function createChoices(menu: IMenu): prompts.Choice[] {
   const choices: prompts.Choice[] = [];
+  const help = {};
 
-  for (const [name, value] of Object.entries(menu)) {
+  for (const [name, value] of Object.entries(menu).filter(([name]) => name.endsWith(':help'))) {
+    help[name.replace(':help', '')] = value;
+  }
+
+  for (const [name, value] of Object.entries(menu).filter(([name]) => !name.endsWith(':help'))) {
     if (name !== 'description') {
       if (name === 'separator' && typeof value === 'string') {
         // Separator not supported by prompts
@@ -121,7 +126,8 @@ function createChoices(menu: IMenu): prompts.Choice[] {
           choices.push({
             title: name,
             value: name,
-          });
+            description: help[name],
+          } as any);
         }
       }
     }
@@ -156,7 +162,7 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
 
 async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo & { timedout: boolean }> {
   const choices = defaultChoice.split(':');
-  const menuPromise = promptMenu(menu, pageSize, choices, []);
+  let menuPromise: Promise<IScriptInfo> & { close: () => void };
   let timeoutId: NodeJS.Timeout = null;
   let currentTimeout = timeout;
 
@@ -180,20 +186,27 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
       menuPromise.close();
     }, 1000);
 
-    process.stdin.on('keypress', (char, key) => {
+    const listener = (char, key) => {
       clearTimeout(timeoutId);
 
       if (currentTimeout !== timeout) {
         process.stdout.write('\x1b[s'); // Save cursor position
+
         console.info();
         console.info();
+
         process.stdout.write('\x1b[K');
         process.stdout.write('\x1b[u'); // Restore cursor position
       }
-    });
+
+      process.stdin.removeListener('keypress', listener);
+    };
+
+    process.stdin.on('keypress', listener);
   }
 
   try {
+    menuPromise = promptMenu(menu, pageSize, choices, []);
     const scriptInfo = await menuPromise;
 
     if (scriptInfo === null) {
@@ -234,7 +247,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     {
       type: 'select',
       name: 'value',
-      message: 'Select' + (menu.description ? ' ' + menu.description : '') + ':',
+      message: 'Select' + (menu.description ? ' ' + menu.description : ''),
       initial: initialIndex,
       choices: choices,
     },
