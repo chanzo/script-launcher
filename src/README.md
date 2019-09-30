@@ -448,7 +448,7 @@ This example uses the inline script blocks to run multiple script in parallel an
 ```
 
 ### Confirmation prompt
-Confirmation prompts can be used for asking a confirmation to continue.
+Confirmation prompts can be used for asking a confirmation to continue. Use the **confirm** argument to auto confirm.
 
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON

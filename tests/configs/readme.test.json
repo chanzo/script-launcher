@@ -299,8 +299,40 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
+          "cmd-args": "confirm",
           "result": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m yes",
+            "\n",
+            "\u001b[?25h",
             "You are sure!"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "cmd-args": "--confirm=true",
+          "result": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m yes",
+            "\n",
+            "\u001b[?25h",
+            "You are sure!"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "cmd-args": "--confirm=false",
+          "result": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(y/N)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m no",
+            "\n",
+            "\u001b[?25h",
+            "You are not sure!"
           ]
         }
       ]
