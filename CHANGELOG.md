@@ -15,7 +15,7 @@
 ```
 
 ### Breaking
-* Replaced the **confirm** argument for a **confirm** condition
+* Removed the **confirm** argument
 
 ## 1.22.0
 ### Changes
