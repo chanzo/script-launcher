@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
-import { Colors } from './common';
+import { confirmPrompt, Colors } from './common';
 import { SelectPrompt } from 'prompts/lib/elements';
 import { Prompt } from 'prompts/lib/elements';
 import { IOptions } from 'prompts/lib';
@@ -38,7 +38,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
       script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
-      if (!script.timedout && await saveChoiceMenu()) {
+      if (!script.timedout && await confirmPrompt('Save selection')) {
         saveCustomConfig(config.customFile, {
           menu: {},
           options: {
@@ -94,19 +94,6 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
   if (result.length > 1 || scripts.find(result[0]).length === 0) return null;
 
   return result[0];
-}
-
-async function saveChoiceMenu(): Promise<boolean> {
-  const choice = await prompts({
-    type: 'confirm',
-    name: 'value',
-    initial: false,
-    message: 'Save selection:',
-  });
-
-  if (choice.value === undefined) throw new Error('User aborted.');
-
-  return choice.value as boolean;
 }
 
 function createChoices(menu: IMenu): prompts.Choice[] {

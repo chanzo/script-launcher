@@ -4,13 +4,14 @@ import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { formatLocalTime, stringify, Colors } from './common';
+import { confirmPrompt, formatLocalTime, stringify, Colors } from './common';
 import glob = require('glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 
 interface ITasks {
   parameters: { [name: string]: string }; // Used for debugging only
+  confirm: string[];
   condition: string[];
   exclusion: string[];
   'concurrent': Array<ITasks | string>;
@@ -51,7 +52,7 @@ export class Executor {
   }
 
   private static containsConstraint(task: ITasks): boolean {
-    return task.condition.length > 0 || task.exclusion.length > 0;
+    return task.condition.length > 0 || task.exclusion.length > 0 || task.confirm.length > 0;
   }
 
   private static expandArguments(text: string, args: string[]): string {
@@ -284,12 +285,16 @@ export class Executor {
     const sequential: Array<ITasks | string> = [...tasks.sequential];
 
     if (Executor.containsConstraint(tasks)) {
-      if (await this.evaluateTask(tasks, options)) {
-        concurrent.push(...tasks['concurrent-then']);
-        sequential.push(...tasks['sequential-then']);
-      } else {
-        concurrent.push(...tasks['concurrent-else']);
-        sequential.push(...tasks['sequential-else']);
+      try {
+        if (await this.evaluateTask(tasks, options)) {
+          concurrent.push(...tasks['concurrent-then']);
+          sequential.push(...tasks['sequential-then']);
+        } else {
+          concurrent.push(...tasks['concurrent-else']);
+          sequential.push(...tasks['sequential-else']);
+        }
+      } catch {
+        return 0;
       }
     }
 
@@ -318,6 +323,7 @@ export class Executor {
     const repeater = (script as IScriptTask).repeater;
     const result: ITasks = {
       'parameters': {},
+      'confirm': [],
       'condition': [],
       'exclusion': [],
       'concurrent': [],
@@ -339,6 +345,7 @@ export class Executor {
     }
 
     if (!repeater) {
+      const confirm: IScript[] = [];
       const concurrent: IScript[] = [];
       const sequential: IScript[] = [];
       const concurrentThen: IScript[] = [];
@@ -349,6 +356,7 @@ export class Executor {
       if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
       if (typeof script === 'string') sequential.push(script);
 
+      confirm.push(...this.preprocessScripts((script as IScriptTask).confirm));
       concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
       sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
       concurrentThen.push(...this.preprocessScripts((script as IScriptTask)['concurrent-then']));
@@ -357,6 +365,7 @@ export class Executor {
       sequentialElse.push(...this.preprocessScripts((script as IScriptTask)['sequential-else']));
 
       result.parameters = scriptInfo.parameters;
+      result.confirm.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).confirm, environment, scriptInfo.arguments));
       result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
       result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
       result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
@@ -389,6 +398,7 @@ export class Executor {
 
         result.sequential.push({
           'parameters': repeaterTask.parameters,
+          'confirm': task.confirm,
           'condition': task.condition,
           'exclusion': task.exclusion,
           'concurrent': task.concurrent,
@@ -486,12 +496,16 @@ export class Executor {
         const sequential: Array<ITasks | string> = [...task.sequential];
 
         if (Executor.containsConstraint(task)) {
-          if (await this.evaluateTask(task, options)) {
-            concurrent.push(...task['concurrent-then']);
-            sequential.push(...task['sequential-then']);
-          } else {
-            concurrent.push(...task['concurrent-else']);
-            sequential.push(...task['sequential-else']);
+          try {
+            if (await this.evaluateTask(task, options)) {
+              concurrent.push(...task['concurrent-then']);
+              sequential.push(...task['sequential-then']);
+            } else {
+              concurrent.push(...task['concurrent-else']);
+              sequential.push(...task['sequential-else']);
+            }
+          } catch {
+            return [];
           }
         }
 
@@ -572,6 +586,7 @@ export class Executor {
   private async evaluateTask(task: ITasks, options: ISpawnOptions): Promise<boolean> {
     let condition = true;
     let exclusion = false;
+    let confirmation = !(task.confirm.length > 0);
 
     options = { ...options };
 
@@ -638,7 +653,24 @@ export class Executor {
       }
     }
 
-    return condition && !exclusion;
+    for (let confirm of task.confirm) {
+      confirm = Executor.expandEnvironment(confirm, options.env);
+
+      confirm = Executor.expandGlobs(confirm, {
+        ...this.globOptions,
+        ...{ cwd: options.cwd },
+      });
+
+      confirm = Executor.removeEnvironment(confirm);
+
+      Logger.log(Colors.Bold + 'Confirm         : ' + Colors.Normal + Colors.Green + '\'' + confirm + '\'' + Colors.Normal);
+
+      confirmation = options.testmode || await confirmPrompt(confirm);
+
+      if (!confirmation) break;
+    }
+
+    return condition && confirmation && !exclusion;
   }
 
   private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }): Array<ITasks | string> {

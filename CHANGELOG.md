@@ -1,4 +1,22 @@
 # Change Log
+## 1.22.1
+### Changes
+* Replaced the **confirm** argument for a **confirm** condition
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "confirm": "Are you sure you want to continue",
+      "sequential-then": "echo You are sure!",
+      "sequential-else": "echo You are not sure!"
+    }
+  }
+}
+```
+
+### Breaking
+* Replaced the **confirm** argument for a **confirm** condition
+
 ## 1.22.0
 ### Changes
 * Added an argument for a Basic `Basic yes/no prompt.` 
