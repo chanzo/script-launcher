@@ -12,6 +12,7 @@ import prettyTime = require('pretty-time');
 interface IArgs {
   init: boolean;
   migrate: boolean;
+  confirm: boolean;
   help: boolean;
   version: boolean;
   logLevel: number;
@@ -271,6 +272,7 @@ function showHelp() {
     ],
 
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
+    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Auto confirm confirm conditions.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
@@ -375,6 +377,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         logLevel: undefined,
         init: false,
         migrate: false,
+        confirm: false,
         help: false,
         version: false,
         config: null,
@@ -508,7 +511,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript === undefined) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, launchArgs.arguments.confirm, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -530,7 +533,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, testmode);
 
     startTime = executor.startTime;
 

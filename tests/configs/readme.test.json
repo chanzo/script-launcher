@@ -299,6 +299,7 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
+          "cmd-args": "confirm",
           "result": [
             "You are sure!"
           ]

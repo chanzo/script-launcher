@@ -1,4 +1,8 @@
 # Change Log
+## 1.22.3
+### Changes
+* Added a **confirm** argument for auto confirming the confirm condition
+
 ## 1.22.2
 ### Breaking
 * Changed menu help syntax
