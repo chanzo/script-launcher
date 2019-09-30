@@ -227,10 +227,10 @@ export class Executor {
   private readonly settings: ILaunchSetting;
   private readonly scripts: Scripts;
   private readonly globOptions: glob.IOptions;
-  private readonly confirm: boolean;
+  private readonly confirm?: boolean;
   private readonly testmode: boolean;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions, confirm: boolean, testmode: boolean) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions, confirm: boolean | undefined, testmode: boolean) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;
@@ -667,7 +667,7 @@ export class Executor {
 
       Logger.log(Colors.Bold + 'Confirm         : ' + Colors.Normal + Colors.Green + '\'' + confirm + '\'' + Colors.Normal);
 
-      confirmation = this.confirm || await confirmPrompt(confirm);
+      confirmation = await confirmPrompt(confirm, this.confirm);
 
       if (!confirmation) break;
     }

@@ -3,23 +3,8 @@ import * as fs from 'fs';
 import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
-import { confirmPrompt, Colors } from './common';
+import { confirmPrompt, toPromise, Colors } from './common';
 import { SelectPrompt } from 'prompts/lib/elements';
-import { Prompt } from 'prompts/lib/elements';
-import { IOptions } from 'prompts/lib';
-
-function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> {
-  const dummyHandler = (...args: any[]) => args;
-  const onState = options.onState || dummyHandler;
-  const onAbort = options.onAbort || dummyHandler;
-  const onSubmit = options.onSubmit || dummyHandler;
-
-  return new Promise((resolve, reject) => {
-    prompt.on('state', onState);
-    prompt.on('submit', (args) => resolve(onSubmit(args)));
-    prompt.on('abort', (args) => reject(onAbort(args)));
-  });
-}
 
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, confirm: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   try {

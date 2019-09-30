@@ -272,7 +272,6 @@ function showHelp() {
     ],
 
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
-    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Auto confirm, confirm conditions.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
@@ -281,6 +280,7 @@ function showHelp() {
     ],
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
+    confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
@@ -377,7 +377,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         logLevel: undefined,
         init: false,
         migrate: false,
-        confirm: false,
+        confirm: undefined,
         help: false,
         version: false,
         config: null,
