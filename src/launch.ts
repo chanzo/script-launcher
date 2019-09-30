@@ -4,11 +4,10 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { confirmPrompt, formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
-import inquirer = require('inquirer');
 
 interface IArgs {
   init: boolean;
@@ -97,19 +96,6 @@ function copyTemplateFiles(template: string, directory: string): void {
       console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ' already exists.');
     }
   }
-}
-
-async function areYouSure(): Promise<boolean> {
-  const choice = await inquirer.prompt<{ value: boolean }>([
-    {
-      type: 'confirm',
-      name: 'value',
-      default: false,
-      message: 'Are you sure:',
-    },
-  ]);
-
-  return choice.value;
 }
 
 function splitCommand(command: string): string[] {
@@ -218,14 +204,14 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   const targetCount = Object.entries(targetScripts).length;
   const sourceCount = Object.entries(sourceScripts).length;
 
-  console.log('Script to remove:', targetCount - sourceCount);
+  console.log('Script to migrate:', targetCount - sourceCount);
   console.log('Script to update:', sourceCount + 1);
   console.log();
 
   sourceScripts.start = 'launch';
   content.scripts = sourceScripts;
 
-  if (testmode || await areYouSure()) {
+  if (testmode || await confirmPrompt('Are you sure')) {
     console.log();
     console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
@@ -468,6 +454,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       exitCode = 0;
       return;
     }
+
     if (launchArgs.arguments.migrate) {
       await migratePackageJson(launchArgs.arguments.directory, testmode);
       Logger.log();

@@ -82,6 +82,7 @@ npx launch migrate
   * [Glob patterns](#glob-patterns)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
+  * [Confirmation prompt](#confirmation-prompt)
   * [Condition and exclusion constraints](#condition-and-exclusion-constraints)
   * [Repeaters (String)](#repeaters-string)
   * [Repeaters (Object)](#repeaters-object)
@@ -240,7 +241,7 @@ Use an existing script id in the command section to execute another script in yo
 ```
 
 ### Environment and command line argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables. 
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases. 
 
 For compatibility reasons: when using a script name that is equal to the command being executed, all arguments are appended automatically.
 
@@ -250,6 +251,8 @@ For compatibility reasons: when using a script name that is equal to the command
   "scripts": {
     "build-stuff": [
       "environment=my-env",
+      "node=$npm_config_node",
+      "echo Node version: $node_version",
       "echo Node version: $npm_config_node_version",
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
@@ -444,6 +447,21 @@ This example uses the inline script blocks to run multiple script in parallel an
 }
 ```
 
+### Confirmation prompt
+Confirmation prompts can be used for asking a confirmation to continue.
+
+**Run**: `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "confirm": "Are you sure you want to continue",
+      "sequential-then": "echo You are sure!",
+      "sequential-else": "echo You are not sure!"
+    }
+  }
+}
+```
 
 ### Condition and exclusion constraints
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
@@ -553,7 +571,6 @@ Example using an object array.
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. 
 
 * **description** keyword is used as a description of presented values.
-* **separator** keyword takes a facultative String value that'll be use as the separator. If the value is empty, the separator will be --------. 
 
 Use `npm start` to show the menu, after selecting your desired action you will have the option to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file. Use `npm start menu` to ignore the `defaultScript` option, in the `launcher-custom.json` file, so the menu will be interactive. 
 
@@ -573,17 +590,21 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
   },
   "menu": {
     "description": "organization",
+    "uva:help": "University of Amsterdam",
     "uva": {
       "description": "environment",
       "development": "serve:uva:dev",
       "acceptance": "serve:uva:acc",
       "production": "serve:uva:prd"
     },
-    "separator": "",
+    "hva:help": "Amsterdam University of Applied Sciences",
     "hva": {
       "description": "environment",
+      "development:help": "Builds and serves your app for development.",
       "development": "serve:hva:dev",
+      "acceptance:help": "Builds and serves your app for acceptance.",
       "acceptance": "serve:hva:acc",
+      "production:help": "Builds and serves your app for production.",
       "production": "serve:hva:prd"
     }
   },
@@ -608,9 +629,10 @@ The launcher settings can be used to specify named values that can be used by th
 {
   "scripts": {
     "build:$config": [
+      "settings=$launch_setting_${config}",
       "echo name: $launch_setting_name",
-      "echo version: $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "echo version: $settings_version",
+      "echo ng build -c=$config --deploy-url $settings_url",
       "",
       {
         "repeater": "$launch_setting_${config}_server",
@@ -731,7 +753,6 @@ The default value is presented in the following example:
 ### Menu options
 * **defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
 * **menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
-* **pageSize:** Change the number of lines that will be rendered for the menu.
 * **timeout:** Auto close/select a menu value after a specified time.
 
 The default value is presented in the following example:
@@ -744,7 +765,6 @@ The default value is presented in the following example:
     "menu": {
       "defaultChoice": "",
       "defaultScript": "",
-      "pageSize": 7,
       "timeout": 0
     }
   }

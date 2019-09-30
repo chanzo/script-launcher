@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { MarkdownParser } from './markdown-parser';
 import { IConfig } from '../src/config-loader';
-import { promisify } from 'util';
+import { version } from '../src/package.json';
 
 export interface ITests {
   name: string;
@@ -27,6 +27,7 @@ interface ITestsConfigFile {
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
+  id: string;
   name: string;
   transformer?: string;
   files: { [name: string]: IConfig };
@@ -82,13 +83,30 @@ export class TestLauncher {
   public loadConfig(testFiles: string): void {
     const files = fs.readdirSync(testFiles);
     const result = this._configs;
+    let autoId = 0;
 
     for (const file of files) {
       if (file.endsWith('.test.json') && !file.endsWith('launcher-config.json')) {
-        const content = fs.readFileSync(path.join(testFiles, file));
+        const fileName = path.join(testFiles, file);
+        const content = fs.readFileSync(fileName);
         const configs = JSON.parse(content.toString()) as { [name: string]: ITestConfig[] };
 
+        // update and add auto id's
+        for (const testConfigs of Object.values(configs)) {
+          for (let index = 0; index < testConfigs.length; index++) {
+            testConfigs[index] = {
+              ...{ id: '0000' },
+              ...testConfigs[index]
+            };
+
+            testConfigs[index].id = (autoId++).toString().padStart(4, '0');
+          }
+        }
+
+        fs.writeFileSync(fileName, JSON.stringify(configs, null, 2));
+
         for (const [name, testConfigs] of Object.entries(configs)) {
+
           if (result[name] === undefined) result[name] = [];
 
           for (const testConfig of testConfigs) {
@@ -106,6 +124,14 @@ export class TestLauncher {
               if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
 
               if (!Array.isArray(result) && result !== undefined) result = [result];
+
+              for (let index = 0; index < result.length; index++) {
+                (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
+                  id: testConfig.id,
+                  version: version,
+                  node_version: process.version.replace(/^v/, '')
+                });
+              }
 
               test.result = result;
 
@@ -149,6 +175,7 @@ export class TestLauncher {
 
       if (config === undefined) {
         config = {
+          id: '9999',
           name: section.title,
           files: {},
           tests: []
@@ -260,6 +287,28 @@ export class TestLauncher {
       const fileName = path.join(testDirectory, name + '.json');
       fs.writeFileSync(fileName, JSON.stringify(content));
     }
+  }
+
+  private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
+    let previousText: string;
+
+    do {
+      previousText = text;
+
+      for (const [name, value] of Object.entries(environment)) {
+        text = text.replace(new RegExp('(.|^)\\$' + name + '([^\\w]|$)', 'g'), '$1' + value + '$2');
+        text = text.replace(new RegExp('(.|^)\\$\\{' + name + '\\}', 'g'), '$1' + value);
+
+        if (text.match(/([^\\]|^)\$/) === null) break;
+      }
+    } while (text.match(/([^\\]|^)\$/) !== null && text !== previousText);
+
+    if (!remove) return text;
+
+    text = text.replace(/([^\\]|^)\$\w+/g, '$1');
+    text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
+
+    return text;
   }
 
   private deleteFiles(directory: string, pattern: string) {

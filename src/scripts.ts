@@ -1,6 +1,7 @@
 import { parseArgsStringToArgv } from 'string-argv';
 
 export interface IScriptTask {
+  confirm: string[] | string;
   condition: string[] | string;
   exclusion: string[] | string;
   repeater: string;

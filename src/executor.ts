@@ -4,13 +4,14 @@ import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { formatLocalTime, stringify, Colors } from './common';
+import { confirmPrompt, formatLocalTime, stringify, Colors } from './common';
 import glob = require('glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 
 interface ITasks {
   parameters: { [name: string]: string }; // Used for debugging only
+  confirm: string[];
   condition: string[];
   exclusion: string[];
   'concurrent': Array<ITasks | string>;
@@ -29,7 +30,7 @@ enum Order {
 interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
-  private static readonly assignmentPattern = `^(\\w+\)=([\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
+  private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
 
   private static convertSingleQuote(command: string): string {
     const argv = parseArgsStringToArgv(command);
@@ -51,7 +52,7 @@ export class Executor {
   }
 
   private static containsConstraint(task: ITasks): boolean {
-    return task.condition.length > 0 || task.exclusion.length > 0;
+    return task.condition.length > 0 || task.exclusion.length > 0 || task.confirm.length > 0;
   }
 
   private static expandArguments(text: string, args: string[]): string {
@@ -73,7 +74,7 @@ export class Executor {
     return text;
   }
 
-  private static expandEnvironment(text: string, environment: { [name: string]: string }, remove: boolean = false): string {
+  private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
     let previousText: string;
 
     do {
@@ -87,12 +88,43 @@ export class Executor {
       }
     } while (text.match(/([^\\]|^)\$/) !== null && text !== previousText);
 
-    if (!remove) return text;
+    return text;
+  }
 
+  private static removeEnvironment(text: string) {
     text = text.replace(/([^\\]|^)\$\w+/g, '$1');
     text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
 
     return text;
+  }
+
+  private static extendEnvironment(environment: { [name: string]: string }, command: string): boolean {
+    const match = command.trim().match(Executor.assignmentPattern);
+
+    if (match !== null) {
+      if (match[2].startsWith('$')) {
+        const environmentValue = match[2].replace('$', '');
+        const settings = Object.entries(environment).filter(([key]) => key.startsWith(environmentValue + '_'));
+
+        for (const [key, value] of settings) {
+          if (key.startsWith(environmentValue)) {
+            const environmentKey = match[1] + key.replace(environmentValue, '');
+
+            environment[environmentKey] = value;
+
+            Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + environmentKey + '=' + value + '\'' + Colors.Normal);
+          }
+        }
+      } else {
+        environment[match[1]] = match[2];
+
+        Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   private static expandGlobs(pattern: string, options?: glob.IOptions): string {
@@ -115,7 +147,7 @@ export class Executor {
     options = { ...options };
     options.env = { ...options.env };
 
-    command = Executor.expandEnvironment(command, options.env, true);
+    command = Executor.expandEnvironment(command, options.env);
 
     if (!options.cwd) options.cwd = '';
 
@@ -161,16 +193,7 @@ export class Executor {
       options.suppress = true;
     }
 
-    // Test whether the command represents the assignment of an environment variable
-    const match = command.trim().match(Executor.assignmentPattern);
-
-    if (match !== null) {
-      options.env[match[1]] = match[2];
-
-      Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
-
-      return { command: null, args, options };
-    }
+    if (Executor.extendEnvironment(options.env, command)) return { command: null, args, options };
 
     const fullPath = path.join(path.resolve(options.cwd), command);
 
@@ -262,12 +285,16 @@ export class Executor {
     const sequential: Array<ITasks | string> = [...tasks.sequential];
 
     if (Executor.containsConstraint(tasks)) {
-      if (await this.evaluateTask(tasks, options)) {
-        concurrent.push(...tasks['concurrent-then']);
-        sequential.push(...tasks['sequential-then']);
-      } else {
-        concurrent.push(...tasks['concurrent-else']);
-        sequential.push(...tasks['sequential-else']);
+      try {
+        if (await this.evaluateTask(tasks, options)) {
+          concurrent.push(...tasks['concurrent-then']);
+          sequential.push(...tasks['sequential-then']);
+        } else {
+          concurrent.push(...tasks['concurrent-else']);
+          sequential.push(...tasks['sequential-else']);
+        }
+      } catch {
+        return 0;
       }
     }
 
@@ -296,6 +323,7 @@ export class Executor {
     const repeater = (script as IScriptTask).repeater;
     const result: ITasks = {
       'parameters': {},
+      'confirm': [],
       'condition': [],
       'exclusion': [],
       'concurrent': [],
@@ -317,6 +345,7 @@ export class Executor {
     }
 
     if (!repeater) {
+      const confirm: IScript[] = [];
       const concurrent: IScript[] = [];
       const sequential: IScript[] = [];
       const concurrentThen: IScript[] = [];
@@ -327,6 +356,7 @@ export class Executor {
       if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
       if (typeof script === 'string') sequential.push(script);
 
+      confirm.push(...this.preprocessScripts((script as IScriptTask).confirm));
       concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
       sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
       concurrentThen.push(...this.preprocessScripts((script as IScriptTask)['concurrent-then']));
@@ -335,6 +365,7 @@ export class Executor {
       sequentialElse.push(...this.preprocessScripts((script as IScriptTask)['sequential-else']));
 
       result.parameters = scriptInfo.parameters;
+      result.confirm.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).confirm, environment, scriptInfo.arguments));
       result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
       result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
       result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
@@ -367,6 +398,7 @@ export class Executor {
 
         result.sequential.push({
           'parameters': repeaterTask.parameters,
+          'confirm': task.confirm,
           'condition': task.condition,
           'exclusion': task.exclusion,
           'concurrent': task.concurrent,
@@ -439,6 +471,8 @@ export class Executor {
             ...{ cwd: options.cwd },
           });
 
+          command = Executor.removeEnvironment(command);
+
           // Remove environment and argument escaping
           command = command.replace(/\\\$/g, '$');
 
@@ -462,12 +496,16 @@ export class Executor {
         const sequential: Array<ITasks | string> = [...task.sequential];
 
         if (Executor.containsConstraint(task)) {
-          if (await this.evaluateTask(task, options)) {
-            concurrent.push(...task['concurrent-then']);
-            sequential.push(...task['sequential-then']);
-          } else {
-            concurrent.push(...task['concurrent-else']);
-            sequential.push(...task['sequential-else']);
+          try {
+            if (await this.evaluateTask(task, options)) {
+              concurrent.push(...task['concurrent-then']);
+              sequential.push(...task['sequential-then']);
+            } else {
+              concurrent.push(...task['concurrent-else']);
+              sequential.push(...task['sequential-else']);
+            }
+          } catch {
+            return [];
           }
         }
 
@@ -548,29 +586,31 @@ export class Executor {
   private async evaluateTask(task: ITasks, options: ISpawnOptions): Promise<boolean> {
     let condition = true;
     let exclusion = false;
+    let confirmation = !(task.confirm.length > 0);
 
     options = { ...options };
 
     if (!options.cwd) options.cwd = '';
 
     for (let constraint of task.condition) {
-      constraint = Executor.expandEnvironment(constraint, options.env, true);
-      // Test whether the command represents the assignment of an environment variable
-      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
+      constraint = Executor.expandEnvironment(constraint, options.env);
 
-      if (assignmentMatchs === null) {
+      if (!Executor.extendEnvironment(options.env, constraint)) {
         const outputMatches = constraint.match(/(.*)\|\?(.*)/);
         let outputPattern: string = null;
 
         if (outputMatches !== null) {
           constraint = outputMatches[1].trim();
-          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env);
+          outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
           ...{ cwd: options.cwd },
         });
+
+        constraint = Executor.removeEnvironment(constraint);
 
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
@@ -581,25 +621,20 @@ export class Executor {
           condition = false;
           break;
         }
-      } else {
-        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
-
-        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 
     for (let constraint of task.exclusion) {
-      constraint = Executor.expandEnvironment(constraint, options.env, true);
-      // Test whether the command represents the assignment of an environment variable
-      const assignmentMatchs = constraint.trim().match(Executor.assignmentPattern);
+      constraint = Executor.expandEnvironment(constraint, options.env);
 
-      if (assignmentMatchs === null) {
+      if (!Executor.extendEnvironment(options.env, constraint)) {
         const outputMatches = constraint.match(/(.*)\|\?(.*)/);
         let outputPattern: string = null;
 
         if (outputMatches !== null) {
           constraint = outputMatches[1].trim();
-          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env, true);
+          outputPattern = Executor.expandEnvironment(outputMatches[2].trim(), options.env);
+          outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
         constraint = Executor.expandGlobs(constraint, {
@@ -607,20 +642,35 @@ export class Executor {
           ...{ cwd: options.cwd },
         });
 
+        constraint = Executor.removeEnvironment(constraint);
+
         Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
         if (await this.evaluateConstraint(constraint, options, outputPattern)) {
           exclusion = true;
           break;
         }
-      } else {
-        options.env[assignmentMatchs[1]] = assignmentMatchs[2];
-
-        Logger.log(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + assignmentMatchs[1] + '=' + assignmentMatchs[2] + '\'' + Colors.Normal);
       }
     }
 
-    return condition && !exclusion;
+    for (let confirm of task.confirm) {
+      confirm = Executor.expandEnvironment(confirm, options.env);
+
+      confirm = Executor.expandGlobs(confirm, {
+        ...this.globOptions,
+        ...{ cwd: options.cwd },
+      });
+
+      confirm = Executor.removeEnvironment(confirm);
+
+      Logger.log(Colors.Bold + 'Confirm         : ' + Colors.Normal + Colors.Green + '\'' + confirm + '\'' + Colors.Normal);
+
+      confirmation = options.testmode || await confirmPrompt(confirm);
+
+      if (!confirmation) break;
+    }
+
+    return condition && confirmation && !exclusion;
   }
 
   private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }): Array<ITasks | string> {
