@@ -1,6 +1,6 @@
 # Change Log
 ## 1.22.2
-### Changes
+### Breaking
 * Changed menu help syntax
 ### Old syntax
 ``` JSON
