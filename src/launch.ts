@@ -13,6 +13,7 @@ import * as prompts from 'prompts';
 interface IArgs {
   init: boolean;
   migrate: boolean;
+  confirm: boolean;
   help: boolean;
   version: boolean;
   logLevel: number;
@@ -99,15 +100,15 @@ function copyTemplateFiles(template: string, directory: string): void {
   }
 }
 
-async function areYouSure(): Promise<boolean> {
+async function confirmPrompt(message: string): Promise<boolean> {
   const choice = await prompts({
     type: 'confirm',
     name: 'value',
     initial: false,
-    message: 'Are you sure:',
+    message: message,
   });
 
-  return choice.value as boolean;
+  return choice.value !== undefined && choice.value as boolean;
 }
 
 function splitCommand(command: string): string[] {
@@ -216,14 +217,14 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   const targetCount = Object.entries(targetScripts).length;
   const sourceCount = Object.entries(sourceScripts).length;
 
-  console.log('Script to remove:', targetCount - sourceCount);
+  console.log('Script to migrate:', targetCount - sourceCount);
   console.log('Script to update:', sourceCount + 1);
   console.log();
 
   sourceScripts.start = 'launch';
   content.scripts = sourceScripts;
 
-  if (testmode || await areYouSure()) {
+  if (testmode || await confirmPrompt('Are you sure')) {
     console.log();
     console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
@@ -283,6 +284,7 @@ function showHelp() {
     ],
 
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
+    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Basic yes/no prompt.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
@@ -387,6 +389,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         logLevel: undefined,
         init: false,
         migrate: false,
+        confirm: false,
         help: false,
         version: false,
         config: null,
@@ -466,6 +469,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       exitCode = 0;
       return;
     }
+
     if (launchArgs.arguments.migrate) {
       await migratePackageJson(launchArgs.arguments.directory, testmode);
       Logger.log();
@@ -474,6 +478,15 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
 
+    if (launchArgs.arguments.confirm) {
+      if (await confirmPrompt(launchArgs.optionals.join(' '))) {
+        exitCode = 0;
+      } else {
+        exitCode = 1;
+      }
+
+      return;
+    }
     let launchScript = lifecycleEvent;
     let scriptId = '';
 
