@@ -266,7 +266,6 @@
     {
       "id": "0029",
       "name": "Condition and exclusion constraints",
-      "transformer2": "conditionAndExclusionConstraints",
       "files": {
         "launcher-settings": {
           "options": {
@@ -295,6 +294,19 @@
     },
     {
       "id": "0030",
+      "name": "Confirmation prompt",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build-stuff",
+          "result": [
+            "You are sure!"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0031",
       "name": "Repeaters (String)",
       "tests": [
         {
@@ -309,7 +321,7 @@
       ]
     },
     {
-      "id": "0031",
+      "id": "0032",
       "name": "Repeaters (Object)",
       "tests": [
         {
@@ -333,7 +345,7 @@
       ]
     },
     {
-      "id": "0032",
+      "id": "0033",
       "name": "Interactive menu",
       "files": {
         "launcher-settings": {
@@ -375,7 +387,7 @@
       ]
     },
     {
-      "id": "0033",
+      "id": "0034",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -414,7 +426,7 @@
       ]
     },
     {
-      "id": "0034",
+      "id": "0035",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -463,7 +475,7 @@
       ]
     },
     {
-      "id": "0035",
+      "id": "0036",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -550,7 +562,7 @@
       ]
     },
     {
-      "id": "0036",
+      "id": "0037",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -570,7 +582,7 @@
       ]
     },
     {
-      "id": "0037",
+      "id": "0038",
       "name": "Launcher settings",
       "tests": [
         {

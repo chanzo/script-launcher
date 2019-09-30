@@ -1,4 +1,5 @@
 import deepmerge = require('deepmerge');
+import prompts = require('prompts');
 
 export enum Colors {
   Red = '\x1b[31m',
@@ -113,4 +114,17 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
 
 export function formatLocalTime(time: number = Date.now()): string {
   return new Date(time + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
+}
+
+export async function confirmPrompt(message: string): Promise<boolean> {
+  const choice = await prompts({
+    type: 'confirm',
+    name: 'value',
+    initial: false,
+    message: message,
+  });
+
+  if (choice.value === undefined) throw new Error('User aborted.');
+
+  return choice.value as boolean;
 }

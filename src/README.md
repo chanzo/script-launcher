@@ -82,6 +82,7 @@ npx launch migrate
   * [Glob patterns](#glob-patterns)
   * [Concurrent scripts](#concurrent-scripts)
   * [Inline script blocks](#inline-script-blocks)
+  * [Confirmation prompt](#confirmation-prompt)
   * [Condition and exclusion constraints](#condition-and-exclusion-constraints)
   * [Repeaters (String)](#repeaters-string)
   * [Repeaters (Object)](#repeaters-object)
@@ -446,6 +447,21 @@ This example uses the inline script blocks to run multiple script in parallel an
 }
 ```
 
+### Confirmation prompt
+Confirmation prompts can be used for asking a confirmation to continue.
+
+**Run**: `npm start build-stuff` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": {
+      "confirm": "Are you sure you want to continue",
+      "sequential-then": "echo You are sure!",
+      "sequential-else": "echo You are not sure!"
+    }
+  }
+}
+```
 
 ### Condition and exclusion constraints
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
