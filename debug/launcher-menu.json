@@ -1,21 +1,23 @@
 {
   "menu": {
     "description": "action",
-    "serve:help": "Builds and serves your app, rebuilding on file changes.",
-    "serve": {
+    "serve:Builds and serves your app, rebuilding on file changes.": {
       "description": "environment",
-      "development:help": "Builds and serves your app for a development environment.",
-      "development": "serve:dev",
-      "production:help": "Builds and serves your app for a production environment.",
-      "production": "serve:prd"
+      "development:Builds and serves your app for a development environment.": [
+        "serve:dev"
+      ],
+      "production:Builds and serves your app for a production environment.": [
+        "serve:prd"
+      ]
     },
-    "build:help": "Compiles your app into an output directory.",
-    "build": {
+    "build:Compiles your app into an output directory.": {
       "description": "environment",
-      "development:help": "Builds your app for a development environment.",
-      "development": "build:dev",
-      "production:help": "Builds your app for a production environment.",
-      "production": "build:prd"
+      "development:Builds your app for a development environment.": [
+        "build:dev"
+      ],
+      "production:Builds your app for a production environment.": [
+        "build:prd"
+      ]
     }
   },
   "options": {

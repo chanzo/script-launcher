@@ -96,26 +96,56 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
   return result[0];
 }
 
-function createChoices(menu: IMenu): prompts.Choice[] {
-  const choices: prompts.Choice[] = [];
-  const help = {};
+function getMenuItem(label: string): { name: string, help: string } {
+  const match = label.match(/(.*?)\:(.*)$/);
 
-  for (const [name, value] of Object.entries(menu).filter(([name]) => name.endsWith(':help'))) {
-    help[name.replace(':help', '')] = value;
+  if (match) {
+    return {
+      name: match[1],
+      help: match[2],
+    };
   }
 
-  for (const [name, value] of Object.entries(menu).filter(([name]) => !name.endsWith(':help'))) {
+  return {
+    name: label,
+    help: '',
+  };
+}
+
+function findMenuItem(menu: IMenu, name: string): IScript | IMenu {
+  for (const [label, value] of Object.entries(menu)) {
+    const item = getMenuItem(label);
+
+    if (item.name === name) return value;
+  }
+
+  return null;
+}
+
+function createChoices(menu: IMenu): prompts.Choice[] {
+  const choices: prompts.Choice[] = [];
+  const menuHelp = {};
+  const menuItems = {};
+
+  for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
-      if (name === 'separator' && typeof value === 'string') {
-        // Separator not supported by prompts
-      } else {
-        if (Object.keys(value).length !== 0) {
-          choices.push({
-            title: name,
-            value: name,
-            description: help[name],
-          } as any);
-        }
+      const value = getMenuItem(name);
+
+      menuHelp[value.name] = value.help;
+      menuItems[value.name] = value;
+    }
+  }
+
+  for (const [name, value] of Object.entries(menuItems)) {
+    if (name === 'separator' && typeof value === 'string') {
+      // Separator not supported by prompts
+    } else {
+      if (Object.keys(value).length !== 0) {
+        choices.push({
+          title: name,
+          value: name,
+          description: menuHelp[name],
+        } as any);
       }
     }
   }
@@ -130,7 +160,7 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
     const filtered = Object.entries(menu).filter(([key, value]) => key !== 'description' && key !== 'separator' && !!value && Object.entries(value).length > 0);
 
     const choice = choices[index++];
-    let result = filtered.find(([key, value]) => key === choice);
+    let result = filtered.find(([label, value]) => getMenuItem(label).name === choice);
 
     if (result === undefined) result = filtered[0];
     if (result === undefined) return '';
@@ -148,7 +178,6 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
 }
 
 async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo & { timedout: boolean }> {
-  const choices = defaultChoice.split(':');
   let menuPromise: Promise<IScriptInfo> & { close: () => void };
   let timeoutId: NodeJS.Timeout = null;
   let currentTimeout = timeout;
@@ -193,7 +222,8 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   }
 
   try {
-    menuPromise = promptMenu(menu, pageSize, choices, []);
+    const defaults = defaultChoice.split(':');
+    menuPromise = promptMenu(menu, pageSize, defaults, []);
     const scriptInfo = await menuPromise;
 
     if (scriptInfo === null) {
@@ -202,7 +232,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
         inline: false,
         parameters: {},
         arguments: [],
-        script: getDefaultScript(menu, choices),
+        script: getDefaultScript(menu, defaults),
         timedout: true,
       };
     }
@@ -244,23 +274,31 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
   const resultPromise = menuPromise.then((answer) => {
     if (close || answer.length === 0) return null;
 
-    const command = menu[answer[0]];
+    const menuItem = findMenuItem(menu, answer[0]);
+
+    if (menuItem === null) {
+      const message = 'Menu item not found!';
+
+      console.log(Colors.Bold + Colors.Red + message + Colors.Normal);
+
+      throw new Error(message);
+    }
 
     choice.push(answer[0]);
 
     defaults.shift();
 
-    if (!isMenuObject(command)) {
+    if (!isMenuObject(menuItem)) {
       return {
         name: choice.join(':'),
         inline: false,
         parameters: {},
         arguments: [],
-        script: command as IScript,
+        script: menuItem as IScript,
       };
     }
 
-    return promptMenu(command as IMenu, pageSize, defaults, choice);
+    return promptMenu(menuItem as IMenu, pageSize, defaults, choice);
   }) as Promise<IScriptInfo> & { close: () => void };
 
   resultPromise.close = () => {
