@@ -12,6 +12,7 @@ import prettyTime = require('pretty-time');
 interface IArgs {
   init: boolean;
   migrate: boolean;
+  confirm: boolean;
   help: boolean;
   version: boolean;
   logLevel: number;
@@ -279,6 +280,7 @@ function showHelp() {
     ],
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
+    confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
@@ -375,6 +377,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         logLevel: undefined,
         init: false,
         migrate: false,
+        confirm: undefined,
         help: false,
         version: false,
         config: null,
@@ -508,7 +511,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript === undefined) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, launchArgs.arguments.confirm, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -530,7 +533,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, testmode);
 
     startTime = executor.startTime;
 

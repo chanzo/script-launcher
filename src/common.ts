@@ -1,5 +1,7 @@
 import deepmerge = require('deepmerge');
-import prompts = require('prompts');
+import { ConfirmPrompt } from 'prompts/lib/elements';
+import { Prompt } from 'prompts/lib/elements';
+import { IOptions } from 'prompts/lib';
 
 export enum Colors {
   Red = '\x1b[31m',
@@ -116,15 +118,32 @@ export function formatLocalTime(time: number = Date.now()): string {
   return new Date(time + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
 }
 
-export async function confirmPrompt(message: string): Promise<boolean> {
-  const choice = await prompts({
+export function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> {
+  const dummyHandler = (...args: any[]) => args;
+  const onState = options.onState || dummyHandler;
+  const onAbort = options.onAbort || dummyHandler;
+  const onSubmit = options.onSubmit || dummyHandler;
+
+  return new Promise((resolve, reject) => {
+    prompt.on('state', onState);
+    prompt.on('submit', (args) => resolve(onSubmit(args)));
+    prompt.on('abort', (args) => reject(onAbort(args)));
+  });
+}
+
+export async function confirmPrompt(message: string, autoValue?: boolean): Promise<boolean> {
+  const confirmPrompt = new ConfirmPrompt({
     type: 'confirm',
     name: 'value',
-    initial: false,
+    initial: autoValue !== undefined ? autoValue : false,
     message: message,
   });
 
-  if (choice.value === undefined) throw new Error('User aborted.');
+  const confirmPromise = toPromise(confirmPrompt);
 
-  return choice.value as boolean;
+  if (autoValue !== undefined) confirmPrompt.submit();
+
+  const choice = await confirmPromise;
+
+  return choice[0] as boolean;
 }
