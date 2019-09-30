@@ -129,10 +129,10 @@ function createChoices(menu: IMenu): prompts.Choice[] {
 
   for (const [name, value] of Object.entries(menu)) {
     if (name !== 'description') {
-      const value = getMenuItem(name);
+      const item = getMenuItem(name);
 
-      menuHelp[value.name] = value.help;
-      menuItems[value.name] = value;
+      menuHelp[item.name] = item.help;
+      menuItems[item.name] = value;
     }
   }
 
