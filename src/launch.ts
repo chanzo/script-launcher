@@ -272,7 +272,7 @@ function showHelp() {
     ],
 
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
-    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Auto confirm confirm conditions.',
+    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Auto confirm, confirm conditions.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
