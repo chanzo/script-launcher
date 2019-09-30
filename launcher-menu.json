@@ -1,12 +1,16 @@
 {
   "menu": {
     "description": "action",
-    "build:help": "Build node package.",
-    "build": "build",
-    "test:help": "Test node package.",
-    "test": {
-      "run": "test",
-      "watch": "test --watchAll"
+    "build:Build node package.": [
+      "build"
+    ],
+    "test:Test node package.": {
+      "run:Run all tests and exit.": [
+        "test"
+      ],
+      "watch:Watch files for changes and rerun all tests.": [
+        "test --watchAll"
+      ]
     }
   }
 }
