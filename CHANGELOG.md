@@ -1,4 +1,41 @@
 # Change Log
+## 1.22.2
+### Breaking
+* Changed menu help syntax
+### Old syntax
+``` JSON
+{
+  "menu": {
+    "description": "action",
+    "build:help": "Build node package.",
+    "build": [
+      "build"
+    ],
+    "test:help": "Test node package.",
+    "test": {
+      "run": "test",
+      "watch": "test --watchAll"
+    }
+  }
+}
+```
+
+### New syntax
+``` JSON
+{
+  "menu": {
+    "description": "action",
+    "build:Build node package.": [
+      "build"
+    ],
+    "test:Test node package.": {
+      "run": "test",
+      "watch": "test --watchAll"
+    }
+  }
+}
+```
+
 ## 1.22.1
 ### Changes
 * Replaced the **confirm** argument for a **confirm** condition

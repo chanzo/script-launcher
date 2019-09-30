@@ -590,22 +590,17 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
   },
   "menu": {
     "description": "organization",
-    "uva:help": "University of Amsterdam",
-    "uva": {
+    "uva:University of Amsterdam.": {
       "description": "environment",
       "development": "serve:uva:dev",
       "acceptance": "serve:uva:acc",
       "production": "serve:uva:prd"
     },
-    "hva:help": "Amsterdam University of Applied Sciences",
-    "hva": {
+    "hva:Amsterdam University of Applied Sciences.": {
       "description": "environment",
-      "development:help": "Builds and serves your app for development.",
-      "development": "serve:hva:dev",
-      "acceptance:help": "Builds and serves your app for acceptance.",
-      "acceptance": "serve:hva:acc",
-      "production:help": "Builds and serves your app for production.",
-      "production": "serve:hva:prd"
+      "development:Builds and serves your app for development.": "serve:hva:dev",
+      "acceptance:Builds and serves your app for acceptance.": "serve:hva:acc",
+      "production:Builds and serves your app for production.": "serve:hva:prd"
     }
   },
   "options": {
