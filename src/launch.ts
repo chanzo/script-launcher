@@ -4,16 +4,14 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { confirmPrompt, formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
-import * as prompts from 'prompts';
 
 interface IArgs {
   init: boolean;
   migrate: boolean;
-  confirm: boolean;
   help: boolean;
   version: boolean;
   logLevel: number;
@@ -98,17 +96,6 @@ function copyTemplateFiles(template: string, directory: string): void {
       console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ' already exists.');
     }
   }
-}
-
-async function confirmPrompt(message: string): Promise<boolean> {
-  const choice = await prompts({
-    type: 'confirm',
-    name: 'value',
-    initial: false,
-    message: message,
-  });
-
-  return choice.value !== undefined && choice.value as boolean;
 }
 
 function splitCommand(command: string): string[] {
@@ -284,7 +271,6 @@ function showHelp() {
     ],
 
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
-    confirm: '  ' + Colors.Cyan + 'confirm      ' + Colors.Normal + 'Basic yes/no prompt.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: [
@@ -389,7 +375,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         logLevel: undefined,
         init: false,
         migrate: false,
-        confirm: false,
         help: false,
         version: false,
         config: null,
@@ -478,15 +463,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
 
-    if (launchArgs.arguments.confirm) {
-      if (await confirmPrompt(launchArgs.optionals.join(' '))) {
-        exitCode = 0;
-      } else {
-        exitCode = 1;
-      }
-
-      return;
-    }
     let launchScript = lifecycleEvent;
     let scriptId = '';
 
