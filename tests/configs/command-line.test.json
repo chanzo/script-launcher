@@ -91,7 +91,7 @@
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
-            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already present."
+            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already in use."
           ],
           "result:win32": [
             "\u001b[1mCreate starter config:\u001b[0m basic",
@@ -101,7 +101,7 @@
             "",
             "\u001b[1mUpdating package.json.\u001b[0m",
             "",
-            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already present."
+            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already in use."
           ]
         }
       ]

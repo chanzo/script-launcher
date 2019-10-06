@@ -12,58 +12,7 @@
 
 Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience. 
 
-Use the examples from the [table of contents](#table-of-contents) to get familiar with these features.
-
 ![alt text](usage-animation.gif "Script Launcher usage example")
-
-## Installation
-
-Install **script-launcher** as a development dependency in your project.
-``` bash
-npm install script-launcher --save-dev
-```
-
-Use **launch init** to create a starter configuration.
-
-``` bash
-npx launch init basic
-```
-
-If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add custom run scripts for starting Script Launcher.
-``` JSON
-{
-    ...
-    "scripts": {
-        "start": "launch",
-        ...
-    },
-    ...
-}
-```
-You are now ready to start use Script Launcher by running: `npm start <<launch script id>>` as described in the [examples](#implementation-examples) below.
-
-## Usage examples
-
-Show menu
-```
-npm start
-```
-
-Start a specific launch script
-```
-npm start serve:dev
-npm start build:production
-```
-Basically you can now use `npm start` instead of `npm run`.
-
-## Migrate package.json scripts
-Make sure all your repository changes are fully committed, so you can undo the changes easily if they do not suit your needs.  Remove the **launcher-config.json** and **launcher-menu.json**, remove the start script from your **package.json**
-
-Now your are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
-``` bash
-npx launch migrate
-```
-
 
 # Table of Contents
 * [Installation](#installation)
@@ -96,6 +45,54 @@ npx launch migrate
   * [Menu options](#menu-options)
   * [Logging](#logging)
 
+## Installation
+
+Install **script-launcher** as a development dependency in your project.
+``` bash
+npm install script-launcher --save-dev
+```
+
+Use **launch init** to create a starter configuration from one of the templates.
+
+``` bash
+npx launch init basic
+```
+
+If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add custom run scripts for starting Script Launcher.
+``` JSON
+{
+    ...
+    "scripts": {
+        "start": "launch",
+        ...
+    },
+    ...
+}
+```
+You are now ready to start use Script Launcher by running: `npm start`
+
+## Usage examples
+
+Show menu
+```
+npm start
+```
+
+Start a specific launch script
+```
+npm start serve:dev
+npm start build:production
+```
+Basically you can now use `npm start` instead of `npm run`.
+
+## Migrate package.json scripts
+Make sure all your repository changes are fully committed so you can undo the changes easily if they do not suit your needs. Remove or rename the start script in your **package.json** file.
+
+Now your are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
+``` bash
+npx launch migrate
+```
+
 ## Motivation
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
@@ -104,7 +101,6 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 // Traditional package.json scripts //
 {
   "scripts": {
-    ...
     "build:uva:dev": "ng build uva --prod -c=dev",
     "build:uva:tst": "ng build uva --prod -c=tst",
     "build:uva:acc": "ng build uva --prod -c=acc",
@@ -124,8 +120,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
     "deploy:dev": "npm run deploy:uva:dev && npm run deploy:hva:dev",
     "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
     "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
-    "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd",
-    ...
+    "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd"
   }        
 }
 ```
@@ -135,7 +130,6 @@ With **script-launcher** you have the benefits of using variables, script refere
 // Example using Script Launcher //
 {
   "scripts": {
-    ...
     "build:$project:$config": "ng build $project --prod -c=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
@@ -144,8 +138,7 @@ With **script-launcher** you have the benefits of using variables, script refere
     "deploy:$config":[
       "deploy:uva:$config",
       "deploy:hva:$config"
-    ],
-    ...
+    ]
   }
 }
 ```
@@ -153,14 +146,15 @@ To start this example you would use: `npm start build:uva:tst`, `npm start deplo
 
 It's also possible to extend the example with an interactive menu, so a new developer can get start on your project more easily:
 ``` JSON
+{
   "menu": {
     "description": "deploy organization",
-    "uva": {
+    "uva:University of Amsterdam.": {
       "description": "deploy environment",
       "acceptance": "deploy:uva:acc",
       "production": "deploy:uva:tst"
     },
-    "hva": {
+    "hva:Amsterdam University of Applied Sciences.": {
       "description": "deploy environment",
       "acceptance": "deploy:hva:acc",
       "production": "deploy:hva:tst"
@@ -171,7 +165,9 @@ It's also possible to extend the example with an interactive menu, so a new deve
       "defaultChoice": "hva:acc"
     }
   }
+}
 ```
+
 You would use: `npm start` to start the menu.
 
 ## Implementation examples
