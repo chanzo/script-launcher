@@ -242,12 +242,15 @@ function updatePackageJson(directory: string): void {
   }
 
   try {
-
     const buffer = fs.readFileSync(fileName);
     const content = JSON.parse(buffer.toString());
 
-    if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
-      console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal + ' start script already present.');
+    if (content.scripts && content.scripts.start !== undefined) {
+      if (content.scripts.start === 'launch') {
+        console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal + ' start script is up-to-date.');
+      } else {
+        console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal + ' start script already in use.');
+      }
 
       return;
     }
