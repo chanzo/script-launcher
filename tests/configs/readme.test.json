@@ -22,7 +22,7 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js node_modules package.json README.md scripts.js spawn-process.js templates"
+          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates"
         }
       ]
     },
@@ -163,8 +163,8 @@
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js node_modules package.json README.md scripts.js spawn-process.js templates",
-            "Markdown files: node_modules/deepmerge/changelog.md node_modules/deepmerge/readme.md README.md"
+            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates",
+            "Markdown files: README.md"
           ]
         }
       ]
