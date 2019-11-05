@@ -1,4 +1,9 @@
 # Change Log
+## 1.22.5
+### Changes
+* test fix for daylight saving
+* Dependencies updated
+
 ## 1.22.4
 ### Changes
 * Updated **REAME.md**
