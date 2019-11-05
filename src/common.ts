@@ -114,8 +114,8 @@ export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: st
   }
 }
 
-export function formatLocalTime(time: number = Date.now()): string {
-  return new Date(time + (new Date().getTimezoneOffset() * -60000)).toISOString().replace('T', ' ').replace('Z', '');
+export function formatTime(time: number = Date.now(), timezoneOffset = new Date().getTimezoneOffset() * -60000): string {
+  return new Date(time + timezoneOffset).toISOString().replace('T', ' ').replace('Z', '');
 }
 
 export function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> {

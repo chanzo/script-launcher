@@ -4,7 +4,7 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { confirmPrompt, formatLocalTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
 import { IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
@@ -303,7 +303,7 @@ function getEnviromentValues(): { [name: string]: string } {
     environment['launch_style_' + key.toLowerCase()] = value;
   }
 
-  environment.launch_time_start = formatLocalTime();
+  environment.launch_time_start = formatTime();
   environment.launch_platform = process.platform;
   environment.launch_version = version;
 
@@ -423,7 +423,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       ...settings.values,
     };
 
-    if (testmode) environment.launch_time_start = formatLocalTime(new Date('2019-09-16T10:33:20.628').getTime());
+    if (testmode) environment.launch_time_start = formatTime(new Date('2019-09-16T12:33:20.628').getTime(), 0);
 
     showLoadedFiles(configLoad.files);
 
