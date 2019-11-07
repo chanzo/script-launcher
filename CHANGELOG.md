@@ -1,4 +1,8 @@
 # Change Log
+## 1.22.6
+### Changes
+* 
+
 ## 1.22.5
 ### Changes
 * test fix for daylight saving
