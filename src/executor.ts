@@ -4,7 +4,7 @@ import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { confirmPrompt, formatLocalTime, stringify, Colors } from './common';
+import { confirmPrompt, formatTime, stringify, Colors } from './common';
 import glob = require('glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
@@ -455,11 +455,11 @@ export class Executor {
       options.suppress = suppress;
 
       if (typeof task === 'string') {
-        options.env.launch_time_current = formatLocalTime();
+        options.env.launch_time_current = formatTime();
         options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
 
         if (options.testmode) {
-          options.env.launch_time_current = formatLocalTime(new Date('2019-09-16T10:33:42.285').getTime());
+          options.env.launch_time_current = formatTime(new Date('2019-09-16T12:33:42.285').getTime(), 0);
           options.env.launch_time_elapsed = '137ms';
         }
 
