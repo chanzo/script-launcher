@@ -5,7 +5,7 @@
       "description": "environment",
       "dev:Builds and serves your app for the development environment.": "serve:dev",
       "acc:Builds and serves your app for the acceptance environment.": "serve:acc",
-      "prd:production:Builds and serves your app for the production environment.": "serve:production"
+      "prd:Builds and serves your app for the production environment.": "serve:production"
     },
     "build:Compiles your app into an output directory.": {
       "description": "environment",

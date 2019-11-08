@@ -1,13 +1,13 @@
 {
   "menu": {
     "description": "action",
-    "serve:Builds and serves your app, rebuilding on file changes.": {
+    "serve:Serve your app.": {
       "description": "environment",
-      "dev:Builds and serves your app for the development environment.": "serve:dev",
-      "acc:Builds and serves your app for the acceptance environment.": "serve:acc",
-      "prd:production:Builds and serves your app for the production environment.": "serve:production"
+      "dev:Serve your app for the development environment.": "serve:dev",
+      "acc:Serve your app for the acceptance environment.": "serve:acc",
+      "prd:Serve your app for the production environment.": "serve:production"
     },
-    "build:Compiles your app into an output directory.": {
+    "build:Build your app.": {
       "description": "environment",
       "dev:Builds your app for the development environment.": "build:dev",
       "acc:Builds your app for the acceptance environment.": "build:acc",
