@@ -313,5 +313,6 @@ function saveCustomConfig(configFile: string, config: IConfig): void {
 
   fs.writeFileSync(configFile, jsonData);
 
-  console.log(Colors.Bold + 'Selection saved to: ' + Colors.Normal + configFile);
+  console.log();
+  console.log(Colors.Bold + 'Selection saved to: ' + Colors.Dim + configFile + Colors.Normal);
 }
