@@ -73,6 +73,8 @@ function showTemplates() {
   for (const fileName of fs.readdirSync(templatePath)) {
     console.log(fileName);
   }
+  console.log();
+  console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npx launch init basic');
 
 }
 
