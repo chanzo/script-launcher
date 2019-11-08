@@ -3,20 +3,27 @@
     "description": "action",
     "serve:Builds and serves your app, rebuilding on file changes.": {
       "description": "environment",
-      "dev:Builds and serves your app for the development environment.": "serve:dev",
-      "acc:Builds and serves your app for the acceptance environment.": "serve:acc",
-      "prd:Builds and serves your app for the production environment.": "serve:production"
+      "development:Builds and serves your app for a development environment.": [
+        "serve:dev"
+      ],
+      "production:Builds and serves your app for a production environment.": [
+        "serve:prd"
+      ]
     },
     "build:Compiles your app into an output directory.": {
       "description": "environment",
-      "dev:Builds your app for the development environment.": "build:dev",
-      "acc:Builds your app for the acceptance environment.": "build:acc",
-      "prd:Builds your app for the production environment.": "build:production"
+      "development:Builds your app for a development environment.": [
+        "build:dev"
+      ],
+      "production:Builds your app for a production environment.": [
+        "build:prd"
+      ]
     }
   },
   "options": {
     "menu": {
-      "defaultChoice": "serve:development"
+      "defaultChoice": "serve:production",
+      "timeout": 6
     }
   }
 }
