@@ -136,7 +136,7 @@ export class TestLauncher {
               test.result = result;
 
               if (!test.name) {
-                test.name = 'launch  ' + test['cmd-args'].join(' ');
+                test.name = 'launch ' + test['cmd-args'].join(' ');
 
                 if (test.lifecycle) {
                   test.name = 'npm ';
