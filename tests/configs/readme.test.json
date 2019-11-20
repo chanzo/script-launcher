@@ -164,7 +164,7 @@
           "npm-args": "build-stuff",
           "result": [
             "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js",
-            "Markdown files: node_modules/prompts/readme.md README.md"
+            "Markdown files: README.md"
           ]
         }
       ]
