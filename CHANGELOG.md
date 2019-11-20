@@ -1,4 +1,8 @@
 # Change Log
+## 1.22.8
+* Added message when no menu available.
+* When using the migrate option example description `...` is generated for the first menu level
+
 ## 1.22.7
 * Updated dependencies
 * Migrate now supports semicolon.

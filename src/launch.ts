@@ -185,6 +185,8 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
 
       currMenu = nextMenu;
 
+      if (currMenu === menuEntries) entry += ':...';
+
       while (typeof currMenu[entry] === 'string') entry += ':menu';
 
       if (nextMenu[entry] === undefined) {
