@@ -172,8 +172,9 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
       if (--currentTimeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
+
         console.info();
-        console.info();
+
         process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + currentTimeout);
         process.stdout.write('\x1b[u'); // Restore cursor position
 
@@ -193,7 +194,6 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
       if (currentTimeout !== timeout) {
         process.stdout.write('\x1b[s'); // Save cursor position
 
-        console.info();
         console.info();
 
         process.stdout.write('\x1b[K');
