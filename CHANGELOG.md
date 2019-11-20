@@ -2,13 +2,14 @@
 ## 1.22.7
 * Updated dependencies
 * Migrate now supports semicolon.
+* Migrate now supports the `cd` command.
 
 ### Before migrate: `package.json`
 ``` JSON
 {
   "scripts": {
-    "serve:dev:uva": "echo serve && echo dev && echo uva",
-    "serve:acc:uva": "echo serve ;  echo acc ;  echo uva"
+    "serve:dev:uva": "echo serve && cd node_modules && echo dev && echo uva",
+    "serve:acc:uva": "echo serve ;  cd node_modules ;  echo acc ;  echo uva"
   }
 }
 ```
@@ -19,11 +20,13 @@
   "scripts": {
     "serve:dev:uva": [
       "echo serve",
+      "node_modules",
       "echo dev",
       "echo uva"
     ],
     "serve:acc:uva": [
       "echo serve || true",
+      "node_modules",
       "echo acc || true",
       "echo uva"
     ]

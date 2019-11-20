@@ -174,8 +174,8 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   }
 
   for (const [key, value] of Object.entries(content.scripts)) {
-    const values = splitCommand(value);
     const entries = key.split(':');
+    let values = splitCommand(value);
     let currMenu = menuEntries;
     let nextMenu = menuEntries;
     let entry = key;
@@ -201,7 +201,24 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
     currMenu[entry] = key;
 
     if (values.length > 1) {
-      targetScripts[key] = values.map((item) => item.trim().replace('npm run ', ''));
+      values = values.map((item) => {
+        if (item.startsWith('npm run ')) {
+          item = item.trim().replace('npm run ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+      values = values.map((item) => {
+        if (item.startsWith('cd ')) {
+          item = item.trim().replace('cd ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+
+      targetScripts[key] = values;
     } else {
       targetScripts[key] = value;
     }
