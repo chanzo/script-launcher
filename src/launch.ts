@@ -108,7 +108,7 @@ function splitCommand(command: string): string[] {
 
   while (index < command.length) {
     const value = command.substr(index);
-    const semicolon = value.startsWith(';')
+    const semicolon = value.startsWith(';');
 
     if (value.startsWith('&&') || semicolon) {
       result.push(command.substr(last, index - last).trim() + (semicolon ? ' || true' : ''));
