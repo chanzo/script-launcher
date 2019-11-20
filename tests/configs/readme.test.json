@@ -22,7 +22,7 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates"
+          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js"
         }
       ]
     },
@@ -163,8 +163,8 @@
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "All files: bin common.js config-loader.js executor.js launch-menu.js launch.js LICENSE logger.js package.json README.md scripts.js spawn-process.js templates",
-            "Markdown files: README.md"
+            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js",
+            "Markdown files: node_modules/prompts/readme.md README.md"
           ]
         }
       ]

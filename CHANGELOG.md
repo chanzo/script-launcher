@@ -1,7 +1,7 @@
 # Change Log
 ## 1.22.7
 * Updated dependencies
-* Migrate now also supports semicolon.
+* Migrate now supports semicolon.
 
 ### Before migrate: `package.json`
 ``` JSON
