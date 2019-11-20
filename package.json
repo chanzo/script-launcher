@@ -32,7 +32,7 @@
     "cpx": "^1.5.0",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
-    "script-launcher": "^1.22.7",
+    "script-launcher": "^1.22.8",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.5.2",
     "tslint": "^5.20.1",
