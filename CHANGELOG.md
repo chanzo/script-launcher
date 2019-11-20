@@ -1,4 +1,35 @@
 # Change Log
+## 1.22.7
+* Migrate now also supports semicolon.
+
+### Before migrate: `package.json`
+``` JSON
+{
+  "scripts": {
+    "serve:dev:uva": "echo serve && echo dev && echo uva",
+    "serve:acc:uva": "echo serve ;  echo acc ;  echo uva"
+  }
+}
+```
+
+### After migrate: `launcher-config.json`
+``` JSON
+{
+  "scripts": {
+    "serve:dev:uva": [
+      "echo serve",
+      "echo dev",
+      "echo uva"
+    ],
+    "serve:acc:uva": [
+      "echo serve || true",
+      "echo acc || true",
+      "echo uva"
+    ]
+  }
+}
+```
+
 ## 1.22.6
 ### Changes
 * Updated starter templates
