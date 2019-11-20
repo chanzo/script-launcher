@@ -239,7 +239,10 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
   defaults = [...defaults];
 
-  if (choices.length === 0) throw new Error('No menu entries available.');
+  if (choices.length === 0) {
+    console.log('Nothing to do: Menu not available and no action specified.');
+    throw new Error('Nothing to do: Menu not available and no action specified.');
+  }
 
   let initialIndex = choices.findIndex((item) => item.title === defaults[0]);
 
