@@ -447,7 +447,7 @@
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
-            "Error: Missing launch script: assignments"
+            "Cannot start launch script 'assignments': No such script available."
           ]
         },
         {
