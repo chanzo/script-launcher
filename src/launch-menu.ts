@@ -172,8 +172,9 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
 
       if (--currentTimeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
+
         console.info();
-        console.info();
+
         process.stdout.write(Colors.Bold + 'Auto select in: ' + Colors.Normal + currentTimeout);
         process.stdout.write('\x1b[u'); // Restore cursor position
 
@@ -193,7 +194,6 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
       if (currentTimeout !== timeout) {
         process.stdout.write('\x1b[s'); // Save cursor position
 
-        console.info();
         console.info();
 
         process.stdout.write('\x1b[K');
@@ -239,7 +239,10 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
 
   defaults = [...defaults];
 
-  if (choices.length === 0) throw new Error('No menu entries available.');
+  if (choices.length === 0) {
+    console.log('Nothing to do: Menu not available and no action specified.');
+    throw new Error('Nothing to do: Menu not available and no action specified.');
+  }
 
   let initialIndex = choices.findIndex((item) => item.title === defaults[0]);
 

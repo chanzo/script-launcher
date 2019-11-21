@@ -108,9 +108,10 @@ function splitCommand(command: string): string[] {
 
   while (index < command.length) {
     const value = command.substr(index);
+    const semicolon = value.startsWith(';');
 
-    if (value.startsWith('&&')) {
-      result.push(command.substr(last, index - last).trim());
+    if (value.startsWith('&&') || semicolon) {
+      result.push(command.substr(last, index - last).trim() + (semicolon ? ' || true' : ''));
       index++;
 
       last = index + 1;
@@ -127,6 +128,10 @@ function splitCommand(command: string): string[] {
 
     if (value.startsWith('\"')) {
       while (++index < command.length && command[index] !== '\"');
+    }
+
+    if (value.startsWith('\'')) {
+      while (++index < command.length && command[index] !== '\'');
     }
 
     index++;
@@ -169,8 +174,8 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   }
 
   for (const [key, value] of Object.entries(content.scripts)) {
-    const values = splitCommand(value);
     const entries = key.split(':');
+    let values = splitCommand(value);
     let currMenu = menuEntries;
     let nextMenu = menuEntries;
     let entry = key;
@@ -179,6 +184,8 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
       entry = item;
 
       currMenu = nextMenu;
+
+      if (currMenu === menuEntries) entry += ':...';
 
       while (typeof currMenu[entry] === 'string') entry += ':menu';
 
@@ -196,7 +203,24 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
     currMenu[entry] = key;
 
     if (values.length > 1) {
-      targetScripts[key] = values.map((item) => item.trim().replace('npm run ', ''));
+      values = values.map((item) => {
+        if (item.startsWith('npm run ')) {
+          item = item.trim().replace('npm run ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+      values = values.map((item) => {
+        if (item.startsWith('cd ')) {
+          item = item.trim().replace('cd ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+
+      targetScripts[key] = values;
     } else {
       targetScripts[key] = value;
     }

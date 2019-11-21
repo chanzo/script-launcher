@@ -198,7 +198,7 @@ Specify an existing directory as an script command and it will change to that di
   "scripts": {
     "build-stuff": [
       "node_modules/script-launcher",
-      "echo *"
+      "echo *.js"
     ]
   }
 }
@@ -376,7 +376,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
   "scripts": {
     "build-stuff": [
       "node_modules/script-launcher",
-      "echo All files: *",
+      "echo Javascript files files: *.js",
       "echo Markdown files: **/*.md"
     ]
   }
