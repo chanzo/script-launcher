@@ -52,7 +52,7 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create a starter configuration based one of the available templates.
+Use **launch init** to create a starter configuration based on one of the available templates.
 
 ``` bash
 npx launch init basic
