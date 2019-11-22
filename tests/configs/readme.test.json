@@ -307,6 +307,14 @@
             "\n",
             "\u001b[?25h",
             "You are sure!"
+          ],
+          "result:win32": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(Y/n)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m yes",
+            "\n",
+            "\u001b[?25h",
+            "You are sure!"
           ]
         },
         {
@@ -320,6 +328,14 @@
             "\n",
             "\u001b[?25h",
             "You are sure!"
+          ],
+          "result:win32": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(Y/n)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m yes",
+            "\n",
+            "\u001b[?25h",
+            "You are sure!"
           ]
         },
         {
@@ -330,6 +346,14 @@
             "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(y/N)\u001b[39m",
             "\u001b[2K\u001b[1G",
             "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m no",
+            "\n",
+            "\u001b[?25h",
+            "You are not sure!"
+          ],
+          "result:win32": [
+            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(y/N)\u001b[39m",
+            "\u001b[2K\u001b[1G",
+            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m no",
             "\n",
             "\u001b[?25h",
             "You are not sure!"
@@ -404,7 +428,7 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m - Amsterdam University of Applied Sciences.\u001b[39m",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m - Amsterdam University of Applied Sciences.\u001b[39m\n",
             "\u001b[2K\u001b[1G",
             "\u001b[32m√\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m hva",
             "\n",
@@ -493,7 +517,7 @@
             "Build script"
           ],
           "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   serve\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    serve\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
             "\u001b[2K\u001b[1G",
             "\u001b[32m√\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m»\u001b[39m build",
             "\n",
@@ -579,7 +603,7 @@
             "ng serve hva -c=dev"
           ],
           "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n   uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m  \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m",
+            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
             "\u001b[2K\u001b[1G",
             "\u001b[32m√\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m hva",
             "\n",

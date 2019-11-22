@@ -16,6 +16,9 @@ async function main() {
   testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)', [
     'Installation',
     'Usage examples',
+    'Show menu',
+    'Start a specific launch script, by using the `npm start`',
+    'Start a specific launch script, by using the `npm run`',
     'Motivation',
     'Implementation examples',
     'Launcher files',
