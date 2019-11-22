@@ -2,6 +2,7 @@
 ## 1.22.9
 * Updated the error message when launcher script not found.
 * Updated readme file.
+* Fix integration tests on Windows
 
 ## 1.22.8
 * Added message when no menu available.
