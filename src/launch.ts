@@ -548,7 +548,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
 
-    if (scripts.length === 0) throw new Error('Missing launch script: ' + launchScript);
+    if (scripts.length === 0) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
 
     const scriptInfo = Scripts.select(scripts);
 
@@ -568,7 +568,11 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
-    Logger.error(`${error}`);
+    if (error.message) {
+      Logger.error(error.message);
+    } else {
+      Logger.error(`${error}`);
+    }
   } finally {
     let timespan = process.hrtime(startTime);
 

@@ -52,13 +52,15 @@ Install **script-launcher** as a development dependency in your project.
 npm install script-launcher --save-dev
 ```
 
-Use **launch init** to create a starter configuration from one of the templates.
+Use **launch init** to create a starter configuration based on one of the available templates.
 
 ``` bash
 npx launch init basic
 ```
 
-If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add custom run scripts for starting Script Launcher.
+If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add [custom run scripts](#start-a-specific-launch-script,-by-using-the-npm-run) for starting Script Launcher.
+
+Example: **package.json**
 ``` JSON
 {
     ...
@@ -69,21 +71,44 @@ If not already done so, change your **package.json** start script, so it will st
     ...
 }
 ```
-You are now ready to start use Script Launcher by running: `npm start`
+You are now ready to start use Script Launcher by running: `npm start` or `npm run serve:dev`.
 
 ## Usage examples
 
-Show menu
+### Show menu
 ```
 npm start
 ```
+You can also show the menu by running: `npx launch`
 
-Start a specific launch script
+### Start a specific launch script, by using the `npm start`
 ```
 npm start serve:dev
 npm start build:production
 ```
 Basically you can now use `npm start` instead of `npm run`.
+
+### Start a specific launch script, by using the `npm run`
+For a cusom run script to work, you have to add a script to your **package.json** file, make sure there is a similar named script in your **launcher-config.json** file.
+
+Example: **package.json**
+``` JSON
+{
+    ...
+    "scripts": {
+        "serve:dev": "launch",
+        "build:production": "launch"
+        ...
+    },
+    ...
+}
+```
+
+Example run commands
+```
+npm run serve:dev
+npm run build:production
+```
 
 ## Migrate package.json scripts
 Make sure all your repository changes are fully committed so you can undo the changes easily if they do not suit your needs. Remove or rename the start script in your **package.json** file.
@@ -127,7 +152,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
-// Example using Script Launcher //
+// Example when using Script Launcher //
 {
   "scripts": {
     "build:$project:$config": "ng build $project --prod -c=$config",
@@ -174,7 +199,7 @@ You would use: `npm start` to start the menu.
 To test an example, copy the json content from the example to the file named **launcher-config.json** and run the script.
 
 ### Sequential scripts
-This example uses square brackets to start multiple script one by one. This feature can makes long script lines more readable.
+This example uses square brackets to start multiple script one by one. This feature will make long script lines more readable.
 
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON
@@ -190,7 +215,7 @@ This example uses square brackets to start multiple script one by one. This feat
 ```
 
 ### Change directory
-Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from a different location.
+Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from within a different location.
 
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON
@@ -217,7 +242,7 @@ Use the dollar-sign in the script id and command, to specify script function par
 ```
 
 ### Reference scripts
-Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse script from other script, with different arguments if desired.
+Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse scripts from another script, with different arguments if desired.
 
 **Run**: `npm start deploy:tst` to use this example.
 ``` JSON
@@ -239,7 +264,7 @@ Use an existing script id in the command section to execute another script in yo
 ### Environment and command line argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases. 
 
-For compatibility reasons: when using a script name that is equal to the command being executed, all arguments are appended automatically.
+For compatibility reasons: when using a script id that is equal to the command being executed, all arguments are appended automatically.
 
 **Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3` to use this example.
 ``` JSON
@@ -261,6 +286,7 @@ For compatibility reasons: when using a script name that is equal to the command
   }
 }
 ```
+In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
 
 ### Launch arguments, command arguments, parameters and arguments
 * **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
