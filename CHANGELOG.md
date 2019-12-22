@@ -1,4 +1,7 @@
 # Change Log
+## 1.23.0
+* Updated dev dependencies
+
 ## 1.22.9
 * Updated the error message when launcher script not found.
 * Updated readme file.
