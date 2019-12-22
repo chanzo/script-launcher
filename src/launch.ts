@@ -142,12 +142,12 @@ function splitCommand(command: string): string[] {
   return result;
 }
 
-function migrateMenu(content: { scripts: { [name: string]: string } }): IMenu {
+function migrateMenu(scripts: { [name: string]: string }): IMenu {
   const menuEntries: IMenu = {
     description: '',
   };
 
-  for (const [key] of Object.entries(content.scripts)) {
+  for (const [key] of Object.entries(scripts)) {
     const entries = key.split(':');
     let currMenu = menuEntries;
     let nextMenu = menuEntries;
@@ -179,11 +179,11 @@ function migrateMenu(content: { scripts: { [name: string]: string } }): IMenu {
   return menuEntries;
 }
 
-function migrateScripts(content: { scripts: { [name: string]: string } }): { source: IScripts, target: IScripts } {
+function migrateScripts(scripts: { [name: string]: string }): { source: { [name: string]: string }, target: IScripts } {
   const sourceScripts: { [name: string]: string } = {};
   const targetScripts: IScripts = {};
 
-  for (const [key, value] of Object.entries(content.scripts)) {
+  for (const [key, value] of Object.entries(scripts)) {
     let values = splitCommand(value);
 
     if (values.length > 1) {
@@ -218,6 +218,32 @@ function migrateScripts(content: { scripts: { [name: string]: string } }): { sou
   };
 }
 
+function checkMigratePrerqusits(directory: string): boolean {
+  const menuFile = path.join(directory, 'launcher-menu.json');
+  const configFile = path.join(directory, 'launcher-config.json');
+  const packageFile = path.join(directory, 'package.json');
+
+  if (fs.existsSync(menuFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
+    return false;
+  }
+
+  if (fs.existsSync(configFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-config.json already exists.');
+    return false;
+  }
+
+  const buffer = fs.readFileSync(packageFile);
+  const content = JSON.parse(buffer.toString()) as { scripts: { [name: string]: string } };
+
+  if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
+    return false;
+  }
+
+  return true;
+}
+
 async function migratePackageJson(directory: string, testmode: boolean): Promise<void> {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
@@ -238,26 +264,24 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
 
   const buffer = fs.readFileSync(packageFile);
   const content = JSON.parse(buffer.toString()) as { scripts: { [name: string]: string } };
-  const sourceScripts: { [name: string]: string } = {};
-  const targetScripts: IScripts = {};
-  const menuEntries: IMenu = {
-    description: '',
-  };
 
   if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
     console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
     return;
   }
 
-  const targetCount = Object.entries(targetScripts).length;
-  const sourceCount = Object.entries(sourceScripts).length;
+  const menuEntries = migrateMenu(content.scripts);
+  const scripts = migrateScripts(content.scripts);
+
+  const targetCount = Object.entries(scripts.target).length;
+  const sourceCount = Object.entries(scripts.source).length;
 
   console.log('Script to migrate:', targetCount - sourceCount);
   console.log('Script to update:', sourceCount + 1);
   console.log();
 
-  sourceScripts.start = 'launch';
-  content.scripts = sourceScripts;
+  scripts.source.start = 'launch';
+  content.scripts = scripts.source;
 
   if (testmode || await confirmPrompt('Are you sure')) {
     console.log();
@@ -271,7 +295,7 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
 
     console.log(Colors.Bold + 'Creating:' + Colors.Normal, configFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(configFile, JSON.stringify({
-      scripts: targetScripts,
+      scripts: scripts.target,
     }, null, 2));
 
   }
