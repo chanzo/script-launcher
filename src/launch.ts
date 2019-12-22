@@ -142,6 +142,82 @@ function splitCommand(command: string): string[] {
   return result;
 }
 
+function migrateMenu(content: { scripts: { [name: string]: string } }): IMenu {
+  const menuEntries: IMenu = {
+    description: '',
+  };
+
+  for (const [key] of Object.entries(content.scripts)) {
+    const entries = key.split(':');
+    let currMenu = menuEntries;
+    let nextMenu = menuEntries;
+    let entry = key;
+
+    for (const item of entries) {
+      entry = item;
+
+      currMenu = nextMenu;
+
+      if (currMenu === menuEntries) entry += ':...';
+
+      while (typeof currMenu[entry] === 'string') entry += ':menu';
+
+      if (nextMenu[entry] === undefined) {
+        nextMenu[entry] = {
+          description: '',
+        };
+      }
+
+      nextMenu = nextMenu[entry] as any;
+    }
+
+    if (Object.entries(currMenu[entry]).length > 1) entry += ':command';
+
+    currMenu[entry] = key;
+  }
+
+  return menuEntries;
+}
+
+function migrateScripts(content: { scripts: { [name: string]: string } }): { source: IScripts, target: IScripts } {
+  const sourceScripts: { [name: string]: string } = {};
+  const targetScripts: IScripts = {};
+
+  for (const [key, value] of Object.entries(content.scripts)) {
+    let values = splitCommand(value);
+
+    if (values.length > 1) {
+      values = values.map((item) => {
+        if (item.startsWith('npm run ')) {
+          item = item.trim().replace('npm run ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+      values = values.map((item) => {
+        if (item.startsWith('cd ')) {
+          item = item.trim().replace('cd ', '');
+          item = item.trim().replace(' || true', '');
+          item = item.trim();
+        }
+        return item;
+      });
+
+      targetScripts[key] = values;
+    } else {
+      targetScripts[key] = value;
+    }
+
+    if (npmScripts.includes(key)) sourceScripts[key] = 'launch';
+  }
+
+  return {
+    source: sourceScripts,
+    target: targetScripts,
+  };
+}
+
 async function migratePackageJson(directory: string, testmode: boolean): Promise<void> {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
