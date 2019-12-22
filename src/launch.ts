@@ -249,9 +249,6 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
     return;
   }
 
-  for (const [key, value] of Object.entries(content.scripts)) {
-  }
-
   const targetCount = Object.entries(targetScripts).length;
   const sourceCount = Object.entries(sourceScripts).length;
 
