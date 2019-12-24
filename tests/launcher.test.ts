@@ -2,6 +2,7 @@ import { TestLauncher, TransformCallback } from './test-launcher';
 import * as path from 'path';
 import { IConfig } from '../src/config-loader';
 import { IScript, IScriptTask } from '../src/scripts';
+import * as fs from 'fs';
 
 const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
@@ -62,7 +63,7 @@ async function main() {
           if (config.tests.length === 0) test.todo('test command');
 
           for (const item of config.tests) {
-            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
+            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0 && item['cat-args'].length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
               test.todo(item.name);
               continue;
             }
@@ -72,15 +73,32 @@ async function main() {
             test(item.name.padEnd(56), async () => {
               if (item.error) throw new Error(item.error);
 
-              const result = await testLauncher.launch(item.lifecycle, directory, [
-                ...item['cmd-args'],
-                ...item['npm-args']
-              ], JSON.stringify({ remain: item['npm-args'] }));
+              let output: ReadonlyArray<string>;
+
+              if (item['cat-args'].length > 0) {
+                const content = [];
+
+                for (const file of item['cat-args']) {
+                  const fileName = path.join(tempFiles, directory, file);
+                  const buffer = fs.readFileSync(fileName);
+
+                  content.push(...buffer.toString().split('\n'));
+                }
+
+                output = content;
+              } else {
+                const result = await testLauncher.launch(item.lifecycle, directory, [
+                  ...item['cmd-args'],
+                  ...item['npm-args']
+                ], JSON.stringify({ remain: item['npm-args'] }));
+
+                output = result.all;
+              }
 
               try {
-                expect(result.all).toStrictEqual(item.result);
+                expect(output).toStrictEqual(item.result);
               } catch (error) {
-                console.log('result (' + directory + '):', JSON.stringify(result.all, null, 2));
+                console.log('result (' + directory + '):', JSON.stringify(output, null, 2));
                 throw error;
               }
             }, 10000);

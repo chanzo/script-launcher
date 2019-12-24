@@ -23,6 +23,12 @@ interface IArgs {
   menuTimeout: number;
 }
 
+interface IScriptDefinition {
+  params: string[];
+  key: string;
+  value: string;
+}
+
 const npmScripts = [
   'prepublish',
   'prepare',
@@ -142,6 +148,28 @@ function splitCommand(command: string): string[] {
   return result;
 }
 
+function checkMigratePrerqusits(directory: string, scripts: { [name: string]: string }): boolean {
+  const menuFile = path.join(directory, 'launcher-menu.json');
+  const configFile = path.join(directory, 'launcher-config.json');
+
+  if (fs.existsSync(menuFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
+    return false;
+  }
+
+  if (fs.existsSync(configFile)) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-config.json already exists.');
+    return false;
+  }
+
+  if (scripts && scripts.start !== undefined && scripts.start !== 'launch') {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
+    return false;
+  }
+
+  return true;
+}
+
 function migrateMenu(scripts: { [name: string]: string }): IMenu {
   const menuEntries: IMenu = {
     description: '',
@@ -218,30 +246,72 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
   };
 }
 
-function checkMigratePrerqusits(directory: string): boolean {
-  const menuFile = path.join(directory, 'launcher-menu.json');
-  const configFile = path.join(directory, 'launcher-config.json');
-  const packageFile = path.join(directory, 'package.json');
+function parameterize(params: string[], key: string, value: string, paramOffset: number = 0): { key: string, value: string } {
+  let index = 0;
 
-  if (fs.existsSync(menuFile)) {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
-    return false;
+  for (const param of params) {
+    if (index >= paramOffset) {
+      const expression = new RegExp(param, 'g');
+
+      if (value.includes(param)) {
+        key = key.replace(expression, '$param' + index);
+        value = value.replace(expression, '$param' + index);
+
+      }
+    }
+
+    index++;
   }
 
-  if (fs.existsSync(configFile)) {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-config.json already exists.');
-    return false;
+  return { key, value };
+}
+
+function getScriptDefinitions(scripts: { [name: string]: string }, paramOffset: number = 0): IScriptDefinition[] {
+  const definitions: IScriptDefinition[] = [];
+
+  for (const [key, value] of Object.entries(scripts)) {
+    const params = key.split(':');
+
+    definitions.push({
+      params: params,
+      ...parameterize(params, key, value, paramOffset),
+    });
   }
 
-  const buffer = fs.readFileSync(packageFile);
-  const content = JSON.parse(buffer.toString()) as { scripts: { [name: string]: string } };
+  const result = definitions.sort((a, b) => a.value.localeCompare(b.value));
 
-  if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
-    return false;
+  console.log(result);
+
+  return result;
+}
+
+function combineScripts(scripts: { [name: string]: string }): { [name: string]: string } {
+  const definitions = getScriptDefinitions(scripts, 1);
+  const combineScripts: { [name: string]: string } = {};
+
+  for (const definition of definitions) {
+    let { key, value } = definition;
+    let index = 0;
+
+    for (const param of definition.params) {
+      if (combineScripts[key] === undefined || combineScripts[key] === value) break;
+
+      const expression = new RegExp('\\$param' + index, 'g');
+
+      key = key.replace(expression, param);
+      value = value.replace(expression, param);
+
+      index++;
+    }
+
+    combineScripts[key] = value;
   }
 
-  return true;
+  console.log(''.padEnd(118, '-'));
+  console.log(combineScripts);
+  console.log(''.padEnd(118, '-'));
+
+  return combineScripts;
 }
 
 async function migratePackageJson(directory: string, testmode: boolean): Promise<void> {
@@ -252,26 +322,15 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   console.log(Colors.Bold + 'Migrating: ' + Colors.Normal + 'package.json');
   console.log();
 
-  if (fs.existsSync(menuFile)) {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
-    return;
-  }
+  const content = JSON.parse(fs.readFileSync(packageFile).toString()) as { scripts: { [name: string]: string } };
 
-  if (fs.existsSync(configFile)) {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-config.json already exists.');
-    return;
-  }
-
-  const buffer = fs.readFileSync(packageFile);
-  const content = JSON.parse(buffer.toString()) as { scripts: { [name: string]: string } };
-
-  if (content.scripts && content.scripts.start !== undefined && content.scripts.start !== 'launch') {
-    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal + ' Remove start script from package.json before running migrate.');
-    return;
-  }
+  if (!checkMigratePrerqusits(directory, content.scripts)) return;
 
   const menuEntries = migrateMenu(content.scripts);
-  const scripts = migrateScripts(content.scripts);
+  const combinedScripts = combineScripts(content.scripts);
+  const scripts = migrateScripts(combinedScripts);
+
+  console.log(scripts.target);
 
   const targetCount = Object.entries(scripts.target).length;
   const sourceCount = Object.entries(scripts.source).length;

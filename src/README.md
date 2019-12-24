@@ -126,14 +126,14 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 // Traditional package.json scripts //
 {
   "scripts": {
-    "build:uva:dev": "ng build uva --prod -c=dev",
-    "build:uva:tst": "ng build uva --prod -c=tst",
-    "build:uva:acc": "ng build uva --prod -c=acc",
-    "build:uva:prd": "ng build uva --prod -c=prd",
-    "build:hva:dev": "ng build hva --prod -c=dev",
-    "build:hva:tst": "ng build hva --prod -c=tst",
-    "build:hva:acc": "ng build hva --prod -c=acc",
-    "build:hva:prd": "ng build hva --prod -c=prd",
+    "build:uva:dev": "ng build uva --configuration=dev --prod",
+    "build:uva:tst": "ng build uva --configuration=tst --prod",
+    "build:uva:acc": "ng build uva --configuration=acc --prod",
+    "build:uva:prd": "ng build uva --configuration=prd --prod",
+    "build:hva:dev": "ng build hva --configuration=dev --prod",
+    "build:hva:tst": "ng build hva --configuration=tst --prod",
+    "build:hva:acc": "ng build hva --configuration=acc --prod",
+    "build:hva:prd": "ng build hva --configuration=prd --prod",
     "deploy:uva:dev": "npm run build:uva:dev && firebase deploy --public dist/uva --project status-uva-dev",
     "deploy:uva:tst": "npm run build:uva:tst && firebase deploy --public dist/uva --project status-uva-tst",
     "deploy:uva:acc": "npm run build:uva:acc && firebase deploy --public dist/uva --project status-uva-acc",
@@ -158,7 +158,7 @@ With **script-launcher** you have the benefits of using variables, script refere
     "build:$project:$config": "ng build $project --prod -c=$config",
     "deploy:$project:$config":[
       "build:$project:$config",
-      "firebase deploy --public dist/$project --project $project-$config"
+      "firebase deploy --public dist/$project --project status-$project-$config"
     ],
     "deploy:$config":[
       "deploy:uva:$config",

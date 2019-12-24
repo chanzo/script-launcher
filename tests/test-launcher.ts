@@ -11,6 +11,7 @@ export interface ITests {
   error?: string;
   'cmd-args': string[];
   'npm-args': string[];
+  'cat-args': string[];
   lifecycle?: string;
   result?: string[];
 }
@@ -20,6 +21,7 @@ interface ITestsConfigFile {
   error?: string;
   'cmd-args': string[] | string;
   'npm-args': string[] | string;
+  'cat-args': string[] | string;
   lifecycle?: string;
   [name: string]: string[] | string;
 }
@@ -115,9 +117,11 @@ export class TestLauncher {
             for (const test of testConfig.tests as ITestsConfigFile[]) {
               if (test['cmd-args'] === undefined) test['cmd-args'] = [];
               if (test['npm-args'] === undefined) test['npm-args'] = [];
+              if (test['cat-args'] === undefined) test['cat-args'] = [];
 
               if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
+              if (!Array.isArray(test['cat-args'])) test['cat-args'] = [test['cat-args']];
 
               let result = test.result;
 
@@ -133,6 +137,13 @@ export class TestLauncher {
                 });
               }
 
+              if (test['cat-args'].length > 0) {
+
+                if (test.lifecycle !== undefined) test.error = 'cat-args and lifecycle can not be combined';
+                if (test['cmd-args'].length > 0) test.error = 'cat-args and cmd-args can not be combined';
+                if (test['npm-args'].length > 0) test.error = 'cat-args and npm-args can not be combined';
+              }
+
               test.result = result;
 
               if (!test.name) {
@@ -144,6 +155,10 @@ export class TestLauncher {
                   if (test.lifecycle !== 'start') test.name += 'run   ';
 
                   test.name += (test.lifecycle + ' ' + test['npm-args'].join(' ')).trim();
+                }
+
+                if (test['cat-args'].length > 0) {
+                  test.name = 'cat ' + test['cat-args'].join(' ');
                 }
               }
             }
@@ -161,7 +176,8 @@ export class TestLauncher {
     const emptyTest: ITests = {
       'name': 'empty',
       'npm-args': [],
-      'cmd-args': []
+      'cmd-args': [],
+      'cat-args': []
     };
     let configs = this._configs[category];
 
