@@ -21,12 +21,12 @@ interface IArgs {
   ansi: boolean;
   directory: string;
   menuTimeout: number;
+  params: number;
 }
 
 interface IScriptDefinition {
-  params: string[];
-  key: string;
-  value: string;
+  params: string[][];
+  keys: string[];
 }
 
 const npmScripts = [
@@ -246,75 +246,135 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
   };
 }
 
-function parameterize(params: string[], key: string, value: string, paramOffset: number = 0): { key: string, value: string } {
+function objectFromEntries<T>(entries: Array<[string, T]>): { [name: string]: T } {
+  const object: { [name: string]: T } = {};
+
+  for (const [name, value] of entries) {
+    object[name] = value;
+  }
+
+  return object;
+}
+
+function parameterize(key: string, value: string, preserveParams: number): { key: string, value: string, params: string[] } {
+  const params = key.split(':');
   let index = 0;
 
   for (const param of params) {
-    if (index >= paramOffset) {
+    if (index >= preserveParams) {
       const expression = new RegExp(param, 'g');
 
       if (value.includes(param)) {
         key = key.replace(expression, '$param' + index);
         value = value.replace(expression, '$param' + index);
-
       }
     }
 
     index++;
   }
 
-  return { key, value };
+  return { key, value, params };
 }
 
-function getScriptDefinitions(scripts: { [name: string]: string }, paramOffset: number = 0): IScriptDefinition[] {
-  const definitions: IScriptDefinition[] = [];
+function getScriptDefinitions(scripts: { [name: string]: string }, preserveParams: number): { [name: string]: IScriptDefinition } {
+  const definitions: { [name: string]: IScriptDefinition } = {};
 
   for (const [key, value] of Object.entries(scripts)) {
-    const params = key.split(':');
+    const parameters = parameterize(key, value, preserveParams);
+    let definition = definitions[parameters.value];
 
-    definitions.push({
-      params: params,
-      ...parameterize(params, key, value, paramOffset),
-    });
+    if (definition === undefined) {
+      definition = {
+        keys: [],
+        params: [],
+      };
+      definitions[parameters.value] = definition;
+    }
+
+    if (!definition.keys.includes(parameters.key)) definition.keys.push(parameters.key);
+
+    definition.params.push(parameters.params);
   }
 
-  const result = definitions.sort((a, b) => a.value.localeCompare(b.value));
+  const sorted = Object.entries(definitions).sort(([, definition1], [, definition2]) => definition2.params.length - definition1.params.length);
 
-  console.log(result);
+  // console.log(''.padEnd(118, '-'));
+  // console.log(JSON.stringify(objectFromEntries(sorted), null, 2));
+  // console.log(''.padEnd(118, '-'));
+
+  return objectFromEntries(sorted);
+}
+
+function expandParams(name: string, command: string, params: string[][]): Array<{ name: string, command: string }> {
+  let match: { index: number, value: string[] } = null;
+  const length = (params.find(() => true) || { length: 0 }).length;
+  const keys = name.split(':');
+
+  for (let index = 0; index < length; index++) {
+    if (keys[index].startsWith('$')) {
+      const value = [...new Set(params.map((item) => item[index]))];
+
+      if (match === null || value.length <= match.value.length) {
+        match = {
+          index: index,
+          value: value,
+        };
+      }
+    }
+  }
+
+  if (match === null) return [];
+
+  const expression = new RegExp('\\$param' + match.index, 'g');
+  const result: Array<{ name: string, command: string }> = [];
+
+  for (const item of match.value) {
+    result.push({
+      name: name.replace(expression, item),
+      command: command.replace(expression, item),
+    });
+  }
 
   return result;
 }
 
-function combineScripts(scripts: { [name: string]: string }): { [name: string]: string } {
-  const definitions = getScriptDefinitions(scripts, 1);
-  const combineScripts: { [name: string]: string } = {};
+function resolveConflicts(scripts: { [name: string]: string }, name: string, command: string, params: string[][]): Array<{ name: string, command: string }> {
+  if (scripts[name] === undefined) return [{ name, command }];
 
-  for (const definition of definitions) {
-    let { key, value } = definition;
-    let index = 0;
+  const expanded = expandParams(name, command, params);
+  const result: Array<{ name: string, command: string }> = [];
 
-    for (const param of definition.params) {
-      if (combineScripts[key] === undefined || combineScripts[key] === value) break;
-
-      const expression = new RegExp('\\$param' + index, 'g');
-
-      key = key.replace(expression, param);
-      value = value.replace(expression, param);
-
-      index++;
-    }
-
-    combineScripts[key] = value;
+  for (const item of expanded) {
+    result.push(...resolveConflicts(scripts, item.name, item.command, params));
   }
 
-  console.log(''.padEnd(118, '-'));
-  console.log(combineScripts);
-  console.log(''.padEnd(118, '-'));
+  return result;
+}
+
+function combineScripts(scripts: { [name: string]: string }, preserveParams: number): { [name: string]: string } {
+  const definitions = getScriptDefinitions(scripts, preserveParams);
+  const combineScripts: { [name: string]: string } = {};
+
+  for (const [script, definition] of Object.entries(definitions)) {
+    for (const key of definition.keys) {
+      const scripts: Array<{ name: string, command: string }> = [];
+
+      scripts.push(...resolveConflicts(combineScripts, key, script, definition.params));
+
+      for (const script of scripts) {
+        combineScripts[script.name] = script.command;
+      }
+    }
+  }
+
+  // console.log(''.padEnd(118, '-'));
+  // console.log(combineScripts);
+  // console.log(''.padEnd(118, '-'));
 
   return combineScripts;
 }
 
-async function migratePackageJson(directory: string, testmode: boolean): Promise<void> {
+async function migratePackageJson(directory: string, preserveParams: number, testmode: boolean): Promise<void> {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
   const packageFile = path.join(directory, 'package.json');
@@ -327,10 +387,10 @@ async function migratePackageJson(directory: string, testmode: boolean): Promise
   if (!checkMigratePrerqusits(directory, content.scripts)) return;
 
   const menuEntries = migrateMenu(content.scripts);
-  const combinedScripts = combineScripts(content.scripts);
+  const combinedScripts = combineScripts(content.scripts, preserveParams);
   const scripts = migrateScripts(combinedScripts);
 
-  console.log(scripts.target);
+  // console.log(scripts.target);
 
   const targetCount = Object.entries(scripts.target).length;
   const sourceCount = Object.entries(scripts.source).length;
@@ -417,6 +477,7 @@ function showHelp() {
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
+    params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
   });
 }
 
@@ -518,6 +579,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         ansi: true,
         directory: process.cwd(),
         menuTimeout: undefined,
+        params: undefined,
       },
       optionals: [],
     });
@@ -530,6 +592,8 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (launchArgs.arguments.logLevel === undefined) launchArgs.arguments.logLevel = config.options.logLevel;
     if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
+    if (argsString.includes('--params') && launchArgs.arguments.params === undefined) launchArgs.arguments.params = 1;
+    if (launchArgs.arguments.params === undefined) launchArgs.arguments.params = Number.MAX_SAFE_INTEGER;
 
     Logger.level = launchArgs.arguments.logLevel;
 
@@ -557,7 +621,38 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     showLoadedFiles(configLoad.files);
 
+    let launchScript = lifecycleEvent;
+    let scriptId = '';
+
+    if (!launchArgs.arguments.script) {
+      if (lifecycleEvent === 'start') {
+        launchScript = commandArgs[0];
+        scriptId = commandArgs.shift();
+      }
+    } else {
+      launchScript = launchArgs.arguments.script;
+    }
+
     Logger.debug('Config: ', stringify(config));
+
+    Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
+    Logger.info('Version           :', version);
+    Logger.info('Lifecycle event   :', lifecycleEvent);
+    Logger.info('Launch script     :', launchScript);
+    Logger.debug('Process platform  :', process.platform);
+    Logger.debug('Script shell      :', shell);
+
+    if (Logger.level > 2) {
+      Logger.info('Launch arguments  :', launchArgs);
+    } else {
+      Logger.info('Launch arguments  :', argsString);
+    }
+
+    if (Object.entries(config.scripts.scripts).length === 0) {
+      Logger.info();
+      Logger.info('Warning: No launcher scripts loaded.');
+      Logger.info();
+    }
 
     if (launchArgs.arguments.version) {
       console.log(version);
@@ -592,47 +687,16 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.arguments.migrate) {
-      await migratePackageJson(launchArgs.arguments.directory, testmode);
+      await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, testmode);
       Logger.log();
       exitCode = 0;
 
       return;
     }
 
-    let launchScript = lifecycleEvent;
-    let scriptId = '';
-
-    if (!launchArgs.arguments.script) {
-      if (lifecycleEvent === 'start') {
-        launchScript = commandArgs[0];
-        scriptId = commandArgs.shift();
-      }
-    } else {
-      launchScript = launchArgs.arguments.script;
-    }
-
     commandArgs.unshift(...getRemaining(argsString));
 
     if (scriptId) commandArgs.unshift(scriptId);
-
-    Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
-    Logger.info('Version           :', version);
-    Logger.info('Lifecycle event   :', lifecycleEvent);
-    Logger.info('Launch script     :', launchScript);
-    Logger.debug('Process platform  :', process.platform);
-    Logger.debug('Script shell      :', shell);
-
-    if (Logger.level > 2) {
-      Logger.info('Launch arguments  :', launchArgs);
-    } else {
-      Logger.info('Launch arguments  :', argsString);
-    }
-
-    if (Object.entries(config.scripts.scripts).length === 0) {
-      Logger.info();
-      Logger.info('Warning: No launcher scripts loaded.');
-      Logger.info();
-    }
 
     const scripts = config.scripts.find(launchScript);
 

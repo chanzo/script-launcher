@@ -73,6 +73,8 @@ async function main() {
             test(item.name.padEnd(56), async () => {
               if (item.error) throw new Error(item.error);
 
+              if (item.restore && config.files !== undefined) testLauncher.create(directory, config.files);
+
               let output: ReadonlyArray<string>;
 
               if (item['cat-args'].length > 0) {

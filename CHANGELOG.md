@@ -3,6 +3,7 @@
 * Updated dev dependencies
 * Added unit tests for testing created files
 * Added parameter migration support 
+* Added params argument
 
 ## 1.22.9
 * Updated the error message when launcher script not found.

@@ -14,6 +14,7 @@ export interface ITests {
   'cat-args': string[];
   lifecycle?: string;
   result?: string[];
+  restore: boolean;
 }
 
 interface ITestsConfigFile {
@@ -23,7 +24,9 @@ interface ITestsConfigFile {
   'npm-args': string[] | string;
   'cat-args': string[] | string;
   lifecycle?: string;
-  [name: string]: string[] | string;
+  restore?: boolean;
+  result: string[];
+  // [result: string]: string[] | string;
 }
 
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
@@ -118,6 +121,7 @@ export class TestLauncher {
               if (test['cmd-args'] === undefined) test['cmd-args'] = [];
               if (test['npm-args'] === undefined) test['npm-args'] = [];
               if (test['cat-args'] === undefined) test['cat-args'] = [];
+              if (test.restore === undefined) test.restore = false;
 
               if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
@@ -177,7 +181,8 @@ export class TestLauncher {
       'name': 'empty',
       'npm-args': [],
       'cmd-args': [],
-      'cat-args': []
+      'cat-args': [],
+      'restore': false
     };
     let configs = this._configs[category];
 
@@ -301,6 +306,7 @@ export class TestLauncher {
 
     for (const [name, content] of Object.entries(files)) {
       const fileName = path.join(testDirectory, name + '.json');
+
       fs.writeFileSync(fileName, JSON.stringify(content));
     }
   }
