@@ -298,10 +298,6 @@ function getScriptDefinitions(scripts: { [name: string]: string }, preserveParam
 
   const sorted = Object.entries(definitions).sort(([, definition1], [, definition2]) => definition2.params.length - definition1.params.length);
 
-  // console.log(''.padEnd(118, '-'));
-  // console.log(JSON.stringify(objectFromEntries(sorted), null, 2));
-  // console.log(''.padEnd(118, '-'));
-
   return objectFromEntries(sorted);
 }
 
@@ -367,10 +363,6 @@ function combineScripts(scripts: { [name: string]: string }, preserveParams: num
     }
   }
 
-  // console.log(''.padEnd(118, '-'));
-  // console.log(combineScripts);
-  // console.log(''.padEnd(118, '-'));
-
   return combineScripts;
 }
 
@@ -390,8 +382,6 @@ async function migratePackageJson(directory: string, preserveParams: number, tes
   const combinedScripts = combineScripts(content.scripts, preserveParams);
   const scripts = migrateScripts(combinedScripts);
 
-  // console.log(scripts.target);
-
   const targetCount = Object.entries(scripts.target).length;
   const sourceCount = Object.entries(scripts.source).length;
 
@@ -401,6 +391,17 @@ async function migratePackageJson(directory: string, preserveParams: number, tes
 
   scripts.source.start = 'launch';
   content.scripts = scripts.source;
+
+  Logger.log('package.json:', content);
+  Logger.log();
+  Logger.log('launcher-menu.json:', {
+    menu: menuEntries,
+  });
+  Logger.log();
+  Logger.log('launcher-config.json:', {
+    scripts: scripts.target,
+  });
+  Logger.log();
 
   if (testmode || await confirmPrompt('Are you sure')) {
     console.log();

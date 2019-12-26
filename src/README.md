@@ -118,6 +118,11 @@ Now your are ready to migrate your **package.json** scripts to **launcher-config
 npx launch migrate
 ```
 
+Migrate using parameter migration option:
+``` bash
+npx launch migrate --params
+```
+
 ## Motivation
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
@@ -156,11 +161,11 @@ With **script-launcher** you have the benefits of using variables, script refere
 {
   "scripts": {
     "build:$project:$config": "ng build $project -c=$config --prod",
-    "deploy:$project:$config":[
+    "deploy:$project:$config": [
       "build:$project:$config",
       "firebase deploy --public dist/$project --project status-$project-$config"
     ],
-    "deploy:$config":[
+    "deploy:$config": [
       "deploy:uva:$config",
       "deploy:hva:$config"
     ]

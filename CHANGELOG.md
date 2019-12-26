@@ -2,6 +2,7 @@
 ## 1.23.0
 * Updated dev dependencies
 * Added unit tests for testing created files
+* Added unit tests for parameter migration
 * Added parameter migration support 
 * Added params argument
 
