@@ -148,7 +148,7 @@ function splitCommand(command: string): string[] {
   return result;
 }
 
-function checkMigratePrerqusits(directory: string, scripts: { [name: string]: string }): boolean {
+function checkMigratePrerequisites(directory: string, scripts: { [name: string]: string }): boolean {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
 
@@ -376,7 +376,7 @@ async function migratePackageJson(directory: string, preserveParams: number, tes
 
   const content = JSON.parse(fs.readFileSync(packageFile).toString()) as { scripts: { [name: string]: string } };
 
-  if (!checkMigratePrerqusits(directory, content.scripts)) return;
+  if (!checkMigratePrerequisites(directory, content.scripts)) return;
 
   const menuEntries = migrateMenu(content.scripts);
   const combinedScripts = combineScripts(content.scripts, preserveParams);
