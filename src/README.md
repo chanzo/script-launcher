@@ -118,6 +118,11 @@ Now your are ready to migrate your **package.json** scripts to **launcher-config
 npx launch migrate
 ```
 
+Migrate using parameter migration option:
+``` bash
+npx launch migrate --params
+```
+
 ## Motivation
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
@@ -126,14 +131,14 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 // Traditional package.json scripts //
 {
   "scripts": {
-    "build:uva:dev": "ng build uva --prod -c=dev",
-    "build:uva:tst": "ng build uva --prod -c=tst",
-    "build:uva:acc": "ng build uva --prod -c=acc",
-    "build:uva:prd": "ng build uva --prod -c=prd",
-    "build:hva:dev": "ng build hva --prod -c=dev",
-    "build:hva:tst": "ng build hva --prod -c=tst",
-    "build:hva:acc": "ng build hva --prod -c=acc",
-    "build:hva:prd": "ng build hva --prod -c=prd",
+    "build:uva:dev": "ng build uva -c=dev --prod",
+    "build:uva:tst": "ng build uva -c=tst --prod",
+    "build:uva:acc": "ng build uva -c=acc --prod",
+    "build:uva:prd": "ng build uva -c=prd --prod",
+    "build:hva:dev": "ng build hva -c=dev --prod",
+    "build:hva:tst": "ng build hva -c=tst --prod",
+    "build:hva:acc": "ng build hva -c=acc --prod",
+    "build:hva:prd": "ng build hva -c=prd --prod",
     "deploy:uva:dev": "npm run build:uva:dev && firebase deploy --public dist/uva --project status-uva-dev",
     "deploy:uva:tst": "npm run build:uva:tst && firebase deploy --public dist/uva --project status-uva-tst",
     "deploy:uva:acc": "npm run build:uva:acc && firebase deploy --public dist/uva --project status-uva-acc",
@@ -155,12 +160,12 @@ With **script-launcher** you have the benefits of using variables, script refere
 // Example when using Script Launcher //
 {
   "scripts": {
-    "build:$project:$config": "ng build $project --prod -c=$config",
-    "deploy:$project:$config":[
+    "build:$project:$config": "ng build $project -c=$config --prod",
+    "deploy:$project:$config": [
       "build:$project:$config",
-      "firebase deploy --public dist/$project --project $project-$config"
+      "firebase deploy --public dist/$project --project status-$project-$config"
     ],
-    "deploy:$config":[
+    "deploy:$config": [
       "deploy:uva:$config",
       "deploy:hva:$config"
     ]
