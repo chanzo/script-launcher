@@ -1,4 +1,11 @@
 # Change Log
+## 1.23.0
+* Updated dev dependencies
+* Added unit tests for testing created files
+* Added unit tests for parameter migration
+* Added parameter migration support 
+* Added params argument
+
 ## 1.22.9
 * Updated the error message when launcher script not found.
 * Updated readme file.
