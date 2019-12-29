@@ -14,5 +14,11 @@
       "",
       "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
     ]
+  },
+  "options": {
+    "logLevel": 2,
+    "glob": {
+      "nonull": true
+    }
   }
 }
