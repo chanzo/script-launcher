@@ -211,7 +211,7 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
   const sourceScripts: { [name: string]: string } = {};
   const targetScripts: IScripts = {};
 
-  for (const [key, value] of Object.entries(scripts)) {
+  for (const [key, value] of Object.entries(scripts).sort(([key1], [key2]) => key1.localeCompare(key2))) {
     let values = splitCommand(value);
 
     if (values.length > 1) {

@@ -130,10 +130,24 @@ export class Executor {
   private static expandGlobs(pattern: string, options?: glob.IOptions): string {
     const result: string[] = [];
 
-    for (const item of pattern.split(' ')) {
+    for (let item of pattern.split(' ')) {
       let value = [item];
 
-      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) value = glob.sync(item, options);
+      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) {
+
+        if (process.platform === 'win32') {
+          item = item.replace(/\/\\\*/g, '/?()\\*'); // Glob bugfix for: glob escape not working on Windows example: './node_modules/typescript/\\*.md'
+        }
+
+        value = glob.sync(item, options);
+
+        if (process.platform === 'win32') {
+          value = value.map((item) => item.replace(/\?\(\)/g, ''));
+
+          value = value.map((item) => item.replace(/\/\/\*\/\*/g, '/**'));
+          value = value.map((item) => item.replace(/\/\/\*/g, '/*'));
+        }
+      }
 
       result.push(...value);
     }

@@ -288,7 +288,7 @@
             "Launch script     : build-stuff",
             "Process platform  : win32",
             "Script shell      : true",
-            "Launch arguments  : { arguments:\n   { logLevel: 3,\n     init: false,\n     migrate: false,\n     confirm: undefined,\n     help: false,\n     version: false,\n     config: null,\n     script: null,\n     ansi: true,\n     directory: 'tests\\\\temp\\\\$id',\n     menuTimeout: 0,\n    params: 9007199254740991 },\n  optionals: [] }",
+            "Launch arguments  : { arguments:\n   { logLevel: 3,\n     init: false,\n     migrate: false,\n     confirm: undefined,\n     help: false,\n     version: false,\n     config: null,\n     script: null,\n     ansi: true,\n     directory: 'tests\\\\temp\\\\$id',\n     menuTimeout: 0,\n     params: 9007199254740991 },\n  optionals: [] }",
             "",
             "Script id       : build-stuff",
             "Script params   : {}",
