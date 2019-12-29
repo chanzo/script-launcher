@@ -130,10 +130,21 @@ export class Executor {
   private static expandGlobs(pattern: string, options?: glob.IOptions): string {
     const result: string[] = [];
 
-    for (const item of pattern.split(' ')) {
+    for (let item of pattern.split(' ')) {
       let value = [item];
 
-      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) value = glob.sync(item, options);
+      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) {
+
+        if (process.platform === 'win32') {
+          item = item.replace(/\/\\\*/g, '/?()\\*'); // Glob bugfix for: glob escape not working on Windows example: './node_modules/typescript/\\*.md'
+        }
+
+        value = glob.sync(item, options);
+
+        if (process.platform === 'win32') {
+          value = value.map((item) => item.replace(/\?\(\)/g, '').replace(/\/\*/g, '*'));
+        }
+      }
 
       result.push(...value);
     }
@@ -475,15 +486,13 @@ export class Executor {
 
           command = Executor.removeEnvironment(command);
 
-          // Remove environment,argument and glob escaping
+          // Remove environment and argument
           command = command.replace(/\\\$/g, '$');
 
           if (process.platform === 'win32') {
             command = Executor.convertSingleQuote(command);
 
             if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
-
-            command = command.replace(/\/\*/g, '*');
           }
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
