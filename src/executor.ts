@@ -475,13 +475,15 @@ export class Executor {
 
           command = Executor.removeEnvironment(command);
 
-          // Remove environment and argument escaping
+          // Remove environment,argument and glob escaping
           command = command.replace(/\\\$/g, '$');
 
           if (process.platform === 'win32') {
             command = Executor.convertSingleQuote(command);
 
             if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+
+            command = command.replace(/\/\*/g, '*');
           }
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);

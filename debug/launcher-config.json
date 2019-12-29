@@ -16,7 +16,7 @@
     ]
   },
   "options": {
-    "logLevel": 2,
+    "logLevel": 0,
     "glob": {
       "nonull": true
     }
