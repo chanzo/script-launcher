@@ -489,7 +489,7 @@ export class Executor {
 
           command = Executor.removeEnvironment(command);
 
-          // Remove environment and argument
+          // Remove environment and argument escaping
           command = command.replace(/\\\$/g, '$');
 
           if (process.platform === 'win32') {
