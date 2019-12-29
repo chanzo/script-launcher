@@ -1,12 +1,5 @@
 {
   "scripts": {
-    "test1": [
-      "echo Example: ./node_modules/\\*\\*/\\*.md",
-      "echo Example: ./node_modules/\\*\\*/\\*.notfound",
-      "--",
-      "echo Example: ./node_modules/**/*.md",
-      "echo Example: ./node_modules/**/*.notfound"
-    ],
     "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
@@ -19,11 +12,5 @@
       "",
       "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
     ]
-  },
-  "options": {
-    "logLevel": 0,
-    "glob": {
-      "nonull": true
-    }
   }
 }
