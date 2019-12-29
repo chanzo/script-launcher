@@ -1,4 +1,8 @@
 # Change Log
+## 1.23.1
+* Remove glob escaping for Windows
+* Updated unit tests for Windows
+
 ## 1.23.0
 * Updated dev dependencies
 * Added unit tests for testing created files
