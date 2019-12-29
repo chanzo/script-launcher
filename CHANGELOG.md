@@ -1,4 +1,9 @@
 # Change Log
+## 1.23.1
+* Implemented workaround for issue #63 by removing glob escaping for Windows example: './node_modules//*/*//*.md'
+* Implemented workaround for issue #63 by adding `?()` to the pattern on windows: './node_modules/typescript/\\*.md'
+* Updated unit tests for Windows
+
 ## 1.23.0
 * Updated dev dependencies
 * Added unit tests for testing created files
