@@ -2,7 +2,10 @@
   "scripts": {
     "test1": [
       "echo Example: ./node_modules/\\*\\*/\\*.md",
-      "echo Example: ./node_modules/\\*\\*/\\*.notfound"
+      "echo Example: ./node_modules/\\*\\*/\\*.notfound",
+      "--",
+      "echo Example: ./node_modules/**/*.md",
+      "echo Example: ./node_modules/**/*.notfound"
     ],
     "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",

@@ -142,7 +142,10 @@ export class Executor {
         value = glob.sync(item, options);
 
         if (process.platform === 'win32') {
-          value = value.map((item) => item.replace(/\?\(\)/g, '').replace(/\/\*/g, '*'));
+          value = value.map((item) => item.replace(/\?\(\)/g, ''));
+
+          value = value.map((item) => item.replace(/\/\/\*\/\*/g, '/**'));
+          value = value.map((item) => item.replace(/\/\/\*/g, '/*'));
         }
       }
 
