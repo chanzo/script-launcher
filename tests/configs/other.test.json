@@ -616,6 +616,93 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0018",
+      "name": "Glob patterns",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "nonull-false": [
+              "node_modules/script-launcher",
+              "echo No resolve: ./\\\\\\*\\\\\\*.md",
+              "echo No resolve: ./\\\\\\*\\\\\\*.notfound",
+              "echo Resolve by shell: ./\\*\\*.md",
+              "echo Resolve by shell: ./\\*\\*.notfound",
+              "echo Resolve by script-launcher: ./**.md",
+              "echo Resolve by script-launcher: ./**.notfound"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "nonull-false",
+          "result": [
+            "No resolve: ./**.md",
+            "No resolve: ./**.notfound",
+            "Resolve by shell: ./README.md",
+            "Resolve by shell: ./**.notfound",
+            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher:"
+          ],
+          "result:win32": [
+            "No resolve: ./\\*\\*.md",
+            "No resolve: ./\\*\\*.notfound",
+            "Resolve by shell: ./**.md",
+            "Resolve by shell: ./**.notfound",
+            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher:"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0019",
+      "name": "Glob patterns",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "nonull-true": [
+              "node_modules/script-launcher",
+              "echo No resolve: ./\\\\\\*\\\\\\*.md",
+              "echo No resolve: ./\\\\\\*\\\\\\*.notfound",
+              "echo Resolve by shell: ./\\*\\*.md",
+              "echo Resolve by shell: ./\\*\\*.notfound",
+              "echo Resolve by script-launcher: ./**.md",
+              "echo Resolve by script-launcher: ./**.notfound"
+            ]
+          },
+          "options": {
+            "glob": {
+              "nonull": true
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "nonull-true",
+          "result": [
+            "No resolve: ./**.md",
+            "No resolve: ./**.notfound",
+            "Resolve by shell: ./README.md",
+            "Resolve by shell: ./**.notfound",
+            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: ./**.notfound"
+          ],
+          "result:win32": [
+            "No resolve: ./\\*\\*.md",
+            "No resolve: ./\\*\\*.notfound",
+            "Resolve by shell: ./**.md",
+            "Resolve by shell: ./**.notfound",
+            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: ./**.notfound"
+          ]
+        }
+      ]
     }
   ]
 }
