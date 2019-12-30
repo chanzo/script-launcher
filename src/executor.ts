@@ -481,8 +481,8 @@ export class Executor {
 
           command = Executor.removeEnvironment(command);
 
-          // Remove environment and argument escaping
-          command = command.replace(/\\\$/g, '$');
+          // Remove environment,argument and glob escapings
+          command = command.replace(/\\(.)/g, '$1');
 
           if (process.platform === 'win32') {
             command = Executor.convertSingleQuote(command);
