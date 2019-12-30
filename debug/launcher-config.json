@@ -1,22 +1,5 @@
 {
   "scripts": {
-    "test": [
-      "echo Example: ./node_modules/\\\\\\*\\\\\\*/\\\\\\*.md",
-      "echo Example: ./node_modules/\\\\\\*\\\\\\*/\\\\\\*.notfound",
-      "echo Example: ./node_modules/\\*\\*/\\*.md",
-      "echo Example: ./node_modules/\\*\\*/\\*.notfound",
-      "echo Example: ./node_modules/**/*.md",
-      "echo Example: ./node_modules/**/*.notfound"
-    ],
-    "test2": [
-      "../node_modules/script-launcher",
-      "echo Example1: ./\\\\\\*\\\\\\*/\\\\\\*.md",
-      "echo Example2: ./\\\\\\*\\\\\\*/\\\\\\*.notfound",
-      "echo Example3: ./\\*\\*/\\*.md",
-      "echo Example4: ./\\*\\*/\\*.notfound",
-      "echo Example5: ./**/*.md",
-      "echo Example6: ./**/*.notfound"
-    ],
     "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
