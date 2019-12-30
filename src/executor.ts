@@ -139,7 +139,11 @@ export class Executor {
     for (const item of pattern.split(' ')) {
       let value = [item];
 
-      if (Executor.isDynamicPattern(item, options)) value = glob.sync(item, options);
+      if (Executor.isDynamicPattern(item, options)) {
+        value = glob.sync(item, options);
+
+        if ((options as any).nonull && value.length === 0) value = [item];
+      }
 
       result.push(...value);
     }

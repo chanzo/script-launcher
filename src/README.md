@@ -761,7 +761,8 @@ The default value is presented in the following example:
 ```
 
 ### Glob Options
-[Official documentation of the globing options](https://www.npmjs.com/package/glob#options)
+[Official documentation of the `fast-glob` options](https://www.npmjs.com/package/fast-glob#options-3)
+If the *nonull* script-launcher option is set, and no match was found, then the match contains the original pattern.
 ``` JSON
 {
   "options": {

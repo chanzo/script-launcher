@@ -1,4 +1,8 @@
 # Change Log
+## 1.24.0
+* Switched form **[glob](https://www.npmjs.com/package/glob)** to **[fast-glob](https://www.npmjs.com/package/fast-glob)** in regards of [issue #63](https://github.com/chanzo/script-launcher/issues/63)
+* Added extra globbing unit tests
+
 ## 1.23.1
 * Implemented workaround for issue #63 by removing glob escaping for Windows example: './node_modules//*/*//*.md'
 * Implemented workaround for issue #63 by adding `?()` to the pattern on windows: './node_modules/typescript/\\*.md'
