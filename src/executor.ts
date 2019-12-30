@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
 import { confirmPrompt, formatTime, stringify, Colors } from './common';
-import glob = require('glob');
+import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 
@@ -127,27 +127,19 @@ export class Executor {
     return false;
   }
 
-  private static expandGlobs(pattern: string, options?: glob.IOptions): string {
+  private static isDynamicPattern(item: string, options?: glob.Options): boolean {
+    if (!item || item.match(/^['|"].*['|"]$/) !== null) return false;
+
+    return glob.isDynamicPattern(item.replace(/\\./g, ''), options);
+  }
+
+  private static expandGlobs(pattern: string, options?: glob.Options): string {
     const result: string[] = [];
 
-    for (let item of pattern.split(' ')) {
+    for (const item of pattern.split(' ')) {
       let value = [item];
 
-      if (item && item.match(/^['|"].*['|"]$/) === null && glob.hasMagic(item, options)) {
-
-        if (process.platform === 'win32') {
-          item = item.replace(/\/\\\*/g, '/?()\\*'); // Glob bugfix for: glob escape not working on Windows example: './node_modules/typescript/\\*.md'
-        }
-
-        value = glob.sync(item, options);
-
-        if (process.platform === 'win32') {
-          value = value.map((item) => item.replace(/\?\(\)/g, ''));
-
-          value = value.map((item) => item.replace(/\/\/\*\/\*/g, '/**'));
-          value = value.map((item) => item.replace(/\/\/\*/g, '/*'));
-        }
-      }
+      if (Executor.isDynamicPattern(item, options)) value = glob.sync(item, options);
 
       result.push(...value);
     }
@@ -240,11 +232,11 @@ export class Executor {
   private readonly environment: { [name: string]: string };
   private readonly settings: ILaunchSetting;
   private readonly scripts: Scripts;
-  private readonly globOptions: glob.IOptions;
+  private readonly globOptions: glob.Options;
   private readonly confirm?: boolean;
   private readonly testmode: boolean;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.IOptions, confirm: boolean | undefined, testmode: boolean) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.Options, confirm: boolean | undefined, testmode: boolean) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;

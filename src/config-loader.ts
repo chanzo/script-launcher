@@ -3,7 +3,7 @@ import { basename, resolve } from 'path';
 import * as deepmerge from 'deepmerge';
 import { IScript, IScripts, Scripts } from './scripts';
 import * as path from 'path';
-import glob = require('glob');
+import glob = require('fast-glob');
 
 export interface IMenu {
   description?: string;
@@ -16,7 +16,7 @@ interface IOptions {
   script: {
     shell: (boolean | string) | { [platform: string]: boolean | string };
   };
-  glob: glob.IOptions;
+  glob: glob.Options;
   menu: {
     defaultScript: IScript;
     defaultChoice: string;
