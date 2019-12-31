@@ -1,4 +1,7 @@
 # Change Log
+## 1.24.1
+* Bug fix for command split with quotes and spaced
+
 ## 1.24.0
 * Switched form **[glob](https://www.npmjs.com/package/glob)** to **[fast-glob](https://www.npmjs.com/package/fast-glob)** in regards of [issue #63](https://github.com/chanzo/script-launcher/issues/63)
 * Added extra globbing unit tests
