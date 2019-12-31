@@ -657,9 +657,9 @@
           ],
           "result:win32": [
             "No resolve: [ * ]",
-            "No resolve: [  *  ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: [ * ]",
-            "No resolve: [  *  ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: ./\\*\\*.md",
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",
@@ -715,9 +715,9 @@
           ],
           "result:win32": [
             "No resolve: [ * ]",
-            "No resolve: [  *  ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: [ * ]",
-            "No resolve: [  *  ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: ./\\*\\*.md",
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",
