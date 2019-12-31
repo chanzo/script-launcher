@@ -625,6 +625,10 @@
           "scripts": {
             "nonull-false": [
               "node_modules/script-launcher",
+              "echo No resolve: [ \"*\" ]",
+              "echo No resolve: [ \" * \" ]",
+              "echo No resolve: [ '*' ]",
+              "echo No resolve: [ ' * ' ]",
               "echo No resolve: ./\\\\\\*\\\\\\*.md",
               "echo No resolve: ./\\\\\\*\\\\\\*.notfound",
               "echo Resolve by shell: ./\\*\\*.md",
@@ -640,6 +644,10 @@
           "lifecycle": "start",
           "npm-args": "nonull-false",
           "result": [
+            "No resolve: [ * ]",
+            "No resolve: [  *  ]",
+            "No resolve: [ * ]",
+            "No resolve: [  *  ]",
             "No resolve: ./**.md",
             "No resolve: ./**.notfound",
             "Resolve by shell: ./README.md",
@@ -648,6 +656,10 @@
             "Resolve by script-launcher:"
           ],
           "result:win32": [
+            "No resolve: [ * ]",
+            "No resolve: [ \" * \" ]",
+            "No resolve: [ * ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: ./\\*\\*.md",
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",
@@ -666,6 +678,10 @@
           "scripts": {
             "nonull-true": [
               "node_modules/script-launcher",
+              "echo No resolve: [ \"*\" ]",
+              "echo No resolve: [ \" * \" ]",
+              "echo No resolve: [ '*' ]",
+              "echo No resolve: [ ' * ' ]",
               "echo No resolve: ./\\\\\\*\\\\\\*.md",
               "echo No resolve: ./\\\\\\*\\\\\\*.notfound",
               "echo Resolve by shell: ./\\*\\*.md",
@@ -686,6 +702,10 @@
           "lifecycle": "start",
           "npm-args": "nonull-true",
           "result": [
+            "No resolve: [ * ]",
+            "No resolve: [  *  ]",
+            "No resolve: [ * ]",
+            "No resolve: [  *  ]",
             "No resolve: ./**.md",
             "No resolve: ./**.notfound",
             "Resolve by shell: ./README.md",
@@ -694,6 +714,10 @@
             "Resolve by script-launcher: ./**.notfound"
           ],
           "result:win32": [
+            "No resolve: [ * ]",
+            "No resolve: [ \" * \" ]",
+            "No resolve: [ * ]",
+            "No resolve: [ \" * \" ]",
             "No resolve: ./\\*\\*.md",
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",

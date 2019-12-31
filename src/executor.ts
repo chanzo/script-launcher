@@ -133,10 +133,40 @@ export class Executor {
     return glob.isDynamicPattern(item.replace(/\\./g, ''), options);
   }
 
+  private static splitString(value: string): string[] {
+    const result = [];
+    let last = 0;
+    let index = 0;
+
+    while (index < value.length) {
+      const char = value[index];
+
+      if (char === ' ') {
+        result.push(value.substr(last, index - last));
+
+        last = index + 1;
+      }
+
+      if (char === '\"') {
+        while (++index < value.length && value[index] !== '\"');
+      }
+
+      if (char === '\'') {
+        while (++index < value.length && value[index] !== '\'');
+      }
+
+      index++;
+    }
+
+    result.push(value.substr(last, index - last));
+
+    return result;
+  }
+
   private static expandGlobs(pattern: string, options?: glob.Options): string {
     const result: string[] = [];
 
-    for (const item of pattern.split(' ')) {
+    for (const item of Executor.splitString(pattern)) {
       let value = [item];
 
       if (Executor.isDynamicPattern(item, options)) {
