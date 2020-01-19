@@ -426,6 +426,7 @@ export class Executor {
       const repeaterTask: IScriptInfo = {
         name: scriptInfo.name,
         inline: scriptInfo.inline,
+        wildcard: false,
         parameters: null,
         arguments: scriptInfo.arguments,
         script: { ...(scriptInfo.script as IScriptTask) },
@@ -470,7 +471,7 @@ export class Executor {
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
 
-      const scripts = this.scripts.find(constraint);
+      const scripts = this.scripts.find(constraint, true);
       const scriptInfo = Scripts.select(scripts, parent);
 
       if (scriptInfo) {
@@ -723,7 +724,7 @@ export class Executor {
         task = Executor.expandArguments(task, args);
         task = Executor.expandEnvironment(task, environment);
 
-        const scripts = this.scripts.find(task);
+        const scripts = this.scripts.find(task, true);
         const scriptInfo = Scripts.select(scripts, parent);
 
         if (scriptInfo) {
@@ -739,6 +740,7 @@ export class Executor {
         const scriptInfo: IScriptInfo = {
           name: 'inline-script-block',
           inline: true,
+          wildcard: false,
           parameters: parameters,
           arguments: args,
           script: task,
