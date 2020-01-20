@@ -6,7 +6,13 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "build-stuff": ["echo Command 1", "exit 1 || true", "echo Command 2", "exit 1", "echo Command 3"]
+            "build-stuff": [
+              "echo Command 1",
+              "exit 1 || true",
+              "echo Command 2",
+              "exit 1",
+              "echo Command 3"
+            ]
           }
         }
       },
@@ -14,7 +20,10 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": ["Command 1", "Command 2"]
+          "result": [
+            "Command 1",
+            "Command 2"
+          ]
         }
       ]
     },
@@ -24,7 +33,13 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "build-stuff": ["echo Command 1", "exit 1 || true", "echo Command 2", "exit 1", "echo Command 3"]
+            "build-stuff": [
+              "echo Command 1",
+              "exit 1 || true",
+              "echo Command 2",
+              "exit 1",
+              "echo Command 3"
+            ]
           }
         }
       },
@@ -342,7 +357,12 @@
               "echo value1: $value1",
               "echo value2: $value2",
               "--",
-              ["value1=C", "value2=$value1-$value2-C", "echo value1: $value1", "echo value2: $value2"],
+              [
+                "value1=C",
+                "value2=$value1-$value2-C",
+                "echo value1: $value1",
+                "echo value2: $value2"
+              ],
               "--",
               "echo value1: $value1",
               "echo value2: $value2"
@@ -387,7 +407,9 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "assignments:$value1=": ["echo value1: $value1"]
+            "assignments:$value1=": [
+              "echo value1: $value1"
+            ]
           }
         }
       },
@@ -395,12 +417,16 @@
         {
           "lifecycle": "start",
           "npm-args": "assignments",
-          "result": ["value1:"]
+          "result": [
+            "value1:"
+          ]
         },
         {
           "lifecycle": "start",
           "npm-args": "assignments:B",
-          "result": ["value1: B"]
+          "result": [
+            "value1: B"
+          ]
         }
       ]
     },
@@ -410,7 +436,9 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "assignments:$value1": ["echo value1: $value1"]
+            "assignments:$value1": [
+              "echo value1: '$value1'"
+            ]
           }
         }
       },
@@ -418,12 +446,37 @@
         {
           "lifecycle": "start",
           "npm-args": "assignments",
-          "result": ["Cannot start launch script 'assignments': No such script available."]
+          "result": [
+            "Cannot start launch script 'assignments': No such script available."
+          ]
         },
         {
           "lifecycle": "start",
           "npm-args": "assignments:B",
-          "result": ["value1: B"]
+          "result": [
+            "value1: B"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:*",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:\"*\"",
+          "result": [
+            "value1: \"*\""
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:'*'",
+          "result": [
+            "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
+          ]
         }
       ]
     },
@@ -433,8 +486,12 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": ["echo Circular"],
-            "build-stuff": ["echo"]
+            "echo": [
+              "echo Circular"
+            ],
+            "build-stuff": [
+              "echo"
+            ]
           }
         }
       },
@@ -442,7 +499,9 @@
         {
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": ["Circular"]
+          "result": [
+            "Circular"
+          ]
         }
       ]
     },
@@ -459,8 +518,15 @@
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": ["echo", "arg1", "arg2", "arg3"],
-          "result": ["arg1 arg2 arg3"]
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "arg1 arg2 arg3"
+          ]
         }
       ]
     },
@@ -470,15 +536,24 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": ["echo"]
+            "echo": [
+              "echo"
+            ]
           }
         }
       },
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": ["echo", "arg1", "arg2", "arg3"],
-          "result": ["arg1 arg2 arg3"]
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "arg1 arg2 arg3"
+          ]
         }
       ]
     },
@@ -488,16 +563,25 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": ["echo "]
+            "echo": [
+              "echo "
+            ]
           }
         }
       },
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": ["echo", "arg1", "arg2", "arg3"],
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
           "result": [],
-          "result:win32": ["ECHO is on."]
+          "result:win32": [
+            "ECHO is on."
+          ]
         }
       ]
     },
@@ -507,14 +591,22 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": ["echo", "echo"]
+            "echo": [
+              "echo",
+              "echo"
+            ]
           }
         }
       },
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": ["echo", "arg1", "arg2", "arg3"],
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
           "result": []
         }
       ]
@@ -525,15 +617,24 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": ["echo $2*"]
+            "echo": [
+              "echo $2*"
+            ]
           }
         }
       },
       "tests": [
         {
           "lifecycle": "start",
-          "npm-args": ["echo", "arg1", "arg2", "arg3"],
-          "result": ["arg2 arg3"]
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
+          "result": [
+            "arg2 arg3"
+          ]
         }
       ]
     },
