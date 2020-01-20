@@ -77,7 +77,7 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
   if (typeof script === 'string') result.push(script);
   if (script instanceof String) result.push(script.toString());
 
-  if (result.length > 1 || scripts.find(result[0]).length === 0) return null;
+  if (result.length !== 1 || scripts.find(result[0]).length === 0) return null;
 
   return result[0];
 }
@@ -282,6 +282,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
       return {
         name: choice.join(':'),
         inline: false,
+        circular: false,
         wildcard: false,
         parameters: {},
         arguments: [],

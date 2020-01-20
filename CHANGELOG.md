@@ -1,4 +1,9 @@
 # Change Log
+
+## 1.25.0
+* Added support for using wildcard characters when referring to script
+* Updated circular script detection
+
 ## 1.24.1
 * Bug fix for command split with quotes and spaced
 

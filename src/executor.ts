@@ -10,6 +10,7 @@ import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 
 interface ITasks {
+  circular: boolean;
   parameters: { [name: string]: string }; // Used for debugging only
   confirm: string[];
   condition: string[];
@@ -31,6 +32,20 @@ interface IProcesses extends Array<Process | Promise<IProcesses>> { }
 
 export class Executor {
   private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
+
+  private static isEmptyTask(tasks: ITasks): boolean {
+    if (tasks.confirm.length > 0) return false;
+    if (tasks.condition.length > 0) return false;
+    if (tasks.exclusion.length > 0) return false;
+    if (tasks.concurrent.length > 0) return false;
+    if (tasks.sequential.length > 0) return false;
+    if (tasks['concurrent-then'].length > 0) return false;
+    if (tasks['sequential-then'].length > 0) return false;
+    if (tasks['concurrent-else'].length > 0) return false;
+    if (tasks['sequential-else'].length > 0) return false;
+
+    return true;
+  }
 
   private static convertSingleQuote(command: string): string {
     const argv = parseArgsStringToArgv(command);
@@ -292,6 +307,7 @@ export class Executor {
     };
 
     Logger.info('Script id       :', scriptInfo.name);
+    Logger.info('Circular        :', tasks.circular);
     Logger.info('Script params   :', scriptInfo.parameters);
     Logger.info('Script args     :', scriptInfo.arguments);
     Logger.debug('Script object   : ' + stringify(scriptInfo.script));
@@ -360,10 +376,11 @@ export class Executor {
     return result;
   }
 
-  private expand(scriptInfo: IScriptInfo): ITasks {
+  private expand(scriptInfo: IScriptInfo, parents: string[] = []): ITasks {
     const script = scriptInfo.script;
     const repeater = (script as IScriptTask).repeater;
     const result: ITasks = {
+      'circular': false,
       'parameters': {},
       'confirm': [],
       'condition': [],
@@ -398,6 +415,8 @@ export class Executor {
       if (script instanceof Array) (scriptInfo.inline ? concurrent : sequential).push(...script);
       if (typeof script === 'string') sequential.push(script);
 
+      parents = [...parents, scriptInfo.name];
+
       confirm.push(...this.preprocessScripts((script as IScriptTask).confirm));
       concurrent.push(...this.preprocessScripts((script as IScriptTask).concurrent));
       sequential.push(...this.preprocessScripts((script as IScriptTask).sequential));
@@ -407,15 +426,15 @@ export class Executor {
       sequentialElse.push(...this.preprocessScripts((script as IScriptTask)['sequential-else']));
 
       result.parameters = scriptInfo.parameters;
-      result.confirm.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).confirm, environment, scriptInfo.arguments));
-      result.condition.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).condition, environment, scriptInfo.arguments));
-      result.exclusion.push(...this.expandConstraint(scriptInfo.name, (script as IScriptTask).exclusion, environment, scriptInfo.arguments));
-      result.concurrent.push(...this.expandTasks(scriptInfo.name, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result.sequential.push(...this.expandTasks(scriptInfo.name, sequential, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result['concurrent-then'].push(...this.expandTasks(scriptInfo.name, concurrentThen, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result['sequential-then'].push(...this.expandTasks(scriptInfo.name, sequentialThen, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result['concurrent-else'].push(...this.expandTasks(scriptInfo.name, concurrentElse, environment, scriptInfo.arguments, scriptInfo.parameters));
-      result['sequential-else'].push(...this.expandTasks(scriptInfo.name, sequentialElse, environment, scriptInfo.arguments, scriptInfo.parameters));
+      result.confirm.push(...this.expandConstraint(parents, (script as IScriptTask).confirm, environment, scriptInfo.arguments, result));
+      result.condition.push(...this.expandConstraint(parents, (script as IScriptTask).condition, environment, scriptInfo.arguments, result));
+      result.exclusion.push(...this.expandConstraint(parents, (script as IScriptTask).exclusion, environment, scriptInfo.arguments, result));
+      result.concurrent.push(...this.expandTasks(parents, concurrent, environment, scriptInfo.arguments, scriptInfo.parameters, result));
+      result.sequential.push(...this.expandTasks(parents, sequential, environment, scriptInfo.arguments, scriptInfo.parameters, result));
+      result['concurrent-then'].push(...this.expandTasks(parents, concurrentThen, environment, scriptInfo.arguments, scriptInfo.parameters, result));
+      result['sequential-then'].push(...this.expandTasks(parents, sequentialThen, environment, scriptInfo.arguments, scriptInfo.parameters, result));
+      result['concurrent-else'].push(...this.expandTasks(parents, concurrentElse, environment, scriptInfo.arguments, scriptInfo.parameters, result));
+      result['sequential-else'].push(...this.expandTasks(parents, sequentialElse, environment, scriptInfo.arguments, scriptInfo.parameters, result));
     } else {
       let array = repeater.replace(/^\$/, '');
 
@@ -440,6 +459,7 @@ export class Executor {
         const task = this.expand(repeaterTask);
 
         result.sequential.push({
+          'circular': false,
           'parameters': repeaterTask.parameters,
           'confirm': task.confirm,
           'condition': task.condition,
@@ -457,7 +477,7 @@ export class Executor {
     return result;
   }
 
-  private expandConstraint(parent: string, constraints: string | string[], environment: { [name: string]: string }, args: string[]): string[] {
+  private expandConstraint(parents: string[], constraints: string | string[], environment: { [name: string]: string }, args: string[], meta: { circular: boolean }): string[] {
     const result = [];
 
     if (!constraints) return result;
@@ -471,15 +491,17 @@ export class Executor {
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
 
-      const scripts = this.scripts.find(constraint, true);
-      const scriptInfo = Scripts.select(scripts, parent);
+      const scripts = this.scripts.find(constraint);
+      const scriptInfo = Scripts.select(scripts, parents, meta);
 
       if (scriptInfo) {
         const environment = { ...this.environment, ...scriptInfo.parameters };
 
+        if (!scriptInfo.name) scriptInfo.name = constraint;
+
         scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
-        result.push(...this.expandConstraint(constraint, scriptInfo.script as any, environment, args));
+        result.push(...this.expandConstraint([...parents, constraint], scriptInfo.script as any, environment, args, meta));
       } else {
         result.push(constraint);
       }
@@ -716,7 +738,7 @@ export class Executor {
     return condition && confirmation && !exclusion;
   }
 
-  private expandTasks(parent: string, tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }): Array<ITasks | string> {
+  private expandTasks(parents: string[], tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }, meta: { circular: boolean }): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
     for (let task of tasks) {
@@ -724,15 +746,19 @@ export class Executor {
         task = Executor.expandArguments(task, args);
         task = Executor.expandEnvironment(task, environment);
 
-        const scripts = this.scripts.find(task, true);
-        const scriptInfo = Scripts.select(scripts, parent);
+        const scripts = this.scripts.find(task);
+        const scriptInfo = Scripts.select(scripts, parents, meta);
 
         if (scriptInfo) {
+          if (!scriptInfo.name) scriptInfo.name = task;
+
           scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
-          result.push(this.expand(scriptInfo));
+          const tasks = this.expand(scriptInfo, parents);
+
+          if (!Executor.isEmptyTask(tasks)) result.push(tasks);
         } else {
-          if (tasks.length === 1 && task === parent) task = Executor.expandArguments(task + ' $*', args);
+          if (tasks.length === 1 && parents.length > 0 && task === parents[parents.length - 1]) task = Executor.expandArguments(task + ' $*', args);
 
           result.push(task);
         }
@@ -747,9 +773,9 @@ export class Executor {
         };
 
         if ((task as IScriptTask).repeater) {
-          result.push(...this.expand(scriptInfo).sequential);
+          result.push(...this.expand(scriptInfo, parents).sequential);
         } else {
-          result.push(this.expand(scriptInfo));
+          result.push(this.expand(scriptInfo, parents));
         }
       }
     }

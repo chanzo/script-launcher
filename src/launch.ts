@@ -727,6 +727,8 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       commandArgs.unshift(Scripts.parse(launchScript).command);
     }
 
+    if (!scriptInfo.name) scriptInfo.name = launchScript;
+
     scriptInfo.arguments = commandArgs;
 
     Logger.info();
