@@ -516,16 +516,19 @@ export class Executor {
 
       if (scriptInfo) {
         if (scriptInfo.wildcard) {
-          result.push(...scriptInfo.script);
+          for (let script of scriptInfo.script) {
+            script = Executor.expandArguments(script, args);
+            script = Executor.expandEnvironment(script, environment);
+
+            result.push(script);
+          }
 
           continue;
         }
 
-        const environment = { ...this.environment, ...scriptInfo.parameters };
-
         scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
-        result.push(...this.expandConstraint([...parents, constraint], scriptInfo.script as any, environment, args, meta));
+        result.push(...this.expandConstraint([...parents, constraint], scriptInfo.script as any, { ...this.environment, ...scriptInfo.parameters }, args, meta));
       } else {
         result.push(constraint);
       }
@@ -775,7 +778,12 @@ export class Executor {
 
         if (scriptInfo) {
           if (scriptInfo.wildcard) {
-            result.push(...scriptInfo.script);
+            for (let script of scriptInfo.script) {
+              script = Executor.expandArguments(script, args);
+              script = Executor.expandEnvironment(script, environment);
+
+              result.push(script);
+            }
 
             continue;
           }

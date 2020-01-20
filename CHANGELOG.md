@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.25.1
+### Changes
+* Added test when using wildcard and arguments
+
+### Fixes
+* Fix related to circular script detection
+* Fix related to passing parameters when using wildcard
+
 ## 1.25.0
 ### Breaking
 * Empty action will no longer result in a error

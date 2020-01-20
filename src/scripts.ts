@@ -43,8 +43,6 @@ export class Scripts {
 
         const resolvedScripts = Scripts.resolveScripts(scripts) as string[];
 
-        if (resolvedScripts.length === 0) return null;
-
         return {
           name: null,
           inline: false,

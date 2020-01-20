@@ -24,6 +24,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Change directory](#change-directory)
   * [Parameters and functions](#parameters-and-functions)
   * [Reference scripts](#reference-scripts)
+  * [Reference scripts by using wildcards](#reference-scripts-by-using-wildcards)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Escaping characters](#escaping-characters)
@@ -266,16 +267,16 @@ Use an existing script id in the command section to execute another script in yo
 }
 ```
 
-### Reference scripts by using Wildcards
+### Reference scripts by using wildcards
 Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
 
 **Run**: `npm start build:*` or `npm start build:all` to use this example.
 ``` JSON
 {
   "scripts": {
-    "build:css": "echo Building .css files",
-    "build:js": "echo Building .js files",
-    "build:html": "echo Building .html files",
+    "build:css": "echo Building: .css files",
+    "build:js": "echo Building: .js files",
+    "build:html": "echo Building: .html files",
     "build:all": {
       "concurrent": [
         "build:*"
