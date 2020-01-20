@@ -41,20 +41,21 @@ export class Scripts {
 
         if (scripts.length !== length) meta.circular = true;
 
+        const resolvedScripts = Scripts.resolveScripts(scripts) as string[];
+
+        if (resolvedScripts.length === 0) return null;
+
         return {
           name: null,
           inline: false,
-          wildcard: false,
+          wildcard: true,
           parameters: {},
           arguments: [],
-          script: {
-            sequential: Scripts.resolveScripts(scripts),
-          } as IScript,
+          script: resolvedScripts,
         };
       }
 
       // Sort by number of values and parameters
-      // let circular = false;
       scripts = scripts.sort((itemA, itemB) => (Scripts.countValues(itemB.name) - Scripts.countValues(itemA.name)) * 50 + (Scripts.countParams(itemA.name) - Scripts.countParams(itemB.name)));
 
       for (const script of scripts) {

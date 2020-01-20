@@ -1,6 +1,10 @@
 # Change Log
 
 ## 1.25.0
+### Breaking
+* Empty action will no longer result in a error
+
+### Changes
 * Added support for using wildcard characters when referring to script
 * Updated circular script detection
 * Updated def dependencies

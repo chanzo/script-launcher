@@ -1,5 +1,5 @@
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
-import { ISpawnOptions, Process } from './spawn-process';
+import { IProcess, ISpawnOptions, Process } from './spawn-process';
 import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -28,7 +28,7 @@ enum Order {
   sequential,
 }
 
-interface IProcesses extends Array<Process | Promise<IProcesses>> { }
+interface IProcesses extends Array<IProcess | Promise<IProcesses>> { }
 
 export class Executor {
   private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
@@ -515,9 +515,13 @@ export class Executor {
       const scriptInfo = Scripts.select(scripts, parents, meta);
 
       if (scriptInfo) {
-        const environment = { ...this.environment, ...scriptInfo.parameters };
+        if (scriptInfo.wildcard) {
+          result.push(...scriptInfo.script);
 
-        if (!scriptInfo.name) scriptInfo.name = constraint;
+          continue;
+        }
+
+        const environment = { ...this.environment, ...scriptInfo.parameters };
 
         scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 
@@ -770,7 +774,11 @@ export class Executor {
         const scriptInfo = Scripts.select(scripts, parents, meta);
 
         if (scriptInfo) {
-          if (!scriptInfo.name) scriptInfo.name = task;
+          if (scriptInfo.wildcard) {
+            result.push(...scriptInfo.script);
+
+            continue;
+          }
 
           scriptInfo.arguments = [scriptInfo.name, ...scriptInfo.arguments];
 

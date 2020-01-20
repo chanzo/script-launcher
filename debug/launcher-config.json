@@ -1,41 +1,15 @@
 {
   "scripts": {
-    "_build:$config": [
+    "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
       ""
     ],
-    "_serve:$config": [
+    "serve:$config": [
       "build:$config",
       "echo ${launch_style_bold}serve:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url",
       "",
       "echo ${launch_style_bold}Completed in:$launch_style_normal $launch_time_elapsed"
-    ],
-    "build:css": "echo CMD: build:css",
-    "build:js": "echo CMD: build:js",
-    "build:html": "echo CMD: build:html",
-    "build:css:tst": "echo CMD: build:css:tst",
-    "build:js:tst": "echo CMD: build:js:tst",
-    "build:html:tst": "echo CMD: build:html:tst",
-    "build2:$arg=*": "echo CMD: build '$arg'",
-    "build:all": [
-      "build:*"
-    ],
-    "test1": [
-      "echo test 1",
-      "test2"
-    ],
-    "test2": [
-      "echo test 2",
-      "test1"
-    ],
-    "test3": [
-      "echo 1",
-      "echo 2",
-      "echo 3",
-      "echo 4",
-      "echo 5"
     ]
   }
-}

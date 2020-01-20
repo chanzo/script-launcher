@@ -678,6 +678,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0041",
+      "name": "Reference scripts by using Wildcards",
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": "build:*",
+          "result": [
+            "Building .css files",
+            "Building .js files",
+            "Building .html files"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "build:all",
+          "result": [
+            "Building .css files",
+            "Building .js files",
+            "Building .html files"
+          ]
+        }
+      ]
     }
   ]
 }
