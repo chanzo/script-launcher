@@ -266,6 +266,26 @@ Use an existing script id in the command section to execute another script in yo
 }
 ```
 
+### Reference scripts by using Wildcards
+Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
+
+**Run**: `npm start build:*` or `npm start build:all` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build:css": "echo Building .css files",
+    "build:js": "echo Building .js files",
+    "build:html": "echo Building .html files",
+    "build:all": {
+      "concurrent": [
+        "build:*"
+      ]
+    }
+  }
+}
+```
+
+
 ### Environment and command line argument values
 Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases. 
 

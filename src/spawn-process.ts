@@ -4,17 +4,33 @@ import { Logger } from './logger';
 import { Colors } from './common';
 import prettyTime = require('pretty-time');
 
+export interface IProcess {
+  readonly pid: number;
+  readonly stdout: string;
+  readonly stderr: string;
+  wait(): Promise<number>;
+}
+
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
   testmode?: boolean;
-  extraLogInfo?: (process: Process) => string;
+  extraLogInfo?: (process: IProcess) => string;
 }
 
-export class Process {
-  public static spawn(command: string, args: string[], options: ISpawnOptions): Process {
+export class Process implements IProcess {
+  public static spawn(command: string, args: string[], options: ISpawnOptions): IProcess {
     if ((Logger.level > 1 || options.testmode) && options) {
       options = { ...options };
       options.stdio = ['inherit', 'pipe', 'pipe'];
+    }
+
+    if (!command) {
+      return {
+        pid: -1,
+        stderr: '',
+        stdout: '',
+        wait: async () => 0,
+      };
     }
 
     const childProcess = spawn(command, args, options);

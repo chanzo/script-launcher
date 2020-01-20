@@ -717,15 +717,17 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
 
-    if (scripts.length === 0) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
-
     const scriptInfo = Scripts.select(scripts);
+
+    if (!scriptInfo) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
 
     if (!launchArgs.arguments.script && lifecycleEvent === 'start') {
       commandArgs[0] = Scripts.parse(launchScript).command;
     } else {
       commandArgs.unshift(Scripts.parse(launchScript).command);
     }
+
+    if (!scriptInfo.name) scriptInfo.name = launchScript;
 
     scriptInfo.arguments = commandArgs;
 

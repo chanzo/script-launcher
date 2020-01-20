@@ -58,6 +58,7 @@
             "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=1' ]",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "",
@@ -77,6 +78,7 @@
             "Launch arguments  : [ '--directory=.\\\\tests\\\\temp\\\\$id', '--logLevel=1' ]",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "",
@@ -101,6 +103,7 @@
             "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=2' ]",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "",
@@ -160,6 +163,7 @@
             "Launch arguments  : [ '--directory=.\\\\tests\\\\temp\\\\$id', '--logLevel=2' ]",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "",
@@ -227,10 +231,11 @@
             "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991\n  },\n  optionals: []\n}",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "Script object   : [\n  \u001b[32m\"echo Command 1\"\u001b[0m,\n  \u001b[32m\"exit 1 || true\"\u001b[0m,\n  \u001b[32m\"echo Command 2\"\u001b[0m,\n  \u001b[32m\"exit 1\"\u001b[0m,\n  \u001b[32m\"echo Command 3\"\u001b[0m\n]",
-            "Script expanded : {\n  \u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
+            "Script expanded : {\n  \u001b[0m\"circular\":\u001b[0m \u001b[33mfalse\u001b[0m,\n  \u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
             "",
             "",
             "\u001b[1mLauncher Settings Values\u001b[0m",
@@ -291,10 +296,11 @@
             "Launch arguments  : { arguments:\n   { logLevel: 3,\n     init: false,\n     migrate: false,\n     confirm: undefined,\n     help: false,\n     version: false,\n     config: null,\n     script: null,\n     ansi: true,\n     directory: 'tests\\\\temp\\\\$id',\n     menuTimeout: 0,\n     params: 9007199254740991 },\n  optionals: [] }",
             "",
             "Script id       : build-stuff",
+            "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "Script object   : [\n  \u001b[32m\"echo Command 1\"\u001b[0m,\n  \u001b[32m\"exit 1 || true\"\u001b[0m,\n  \u001b[32m\"echo Command 2\"\u001b[0m,\n  \u001b[32m\"exit 1\"\u001b[0m,\n  \u001b[32m\"echo Command 3\"\u001b[0m\n]",
-            "Script expanded : {\n  \u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
+            "Script expanded : {\n  \u001b[0m\"circular\":\u001b[0m \u001b[33mfalse\u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
             "",
             "",
             "\u001b[1mLauncher Settings Values\u001b[0m",
@@ -437,7 +443,7 @@
         "launcher-config": {
           "scripts": {
             "assignments:$value1": [
-              "echo value1: $value1"
+              "echo value1: '$value1'"
             ]
           }
         }
@@ -455,6 +461,27 @@
           "npm-args": "assignments:B",
           "result": [
             "value1: B"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:*",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:\"*\"",
+          "result": [
+            "value1: \"*\""
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:'*'",
+          "result": [
+            "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
           ]
         }
       ]

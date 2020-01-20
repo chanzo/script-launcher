@@ -22,19 +22,48 @@ export interface IScripts {
 export interface IScriptInfo {
   name: string;
   inline: boolean;
+  wildcard: boolean;
   parameters: { [name: string]: string };
   arguments: string[];
   script: IScript;
 }
 
 export class Scripts {
-  public static select(scripts: IScriptInfo[], filter: string = null): IScriptInfo {
-    if (scripts.length > 0) {
+  public static select(scripts: IScriptInfo[], filters: string[] = null, meta: { circular: boolean } = null): IScriptInfo {
+    const length = scripts.length;
+
+    if (!filters) filters = [];
+    if (!meta) meta = { circular: false };
+
+    if (length > 0) {
+      if (scripts.some((item) => item.wildcard)) {
+        scripts = scripts.filter(Scripts.containsScript.bind(filters));
+
+        if (scripts.length !== length) meta.circular = true;
+
+        const resolvedScripts = Scripts.resolveScripts(scripts) as string[];
+
+        if (resolvedScripts.length === 0) return null;
+
+        return {
+          name: null,
+          inline: false,
+          wildcard: true,
+          parameters: {},
+          arguments: [],
+          script: resolvedScripts,
+        };
+      }
+
       // Sort by number of values and parameters
       scripts = scripts.sort((itemA, itemB) => (Scripts.countValues(itemB.name) - Scripts.countValues(itemA.name)) * 50 + (Scripts.countParams(itemA.name) - Scripts.countParams(itemB.name)));
 
       for (const script of scripts) {
-        if (script.name !== filter) return script;
+        if (!filters.includes(script.name)) {
+          return script;
+        } else {
+          meta.circular = true;
+        }
       }
     }
 
@@ -50,6 +79,26 @@ export class Scripts {
     };
   }
 
+  private static containsScript(this: string[], script: IScriptInfo): boolean {
+    const filters: string[] = this || [];
+
+    return !filters.some((filter) => Scripts.getParameters(script.name, filter, true) !== null);
+  }
+
+  private static resolveScripts(scripts: IScriptInfo[]): IScript[] {
+    const result: IScript[] = [];
+
+    for (const item of scripts) {
+      if (item.script instanceof Array) {
+        result.push(...item.script);
+      } else {
+        result.push(item.script);
+      }
+    }
+
+    return result;
+  }
+
   private static countParams(name: string): number {
     const columns = name.split(':');
 
@@ -62,7 +111,7 @@ export class Scripts {
     return columns.length - columns.filter((item) => item.startsWith('$')).length;
   }
 
-  private static getParameters(signature: string, reference: string): { [name: string]: string } {
+  private static getParameters(signature: string, reference: string, wildcard: boolean): { [name: string]: string } {
     const signatureParams = signature.split(':');
     const referenceParams = reference.split(':');
     const parameters: { [name: string]: string } = {};
@@ -89,6 +138,8 @@ export class Scripts {
         continue;
       }
 
+      if (wildcard && referenceParam === '*') continue;
+
       if (signatureParam !== referenceParam) return null;
     }
 
@@ -108,16 +159,34 @@ export class Scripts {
     const scripts: IScriptInfo[] = [];
 
     for (const [name, script] of Object.entries(this.scripts)) {
-      const parameters = Scripts.getParameters(name, info.command);
+      const parameters = Scripts.getParameters(name, info.command, false);
 
       if (parameters !== null) {
         scripts.push({
           name: name,
           inline: false,
+          wildcard: false,
           parameters: parameters,
           arguments: info.arguments,
           script: script,
         });
+      }
+    }
+
+    if (scripts.length === 0) {
+      for (const [name, script] of Object.entries(this.scripts)) {
+        const parameters = Scripts.getParameters(name, info.command, true);
+
+        if (parameters !== null) {
+          scripts.push({
+            name: name,
+            inline: false,
+            wildcard: true,
+            parameters: parameters,
+            arguments: info.arguments,
+            script: script,
+          });
+        }
       }
     }
 
