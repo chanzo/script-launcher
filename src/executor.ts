@@ -275,6 +275,24 @@ export class Executor {
     return exitCode;
   }
 
+  private static isCircular(tasks: Array<ITasks | string>): boolean {
+
+    for (const task of tasks) {
+      if (typeof task !== 'string') {
+        if (task.circular) return true;
+
+        if (Executor.isCircular(task.concurrent)) return true;
+        if (Executor.isCircular(task.sequential)) return true;
+        if (Executor.isCircular(task['concurrent-then'])) return true;
+        if (Executor.isCircular(task['sequential-then'])) return true;
+        if (Executor.isCircular(task['concurrent-else'])) return true;
+        if (Executor.isCircular(task['sequential-else'])) return true;
+      }
+    }
+
+    return false;
+  }
+
   public readonly startTime: [number, number];
 
   private readonly shell: boolean | string;
@@ -306,14 +324,16 @@ export class Executor {
       testmode: this.testmode,
     };
 
-    Logger.info('Script id       :', scriptInfo.name);
-    Logger.info('Circular        :', tasks.circular);
-    Logger.info('Script params   :', scriptInfo.parameters);
-    Logger.info('Script args     :', scriptInfo.arguments);
-    Logger.debug('Script object   : ' + stringify(scriptInfo.script));
-    Logger.debug('Script expanded : ' + stringify(tasks, Executor.removeEmpties));
-    Logger.info();
-    Logger.log();
+    if (Logger.level > 0) {
+      Logger.info('Script id       :', scriptInfo.name);
+      Logger.info('Circular        :', Executor.isCircular([tasks]));
+      Logger.info('Script params   :', scriptInfo.parameters);
+      Logger.info('Script args     :', scriptInfo.arguments);
+      Logger.debug('Script object   : ' + stringify(scriptInfo.script));
+      Logger.debug('Script expanded : ' + stringify(tasks, Executor.removeEmpties));
+      Logger.info();
+      Logger.log();
+    }
 
     if (Logger.level > 1) {
       const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
