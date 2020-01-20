@@ -754,6 +754,48 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0020",
+      "name": "Reference scripts by using wildcards and arguments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:css": "echo Building: $1.css file",
+            "build:js": "echo Building: $1.js file",
+            "build:html": "echo Building: $1.html file",
+            "build:all": [
+              "build:* $*"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build:*",
+            "index"
+          ],
+          "result": [
+            "Building: index.css file",
+            "Building: index.js file",
+            "Building: index.html file"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": [
+            "build:all",
+            "index"
+          ],
+          "result": [
+            "Building: index.css file",
+            "Building: index.js file",
+            "Building: index.html file"
+          ]
+        }
+      ]
     }
   ]
 }
