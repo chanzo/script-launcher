@@ -16,7 +16,7 @@
       "cpx src/README.md dist/package",
       "cpx src/LICENSE dist/package",
       "cpx src/bin/launch.js        dist/package/bin",
-      "cpx src/templates/\\*\\*/\\* dist/package/templates",
+      "cpx 'src/templates/**/*' dist/package/templates",
       "echo Done..."
     ],
     "postinstall": [

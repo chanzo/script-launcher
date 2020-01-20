@@ -11,6 +11,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     let script: IScriptInfo & { timedout: boolean } = {
       name: config.options.menu.defaultChoice,
       inline: false,
+      wildcard: false,
       parameters: {},
       arguments: args,
       script: config.options.menu.defaultScript,
@@ -76,7 +77,7 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
   if (typeof script === 'string') result.push(script);
   if (script instanceof String) result.push(script.toString());
 
-  if (result.length > 1 || scripts.find(result[0]).length === 0) return null;
+  if (result.length !== 1 || scripts.find(result[0]).length === 0) return null;
 
   return result[0];
 }
@@ -215,6 +216,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
       return {
         name: defaultChoice,
         inline: false,
+        wildcard: false,
         parameters: {},
         arguments: [],
         script: getDefaultScript(menu, defaults),
@@ -280,6 +282,8 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
       return {
         name: choice.join(':'),
         inline: false,
+        circular: false,
+        wildcard: false,
         parameters: {},
         arguments: [],
         script: menuItem as IScript,
