@@ -437,7 +437,7 @@
         "launcher-config": {
           "scripts": {
             "assignments:$value1": [
-              "echo value1: $value1"
+              "echo value1: '$value1'"
             ]
           }
         }
@@ -455,6 +455,27 @@
           "npm-args": "assignments:B",
           "result": [
             "value1: B"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:*",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:\"*\"",
+          "result": [
+            "value1: \"*\""
+          ]
+        },
+        {
+          "lifecycle": "start",
+          "npm-args": "assignments:'*'",
+          "result": [
+            "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
           ]
         }
       ]
