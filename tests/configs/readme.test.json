@@ -700,6 +700,17 @@
             "Building: .js files",
             "Building: .html files"
           ]
+        },
+        {
+          "cmd-args": [
+            "--concurrent",
+            "build:*"
+          ],
+          "result": [
+            "Building: .css files",
+            "Building: .js files",
+            "Building: .html files"
+          ]
         }
       ]
     }

@@ -1,5 +1,20 @@
 # Change Log
 
+## 1.25.2
+### Breaking
+* Removed the '--script=' argument
+Old command line syntax
+``` bash
+npx launch --script=my-script
+```
+
+New command line syntax
+``` bash
+npx launch my-script
+```
+
+
+
 ## 1.25.1
 ### Changes
 * Added test when using wildcard and arguments

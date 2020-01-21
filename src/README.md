@@ -270,7 +270,7 @@ Use an existing script id in the command section to execute another script in yo
 ### Reference scripts by using wildcards
 Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
 
-**Run**: `npm start build:*` or `npm start build:all` to use this example.
+**Run**: `npm start build:*` , `npm start build:all` or `npx launch --concurrent build:*` to use this example.
 ``` JSON
 {
   "scripts": {
