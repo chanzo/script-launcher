@@ -663,7 +663,27 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 Use the help for a list of available options.
 ``` bash
 npx launch help
+
+Usage: launch [command] [options...]
+
+Commands:
+  init         [template] Create starter config files.
+  migrate      Migrate your package.json scripts.
+  help         Show this help.
+  version      Outputs launcher version.
+
+Options:
+  logLevel=    Set log level.
+  config=      Merge in an extra config file.
+  script=      Launcher script to start.
+  confirm=     Auto value for confirm conditions.
+  ansi=        Enable or disable ansi color output.
+  directory=   The directory from which configuration files are loaded.
+  menuTimeout= Set menu timeout in seconds.
+  params=      Set the number of parameters to preserve.
+  concurrent=  Execute commandline wildcard matches in parallel.
 ```
+
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
 

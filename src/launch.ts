@@ -5,7 +5,7 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
-import { IScripts, Scripts } from './scripts';
+import { IScript, IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 
@@ -22,6 +22,7 @@ interface IArgs {
   directory: string;
   menuTimeout: number;
   params: number;
+  concurrent: boolean;
 }
 
 interface IScriptDefinition {
@@ -479,6 +480,7 @@ function showHelp() {
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
     params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
+    concurrent: '  ' + Colors.Cyan + 'concurrent=  ' + Colors.Normal + 'Execute commandline wildcard matches in parallel.',
   });
 }
 
@@ -581,6 +583,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         directory: process.cwd(),
         menuTimeout: undefined,
         params: undefined,
+        concurrent: false,
       },
       optionals: [],
     });
@@ -718,6 +721,12 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     const scriptInfo = Scripts.select(scripts);
+
+    if (scriptInfo.wildcard && launchArgs.arguments.concurrent) {
+      scriptInfo.script = {
+        concurrent: scriptInfo.script,
+      } as IScript;
+    }
 
     if (!scriptInfo) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
 
