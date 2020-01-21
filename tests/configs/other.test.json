@@ -228,7 +228,7 @@
             "Launch script     : build-stuff",
             "Process platform  : linux",
             "Script shell      : true",
-            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991\n  },\n  optionals: []\n}",
+            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false\n  },\n  optionals: []\n}",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
