@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.25.1",
+  "version": "1.25.2",
   "description": "Enhance your package.json scripts with features like: menus, functions, arrays, concurrency and many more.",
   "main": "launch.js",
   "keywords": [
@@ -14,6 +14,7 @@
     "concurrent",
     "parallel",
     "array",
+    "cli",
     "menu"
   ],
   "bin": {

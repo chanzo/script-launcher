@@ -1,5 +1,30 @@
 # Change Log
 
+## 1.25.2
+### Breaking
+* Removed the '--script=' argument, script can now be started directly
+#### Old command line syntax
+``` bash
+npx launch --script=myScript
+```
+
+#### New command line syntax
+``` bash
+npx launch myScript
+```
+
+### Changes
+* Added support for starting multiple script from the command line, sequential or concurrent.
+#### Start script sequential
+``` bash
+npx launch myScript1 myScript2 build:* -- myArg1 myArg2 myArg3
+```
+
+#### Start script concurrent
+``` bash
+npx launch --concurrent myScript1 myScript2 build:* -- myArg1 myArg2 myArg3
+```
+
 ## 1.25.1
 ### Changes
 * Added test when using wildcard and arguments

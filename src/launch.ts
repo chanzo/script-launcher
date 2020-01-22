@@ -5,7 +5,7 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
-import { IScripts, Scripts } from './scripts';
+import { IScript, IScripts, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 
@@ -17,11 +17,11 @@ interface IArgs {
   version: boolean;
   logLevel: number;
   config: string;
-  script: string;
   ansi: boolean;
   directory: string;
   menuTimeout: number;
   params: number;
+  concurrent: boolean;
 }
 
 interface IScriptDefinition {
@@ -473,12 +473,12 @@ function showHelp() {
       'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
     ],
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
-    script: '  ' + Colors.Cyan + 'script=      ' + Colors.Normal + 'Launcher script to start.',
     confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
     params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
+    concurrent: '  ' + Colors.Cyan + 'concurrent=  ' + Colors.Normal + 'Execute commandline wildcard matches in parallel.',
   });
 }
 
@@ -561,9 +561,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
   let exitCode = 1;
   let startTime = process.hrtime();
 
-  // console.log('processArgv:', processArgv);
-  // console.log('npmConfigArgv:', npmConfigArgv);
-
   try {
     const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
@@ -581,8 +578,10 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         directory: process.cwd(),
         menuTimeout: undefined,
         params: undefined,
+        concurrent: false,
       },
       optionals: [],
+      unknowns: [],
     });
 
     launchArgs.arguments.directory = path.join(launchArgs.arguments.directory); // remove starting ./
@@ -622,16 +621,16 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     showLoadedFiles(configLoad.files);
 
-    let launchScript = lifecycleEvent;
+    let launchScript = lifecycleEvent ? [lifecycleEvent] : [];
     let scriptId = '';
 
-    if (!launchArgs.arguments.script) {
+    if (launchArgs.unknowns.length === 0) {
       if (lifecycleEvent === 'start') {
-        launchScript = commandArgs[0];
+        launchScript = commandArgs[0] ? [commandArgs[0]] : [];
         scriptId = commandArgs.shift();
       }
     } else {
-      launchScript = launchArgs.arguments.script;
+      launchScript = launchArgs.unknowns;
     }
 
     Logger.debug('Config: ', stringify(config));
@@ -699,14 +698,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (scriptId) commandArgs.unshift(scriptId);
 
-    const scripts = config.scripts.find(launchScript);
+    const scripts = config.scripts.find(...launchScript);
 
-    if (launchScript === 'menu' && scripts.length === 0) {
+    if (launchScript[0] === 'menu' && scripts.length === 0) {
       interactive = true;
-      launchScript = undefined;
+      launchScript = [];
     }
 
-    if (launchScript === undefined) {
+    if (launchScript.length === 0) {
       Logger.info();
 
       const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, launchArgs.arguments.confirm, testmode);
@@ -719,15 +718,21 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    if (!scriptInfo) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
+    if (!scriptInfo) throw new Error('Cannot start launch script ' + JSON.stringify(launchScript, null, 0) + ': No such script available.');
 
-    if (!launchArgs.arguments.script && lifecycleEvent === 'start') {
-      commandArgs[0] = Scripts.parse(launchScript).command;
-    } else {
-      commandArgs.unshift(Scripts.parse(launchScript).command);
+    if (scriptInfo.multiple && launchArgs.arguments.concurrent) {
+      scriptInfo.script = {
+        concurrent: scriptInfo.script,
+      } as IScript;
     }
 
-    if (!scriptInfo.name) scriptInfo.name = launchScript;
+    if (launchArgs.unknowns.length === 0 && lifecycleEvent === 'start') {
+      commandArgs[0] = Scripts.parse(launchScript[0]).command;
+    } else {
+      commandArgs.unshift(Scripts.parse(launchScript[0]).command);
+    }
+
+    if (!scriptInfo.name) scriptInfo.name = launchScript[0];
 
     scriptInfo.arguments = commandArgs;
 

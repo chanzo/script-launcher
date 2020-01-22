@@ -39,12 +39,14 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
 interface IArguments<T> {
   arguments: T;
   optionals: string[];
+  unknowns: string[];
 }
 
 export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() => IArguments<T>) | null = null): IArguments<T> {
   const result: IArguments<T> = {
     arguments: {} as T,
     optionals: [],
+    unknowns: [],
   };
 
   defaultData = defaultData instanceof Function ? defaultData() : defaultData;
@@ -75,8 +77,12 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
       if (defaultArgument !== null && defaultArgument !== undefined && typeof defaultData.arguments[name] !== typeof value) throw new Error('Unexpected type \"' + typeof value + '\" for argument \"' + name + '\". The argument should be of type \"' + typeof defaultData[name] + '\".');
     } else {
       if (!commandFound) {
-        if (!validArguments.includes(name)) throw new Error('The specified command \"' + name + '\" is invalid.');
-        commandFound = true;
+        if (!validArguments.includes(name)) {
+          result.unknowns.push(name);
+          continue;
+        }
+
+        if (!columns[0].startsWith('--')) commandFound = true;
       } else {
         result.optionals.push(name);
         continue;
