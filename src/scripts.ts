@@ -22,7 +22,7 @@ export interface IScripts {
 export interface IScriptInfo {
   name: string;
   inline: boolean;
-  wildcard: boolean;
+  multiple: boolean;
   parameters: { [name: string]: string };
   arguments: string[];
   script: IScript;
@@ -36,7 +36,7 @@ export class Scripts {
     if (!meta) meta = { circular: false };
 
     if (length > 0) {
-      if (scripts.some((item) => item.wildcard)) {
+      if (scripts.some((item) => item.multiple)) {
         scripts = scripts.filter(Scripts.containsScript.bind(filters));
 
         if (scripts.length !== length) meta.circular = true;
@@ -46,7 +46,7 @@ export class Scripts {
         return {
           name: null,
           inline: false,
-          wildcard: true,
+          multiple: true,
           parameters: {},
           arguments: [],
           script: resolvedScripts,
@@ -152,38 +152,42 @@ export class Scripts {
     this.scripts = scripts;
   }
 
-  public find(pattern: string): IScriptInfo[] {
-    const info = Scripts.parse(pattern);
+  public find(...patterns: string[]): IScriptInfo[] {
     const scripts: IScriptInfo[] = [];
+    const multiple = patterns.length > 1;
 
-    for (const [name, script] of Object.entries(this.scripts)) {
-      const parameters = Scripts.getParameters(name, info.command, false);
+    for (const pattern of patterns) {
+      const info = Scripts.parse(pattern);
 
-      if (parameters !== null) {
-        scripts.push({
-          name: name,
-          inline: false,
-          wildcard: false,
-          parameters: parameters,
-          arguments: info.arguments,
-          script: script,
-        });
-      }
-    }
-
-    if (scripts.length === 0) {
       for (const [name, script] of Object.entries(this.scripts)) {
-        const parameters = Scripts.getParameters(name, info.command, true);
+        const parameters = Scripts.getParameters(name, info.command, multiple);
 
         if (parameters !== null) {
           scripts.push({
             name: name,
             inline: false,
-            wildcard: true,
+            multiple: multiple,
             parameters: parameters,
             arguments: info.arguments,
             script: script,
           });
+        }
+      }
+
+      if (scripts.length === 0) {
+        for (const [name, script] of Object.entries(this.scripts)) {
+          const parameters = Scripts.getParameters(name, info.command, true);
+
+          if (parameters !== null) {
+            scripts.push({
+              name: name,
+              inline: false,
+              multiple: true,
+              parameters: parameters,
+              arguments: info.arguments,
+              script: script,
+            });
+          }
         }
       }
     }

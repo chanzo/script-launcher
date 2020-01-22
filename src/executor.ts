@@ -465,7 +465,7 @@ export class Executor {
       const repeaterTask: IScriptInfo = {
         name: scriptInfo.name,
         inline: scriptInfo.inline,
-        wildcard: false,
+        multiple: false,
         parameters: null,
         arguments: scriptInfo.arguments,
         script: { ...(scriptInfo.script as IScriptTask) },
@@ -515,7 +515,7 @@ export class Executor {
       const scriptInfo = Scripts.select(scripts, parents, meta);
 
       if (scriptInfo) {
-        if (scriptInfo.wildcard) {
+        if (scriptInfo.multiple) {
           for (let script of scriptInfo.script) {
             script = Executor.expandArguments(script, args);
             script = Executor.expandEnvironment(script, environment);
@@ -777,7 +777,7 @@ export class Executor {
         const scriptInfo = Scripts.select(scripts, parents, meta);
 
         if (scriptInfo) {
-          if (scriptInfo.wildcard) {
+          if (scriptInfo.multiple) {
             for (let script of scriptInfo.script) {
               script = Executor.expandArguments(script, args);
               script = Executor.expandEnvironment(script, environment);
@@ -802,7 +802,7 @@ export class Executor {
         const scriptInfo: IScriptInfo = {
           name: 'inline-script-block',
           inline: true,
-          wildcard: false,
+          multiple: false,
           parameters: parameters,
           arguments: args,
           script: task,
