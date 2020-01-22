@@ -621,16 +621,16 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     showLoadedFiles(configLoad.files);
 
-    let launchScript = lifecycleEvent;
+    let launchScript = lifecycleEvent ? [lifecycleEvent] : [];
     let scriptId = '';
 
     if (launchArgs.unknowns.length === 0) {
       if (lifecycleEvent === 'start') {
-        launchScript = commandArgs[0];
+        launchScript = commandArgs[0] ? [commandArgs[0]] : [];
         scriptId = commandArgs.shift();
       }
     } else {
-      launchScript = launchArgs.unknowns[0];
+      launchScript = launchArgs.unknowns;
     }
 
     Logger.debug('Config: ', stringify(config));
@@ -698,14 +698,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (scriptId) commandArgs.unshift(scriptId);
 
-    const scripts = config.scripts.find(launchScript);
+    const scripts = config.scripts.find(...launchScript);
 
-    if (launchScript === 'menu' && scripts.length === 0) {
+    if (launchScript[0] === 'menu' && scripts.length === 0) {
       interactive = true;
-      launchScript = undefined;
+      launchScript = [];
     }
 
-    if (launchScript === undefined) {
+    if (launchScript.length === 0) {
       Logger.info();
 
       const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, launchArgs.arguments.confirm, testmode);
@@ -718,21 +718,21 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    if (!scriptInfo) throw new Error('Cannot start launch script \'' + launchScript + '\': No such script available.');
+    if (!scriptInfo) throw new Error('Cannot start launch script ' + JSON.stringify(launchScript, null, 0) + ': No such script available.');
 
-    if (scriptInfo.wildcard && launchArgs.arguments.concurrent) {
+    if (scriptInfo.multiple && launchArgs.arguments.concurrent) {
       scriptInfo.script = {
         concurrent: scriptInfo.script,
       } as IScript;
     }
 
     if (launchArgs.unknowns.length === 0 && lifecycleEvent === 'start') {
-      commandArgs[0] = Scripts.parse(launchScript).command;
+      commandArgs[0] = Scripts.parse(launchScript[0]).command;
     } else {
-      commandArgs.unshift(Scripts.parse(launchScript).command);
+      commandArgs.unshift(Scripts.parse(launchScript[0]).command);
     }
 
-    if (!scriptInfo.name) scriptInfo.name = launchScript;
+    if (!scriptInfo.name) scriptInfo.name = launchScript[0];
 
     scriptInfo.arguments = commandArgs;
 

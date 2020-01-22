@@ -1,7 +1,7 @@
 {
   "Implementation examples (readme.md)": [
     {
-      "id": "0021",
+      "id": "0022",
       "name": "Sequential scripts",
       "tests": [
         {
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "id": "0022",
+      "id": "0023",
       "name": "Change directory",
       "tests": [
         {
@@ -27,7 +27,7 @@
       ]
     },
     {
-      "id": "0023",
+      "id": "0024",
       "name": "Parameters and functions",
       "tests": [
         {
@@ -48,7 +48,7 @@
       ]
     },
     {
-      "id": "0024",
+      "id": "0025",
       "name": "Reference scripts",
       "tests": [
         {
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "id": "0025",
+      "id": "0026",
       "name": "Environment values and special commands",
       "tests": [
         {
@@ -110,7 +110,7 @@
       ]
     },
     {
-      "id": "0026",
+      "id": "0027",
       "name": "Environment and command line argument values",
       "tests": [
         {
@@ -156,7 +156,7 @@
       ]
     },
     {
-      "id": "0027",
+      "id": "0028",
       "name": "Glob patterns",
       "tests": [
         {
@@ -170,7 +170,7 @@
       ]
     },
     {
-      "id": "0028",
+      "id": "0029",
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
@@ -201,7 +201,7 @@
       ]
     },
     {
-      "id": "0029",
+      "id": "0030",
       "name": "Escaping characters",
       "tests": [
         {
@@ -226,7 +226,7 @@
       ]
     },
     {
-      "id": "0030",
+      "id": "0031",
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
@@ -245,7 +245,7 @@
       ]
     },
     {
-      "id": "0031",
+      "id": "0032",
       "name": "Inline script blocks",
       "transformer": "inlineScriptBlocks",
       "tests": [
@@ -264,7 +264,7 @@
       ]
     },
     {
-      "id": "0032",
+      "id": "0033",
       "name": "Condition and exclusion constraints",
       "files": {
         "launcher-settings": {
@@ -293,7 +293,7 @@
       ]
     },
     {
-      "id": "0033",
+      "id": "0034",
       "name": "Confirmation prompt",
       "tests": [
         {
@@ -362,7 +362,7 @@
       ]
     },
     {
-      "id": "0034",
+      "id": "0035",
       "name": "Repeaters (String)",
       "tests": [
         {
@@ -377,7 +377,7 @@
       ]
     },
     {
-      "id": "0035",
+      "id": "0036",
       "name": "Repeaters (Object)",
       "tests": [
         {
@@ -401,7 +401,7 @@
       ]
     },
     {
-      "id": "0036",
+      "id": "0037",
       "name": "Interactive menu",
       "files": {
         "launcher-settings": {
@@ -443,7 +443,7 @@
       ]
     },
     {
-      "id": "0037",
+      "id": "0038",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -482,7 +482,7 @@
       ]
     },
     {
-      "id": "0038",
+      "id": "0039",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -531,7 +531,7 @@
       ]
     },
     {
-      "id": "0039",
+      "id": "0040",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -618,7 +618,7 @@
       ]
     },
     {
-      "id": "0040",
+      "id": "0041",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -638,7 +638,7 @@
       ]
     },
     {
-      "id": "0041",
+      "id": "0042",
       "name": "Launcher settings",
       "tests": [
         {
@@ -680,7 +680,7 @@
       ]
     },
     {
-      "id": "0042",
+      "id": "0043",
       "name": "Reference scripts by using wildcards",
       "tests": [
         {

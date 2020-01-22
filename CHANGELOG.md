@@ -14,7 +14,7 @@ npx launch myScript
 ```
 
 ### Changes
-* Added support for starting multiple script from the command line.
+* Added support for starting multiple script from the command line, sequential or concurrent.
 #### Start script sequential
 ``` bash
 npx launch myScript1 myScript2 build:* -- myArg1 myArg2 myArg3

@@ -1,7 +1,7 @@
 {
   "Other tests": [
     {
-      "id": "0007",
+      "id": "0008",
       "name": "Exit code",
       "files": {
         "launcher-config": {
@@ -28,7 +28,7 @@
       ]
     },
     {
-      "id": "0008",
+      "id": "0009",
       "name": "Log output",
       "files": {
         "launcher-config": {
@@ -228,7 +228,7 @@
             "Launch script     : [ 'build-stuff' ]",
             "Process platform  : linux",
             "Script shell      : true",
-            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/0008',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false\n  },\n  optionals: [],\n  unknowns: []\n}",
+            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false\n  },\n  optionals: [],\n  unknowns: []\n}",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -352,7 +352,7 @@
       ]
     },
     {
-      "id": "0009",
+      "id": "0010",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -408,7 +408,7 @@
       ]
     },
     {
-      "id": "0010",
+      "id": "0011",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -437,7 +437,7 @@
       ]
     },
     {
-      "id": "0011",
+      "id": "0012",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -453,7 +453,7 @@
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
-            "Cannot start launch script 'assignments': No such script available."
+            "Cannot start launch script [\"assignments\"]: No such script available."
           ]
         },
         {
@@ -487,7 +487,7 @@
       ]
     },
     {
-      "id": "0012",
+      "id": "0013",
       "name": "Circular reference",
       "files": {
         "launcher-config": {
@@ -512,7 +512,7 @@
       ]
     },
     {
-      "id": "0013",
+      "id": "0014",
       "name": "Auto arguments",
       "files": {
         "launcher-config": {
@@ -537,7 +537,7 @@
       ]
     },
     {
-      "id": "0014",
+      "id": "0015",
       "name": "Auto arguments",
       "files": {
         "launcher-config": {
@@ -564,7 +564,7 @@
       ]
     },
     {
-      "id": "0015",
+      "id": "0016",
       "name": "Auto arguments",
       "files": {
         "launcher-config": {
@@ -592,7 +592,7 @@
       ]
     },
     {
-      "id": "0016",
+      "id": "0017",
       "name": "Auto arguments",
       "files": {
         "launcher-config": {
@@ -618,7 +618,7 @@
       ]
     },
     {
-      "id": "0017",
+      "id": "0018",
       "name": "Auto arguments",
       "files": {
         "launcher-config": {
@@ -645,7 +645,7 @@
       ]
     },
     {
-      "id": "0018",
+      "id": "0019",
       "name": "Glob patterns",
       "files": {
         "launcher-config": {
@@ -698,7 +698,7 @@
       ]
     },
     {
-      "id": "0019",
+      "id": "0020",
       "name": "Glob patterns",
       "files": {
         "launcher-config": {
@@ -756,7 +756,7 @@
       ]
     },
     {
-      "id": "0020",
+      "id": "0021",
       "name": "Reference scripts by using wildcards and arguments",
       "files": {
         "launcher-config": {

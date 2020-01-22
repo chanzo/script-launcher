@@ -223,6 +223,38 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0007",
+      "name": "Start script",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:css": "echo Building: $1.css $2.css",
+            "build:html": "echo Building: $1.html $2.html",
+            "test:css": "echo Testing: $1.css $2.css",
+            "test:html": "echo Testing: $1.html $2.html"
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "build:*",
+            "test:css",
+            "test:html",
+            "--",
+            "file1",
+            "file2"
+          ],
+          "result": [
+            "Building: file1.css file2.css",
+            "Building: file1.html file2.html",
+            "Testing: file1.css file2.css",
+            "Testing: file1.html file2.html"
+          ]
+        }
+      ]
     }
   ]
 }
