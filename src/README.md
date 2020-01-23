@@ -38,6 +38,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Repeaters (Object)](#repeaters-object)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
+  * [Launcher Command: init](#launcher-command-init)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -662,7 +663,7 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 ## Launcher arguments
 Use the help for a list of available options.
 ``` bash
-npx launch help
+> npx launch help
 
 Usage: launch [command] [options...]
 
@@ -683,6 +684,43 @@ Options:
   params=      Set the number of parameters to preserve.
   concurrent=  Execute commandline wildcard matches in parallel.
 ```
+
+### Launcher Command: init
+Use the **init** command to create a starter configuration for you project.
+
+**Run**: `npx launch init` this will list the available templates
+``` bash
+Available templates:
+
+angular
+basic
+blank
+
+Example usage: npx launch init basic
+```
+
+**Run**: `npx launch init basic` this will create a basic starter configuration
+``` bash
+Create starter config: basic
+
+Createing: launcher-config.json
+Createing: launcher-menu.json
+
+Updating package.json.
+
+Start script of package.json updated.
+```
+
+### Launcher Command: migrate
+Use the **migrate** command to convert your **package.json** script to a script-launcher configuration.
+
+**Run**: `npx launch migrate` this will convert your **package.json** scripts
+```
+
+```
+
+
+
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
