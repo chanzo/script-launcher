@@ -39,6 +39,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
   * [Launcher Command: init](#launcher-command-init)
+  * [Launcher Command: migrate](#launcher-command-migrate)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -699,6 +700,7 @@ blank
 Example usage: npx launch init basic
 ```
 
+### Launcher Command: init basic
 **Run**: `npx launch init basic` this will create a basic starter configuration
 ``` bash
 Create starter config: basic
@@ -712,15 +714,21 @@ Start script of package.json updated.
 ```
 
 ### Launcher Command: migrate
-Use the **migrate** command to convert your **package.json** script to a script-launcher configuration.
+Use the **migrate** command to convert your **package.json** script to a script-launcher configuration. Use the **params** option the parameterize your script functions.
 
-**Run**: `npx launch migrate` this will convert your **package.json** scripts
+**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
+``` bash
+Migrating: package.json
+
+Script to migrate: 34
+Script to update: 2
+
+✔ Are you sure … yes
+
+Updating: package.json
+Creating: launcher-menu.json
+Creating: launcher-config.json
 ```
-
-```
-
-
-
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
