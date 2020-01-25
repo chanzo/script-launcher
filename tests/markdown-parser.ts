@@ -24,7 +24,9 @@ export class MarkdownParser {
       for (const [key, value] of sections) {
         if (exclude.includes(key)) continue;
 
-        this.sections.set(key, value);
+        if (value.length !== 1) throw new Error('Invalid markdown section: ' + key);
+
+        this.sections.set(key, value[0]);
       }
     } catch (error) {
       console.error('Error loading \"' + fileName + '\" markdown file ', error.message);
@@ -36,7 +38,7 @@ export class MarkdownParser {
 
     for (const [title, content] of this.sections) {
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
-      const sections = MarkdownParser.getSections2(content, '^```(.*)');
+      const sections = MarkdownParser.getSections(content, '^```(.*)');
 
       result.push(...MarkdownParser.parseSectionJSONTests(sections, title, commands));
       result.push(...MarkdownParser.parseSectionBashTests(sections, title, commands));
@@ -111,31 +113,7 @@ export class MarkdownParser {
     return result;
   }
 
-  private static getSections(content: string[], pattern: string): Map<string, string[]> {
-    const result: Map<string, string[]> = new Map();
-    const expression = new RegExp(pattern);
-    let block = [];
-
-    for (const line of content) {
-      const matches = line.match(expression);
-
-      if (matches !== null) {
-        const key = matches[matches.length - 1].trim();
-
-        block = [];
-
-        if (result.has(key)) throw new Error('Duplicate section key: ' + key);
-
-        result.set(key, block);
-      } else {
-        block.push(line);
-      }
-    }
-
-    return result;
-  }
-
-  private static getSections2(content: string[], pattern: string): Map<string, string[][]> {
+  private static getSections(content: string[], pattern: string): Map<string, string[][]> {
     const result: Map<string, string[][]> = new Map();
     const expression = new RegExp(pattern);
     let block = [];

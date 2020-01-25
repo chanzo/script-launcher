@@ -15,6 +15,7 @@ export interface ITests {
   lifecycle?: string;
   result?: string[];
   restore: boolean;
+  empty?: boolean;
 }
 
 interface ITestsConfigFile {
@@ -185,7 +186,8 @@ export class TestLauncher {
       'npm-args': [],
       'cmd-args': [],
       'cat-args': [],
-      'restore': false
+      'restore': false,
+      'empty': true
     };
     let configs = this._configs[category];
 
@@ -230,7 +232,7 @@ export class TestLauncher {
         continue;
       }
 
-      if (config.tests.length > 0) {
+      if (config.tests.filter((item) => !item.empty).length > 0) {
         for (const command of section.commands) {
           const test = config.tests.find((item) => item.name === command);
 
