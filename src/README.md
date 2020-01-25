@@ -689,8 +689,8 @@ Options:
 ### Launcher Command: init
 Use the **init** command to create a starter configuration for you project.
 
-**Run**: `npx launch init` or this will list the available templates
-``` bash1
+**Run**: `npx launch init` this will list the available templates
+``` bash
 Available templates:
 
 angular
@@ -701,7 +701,7 @@ Example usage: npx launch init basic
 ```
 
 **Run**: `npx launch init basic` this will create a basic starter configuration
-``` bash2
+``` bash
 Create starter config: basic
 
 Createing: launcher-config.json
@@ -719,10 +719,14 @@ Use the **migrate** command to convert your **package.json** script to a script-
 ``` bash
 Migrating: package.json
 
-Script to migrate: 34
+Script to migrate: 12
 Script to update: 2
 
+? Are you sure › (Y/n)
+
 ✔ Are you sure … yes
+
+
 
 Updating: package.json
 Creating: launcher-menu.json

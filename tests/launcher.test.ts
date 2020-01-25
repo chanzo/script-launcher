@@ -1,4 +1,4 @@
-import { TestLauncher, TransformCallback } from './test-launcher';
+import { ITestConfig, TestLauncher, TransformCallback } from './test-launcher';
 import * as path from 'path';
 import { IConfig } from '../src/config-loader';
 import { IScript, IScriptTask } from '../src/scripts';
@@ -11,6 +11,38 @@ const readmeFile = path.join(__dirname, '..', 'src', 'README.md');
 const testLauncher = new TestLauncher(tempFiles, ['', ''], [
   '\u001b[?25l'
 ]);
+
+const sanatizeStrings = [
+  '\\u001b\\[0m',
+  '\\u001b\\[1m',
+  '\\u001b\\[2K',
+  '\\u001b\\[1G',
+  '\\u001b\\[36m',
+  '\\u001b\\[39m',
+  '\\u001b\\[22m',
+  '\\u001b\\[90m',
+  '\\u001b\\[32m',
+  '\\u001b\\[\\?25l',
+  '\\u001b\\[\\?25h',
+  '\\n'
+];
+
+function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): ReadonlyArray<string> {
+  const result = [];
+
+  for (let item of content) {
+
+    item = item.replace('tests/temp/' + config.id + '/', '');
+
+    for (const pattern of sanatizeStrings) {
+      item = item.replace(new RegExp(pattern, 'g'), '');
+    }
+
+    result.push(item);
+  }
+
+  return result;
+}
 
 async function main() {
   testLauncher.loadConfig(testFiles);
@@ -68,7 +100,7 @@ async function main() {
               continue;
             }
 
-            // if (item.name !== 'npm start') continue;
+            // if (config.id !== '0044' || item.name !== 'npx launch init') continue;
 
             test(item.name.padEnd(56), async () => {
               if (item.error) throw new Error(item.error);
@@ -96,6 +128,8 @@ async function main() {
 
                 output = result.all;
               }
+
+              if (config.sanatize) output = sanatizeOutput(output, config);
 
               try {
                 expect(output).toStrictEqual(item.result);

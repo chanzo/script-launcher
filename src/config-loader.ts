@@ -97,9 +97,13 @@ export class Config {
         if (file && !hash.has(file)) {
           const fullPath = path.join(directory, file);
 
-          if (existsSync(resolve(fullPath))) {
-            config = config.merge(fullPath);
-            loadedFiles.push(fullPath);
+          try {
+            if (existsSync(resolve(fullPath))) {
+              config = config.merge(fullPath);
+              loadedFiles.push(fullPath);
+            }
+          } catch (error) {
+            throw new Error('Error loading config file \"' + fullPath + '\" ' + error);
           }
 
           hash.add(file);

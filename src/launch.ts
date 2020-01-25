@@ -403,7 +403,7 @@ async function migratePackageJson(directory: string, preserveParams: number, tes
   });
   Logger.log();
 
-  if (testmode || await confirmPrompt('Are you sure')) {
+  if (await confirmPrompt('Are you sure', testmode)) {
     console.log();
     console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
