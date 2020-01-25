@@ -79,13 +79,13 @@ You are now ready to start use Script Launcher by running: `npm start` or `npm r
 ## Usage examples
 
 ### Show menu
-```
+``` bash
 npm start
 ```
 You can also show the menu by running: `npx launch`
 
 ### Start a specific launch script, by using the `npm start`
-```
+``` bash
 npm start serve:dev
 npm start build:production
 ```
@@ -108,7 +108,7 @@ Example: **package.json**
 ```
 
 Example run commands
-```
+``` bash
 npm run serve:dev
 npm run build:production
 ```
@@ -130,7 +130,7 @@ npx launch migrate --params
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
-```JSON
+``` JSON
 // Traditional package.json scripts //
 {
   "scripts": {
@@ -391,7 +391,7 @@ Use a backslash in the script command, to escaping variables.
 | **"\|?"**               | Command     | Grep like functionality                               |
 
 **Run**: `npm start build-stuff` to use this example.
-```JSON
+``` JSON
 {
   "scripts": {
     "build-stuff": {
@@ -689,8 +689,8 @@ Options:
 ### Launcher Command: init
 Use the **init** command to create a starter configuration for you project.
 
-**Run**: `npx launch init` this will list the available templates
-``` bash
+**Run**: `npx launch init` or this will list the available templates
+``` bash1
 Available templates:
 
 angular
@@ -700,9 +700,8 @@ blank
 Example usage: npx launch init basic
 ```
 
-### Launcher Command: init basic
 **Run**: `npx launch init basic` this will create a basic starter configuration
-``` bash
+``` bash2
 Create starter config: basic
 
 Createing: launcher-config.json

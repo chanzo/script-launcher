@@ -18,7 +18,7 @@ export class MarkdownParser {
     this.sections = new Map();
 
     try {
-      const sections = MarkdownParser.getSections(fileContent, '^(###|##) (.*)');
+      const sections = MarkdownParser.getSections(fileContent, '^(###|##) (.+)');
 
       for (const [key, value] of sections) {
         if (exclude.includes(key)) continue;
@@ -39,7 +39,7 @@ export class MarkdownParser {
       let sectionError: string = null;
 
       try {
-        const configContent = MarkdownParser.getSections(content, '^```(.*)').get('JSON');
+        const configContent = MarkdownParser.getSections(content, '^```(.+)').get('JSON');
 
         config = JSON.parse(configContent ? configContent.join('\n') : '{}');
       } catch (error) {
@@ -88,7 +88,12 @@ export class MarkdownParser {
 
         block = [];
 
-        if (result.has(key)) throw new Error('Duplicate section key: ' + key);
+        if (result.has(key)) {
+
+          console.log('matches:', matches);
+
+          throw new Error('Duplicate section key: ' + key);
+        }
 
         result.set(key, block);
       } else {
