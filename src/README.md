@@ -671,7 +671,7 @@ Usage: launch [command] [options...]
 
 Commands:
   init         [template] Create starter config files.
-  list         List available launcher script.
+  list         List available launcher scripts.
   migrate      Migrate your package.json scripts.
   help         Show this help.
   version      Outputs launcher version.

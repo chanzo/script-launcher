@@ -470,7 +470,7 @@ function showHelp() {
       'Commands:',
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
-    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + 'List available launcher script.',
+    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + 'List available launcher scripts.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
