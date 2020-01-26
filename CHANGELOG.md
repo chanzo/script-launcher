@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.25.3
+### Changes
+* Added extra command line unit tests
+* Updated some error handling
+* Updated def dependencies
+* Added **--confirm** support for the mifatemigrate action
+
 ## 1.25.2
 ### Breaking
 * Removed the '--script=' argument, script can now be started directly

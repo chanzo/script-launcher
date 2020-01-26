@@ -713,6 +713,127 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0044",
+      "name": "Launcher arguments",
+      "sanatize": true,
+      "tests": [
+        {
+          "cmd-args": [
+            "--help"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0045",
+      "name": "Launcher Command: init",
+      "sanatize": true,
+      "files": {
+        "package": {}
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "init"
+          ]
+        },
+        {
+          "cmd-args": [
+            "init",
+            "basic"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0046",
+      "name": "Launcher Command: migrate",
+      "sanatize": true,
+      "files": {
+        "package": {
+          "scripts": {
+            "ng": "echo ng",
+            "serve": "echo ng serve",
+            "build": "echo ng build",
+            "test": "echo ng test",
+            "lint": "echo ng lint",
+            "e2e": "echo ng e2e",
+            "build:uva:dev": "echo ng build uva --configuration=dev",
+            "build:uva:tst": "echo ng build uva --configuration=tst",
+            "build:uva:acc": "echo ng build uva --configuration=acc",
+            "build:uva:prd": "echo ng build uva --configuration=prd --prod",
+            "build:hva:dev": "echo ng build hva --configuration=dev",
+            "build:hva:tst": "echo ng build hva --configuration=tst",
+            "build:hva:acc": "echo ng build hva --configuration=acc",
+            "build:hva:prd": "echo ng build hva --configuration=prd --prod",
+            "serve:uva:dev": "echo ng serv uva --configuration=dev",
+            "serve:uva:tst": "echo ng serv uva --configuration=tst",
+            "serve:uva:acc": "echo ng serv uva --configuration=acc",
+            "serve:uva:prd": "echo ng serv uva --configuration=prd --prod",
+            "serve:hva:dev": "echo ng serv hva --configuration=dev",
+            "serve:hva:tst": "echo ng serv hva --configuration=tst",
+            "serve:hva:acc": "echo ng serv hva --configuration=acc",
+            "serve:hva:prd": "echo ng serv hva --configuration=prd --prod",
+            "deploy:uva:dev": "npm run build:uva:dev && echo firebase deploy --public dist/uva --project status-uva-dev",
+            "deploy:uva:tst": "npm run build:uva:tst && echo firebase deploy --public dist/uva --project status-uva-tst",
+            "deploy:uva:acc": "npm run build:uva:acc && echo firebase deploy --public dist/uva --project status-uva-acc",
+            "deploy:uva:prd": "npm run build:uva:prd && echo firebase deploy --public dist/uva --project status-uva-prd",
+            "deploy:hva:dev": "npm run build:hva:dev && echo firebase deploy --public dist/hva --project status-hva-dev",
+            "deploy:hva:tst": "npm run build:hva:tst && echo firebase deploy --public dist/hva --project status-hva-tst",
+            "deploy:hva:acc": "npm run build:hva:acc && echo firebase deploy --public dist/hva --project status-hva-acc",
+            "deploy:hva:prd": "npm run build:hva:prd && echo firebase deploy --public dist/hva --project status-hva-prd",
+            "deploy:dev": "npm run deploy:uva:dev && npm run deploy:hva:dev",
+            "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
+            "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
+            "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd",
+            "deploy": "echo Deploy all"
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "migrate",
+            "--params=1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0047",
+      "name": "Launcher Command: script",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:css": "echo Building: .css files",
+            "build:js": "echo Building: .js files",
+            "build:html": "echo Building: .html files",
+            "build:all": {
+              "concurrent": [
+                "build:*"
+              ]
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "build:css",
+            "build:js"
+          ]
+        },
+        {
+          "cmd-args": [
+            "build:css",
+            "build:js",
+            "--concurrent"
+          ]
+        }
+      ]
     }
   ]
 }
