@@ -49,6 +49,13 @@ npm start test -- -t "'launch  --version'"
 npm start test -- ./tests/debug.test.ts
 ```
 
+### Experimental tab completion support for script-launcher in zsh
+``` bash
+complete -C "npx launch list" -o default 'npm'
+# Or when script-launcher is installed globally
+complete -C "launch list" -o default 'npm'
+```
+
 ### Resources
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
 * [Jest Testing Framework](https://jestjs.io/)
