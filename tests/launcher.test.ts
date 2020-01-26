@@ -78,7 +78,6 @@ async function main() {
     'Script shell',
     'Menu options',
     'Logging',
-    'Launcher arguments',
     'Launcher options',
     'Glob Options',
     'Migrate package.json scripts'

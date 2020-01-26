@@ -40,6 +40,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
 * [Launcher arguments](#launcher-arguments)
   * [Launcher Command: init](#launcher-command-init)
   * [Launcher Command: migrate](#launcher-command-migrate)
+  * [Launcher Command: script](#launcher-command-script)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -662,10 +663,10 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 ```
 
 ## Launcher arguments
-Use the help for a list of available options.
-``` bash
-> npx launch help
+Use the **help** for a list of available options.
 
+**Run**: `npx launch --help` this will list the available options
+``` bash
 Usage: launch [command] [options...]
 
 Commands:
@@ -677,7 +678,6 @@ Commands:
 Options:
   logLevel=    Set log level.
   config=      Merge in an extra config file.
-  script=      Launcher script to start.
   confirm=     Auto value for confirm conditions.
   ansi=        Enable or disable ansi color output.
   directory=   The directory from which configuration files are loaded.
@@ -728,6 +728,23 @@ Updating: package.json
 Creating: launcher-menu.json
 Creating: launcher-config.json
 ```
+
+### Launcher Command: script
+Start one or more script directly from the command line sequentially or concurrently
+
+**Run**: `npx launch build:css build:js` to start one or more script in sequence
+``` bash
+Building: .css files
+Building: .js files
+```
+
+**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
+``` bash
+Building: .css files
+Building: .js files
+```
+
+
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.

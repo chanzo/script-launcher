@@ -716,6 +716,18 @@
     },
     {
       "id": "0044",
+      "name": "Launcher arguments",
+      "sanatize": true,
+      "tests": [
+        {
+          "cmd-args": [
+            "--help"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0045",
       "name": "Launcher Command: init",
       "sanatize": true,
       "files": {
@@ -736,7 +748,7 @@
       ]
     },
     {
-      "id": "0045",
+      "id": "0046",
       "name": "Launcher Command: migrate",
       "sanatize": true,
       "files": {
@@ -785,6 +797,40 @@
           "cmd-args": [
             "migrate",
             "--params=1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0047",
+      "name": "Launcher Command: script",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:css": "echo Building: .css files",
+            "build:js": "echo Building: .js files",
+            "build:html": "echo Building: .html files",
+            "build:all": {
+              "concurrent": [
+                "build:*"
+              ]
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "build:css",
+            "build:js"
+          ]
+        },
+        {
+          "cmd-args": [
+            "build:css",
+            "build:js",
+            "--concurrent"
           ]
         }
       ]
