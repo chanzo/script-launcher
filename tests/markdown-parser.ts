@@ -4,6 +4,7 @@ import { IConfig } from '../src/config-loader';
 export interface ISectionTest {
   title: string;
   config: IConfig;
+  result: string[];
   commands: string[];
   error?: string;
 }
@@ -23,7 +24,9 @@ export class MarkdownParser {
       for (const [key, value] of sections) {
         if (exclude.includes(key)) continue;
 
-        this.sections.set(key, value);
+        if (value.length !== 1) throw new Error('Invalid markdown section: ' + key);
+
+        this.sections.set(key, value[0]);
       }
     } catch (error) {
       console.error('Error loading \"' + fileName + '\" markdown file ', error.message);
@@ -35,23 +38,58 @@ export class MarkdownParser {
 
     for (const [title, content] of this.sections) {
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
+      const sections = MarkdownParser.getSections(content, '^```(.*)');
+
+      result.push(...MarkdownParser.parseSectionJSONTests(sections, title, commands));
+      result.push(...MarkdownParser.parseSectionBashTests(sections, title, commands));
+    }
+
+    return result;
+  }
+
+  private static parseSectionJSONTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
+    const result: ISectionTest[] = [];
+    const content = sections.get('JSON');
+
+    if (content) {
       let config: IConfig = {} as any;
       let sectionError: string = null;
 
-      try {
-        const configContent = MarkdownParser.getSections(content, '^```(.*)').get('JSON');
+      for (const item of content) {
+        try {
+          config = JSON.parse(item ? item.join('\n') : '{}');
+        } catch (error) {
+          sectionError = 'Unable to load markdown example: ' + error.message;
+        }
 
-        config = JSON.parse(configContent ? configContent.join('\n') : '{}');
-      } catch (error) {
-        sectionError = 'Unable to load markdown example: ' + error.message;
+        result.push({
+          title: title,
+          config: config,
+          result: null,
+          commands: commands,
+          error: sectionError
+        });
       }
+    }
 
-      result.push({
-        title: title,
-        config: config,
-        commands: commands,
-        error: sectionError
-      });
+    return result;
+  }
+
+  private static parseSectionBashTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
+    const result: ISectionTest[] = [];
+    const content = sections.get('bash');
+    let index = 0;
+
+    if (content) {
+      for (const item of content) {
+        result.push({
+          title: title,
+          config: null,
+          result: item,
+          commands: [commands[index++]],
+          error: null
+        });
+      }
     }
 
     return result;
@@ -75,8 +113,8 @@ export class MarkdownParser {
     return result;
   }
 
-  private static getSections(content: string[], pattern: string): Map<string, string[]> {
-    const result: Map<string, string[]> = new Map();
+  private static getSections(content: string[], pattern: string): Map<string, string[][]> {
+    const result: Map<string, string[][]> = new Map();
     const expression = new RegExp(pattern);
     let block = [];
 
@@ -88,9 +126,14 @@ export class MarkdownParser {
 
         block = [];
 
-        if (result.has(key)) throw new Error('Duplicate section key: ' + key);
+        let section = result.get(key);
 
-        result.set(key, block);
+        if (!section) {
+          section = [];
+          result.set(key, section);
+        }
+
+        section.push(block);
       } else {
         block.push(line);
       }

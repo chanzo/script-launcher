@@ -366,7 +366,7 @@ function combineScripts(scripts: { [name: string]: string }, preserveParams: num
   return combineScripts;
 }
 
-async function migratePackageJson(directory: string, preserveParams: number, testmode: boolean): Promise<void> {
+async function migratePackageJson(directory: string, preserveParams: number, confirm: boolean, testmode: boolean): Promise<void> {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
   const packageFile = path.join(directory, 'package.json');
@@ -403,7 +403,12 @@ async function migratePackageJson(directory: string, preserveParams: number, tes
   });
   Logger.log();
 
-  if (testmode || await confirmPrompt('Are you sure')) {
+  let autoValue: boolean;
+
+  if (confirm !== undefined) autoValue = confirm;
+  if (testmode) autoValue = true;
+
+  if (await confirmPrompt('Are you sure', autoValue)) {
     console.log();
     console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
@@ -687,7 +692,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.arguments.migrate) {
-      await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, testmode);
+      await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, launchArgs.arguments.confirm, testmode);
       Logger.log();
       exitCode = 0;
 
@@ -744,11 +749,11 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     exitCode = await executor.execute(scriptInfo);
   } catch (error) {
-    if (error.message) {
-      Logger.error(error.message);
-    } else {
-      Logger.error(`${error}`);
-    }
+    let message = `${error}`;
+
+    if (error.message) message = error.message;
+
+    if (message !== 'false') Logger.error(message);
   } finally {
     let timespan = process.hrtime(startTime);
 

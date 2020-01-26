@@ -15,6 +15,7 @@ export interface ITests {
   lifecycle?: string;
   result?: string[];
   restore: boolean;
+  empty?: boolean;
 }
 
 interface ITestsConfigFile {
@@ -33,6 +34,7 @@ export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
   id: string;
+  sanatize: boolean;
   name: string;
   transformer?: string;
   files: { [name: string]: IConfig };
@@ -127,18 +129,22 @@ export class TestLauncher {
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
               if (!Array.isArray(test['cat-args'])) test['cat-args'] = [test['cat-args']];
 
-              let result = test.result;
+              if (test.result) {
+                let result = test.result;
 
-              if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
+                if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
 
-              if (!Array.isArray(result) && result !== undefined) result = [result];
+                if (!Array.isArray(result) && result !== undefined) result = [result];
 
-              for (let index = 0; index < result.length; index++) {
-                (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
-                  id: testConfig.id,
-                  version: version,
-                  node_version: process.version.replace(/^v/, '')
-                });
+                for (let index = 0; index < result.length; index++) {
+                  (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
+                    id: testConfig.id,
+                    version: version,
+                    node_version: process.version.replace(/^v/, '')
+                  });
+                }
+
+                test.result = result;
               }
 
               if (test['cat-args'].length > 0) {
@@ -147,8 +153,6 @@ export class TestLauncher {
                 if (test['cmd-args'].length > 0) test.error = 'cat-args and cmd-args can not be combined';
                 if (test['npm-args'].length > 0) test.error = 'cat-args and npm-args can not be combined';
               }
-
-              test.result = result;
 
               if (!test.name) {
                 test.name = 'npx launch ' + test['cmd-args'].join(' ');
@@ -182,7 +186,8 @@ export class TestLauncher {
       'npm-args': [],
       'cmd-args': [],
       'cat-args': [],
-      'restore': false
+      'restore': false,
+      'empty': true
     };
     let configs = this._configs[category];
 
@@ -197,6 +202,7 @@ export class TestLauncher {
       if (config === undefined) {
         config = {
           id: '9999',
+          sanatize: false,
           name: section.title,
           files: {},
           tests: []
@@ -226,15 +232,25 @@ export class TestLauncher {
         continue;
       }
 
-      if (config.tests.length > 0) {
+      if (config.tests.filter((item) => !item.empty).length > 0) {
         for (const command of section.commands) {
           const test = config.tests.find((item) => item.name === command);
 
-          if (!test) config.tests.push({
-            ...emptyTest,
-            name: command,
-            error: 'Markdown example is missing test command: ' + command
-          });
+          if (!test) {
+            config.tests.push({
+              ...emptyTest,
+              name: command,
+              error: 'Markdown example is missing test command: ' + command
+            });
+          } else {
+            if (section.result !== null) {
+              if (test.result) {
+                test.error = 'This markdown test should not have result content!';
+                continue;
+              }
+              test.result = section.result;
+            }
+          }
         }
       } else {
         for (const command of section.commands) {
@@ -245,17 +261,16 @@ export class TestLauncher {
         }
       }
 
-      if (config.files !== undefined && config.files['launcher-config'] !== undefined) {
+      if (config.files !== undefined && config.files['launcher-config'] !== undefined && section.config !== null) {
         for (const test of config.tests) {
-          test.error = 'A markdown test should not have a \"launcher-config\" file content!';
+          test.error = 'This markdown test should not have \"launcher-config\" file content!';
         }
         continue;
       }
 
-      config.files = {
-        ...config.files,
-        ...{ 'launcher-config': section.config }
-      };
+      config.files = { ...config.files };
+
+      if (section.config) config.files['launcher-config'] = section.config;
     }
   }
 

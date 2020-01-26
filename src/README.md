@@ -38,6 +38,9 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Repeaters (Object)](#repeaters-object)
   * [Interactive menu](#interactive-menu)
 * [Launcher arguments](#launcher-arguments)
+  * [Launcher Command: init](#launcher-command-init)
+  * [Launcher Command: migrate](#launcher-command-migrate)
+  * [Launcher Command: script](#launcher-command-script)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -77,13 +80,13 @@ You are now ready to start use Script Launcher by running: `npm start` or `npm r
 ## Usage examples
 
 ### Show menu
-```
+``` bash
 npm start
 ```
 You can also show the menu by running: `npx launch`
 
 ### Start a specific launch script, by using the `npm start`
-```
+``` bash
 npm start serve:dev
 npm start build:production
 ```
@@ -106,7 +109,7 @@ Example: **package.json**
 ```
 
 Example run commands
-```
+``` bash
 npm run serve:dev
 npm run build:production
 ```
@@ -128,7 +131,7 @@ npx launch migrate --params
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
-```JSON
+``` JSON
 // Traditional package.json scripts //
 {
   "scripts": {
@@ -389,7 +392,7 @@ Use a backslash in the script command, to escaping variables.
 | **"\|?"**               | Command     | Grep like functionality                               |
 
 **Run**: `npm start build-stuff` to use this example.
-```JSON
+``` JSON
 {
   "scripts": {
     "build-stuff": {
@@ -660,10 +663,10 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 ```
 
 ## Launcher arguments
-Use the help for a list of available options.
-``` bash
-npx launch help
+Use the **help** for a list of available options.
 
+**Run**: `npx launch --help` this will list the available options
+``` bash
 Usage: launch [command] [options...]
 
 Commands:
@@ -675,7 +678,6 @@ Commands:
 Options:
   logLevel=    Set log level.
   config=      Merge in an extra config file.
-  script=      Launcher script to start.
   confirm=     Auto value for confirm conditions.
   ansi=        Enable or disable ansi color output.
   directory=   The directory from which configuration files are loaded.
@@ -683,6 +685,66 @@ Options:
   params=      Set the number of parameters to preserve.
   concurrent=  Execute commandline wildcard matches in parallel.
 ```
+
+### Launcher Command: init
+Use the **init** command to create a starter configuration for you project.
+
+**Run**: `npx launch init` this will list the available templates
+``` bash
+Available templates:
+
+angular
+basic
+blank
+
+Example usage: npx launch init basic
+```
+
+**Run**: `npx launch init basic` this will create a basic starter configuration
+``` bash
+Create starter config: basic
+
+Createing: launcher-config.json
+Createing: launcher-menu.json
+
+Updating package.json.
+
+Start script of package.json updated.
+```
+
+### Launcher Command: migrate
+Use the **migrate** command to convert your **package.json** script to a script-launcher configuration. Use the **params** option the parameterize your script functions.
+
+**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
+``` bash
+Migrating: package.json
+
+Script to migrate: 12
+Script to update: 2
+
+✔ Are you sure … yes
+
+Updating: package.json
+Creating: launcher-menu.json
+Creating: launcher-config.json
+```
+
+### Launcher Command: script
+Start one or more script directly from the command line sequentially or concurrently
+
+**Run**: `npx launch build:css build:js` to start one or more script in sequence
+``` bash
+Building: .css files
+Building: .js files
+```
+
+**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
+``` bash
+Building: .css files
+Building: .js files
+```
+
+
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
