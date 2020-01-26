@@ -11,6 +11,7 @@ import prettyTime = require('pretty-time');
 
 interface IArgs {
   init: boolean;
+  list: boolean;
   migrate: boolean;
   confirm: boolean;
   help: boolean;
@@ -469,7 +470,7 @@ function showHelp() {
       'Commands:',
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
-
+    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + 'List available launcher script.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
@@ -573,6 +574,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       arguments: {
         logLevel: undefined,
         init: false,
+        list: false,
         migrate: false,
         confirm: undefined,
         help: false,
@@ -690,6 +692,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       exitCode = 0;
       return;
     }
+    if (launchArgs.arguments.list) {
+      for (const item of Object.keys(configLoad.config.scripts.scripts)) {
+        console.log(item);
+      }
+
+      return;
+    }
+
 
     if (launchArgs.arguments.migrate) {
       await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, launchArgs.arguments.confirm, testmode);

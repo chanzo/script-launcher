@@ -49,6 +49,11 @@ npm start test -- -t "'launch  --version'"
 npm start test -- ./tests/debug.test.ts
 ```
 
+### Experimental register tab completion
+``` bash
+complete -C "npx launch list" -o default 'npm'
+```
+
 ### Resources
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
 * [Jest Testing Framework](https://jestjs.io/)
