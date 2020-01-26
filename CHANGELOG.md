@@ -5,7 +5,7 @@
 * Added extra command line unit tests
 * Updated some error handling
 * Updated def dependencies
-* Added **--confirm** support for the mifatemigrate action
+* Added **--confirm** support for the migrate action
 
 ## 1.25.2
 ### Breaking
