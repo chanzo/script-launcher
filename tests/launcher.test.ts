@@ -15,20 +15,23 @@ const testLauncher = new TestLauncher(tempFiles, ['', ''], [
 const sanatizeStrings = [
   '\\u001b\\[0m',
   '\\u001b\\[1m',
-  '\\u001b\\[2K',
+  // '\\u001b\\[2K',
   '\\u001b\\[1G',
   '\\u001b\\[36m',
   '\\u001b\\[39m',
   '\\u001b\\[22m',
   '\\u001b\\[90m',
-  '\\u001b\\[32m',
-  '\\u001b\\[\\?25l',
-  '\\u001b\\[\\?25h',
-  '\\n'
+  '\\u001b\\[32m'
+  // '\\u001b\\[\\?25l',
+];
+const excludeStrings = [
+  '\u001b[?25h',
+  '\n'
 ];
 
 function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): ReadonlyArray<string> {
   const result = [];
+  let previous: string = null;
 
   for (let item of content) {
 
@@ -38,7 +41,24 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
       item = item.replace(new RegExp(pattern, 'g'), '');
     }
 
+    if (excludeStrings.includes(item)) continue;
+
+    if (item.startsWith('\u001b[2K')) {
+      previous = item.replace('\u001b[2K', '');
+      continue;
+    }
+
+    if (previous) {
+      result.push(previous);
+      previous = null;
+    }
+
     result.push(item);
+  }
+
+  if (previous) {
+    result.push(previous);
+    previous = null;
   }
 
   return result;
