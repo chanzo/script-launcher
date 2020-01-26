@@ -12,6 +12,7 @@
             "",
             "Commands:",
             "  \u001b[36minit         \u001b[0m[template] Create starter config files.",
+            "  \u001b[36mlist         \u001b[0mList available launcher scripts.",
             "  \u001b[36mmigrate      \u001b[0mMigrate your package.json scripts.",
             "  \u001b[36mhelp         \u001b[0mShow this help.",
             "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
