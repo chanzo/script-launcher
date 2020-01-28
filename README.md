@@ -54,6 +54,11 @@ npm start test -- ./tests/debug.test.ts
 complete -C "npx launch list" -o default 'npm'
 # Or when script-launcher is installed globally
 complete -C "launch list" -o default 'npm'
+
+cd src && complete -C "$PWD/launch-completion.sh" -o default 'npm' && cd ..
+export COMP_POINT=11
+export COMP_LINE="npm run s"
+export COMP_CWORD=2  
 ```
 
 ### Resources
