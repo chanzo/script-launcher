@@ -5,6 +5,9 @@
   "main": "",
   "scripts": {
     "start": "launch",
+    "action1": "echo action 1",
+    "action2": "echo action 2",
+    "action3": "echo action 3",
     "postinstall": "launch"
   },
   "repository": {
