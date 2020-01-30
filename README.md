@@ -67,6 +67,7 @@ complete -o default -F _launch_completion npm
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
 * [Jest Testing Framework](https://jestjs.io/)
 * [ShellJS - Unix shell commands for Node.js](https://www.npmjs.com/package/shelljs)
+* [zsh-completions](https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org)
 
 ### Dependencies 
 * [cross-spawn](https://www.npmjs.com/package/cross-spawn) - A cross platform solution to node's spawn and spawnSync.            

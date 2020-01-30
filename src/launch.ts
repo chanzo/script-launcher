@@ -5,7 +5,7 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
-import { IScript, IScripts, Scripts } from './scripts';
+import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 
@@ -563,6 +563,20 @@ function getRemaining(args: string[]): string[] {
   return args.slice(index + 1);
 }
 
+function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] = []): string[] {
+  for (const [key, value] of Object.entries(menu)) {
+    if (key === 'description') continue;
+    if (typeof value === 'string') {
+      if (value.includes(' ')) continue;
+      result.push(value);
+    } else {
+      getMenuScripts(value, result);
+    }
+  }
+
+  return result;
+}
+
 export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
@@ -693,11 +707,24 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       return;
     }
     if (launchArgs.arguments.list) {
-      for (const item of Object.keys(configLoad.config.scripts.scripts)) {
-        console.log(item);
+
+      if (launchArgs.optionals.length === 0) {
+        for (const item of Object.keys(configLoad.config.scripts.scripts)) {
+          console.log(item);
+        }
+
+        return;
       }
 
-      return;
+      if (launchArgs.optionals[0] === 'menu') {
+        for (const item of getMenuScripts(configLoad.config.menu)) {
+          console.log(item);
+        }
+
+        return;
+      }
+
+      throw new Error('List option not supported: ' + launchArgs.optionals);
     }
 
 
