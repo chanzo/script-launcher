@@ -51,58 +51,6 @@ npm start test -- ./tests/debug.test.ts
 
 ### Experimental tab completion support for script-launcher in zsh
 ``` bash
-complete -C "npx launch list" -o default 'npm'
-# Or when script-launcher is installed globally
-complete -C "launch list" -o default 'npm'
-
-cd src && complete -o default -C "$PWD/launch-completion.sh"  'npm' && cd ..
-cd src && complete -o default -F "$PWD/launch-completion.sh"  'npm' && cd ..
-
-export COMP_CWORD=2
-export COMP_LINE=npm run a
-export COMP_POINT=11
-
-_npm_completion "npm a run"
-```
-
-### npm completion
-``` bash
-_npm_completion_test () {
-  local words cword
-
-  date -Iseconds > coml.log
-  echo "COMP_CWORD: $COMP_CWORD" >> coml.log
-  echo "COMP_LINE: $COMP_LINE"   >> coml.log
-  echo "COMP_POINT: $COMP_POINT" >> coml.log
-
-  if [[ $COMP_LINE != "npm start"* ]] ; then
-    echo "npm default" >> coml.log
-    if type _get_comp_words_by_ref &>/dev/null; then
-      _get_comp_words_by_ref -n = -n @ -n : -w words -i cword
-    else
-      cword="$COMP_CWORD"
-      words=("${COMP_WORDS[@]}")
-    fi
-
-    local si="$IFS"
-    IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
-                            COMP_LINE="$COMP_LINE" \
-                            COMP_POINT="$COMP_POINT" \
-                            npm completion -- "${words[@]}" \
-                            2>/dev/null)) || return $?
-    IFS="$si"
-    if type __ltrim_colon_completions &>/dev/null; then
-      __ltrim_colon_completions "${words[cword]}"
-    fi
-  else
-    echo "script-launcher" >> coml.log
-    npx launch list
-  fi
-}
-complete -o default -F _npm_completion_test npm
-```
-### script-launcher completion
-``` bash
 eval "$(npm completion)"
 
 _launch_completion () {
@@ -114,10 +62,6 @@ _launch_completion () {
 }
 complete -o default -F _launch_completion npm
 ```
-
-
-
-
 
 ### Resources
 * [NPM Developer Guide](https://docs.npmjs.com/misc/developers#before-publishing-make-sure-your-package-installs-and-works)
