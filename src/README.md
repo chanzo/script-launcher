@@ -671,7 +671,7 @@ Usage: launch [command] [options...]
 
 Commands:
   init         [template] Create starter config files.
-  list         List available launcher scripts.
+  list         [type] List available launcher scripts.
   migrate      Migrate your package.json scripts.
   help         Show this help.
   version      Outputs launcher version.
@@ -745,7 +745,18 @@ Building: .css files
 Building: .js files
 ```
 
+### Launcher Command: list
+**Run**: `npx launch list`
+``` bash
+```
 
+**Run**: `npx launch menu`
+``` bash
+```
+
+**Run**: `npx launch completion`
+``` bash
+```
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.

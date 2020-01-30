@@ -470,7 +470,7 @@ function showHelp() {
       'Commands:',
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
-    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + 'List available launcher scripts.',
+    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + '[type] List available launcher scripts.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
@@ -706,9 +706,9 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       exitCode = 0;
       return;
     }
-    if (launchArgs.arguments.list) {
 
-      if (launchArgs.optionals.length === 0) {
+    if (launchArgs.arguments.list) {
+      if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'script') {
         for (const item of Object.keys(configLoad.config.scripts.scripts)) {
           console.log(item);
         }
@@ -724,7 +724,23 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         return;
       }
 
-      throw new Error('List option not supported: ' + launchArgs.optionals);
+      if (launchArgs.optionals[0] === 'completion') {
+        const scripts = Object.keys(configLoad.config.scripts.scripts).filter((item) => !item.includes('$'));
+        const menu = getMenuScripts(configLoad.config.menu).filter((item) => !scripts.includes(item));
+        const choices: string[] = [...menu, ...scripts].sort();
+
+        for (const item of choices) {
+          console.log(item);
+        }
+
+        return;
+      }
+
+      console.error('List option not supported: ' + launchArgs.optionals);
+      console.error();
+      console.error('Use: script, menu or completion');
+
+      throw new Error();
     }
 
 
@@ -790,7 +806,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (error.message) message = error.message;
 
-    if (message !== 'false') Logger.error(message);
+    if (message !== 'false' && message !== 'Error') Logger.error(message);
   } finally {
     let timespan = process.hrtime(startTime);
 

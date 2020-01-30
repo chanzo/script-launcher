@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.1
+* Added **list** command options
+* Added documentation for adding basic tab completion support
+
 ## 1.26.0
 ### Changes
 * Added list command
