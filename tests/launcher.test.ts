@@ -81,7 +81,8 @@ async function main() {
     'Logging',
     'Launcher options',
     'Glob Options',
-    'Migrate package.json scripts'
+    'Migrate package.json scripts',
+    'Enable tab completion'
   ]);
 
   const transforms: { [name: string]: TransformCallback } = {
