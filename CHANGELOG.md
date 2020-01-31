@@ -1,12 +1,13 @@
 # Change Log
 
 ## 1.26.1
-* Added **list** command options
-* Added documentation for adding basic tab completion support
+* Added **list** command [options](https://github.com/chanzo/script-launcher/tree/master/src#launcher-command-list)
+* Added documentation for adding tab completion support in your terminal
+* Updated dev dependencies
 
 ## 1.26.0
 ### Changes
-* Added list command
+* Added **list** command
 
 ## 1.25.3
 ### Changes
@@ -201,7 +202,7 @@ npx launch --confirm 'Are you sure'
 
 ## 1.21.0
 ### Changes
-* Added support for help texts in [menus](#interactive-menu).
+* Added support for help texts in [menus](src#interactive-menu).
 
 ### Fixes
 * Menu ui update bug fix
