@@ -746,16 +746,32 @@ Building: .js files
 ```
 
 ### Launcher Command: list
+Use the **list** command to display the available scripts.
+
 **Run**: `npx launch list`
 ``` bash
+serve:$project:dev
+serve:$project:$config
 ```
 
-**Run**: `npx launch menu`
+**Run**: `npx launch list menu`
 ``` bash
+serve:uva:dev
+serve:uva:acc
+serve:uva:prd
+serve:hva:dev
+serve:hva:acc
+serve:hva:prd
 ```
 
-**Run**: `npx launch completion`
+**Run**: `npx launch list completion`
 ``` bash
+serve:hva:acc
+serve:hva:dev
+serve:hva:prd
+serve:uva:acc
+serve:uva:dev
+serve:uva:prd
 ```
 
 ## Launcher settings

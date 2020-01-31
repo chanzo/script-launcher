@@ -566,6 +566,7 @@ function getRemaining(args: string[]): string[] {
 function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] = []): string[] {
   for (const [key, value] of Object.entries(menu)) {
     if (key === 'description') continue;
+    if (key === 'separator') continue;
     if (typeof value === 'string') {
       if (value.includes(' ')) continue;
       result.push(value);

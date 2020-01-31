@@ -866,7 +866,26 @@
             }
           }
         }
-      }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "list"
+          ]
+        },
+        {
+          "cmd-args": [
+            "list",
+            "menu"
+          ]
+        },
+        {
+          "cmd-args": [
+            "list",
+            "completion"
+          ]
+        }
+      ]
     }
   ]
 }
