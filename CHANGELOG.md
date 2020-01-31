@@ -2,7 +2,7 @@
 
 ## 1.26.1
 * Added **list** command [options](src#launcher-command-list)
-* Added documentation for adding tab completion support in your terminal
+* Added documentation for enabling [tab completion](src#enable-tab-completion) support in your current terminal
 * Updated dev dependencies
 
 ## 1.26.0
