@@ -3,6 +3,7 @@ import * as path from 'path';
 import { IConfig } from '../src/config-loader';
 import { IScript, IScriptTask } from '../src/scripts';
 import * as fs from 'fs';
+import { SectionType } from './markdown-parser';
 
 const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
@@ -80,7 +81,8 @@ async function main() {
     'Logging',
     'Launcher options',
     'Glob Options',
-    'Migrate package.json scripts'
+    'Migrate package.json scripts',
+    'Enable tab completion'
   ]);
 
   const transforms: { [name: string]: TransformCallback } = {
@@ -153,7 +155,12 @@ async function main() {
               try {
                 expect(output).toStrictEqual(item.result);
               } catch (error) {
-                console.log('result (' + directory + '):', JSON.stringify(output, null, 2));
+                if (config.type === SectionType.bash) {
+                  console.log('### ' + config.name + ' (' + directory + ')\n```\n' + output.join('\n') + '\n```\n');
+                } else {
+                  console.log('result (' + directory + '):', JSON.stringify(output, null, 2));
+                }
+
                 throw error;
               }
             }, 10000);

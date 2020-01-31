@@ -2,7 +2,7 @@ import * as launcher from '../src/launch';
 import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 import * as fs from 'fs';
 import * as path from 'path';
-import { MarkdownParser } from './markdown-parser';
+import { MarkdownParser, SectionType } from './markdown-parser';
 import { IConfig } from '../src/config-loader';
 import { version } from '../src/package.json';
 
@@ -36,6 +36,7 @@ export interface ITestConfig {
   id: string;
   sanatize: boolean;
   name: string;
+  type: SectionType;
   transformer?: string;
   files: { [name: string]: IConfig };
   tests: ITests[];
@@ -204,12 +205,15 @@ export class TestLauncher {
           id: '9999',
           sanatize: false,
           name: section.title,
+          type: section.type,
           files: {},
           tests: []
         };
 
         configs.push(config);
       }
+
+      config.type = section.type;
 
       if (section.commands.length === 0) {
         config.tests = [{
