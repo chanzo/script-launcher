@@ -1,7 +1,7 @@
 # Change Log
 
 ## 1.26.1
-* Added **list** command [options](https://github.com/chanzo/script-launcher/tree/master/src#launcher-command-list)
+* Added **list** command [options](src#launcher-command-list)
 * Added documentation for adding tab completion support in your terminal
 * Updated dev dependencies
 
@@ -212,7 +212,7 @@ npx launch --confirm 'Are you sure'
 * Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
   * Removed **pageSize** options
   * Removed support for the **seperator** in a menu 
-* Added support for using environment value aliases. More examples at [Environment and command line argument values](#environment-and-command-line-argument-values) and [Launcher settings](#launcher-settings)
+* Added support for using environment value aliases. More examples at [Environment and command line argument values](src#environment-and-command-line-argument-values) and [Launcher settings](src#launcher-settings)
 ``` JSON
 {
   "scripts": {
@@ -238,7 +238,7 @@ npx launch --confirm 'Are you sure'
 
 ## 1.19.0
 ### Changes
-* Added the [migrate argument](#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
+* Added the [migrate argument](src#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
 
 ## 1.18.0
 ### Changes
@@ -349,7 +349,7 @@ Script expanded : {
 ## 1.15.0
 ### Changes
 * Dev dependencies updated
-* Added the [pageSize](src/README.md#menu-options) menu option.
+* Added the [pageSize](src#menu-options) menu option.
 
 ## 1.14.2
 ### Changes
@@ -459,7 +459,7 @@ Exmaple 4: \${PATH}
 ### Breaking
 * The **sequential** and **concurrent** statements no longer work in conjunction with the **condition** and **exclusion** statements. Use the **sequential-then**, **sequential-else**, **concurrent-then** and **concurrent-else** when working with conditions and or exclusions. Open the [Condition and exclusion constraints](src/README.md#condition-and-exclusion-constraints) topic for examples.
 * The **sequential-then** and **concurrent-then** statements will only be processed when there is a constraint specified that evaluates to a success value.
-* When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $_ prefix. Open the [Repeaters](src/README.md#repeaters) topic for examples.
+* When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $_ prefix. Open the [Repeaters](src#repeaters) topic for examples.
 ``` JSON
 {
   "scripts": {
