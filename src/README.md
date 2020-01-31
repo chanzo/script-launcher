@@ -41,6 +41,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Launcher Command: init](#launcher-command-init)
   * [Launcher Command: migrate](#launcher-command-migrate)
   * [Launcher Command: script](#launcher-command-script)
+  * [Launcher Command: list](#launcher-command-list)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -48,6 +49,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Glob Options](#glob-options)
   * [Menu options](#menu-options)
   * [Logging](#logging)
+* [Enable tab completion](#enable-tab-completion)
 
 ## Installation
 
@@ -671,7 +673,7 @@ Usage: launch [command] [options...]
 
 Commands:
   init         [template] Create starter config files.
-  list         List available launcher scripts.
+  list         [type] List available launcher scripts.
   migrate      Migrate your package.json scripts.
   help         Show this help.
   version      Outputs launcher version.
@@ -745,7 +747,34 @@ Building: .css files
 Building: .js files
 ```
 
+### Launcher Command: list
+Use the **list** command to display the available scripts. This can be used for [enabling tab completion](#enable-tab-completion).
 
+**Run**: `npx launch list`
+``` bash
+serve:$project:dev
+serve:$project:$config
+```
+
+**Run**: `npx launch list menu`
+``` bash
+serve:uva:dev
+serve:uva:acc
+serve:uva:prd
+serve:hva:dev
+serve:hva:acc
+serve:hva:prd
+```
+
+**Run**: `npx launch list completion`
+``` bash
+serve:hva:acc
+serve:hva:dev
+serve:hva:prd
+serve:uva:acc
+serve:uva:dev
+serve:uva:prd
+```
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
@@ -911,4 +940,19 @@ The default value is presented in the following example:
     "logLevel": 0
   }
 }
+```
+
+### Enable tab completion
+To enable tab completion  for **script-launcher** in your current terminal, execute the following commands. This will test if you are using tab completion on `npm start` if so, it will execute `npx launch list completion` if not, it will execute the default npm completion function `_npm_completion`.
+``` bash
+eval "$(npm completion)"
+
+_launch_completion () {
+  if [[ $COMP_LINE != "npm start"* ]] ; then
+    _npm_completion
+  else
+    npx --quiet --no-install launch list completion
+  fi
+}
+complete -o default -F _launch_completion npm
 ```
