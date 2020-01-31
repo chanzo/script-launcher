@@ -41,6 +41,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Launcher Command: init](#launcher-command-init)
   * [Launcher Command: migrate](#launcher-command-migrate)
   * [Launcher Command: script](#launcher-command-script)
+  * [Launcher Command: list](#launcher-command-list)
 * [Launcher settings](#launcher-settings)
 * [Launcher options](#launcher-options)
   * [Launcher files](#launcher-files)
@@ -48,6 +49,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Glob Options](#glob-options)
   * [Menu options](#menu-options)
   * [Logging](#logging)
+* [Enable tab completion](#enable-tab-completion)
 
 ## Installation
 
@@ -746,7 +748,7 @@ Building: .js files
 ```
 
 ### Launcher Command: list
-Use the **list** command to display the available scripts.
+Use the **list** command to display the available scripts. This can be used for [enabling tab completion](#enable-tab-completion).
 
 **Run**: `npx launch list`
 ``` bash
@@ -938,4 +940,19 @@ The default value is presented in the following example:
     "logLevel": 0
   }
 }
+```
+
+### Enable tab completion
+To enable tab completion  for **script-launcher** in your current terminal, execute the following commands. This will test if you are using tab completion on `npm start` if so, it will execute `npx launch list completion` if not, it will execute the default npm completion function `_npm_completion`.
+``` bash
+eval "$(npm completion)"
+
+_launch_completion () {
+  if [[ $COMP_LINE != "npm start"* ]] ; then
+    _npm_completion
+  else
+    npx --quiet --no-install launch list completion
+  fi
+}
+complete -o default -F _launch_completion npm
 ```
