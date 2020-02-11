@@ -664,12 +664,6 @@ export class Executor {
         };
       }
 
-      if (process.platform === 'win32') {
-        command = Executor.convertSingleQuote(command);
-
-        if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
-      }
-
       const commandProcess = Process.spawn(command, [], options);
       const exitCode = await commandProcess.wait();
 
@@ -713,6 +707,12 @@ export class Executor {
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
 
+        if (process.platform === 'win32') {
+          constraint = Executor.convertSingleQuote(constraint);
+
+          if (constraint.startsWith('echo')) constraint = 'echo' + constraint.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+        }
+
         Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 
         if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
@@ -741,6 +741,12 @@ export class Executor {
         });
 
         constraint = Executor.removeEnvironment(constraint);
+
+        if (process.platform === 'win32') {
+          constraint = Executor.convertSingleQuote(constraint);
+
+          if (constraint.startsWith('echo')) constraint = 'echo' + constraint.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+        }
 
         Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.26.3
+### Fixes
+* Debug logging fix related to change 1.26.2
+
 ## 1.26.2
 ### Changes
 * Updated dev dependencies
