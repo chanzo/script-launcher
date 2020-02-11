@@ -834,6 +834,58 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0048",
+      "name": "Launcher Command: list",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project:dev": {
+              "concurrent": [
+                "echo Start development server",
+                "echo ng serve $project -c=dev"
+              ]
+            },
+            "serve:$project:$config": "echo ng serve $project -c=$config"
+          },
+          "menu": {
+            "description": "organization",
+            "uva": {
+              "description": "environment",
+              "development": "serve:uva:dev",
+              "acceptance": "serve:uva:acc",
+              "production": "serve:uva:prd"
+            },
+            "separator": "",
+            "hva": {
+              "description": "environment",
+              "development": "serve:hva:dev",
+              "acceptance": "serve:hva:acc",
+              "production": "serve:hva:prd"
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "cmd-args": [
+            "list"
+          ]
+        },
+        {
+          "cmd-args": [
+            "list",
+            "menu"
+          ]
+        },
+        {
+          "cmd-args": [
+            "list",
+            "completion"
+          ]
+        }
+      ]
     }
   ]
 }

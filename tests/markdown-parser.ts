@@ -1,8 +1,15 @@
 import * as fs from 'fs';
 import { IConfig } from '../src/config-loader';
 
+export enum SectionType {
+  unknown,
+  json,
+  bash
+};
+
 export interface ISectionTest {
   title: string;
+  type: SectionType;
   config: IConfig;
   result: string[];
   commands: string[];
@@ -66,6 +73,7 @@ export class MarkdownParser {
           title: title,
           config: config,
           result: null,
+          type: SectionType.json,
           commands: commands,
           error: sectionError
         });
@@ -86,6 +94,7 @@ export class MarkdownParser {
           title: title,
           config: null,
           result: item,
+          type: SectionType.bash,
           commands: [commands[index++]],
           error: null
         });

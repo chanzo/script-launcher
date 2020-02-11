@@ -5,7 +5,7 @@ import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
 import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
-import { IScript, IScripts, Scripts } from './scripts';
+import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 
@@ -470,7 +470,7 @@ function showHelp() {
       'Commands:',
       '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
     ],
-    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + 'List available launcher scripts.',
+    list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + '[type] List available launcher scripts.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
@@ -561,6 +561,21 @@ function getRemaining(args: string[]): string[] {
   if (index === -1) return [];
 
   return args.slice(index + 1);
+}
+
+function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] = []): string[] {
+  for (const [key, value] of Object.entries(menu)) {
+    if (key === 'description') continue;
+    if (key === 'separator') continue;
+    if (typeof value === 'string') {
+      if (value.includes(' ')) continue;
+      result.push(value);
+    } else {
+      getMenuScripts(value, result);
+    }
+  }
+
+  return result;
 }
 
 export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
@@ -692,12 +707,41 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       exitCode = 0;
       return;
     }
+
     if (launchArgs.arguments.list) {
-      for (const item of Object.keys(configLoad.config.scripts.scripts)) {
-        console.log(item);
+      if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'script') {
+        for (const item of Object.keys(configLoad.config.scripts.scripts)) {
+          console.log(item);
+        }
+
+        return;
       }
 
-      return;
+      if (launchArgs.optionals[0] === 'menu') {
+        for (const item of getMenuScripts(configLoad.config.menu)) {
+          console.log(item);
+        }
+
+        return;
+      }
+
+      if (launchArgs.optionals[0] === 'completion') {
+        const scripts = Object.keys(configLoad.config.scripts.scripts).filter((item) => !item.includes('$'));
+        const menu = getMenuScripts(configLoad.config.menu).filter((item) => !scripts.includes(item));
+        const choices: string[] = [...menu, ...scripts].sort();
+
+        for (const item of choices) {
+          console.log(item);
+        }
+
+        return;
+      }
+
+      console.error('List option not supported: ' + launchArgs.optionals);
+      console.error();
+      console.error('Use: script, menu or completion');
+
+      throw new Error();
     }
 
 
@@ -763,7 +807,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (error.message) message = error.message;
 
-    if (message !== 'false') Logger.error(message);
+    if (message !== 'false' && message !== 'Error') Logger.error(message);
   } finally {
     let timespan = process.hrtime(startTime);
 
