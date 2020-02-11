@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.26.2
+### Changes
+* Updated dev dependencies
+
+### Breaking
+**Windows only:** All arguments on constraints containing spaces are now surrounded by double quotes. Single quoted arguments containing spaces are convert to double quotes.
+
 ## 1.26.1
 * Added **list** command [options](src#launcher-command-list)
 * Added documentation for enabling [tab completion](src#enable-tab-completion) support in your current terminal
