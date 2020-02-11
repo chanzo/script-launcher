@@ -621,7 +621,7 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(constraint: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
+  private async evaluateConstraint(command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
     if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '\'' + outputPattern + '\'' + Colors.Normal);
 
     options = { ...options };
@@ -629,7 +629,7 @@ export class Executor {
     const evaluateExpression = eval;
 
     try {
-      const result = evaluateExpression(constraint);
+      const result = evaluateExpression(command);
 
       if (typeof result !== 'boolean') throw new Error('type not supported');
 
@@ -642,7 +642,7 @@ export class Executor {
       // Not a valid javascript expression, continue
     }
 
-    if (fs.existsSync(path.join(path.resolve(options.cwd), constraint))) {
+    if (fs.existsSync(path.join(path.resolve(options.cwd), command))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       Logger.log(Colors.Dim + 'directory exists' + Colors.Normal);
       Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -664,10 +664,16 @@ export class Executor {
         };
       }
 
-      const process = Process.spawn(constraint, [], options);
-      const exitCode = await process.wait();
+      if (process.platform === 'win32') {
+        command = Executor.convertSingleQuote(command);
 
-      if (outputPattern) return (process.stdout + process.stderr).match(outputPattern) != null;
+        if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+      }
+
+      const commandProcess = Process.spawn(command, [], options);
+      const exitCode = await commandProcess.wait();
+
+      if (outputPattern) return (commandProcess.stdout + commandProcess.stderr).match(outputPattern) != null;
 
       return exitCode === 0;
     } catch {
