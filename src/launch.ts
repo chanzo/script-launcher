@@ -744,7 +744,6 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       throw new Error();
     }
 
-
     if (launchArgs.arguments.migrate) {
       await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, launchArgs.arguments.confirm, testmode);
       Logger.log();
