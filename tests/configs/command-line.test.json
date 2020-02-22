@@ -6,6 +6,7 @@
       "files": {},
       "tests": [
         {
+          "id": "0000-00",
           "cmd-args": "--help",
           "result": [
             "Usage: launch [command] [options...]",
@@ -29,6 +30,7 @@
           ]
         },
         {
+          "id": "0000-01",
           "cmd-args": "--version",
           "result": "$version"
         }
@@ -42,6 +44,7 @@
       },
       "tests": [
         {
+          "id": "0001-00",
           "cmd-args": [
             "init",
             "basic"
@@ -68,6 +71,7 @@
           ]
         },
         {
+          "id": "0001-01",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -89,6 +93,7 @@
           ]
         },
         {
+          "id": "0001-02",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",
@@ -153,6 +158,7 @@
       },
       "tests": [
         {
+          "id": "0002-00",
           "cmd-args": [
             "init",
             "basic"
@@ -186,6 +192,7 @@
       "files": {},
       "tests": [
         {
+          "id": "0003-00",
           "cmd-args": [
             "init",
             "basic"
@@ -212,6 +219,7 @@
           ]
         },
         {
+          "id": "0003-01",
           "lifecycle": "start",
           "npm-args": "serve:dev",
           "result": [
@@ -219,6 +227,7 @@
           ]
         },
         {
+          "id": "0003-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -273,6 +282,7 @@
       },
       "tests": [
         {
+          "id": "0004-00",
           "cmd-args": [
             "migrate"
           ],
@@ -305,6 +315,7 @@
           ]
         },
         {
+          "id": "0004-01",
           "cmd-args": [
             "migrate"
           ],
@@ -315,6 +326,7 @@
           ]
         },
         {
+          "id": "0004-02",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -395,6 +407,7 @@
           ]
         },
         {
+          "id": "0004-03",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",
@@ -467,6 +480,7 @@
           ]
         },
         {
+          "id": "0004-04",
           "cat-args": "package.json",
           "result": [
             "{",
@@ -478,6 +492,7 @@
           ]
         },
         {
+          "id": "0004-05",
           "lifecycle": "start",
           "npm-args": "deploy:acc",
           "result": [
@@ -488,6 +503,7 @@
           ]
         },
         {
+          "id": "0004-06",
           "restore": true,
           "cmd-args": [
             "migrate",
@@ -522,6 +538,7 @@
           ]
         },
         {
+          "id": "0004-07",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -550,6 +567,7 @@
           ]
         },
         {
+          "id": "0004-08",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",

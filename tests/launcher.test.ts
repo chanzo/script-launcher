@@ -158,7 +158,7 @@ async function main() {
                 if (config.type === SectionType.bash) {
                   console.log('### ' + config.name + ' (' + directory + ')\n```\n' + output.join('\n') + '\n```\n');
                 } else {
-                  console.log('result (' + directory + '):', JSON.stringify(output, null, 2));
+                  console.log('result (' + item.id + '):', JSON.stringify(output, null, 2));
                 }
 
                 throw error;

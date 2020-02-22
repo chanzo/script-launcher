@@ -18,6 +18,7 @@
       },
       "tests": [
         {
+          "id": "0008-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -45,6 +46,7 @@
       },
       "tests": [
         {
+          "id": "0009-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=1",
@@ -90,6 +92,7 @@
           ]
         },
         {
+          "id": "0009-01",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=2",
@@ -215,6 +218,7 @@
           ]
         },
         {
+          "id": "0009-02",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=3",
@@ -378,6 +382,7 @@
       },
       "tests": [
         {
+          "id": "0010-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -392,6 +397,7 @@
           ]
         },
         {
+          "id": "0010-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -421,6 +427,7 @@
       },
       "tests": [
         {
+          "id": "0011-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -428,6 +435,7 @@
           ]
         },
         {
+          "id": "0011-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -450,6 +458,7 @@
       },
       "tests": [
         {
+          "id": "0012-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -457,6 +466,7 @@
           ]
         },
         {
+          "id": "0012-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -464,6 +474,7 @@
           ]
         },
         {
+          "id": "0012-02",
           "lifecycle": "start",
           "npm-args": "assignments:*",
           "result": [
@@ -471,6 +482,7 @@
           ]
         },
         {
+          "id": "0012-03",
           "lifecycle": "start",
           "npm-args": "assignments:\"*\"",
           "result": [
@@ -478,6 +490,7 @@
           ]
         },
         {
+          "id": "0012-04",
           "lifecycle": "start",
           "npm-args": "assignments:'*'",
           "result": [
@@ -503,6 +516,7 @@
       },
       "tests": [
         {
+          "id": "0013-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -523,6 +537,7 @@
       },
       "tests": [
         {
+          "id": "0014-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -550,6 +565,7 @@
       },
       "tests": [
         {
+          "id": "0015-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -577,6 +593,7 @@
       },
       "tests": [
         {
+          "id": "0016-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -606,6 +623,7 @@
       },
       "tests": [
         {
+          "id": "0017-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -631,6 +649,7 @@
       },
       "tests": [
         {
+          "id": "0018-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -668,6 +687,7 @@
       },
       "tests": [
         {
+          "id": "0019-00",
           "lifecycle": "start",
           "npm-args": "nonull-false",
           "result": [
@@ -726,6 +746,7 @@
       },
       "tests": [
         {
+          "id": "0020-00",
           "lifecycle": "start",
           "npm-args": "nonull-true",
           "result": [
@@ -772,6 +793,7 @@
       },
       "tests": [
         {
+          "id": "0021-00",
           "lifecycle": "start",
           "npm-args": [
             "build:*",
@@ -784,6 +806,7 @@
           ]
         },
         {
+          "id": "0021-01",
           "lifecycle": "start",
           "npm-args": [
             "build:all",
