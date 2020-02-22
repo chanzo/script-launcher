@@ -37,6 +37,10 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
   for (let item of content) {
 
     item = item.replace('tests/temp/' + config.id + '/', '');
+    item = item.replace('tests\\temp\\' + config.id + '\\', '');
+
+    item = item.replace('√', '✔');
+    item = item.replace('…', '...');
 
     for (const pattern of sanatizeStrings) {
       item = item.replace(new RegExp(pattern, 'g'), '');
@@ -156,7 +160,7 @@ async function main() {
                 expect(output).toStrictEqual(item.result);
               } catch (error) {
                 if (config.type === SectionType.bash) {
-                  console.log('### ' + config.name + ' (' + directory + ')\n```\n' + output.join('\n') + '\n```\n');
+                  console.log('### ' + config.name + ' (' + item.id + ')\n```\n' + output.join('\n') + '\n```\n');
                 } else {
                   console.log('result (' + item.id + '):', JSON.stringify(output, null, 2));
                 }
