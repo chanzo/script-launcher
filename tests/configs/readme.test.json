@@ -5,6 +5,7 @@
       "name": "Sequential scripts",
       "tests": [
         {
+          "id": "0022-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -20,6 +21,7 @@
       "name": "Change directory",
       "tests": [
         {
+          "id": "0023-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js"
@@ -31,16 +33,19 @@
       "name": "Parameters and functions",
       "tests": [
         {
+          "id": "0024-00",
           "lifecycle": "start",
           "npm-args": "serve",
           "result": "ng serve uva -c=dev"
         },
         {
+          "id": "0024-01",
           "lifecycle": "start",
           "npm-args": "serve::tst",
           "result": "ng serve uva -c=tst"
         },
         {
+          "id": "0024-02",
           "lifecycle": "start",
           "npm-args": "serve:hva:prd",
           "result": "ng serve hva -c=prd"
@@ -52,6 +57,7 @@
       "name": "Reference scripts",
       "tests": [
         {
+          "id": "0025-00",
           "lifecycle": "start",
           "npm-args": "deploy:tst",
           "result": [
@@ -68,6 +74,7 @@
       "name": "Environment values and special commands",
       "tests": [
         {
+          "id": "0026-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -114,6 +121,7 @@
       "name": "Environment and command line argument values",
       "tests": [
         {
+          "id": "0027-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -142,6 +150,7 @@
           ]
         },
         {
+          "id": "0027-01",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -160,6 +169,7 @@
       "name": "Glob patterns",
       "tests": [
         {
+          "id": "0028-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -174,6 +184,7 @@
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
+          "id": "0029-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff:param1:param2",
@@ -205,6 +216,7 @@
       "name": "Escaping characters",
       "tests": [
         {
+          "id": "0030-00",
           "lifecycle": "start",
           "npm-args": [
             "escaping",
@@ -231,6 +243,7 @@
       "transformer": "concurrentScripts",
       "tests": [
         {
+          "id": "0031-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -250,6 +263,7 @@
       "transformer": "inlineScriptBlocks",
       "tests": [
         {
+          "id": "0032-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -275,6 +289,7 @@
       },
       "tests": [
         {
+          "id": "0033-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -297,6 +312,7 @@
       "name": "Confirmation prompt",
       "tests": [
         {
+          "id": "0034-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "confirm",
@@ -318,6 +334,7 @@
           ]
         },
         {
+          "id": "0034-01",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=true",
@@ -339,6 +356,7 @@
           ]
         },
         {
+          "id": "0034-02",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=false",
@@ -366,6 +384,7 @@
       "name": "Repeaters (String)",
       "tests": [
         {
+          "id": "0035-00",
           "lifecycle": "start",
           "npm-args": "ping",
           "result": [
@@ -381,6 +400,7 @@
       "name": "Repeaters (Object)",
       "tests": [
         {
+          "id": "0036-00",
           "lifecycle": "start",
           "npm-args": "ping",
           "result": [
@@ -414,6 +434,7 @@
       },
       "tests": [
         {
+          "id": "0037-00",
           "lifecycle": "start",
           "result": [
             "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m - Amsterdam University of Applied Sciences.\u001b[39m\n",
@@ -465,6 +486,7 @@
       },
       "tests": [
         {
+          "id": "0038-00",
           "lifecycle": "start",
           "result": [
             "\u001b[1mAuto menu: \u001b[2mbuild                       \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
@@ -504,6 +526,7 @@
       },
       "tests": [
         {
+          "id": "0039-00",
           "lifecycle": "start",
           "result": [
             "\u001b[36m?\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    serve\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m   \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
@@ -571,6 +594,7 @@
       },
       "tests": [
         {
+          "id": "0040-00",
           "lifecycle": "start",
           "result": [
             "\u001b[1mAuto menu: \u001b[2mhva:development             \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
@@ -588,6 +612,7 @@
           ]
         },
         {
+          "id": "0040-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -629,6 +654,7 @@
       },
       "tests": [
         {
+          "id": "0041-00",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -642,6 +668,7 @@
       "name": "Launcher settings",
       "tests": [
         {
+          "id": "0042-00",
           "lifecycle": "start",
           "npm-args": "build:dev",
           "result": [
@@ -654,6 +681,7 @@
           ]
         },
         {
+          "id": "0042-01",
           "lifecycle": "start",
           "npm-args": "build:acc",
           "result": [
@@ -666,6 +694,7 @@
           ]
         },
         {
+          "id": "0042-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -684,6 +713,7 @@
       "name": "Reference scripts by using wildcards",
       "tests": [
         {
+          "id": "0043-00",
           "lifecycle": "start",
           "npm-args": "build:*",
           "result": [
@@ -693,6 +723,7 @@
           ]
         },
         {
+          "id": "0043-01",
           "lifecycle": "start",
           "npm-args": "build:all",
           "result": [
@@ -702,6 +733,7 @@
           ]
         },
         {
+          "id": "0043-02",
           "cmd-args": [
             "--concurrent",
             "build:*"
@@ -720,6 +752,7 @@
       "sanatize": true,
       "tests": [
         {
+          "id": "0044-00",
           "cmd-args": [
             "--help"
           ]
@@ -735,11 +768,13 @@
       },
       "tests": [
         {
+          "id": "0045-00",
           "cmd-args": [
             "init"
           ]
         },
         {
+          "id": "0045-01",
           "cmd-args": [
             "init",
             "basic"
@@ -794,6 +829,7 @@
       },
       "tests": [
         {
+          "id": "0046-00",
           "cmd-args": [
             "migrate",
             "--params=1"
@@ -821,12 +857,14 @@
       },
       "tests": [
         {
+          "id": "0047-00",
           "cmd-args": [
             "build:css",
             "build:js"
           ]
         },
         {
+          "id": "0047-01",
           "cmd-args": [
             "build:css",
             "build:js",
@@ -869,17 +907,20 @@
       },
       "tests": [
         {
+          "id": "0048-00",
           "cmd-args": [
             "list"
           ]
         },
         {
+          "id": "0048-01",
           "cmd-args": [
             "list",
             "menu"
           ]
         },
         {
+          "id": "0048-02",
           "cmd-args": [
             "list",
             "completion"

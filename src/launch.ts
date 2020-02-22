@@ -23,6 +23,7 @@ interface IArgs {
   menuTimeout: number;
   params: number;
   concurrent: boolean;
+  script?: string;
 }
 
 interface IScriptDefinition {

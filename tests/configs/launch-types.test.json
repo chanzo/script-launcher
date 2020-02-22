@@ -16,6 +16,7 @@
       },
       "tests": [
         {
+          "id": "0005-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -29,6 +30,7 @@
           ]
         },
         {
+          "id": "0005-01",
           "lifecycle": "start",
           "cmd-args": [
             "--",
@@ -45,6 +47,7 @@
           ]
         },
         {
+          "id": "0005-02",
           "lifecycle": "start",
           "cmd-args": "build-stuff",
           "npm-args": [
@@ -58,6 +61,7 @@
           ]
         },
         {
+          "id": "0005-03",
           "lifecycle": "start",
           "cmd-args": [
             "build-stuff",
@@ -74,6 +78,7 @@
           ]
         },
         {
+          "id": "0005-04",
           "lifecycle": "build-stuff",
           "cmd-args": [],
           "npm-args": [
@@ -87,6 +92,7 @@
           ]
         },
         {
+          "id": "0005-05",
           "lifecycle": "build-stuff",
           "cmd-args": [
             "--",
@@ -102,6 +108,7 @@
           ]
         },
         {
+          "id": "0005-06",
           "lifecycle": "build",
           "cmd-args": [
             "build-stuff"
@@ -117,6 +124,7 @@
           ]
         },
         {
+          "id": "0005-07",
           "lifecycle": "build",
           "cmd-args": [
             "build-stuff",
@@ -133,6 +141,7 @@
           ]
         },
         {
+          "id": "0005-08",
           "cmd-args": [
             "build-stuff",
             "--",
@@ -202,6 +211,7 @@
       },
       "tests": [
         {
+          "id": "0006-00",
           "lifecycle": "start",
           "npm-args": "build-stuff-array",
           "cmd-args": "--config=launcher-cli.json",
@@ -215,6 +225,7 @@
           ]
         },
         {
+          "id": "0006-01",
           "lifecycle": "start",
           "npm-args": "build-stuff-string",
           "cmd-args": "--config=launcher-cli.json",
@@ -239,6 +250,7 @@
       },
       "tests": [
         {
+          "id": "0007-00",
           "cmd-args": [
             "build:*",
             "test:css",
