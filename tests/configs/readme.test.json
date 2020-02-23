@@ -72,6 +72,7 @@
     {
       "id": "0026",
       "name": "Environment values and special commands",
+      "sanatize": true,
       "tests": [
         {
           "id": "0026-00",
@@ -79,39 +80,21 @@
           "npm-args": "build-stuff",
           "result": [
             "grep example",
-            "\u001b[1mVersion:\u001b[0m $version",
-            "\u001b[1mPlatform:\u001b[0m linux",
-            "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
+            "Version: $version",
+            "Platform: win32",
+            "Time: 2019-09-16 10:33:20.628",
             "--------------------------------",
-            "Color: \u001b[94mBlue\u001b[0m",
-            "Color: \u001b[1mBold\u001b[0m",
-            "Color: \u001b[36mCyan\u001b[0m",
-            "Color: \u001b[2mDim\u001b[0m",
+            "Color: \u001b[94mBlue",
+            "Color: Bold",
+            "Color: Cyan",
+            "Color: Dim",
             "",
-            "Color: \u001b[32mGreen\u001b[0m",
-            "Color: \u001b[31mRed\u001b[0m",
-            "Color: \u001b[33mYellow\u001b[0m",
+            "Color: Green",
+            "Color: \u001b[31mRed",
+            "Color: \u001b[33mYellow",
             "--------------------------------",
-            "\u001b[1mCurrent:\u001b[0m 2019-09-16 10:33:42.285",
-            "\u001b[1mElapsed:\u001b[0m 137ms"
-          ],
-          "result:win32": [
-            "grep example",
-            "\u001b[1mVersion:\u001b[0m $version",
-            "\u001b[1mPlatform:\u001b[0m win32",
-            "\u001b[1mTime:\u001b[0m 2019-09-16 10:33:20.628",
-            "--------------------------------",
-            "Color: \u001b[94mBlue\u001b[0m",
-            "Color: \u001b[1mBold\u001b[0m",
-            "Color: \u001b[36mCyan\u001b[0m",
-            "Color: \u001b[90mDim\u001b[0m",
-            "",
-            "Color: \u001b[32mGreen\u001b[0m",
-            "Color: \u001b[31mRed\u001b[0m",
-            "Color: \u001b[33mYellow\u001b[0m",
-            "--------------------------------",
-            "\u001b[1mCurrent:\u001b[0m 2019-09-16 10:33:42.285",
-            "\u001b[1mElapsed:\u001b[0m 137ms"
+            "Current: 2019-09-16 10:33:42.285",
+            "Elapsed: 137ms"
           ]
         }
       ]
@@ -119,6 +102,7 @@
     {
       "id": "0027",
       "name": "Environment and command line argument values",
+      "sanatize": true,
       "tests": [
         {
           "id": "0027-00",
@@ -134,16 +118,6 @@
             "Node version: $node_version",
             "Argument 1 : arg1",
             "Argument 2 : arg2",
-            "All arguments: arg1 arg2 arg3",
-            "Offset arguments: arg2 arg3",
-            "Environment : my-env"
-          ],
-          "result:win32": [
-            "Node version: $node_version",
-            "Node version: $node_version",
-            "Argument 1 : arg1",
-            "Argument 2 : arg2",
-            "ECHO is on.",
             "All arguments: arg1 arg2 arg3",
             "Offset arguments: arg2 arg3",
             "Environment : my-env"
@@ -310,6 +284,7 @@
     {
       "id": "0034",
       "name": "Confirmation prompt",
+      "sanatize": true,
       "tests": [
         {
           "id": "0034-00",
@@ -317,19 +292,7 @@
           "npm-args": "build-stuff",
           "cmd-args": "confirm",
           "result": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
-            "You are sure!"
-          ],
-          "result:win32": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
+            "✔ Are you sure you want to continue ... yes",
             "You are sure!"
           ]
         },
@@ -339,19 +302,7 @@
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=true",
           "result": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
-            "You are sure!"
-          ],
-          "result:win32": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
+            "✔ Are you sure you want to continue ... yes",
             "You are sure!"
           ]
         },
@@ -361,19 +312,7 @@
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=false",
           "result": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(y/N)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m…\u001b[39m no",
-            "\n",
-            "\u001b[?25h",
-            "You are not sure!"
-          ],
-          "result:win32": [
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m»\u001b[39m \u001b[90m(y/N)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m√\u001b[39m \u001b[1mAre you sure you want to continue\u001b[22m \u001b[90m...\u001b[39m no",
-            "\n",
-            "\u001b[?25h",
+            "✔ Are you sure you want to continue ... no",
             "You are not sure!"
           ]
         }
@@ -423,6 +362,7 @@
     {
       "id": "0037",
       "name": "Interactive menu",
+      "sanatize": true,
       "files": {
         "launcher-settings": {
           "options": {
@@ -437,25 +377,10 @@
           "id": "0037-00",
           "lifecycle": "start",
           "result": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m - Amsterdam University of Applied Sciences.\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m›\u001b[39m hva",
-            "\n",
-            "\u001b[?25h",
+            "? Select organization » - Use arrow-keys. Return to submit.\n    uva\n>   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
+            "✔ Select organization » hva",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ],
-          "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m - Amsterdam University of Applied Sciences.\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m√\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m hva",
-            "\n",
-            "\u001b[?25h",
-            "",
-            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "Executing: npm start serve:hva:dev",
             "",
             "Start development server",
             "ng serve hva -c=dev"
@@ -466,6 +391,7 @@
     {
       "id": "0038",
       "name": "Interactive menu",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -489,14 +415,8 @@
           "id": "0038-00",
           "lifecycle": "start",
           "result": [
-            "\u001b[1mAuto menu: \u001b[2mbuild                       \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
-            "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
-            "",
-            "Build script"
-          ],
-          "result:win32": [
-            "\u001b[1mAuto menu: \u001b[90mbuild                       \u001b[0m\u001b[90m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[90m)\u001b[0m",
-            "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
+            "Auto menu: build                         (Use the menu by running: npm start menu)",
+            "Executing: npm start build",
             "",
             "Build script"
           ]
@@ -506,6 +426,7 @@
     {
       "id": "0039",
       "name": "Interactive menu",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -529,24 +450,10 @@
           "id": "0039-00",
           "lifecycle": "start",
           "result": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    serve\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m   \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m✔\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m›\u001b[39m build",
-            "\n",
-            "\u001b[?25h",
+            "? Select » - Use arrow-keys. Return to submit.\n    serve\n>   \u001b[4mbuild\u001b[24m\n",
+            "✔ Select » build",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start build\u001b[0m",
-            "",
-            "Build script"
-          ],
-          "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    serve\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mbuild\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m√\u001b[39m \u001b[1mSelect\u001b[22m \u001b[90m»\u001b[39m build",
-            "\n",
-            "\u001b[?25h",
-            "",
-            "\u001b[1mExecuting: \u001b[90mnpm start build\u001b[0m",
+            "Executing: npm start build",
             "",
             "Build script"
           ]
@@ -556,6 +463,7 @@
     {
       "id": "0040",
       "name": "Interactive menu",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -597,15 +505,8 @@
           "id": "0040-00",
           "lifecycle": "start",
           "result": [
-            "\u001b[1mAuto menu: \u001b[2mhva:development             \u001b[0m\u001b[2m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[2m)\u001b[0m",
-            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ],
-          "result:win32": [
-            "\u001b[1mAuto menu: \u001b[90mhva:development             \u001b[0m\u001b[90m  (Use the menu by running:\u001b[1m npm start menu\u001b[0m\u001b[90m)\u001b[0m",
-            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
+            "Executing: npm start serve:hva:dev",
             "",
             "Start development server",
             "ng serve hva -c=dev"
@@ -616,25 +517,10 @@
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m›\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m❯\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m✔\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m›\u001b[39m hva",
-            "\n",
-            "\u001b[?25h",
+            "? Select organization » - Use arrow-keys. Return to submit.\n    uva\n>   \u001b[4mhva\u001b[24m\n",
+            "✔ Select organization » hva",
             "",
-            "\u001b[1mExecuting: \u001b[2mnpm start serve:hva:dev\u001b[0m",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ],
-          "result:win32": [
-            "\u001b[36m?\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m \u001b[90m- Use arrow-keys. Return to submit.\u001b[39m\n    uva\u001b[90m\u001b[39m\n\u001b[36m>\u001b[39m   \u001b[36m\u001b[4mhva\u001b[39m\u001b[24m\u001b[90m\u001b[39m\n",
-            "\u001b[2K\u001b[1G",
-            "\u001b[32m√\u001b[39m \u001b[1mSelect organization\u001b[22m \u001b[90m»\u001b[39m hva",
-            "\n",
-            "\u001b[?25h",
-            "",
-            "\u001b[1mExecuting: \u001b[90mnpm start serve:hva:dev\u001b[0m",
+            "Executing: npm start serve:hva:dev",
             "",
             "Start development server",
             "ng serve hva -c=dev"

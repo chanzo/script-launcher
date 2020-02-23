@@ -4,6 +4,7 @@ import { IConfig } from '../src/config-loader';
 import { IScript, IScriptTask } from '../src/scripts';
 import * as fs from 'fs';
 import { SectionType } from './markdown-parser';
+import { version } from '../src/package.json';
 
 const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
@@ -22,10 +23,12 @@ const sanatizeStrings = [
   '\\u001b\\[39m',
   '\\u001b\\[22m',
   '\\u001b\\[90m',
-  '\\u001b\\[32m'
+  '\\u001b\\[32m',
+  '\\r'
   // '\\u001b\\[\\?25l',
 ];
 const excludeStrings = [
+  'ECHO is on.',
   '\u001b[?25h',
   '\n'
 ];
@@ -38,6 +41,8 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
 
     item = item.replace('tests/temp/' + config.id + '/', '');
     item = item.replace('tests\\temp\\' + config.id + '\\', '');
+
+    item = item.replace('.\\\\tests\\\\temp\\\\' + config.id, './tests/temp/' + config.id);
 
     item = item.replace('√', '✔');
     item = item.replace('…', '...');
@@ -162,7 +167,13 @@ async function main() {
                 if (config.type === SectionType.bash) {
                   console.log('### ' + config.name + ' (' + item.id + ')\n```\n' + output.join('\n') + '\n```\n');
                 } else {
-                  console.log('result (' + item.id + '):', JSON.stringify(output, null, 2));
+                  let result = JSON.stringify(output, null, 2);
+
+                  result = result.replace(new RegExp(config.id, 'g'), '$id');
+                  result = result.replace(new RegExp(version, 'g'), '$version');
+                  result = result.replace(new RegExp(process.version.replace(/^v/, ''), 'g'), '$node_version');
+
+                  console.log('result (' + item.id + '):', result);
                 }
 
                 throw error;
