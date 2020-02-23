@@ -484,15 +484,31 @@
         {
           "id": "0012-03",
           "lifecycle": "start",
-          "npm-args": "assignments:\"*\"",
+          "npm-args": "assignments:'*'",
           "result": [
-            "value1: \"*\""
+            "value1: *"
           ]
         },
         {
           "id": "0012-04",
           "lifecycle": "start",
-          "npm-args": "assignments:'*'",
+          "npm-args": "assignments:\"*\"",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "id": "0012-05",
+          "lifecycle": "start",
+          "npm-args": "assignments:'\"*\"'",
+          "result": [
+            "value1: \"*\""
+          ]
+        },
+        {
+          "id": "0012-06",
+          "lifecycle": "start",
+          "npm-args": "assignments:\"'*'\"",
           "result": [
             "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
           ]
