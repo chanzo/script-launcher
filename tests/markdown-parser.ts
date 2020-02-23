@@ -93,7 +93,7 @@ export class MarkdownParser {
         result.push({
           title: title,
           config: null,
-          result: item,
+          result: item.map(row => row.replace('\r', '')),
           type: SectionType.bash,
           commands: [commands[index++]],
           error: null

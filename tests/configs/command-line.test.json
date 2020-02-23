@@ -6,6 +6,7 @@
       "files": {},
       "tests": [
         {
+          "id": "0000-00",
           "cmd-args": "--help",
           "result": [
             "Usage: launch [command] [options...]",
@@ -29,6 +30,7 @@
           ]
         },
         {
+          "id": "0000-01",
           "cmd-args": "--version",
           "result": "$version"
         }
@@ -37,37 +39,30 @@
     {
       "id": "0001",
       "name": "Init",
+      "sanatize": true,
       "files": {
         "package": {}
       },
       "tests": [
         {
+          "id": "0001-00",
           "cmd-args": [
             "init",
             "basic"
           ],
           "result": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "Create starter config: basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
+            "Createing: launcher-config.json",
+            "Createing: launcher-menu.json",
             "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
+            "Updating package.json.",
             "",
-            "\u001b[1mStart script of package.json updated.\u001b[0m"
-          ],
-          "result:win32": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
-            "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
-            "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
-            "",
-            "\u001b[1mStart script of package.json updated.\u001b[0m"
+            "Start script of package.json updated."
           ]
         },
         {
+          "id": "0001-01",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -77,18 +72,10 @@
             "  }",
             "}",
             ""
-          ],
-          "result:win32": [
-            "{\r",
-            "  \"scripts\": {\r",
-            "    \"serve:$config\": \"echo Serve $config command.\",\r",
-            "    \"build:$config\": \"echo Build $config command.\"\r",
-            "  }\r",
-            "}\r",
-            ""
           ]
         },
         {
+          "id": "0001-02",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",
@@ -113,30 +100,6 @@
             "    }",
             "  }",
             "}"
-          ],
-          "result:win32": [
-            "{\r",
-            "  \"menu\": {\r",
-            "    \"description\": \"action\",\r",
-            "    \"serve:Serve your app.\": {\r",
-            "      \"description\": \"environment\",\r",
-            "      \"dev:Serve your app for the development environment.\": \"serve:dev\",\r",
-            "      \"acc:Serve your app for the acceptance environment.\": \"serve:acc\",\r",
-            "      \"prd:Serve your app for the production environment.\": \"serve:production\"\r",
-            "    },\r",
-            "    \"build:Build your app.\": {\r",
-            "      \"description\": \"environment\",\r",
-            "      \"dev:Builds your app for the development environment.\": \"build:dev\",\r",
-            "      \"acc:Builds your app for the acceptance environment.\": \"build:acc\",\r",
-            "      \"prd:Builds your app for the production environment.\": \"build:production\"\r",
-            "    }\r",
-            "  },\r",
-            "  \"options\": {\r",
-            "    \"menu\": {\r",
-            "      \"defaultChoice\": \"serve:development\"\r",
-            "    }\r",
-            "  }\r",
-            "}"
           ]
         }
       ]
@@ -144,6 +107,7 @@
     {
       "id": "0002",
       "name": "Init",
+      "sanatize": true,
       "files": {
         "package": {
           "scripts": {
@@ -153,29 +117,20 @@
       },
       "tests": [
         {
+          "id": "0002-00",
           "cmd-args": [
             "init",
             "basic"
           ],
           "result": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "Create starter config: basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
+            "Createing: launcher-config.json",
+            "Createing: launcher-menu.json",
             "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
+            "Updating package.json.",
             "",
-            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already in use."
-          ],
-          "result:win32": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
-            "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
-            "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
-            "",
-            "\u001b[33m\u001b[1mSkipped:\u001b[0m start script already in use."
+            "\u001b[33mSkipped: start script already in use."
           ]
         }
       ]
@@ -183,35 +138,28 @@
     {
       "id": "0003",
       "name": "Init",
+      "sanatize": true,
       "files": {},
       "tests": [
         {
+          "id": "0003-00",
           "cmd-args": [
             "init",
             "basic"
           ],
           "result": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
+            "Create starter config: basic",
             "",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests/temp/$id/launcher-menu.json",
+            "Createing: launcher-config.json",
+            "Createing: launcher-menu.json",
             "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
+            "Updating package.json.",
             "",
-            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
-          ],
-          "result:win32": [
-            "\u001b[1mCreate starter config:\u001b[0m basic",
-            "",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-config.json",
-            "\u001b[1mCreateing:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
-            "",
-            "\u001b[1mUpdating package.json.\u001b[0m",
-            "",
-            "\u001b[1mUpdate package.json failed:\u001b[0m file not found."
+            "Update package.json failed: file not found."
           ]
         },
         {
+          "id": "0003-01",
           "lifecycle": "start",
           "npm-args": "serve:dev",
           "result": [
@@ -219,6 +167,7 @@
           ]
         },
         {
+          "id": "0003-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -229,6 +178,7 @@
     },
     {
       "id": "0004",
+      "sanatize": true,
       "name": "Migrate",
       "files": {
         "package": {
@@ -273,48 +223,36 @@
       },
       "tests": [
         {
+          "id": "0004-00",
           "cmd-args": [
             "migrate"
           ],
           "result": [
-            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "Migrating: package.json",
             "",
             "Script to migrate: 34",
             "Script to update: 2",
             "",
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure\u001b[22m \u001b[90m…\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
+            "✔ Are you sure ... yes",
             "",
-            "\u001b[1mUpdating:\u001b[0m tests/temp/$id/package.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-config.json"
-          ],
-          "result:win32": [
-            "\u001b[1mMigrating: \u001b[0mpackage.json",
-            "",
-            "Script to migrate: 34",
-            "Script to update: 2",
-            "",
-            "",
-            "\u001b[1mUpdating:\u001b[0m tests\\temp\\$id\\package.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-config.json"
+            "Updating: package.json",
+            "Creating: launcher-menu.json",
+            "Creating: launcher-config.json"
           ]
         },
         {
+          "id": "0004-01",
           "cmd-args": [
             "migrate"
           ],
           "result": [
-            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "Migrating: package.json",
             "",
-            "\u001b[31m\u001b[1mFailed:\u001b[0m launcher-menu.json already exists."
+            "\u001b[31mFailed: launcher-menu.json already exists."
           ]
         },
         {
+          "id": "0004-02",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -395,6 +333,7 @@
           ]
         },
         {
+          "id": "0004-03",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",
@@ -467,6 +406,7 @@
           ]
         },
         {
+          "id": "0004-04",
           "cat-args": "package.json",
           "result": [
             "{",
@@ -478,6 +418,7 @@
           ]
         },
         {
+          "id": "0004-05",
           "lifecycle": "start",
           "npm-args": "deploy:acc",
           "result": [
@@ -488,40 +429,27 @@
           ]
         },
         {
+          "id": "0004-06",
           "restore": true,
           "cmd-args": [
             "migrate",
             "--params"
           ],
           "result": [
-            "\u001b[1mMigrating: \u001b[0mpackage.json",
+            "Migrating: package.json",
             "",
             "Script to migrate: 12",
             "Script to update: 2",
             "",
-            "\u001b[2K\u001b[1G\u001b[36m?\u001b[39m \u001b[1mAre you sure\u001b[22m \u001b[90m›\u001b[39m \u001b[90m(Y/n)\u001b[39m",
-            "\u001b[2K\u001b[1G",
-            "\u001b[2K\u001b[1G\u001b[32m✔\u001b[39m \u001b[1mAre you sure\u001b[22m \u001b[90m…\u001b[39m yes",
-            "\n",
-            "\u001b[?25h",
+            "✔ Are you sure ... yes",
             "",
-            "\u001b[1mUpdating:\u001b[0m tests/temp/$id/package.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests/temp/$id/launcher-config.json"
-          ],
-          "result:win32": [
-            "\u001b[1mMigrating: \u001b[0mpackage.json",
-            "",
-            "Script to migrate: 12",
-            "Script to update: 2",
-            "",
-            "",
-            "\u001b[1mUpdating:\u001b[0m tests\\temp\\$id\\package.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-menu.json",
-            "\u001b[1mCreating:\u001b[0m tests\\temp\\$id\\launcher-config.json"
+            "Updating: package.json",
+            "Creating: launcher-menu.json",
+            "Creating: launcher-config.json"
           ]
         },
         {
+          "id": "0004-07",
           "cat-args": "launcher-config.json",
           "result": [
             "{",
@@ -550,6 +478,7 @@
           ]
         },
         {
+          "id": "0004-08",
           "cat-args": "launcher-menu.json",
           "result": [
             "{",

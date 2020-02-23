@@ -1,10 +1,9 @@
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { IProcess, ISpawnOptions, Process } from './spawn-process';
-import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { confirmPrompt, formatTime, stringify, Colors } from './common';
+import { confirmPrompt, formatTime, stringify, stringToArgv, Colors } from './common';
 import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
@@ -48,7 +47,7 @@ export class Executor {
   }
 
   private static convertSingleQuote(command: string): string {
-    const argv = parseArgsStringToArgv(command);
+    const argv = stringToArgv(command);
     const result: string[] = [];
 
     for (let value of argv) {
@@ -209,7 +208,7 @@ export class Executor {
     let args = [];
 
     if (!options.shell) {
-      args = parseArgsStringToArgv(command);
+      args = stringToArgv(command);
       command = args[0];
       args.shift();
     }
