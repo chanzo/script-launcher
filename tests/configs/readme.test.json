@@ -81,7 +81,7 @@
           "result": [
             "grep example",
             "Version: $version",
-            "Platform: win32",
+            "Platform: $platform",
             "Time: 2019-09-16 10:33:20.628",
             "--------------------------------",
             "Color: \u001b[94mBlue",
@@ -377,8 +377,8 @@
           "id": "0037-00",
           "lifecycle": "start",
           "result": [
-            "? Select organization » - Use arrow-keys. Return to submit.\n    uva\n>   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
-            "✔ Select organization » hva",
+            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
+            "✔ Select organization › hva",
             "",
             "Executing: npm start serve:hva:dev",
             "",
@@ -450,8 +450,8 @@
           "id": "0039-00",
           "lifecycle": "start",
           "result": [
-            "? Select » - Use arrow-keys. Return to submit.\n    serve\n>   \u001b[4mbuild\u001b[24m\n",
-            "✔ Select » build",
+            "? Select › - Use arrow-keys. Return to submit.\n    serve\n❯   \u001b[4mbuild\u001b[24m\n",
+            "✔ Select › build",
             "",
             "Executing: npm start build",
             "",
@@ -517,8 +517,8 @@
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
-            "? Select organization » - Use arrow-keys. Return to submit.\n    uva\n>   \u001b[4mhva\u001b[24m\n",
-            "✔ Select organization » hva",
+            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m\n",
+            "✔ Select organization › hva",
             "",
             "Executing: npm start serve:hva:dev",
             "",

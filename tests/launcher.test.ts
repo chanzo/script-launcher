@@ -17,6 +17,7 @@ const testLauncher = new TestLauncher(tempFiles, ['', ''], [
 const sanatizeStrings = [
   '\\u001b\\[0m',
   '\\u001b\\[1m',
+  '\\u001b\\[2m',
   // '\\u001b\\[2K',
   '\\u001b\\[1G',
   '\\u001b\\[36m',
@@ -172,6 +173,7 @@ async function main() {
                   result = result.replace(new RegExp(config.id, 'g'), '$id');
                   result = result.replace(new RegExp(version, 'g'), '$version');
                   result = result.replace(new RegExp(process.version.replace(/^v/, ''), 'g'), '$node_version');
+                  result = result.replace(new RegExp(process.platform, 'g'), '$platform');
 
                   console.log('result (' + item.id + '):', result);
                 }

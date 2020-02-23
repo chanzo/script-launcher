@@ -154,7 +154,8 @@ export class TestLauncher {
                   (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
                     id: testConfig.id,
                     version: version,
-                    node_version: process.version.replace(/^v/, '')
+                    node_version: process.version.replace(/^v/, ''),
+                    platform: process.platform
                   });
                 }
 
