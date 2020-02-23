@@ -620,7 +620,7 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
+  private async evaluateConstraint(type: string, command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
     if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '\'' + outputPattern + '\'' + Colors.Normal);
 
     options = { ...options };
@@ -632,6 +632,8 @@ export class Executor {
 
       if (typeof result !== 'boolean') throw new Error('type not supported');
 
+      Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
+
       Logger.log('Result          : ' + result);
       Logger.log();
       Logger.log();
@@ -640,6 +642,14 @@ export class Executor {
     } catch (error) {
       // Not a valid javascript expression, continue
     }
+
+    if (process.platform === 'win32') {
+      command = Executor.convertSingleQuote(command);
+
+      if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+    }
+
+    Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
 
     if (fs.existsSync(path.join(path.resolve(options.cwd), command))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -706,15 +716,7 @@ export class Executor {
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
 
-        if (process.platform === 'win32') {
-          constraint = Executor.convertSingleQuote(constraint);
-
-          if (constraint.startsWith('echo')) constraint = 'echo' + constraint.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
-        }
-
-        Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
-
-        if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
+        if (!await this.evaluateConstraint('Condition', constraint, options, outputPattern)) {
           condition = false;
           break;
         }
@@ -741,15 +743,7 @@ export class Executor {
 
         constraint = Executor.removeEnvironment(constraint);
 
-        if (process.platform === 'win32') {
-          constraint = Executor.convertSingleQuote(constraint);
-
-          if (constraint.startsWith('echo')) constraint = 'echo' + constraint.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
-        }
-
-        Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
-
-        if (await this.evaluateConstraint(constraint, options, outputPattern)) {
+        if (await this.evaluateConstraint('Exclusion', constraint, options, outputPattern)) {
           exclusion = true;
           break;
         }
