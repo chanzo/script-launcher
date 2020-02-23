@@ -45,8 +45,10 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
 
     item = item.replace('.\\\\tests\\\\temp\\\\' + config.id, './tests/temp/' + config.id);
 
-    item = item.replace('√', '✔');
-    item = item.replace('…', '...');
+    item = item.replace(/\√/g, '✔');
+    item = item.replace(/\…/g, '...');
+    item = item.replace(/\»/g, '›');
+    item = item.replace(/\>/g, '❯');
 
     for (const pattern of sanatizeStrings) {
       item = item.replace(new RegExp(pattern, 'g'), '');
