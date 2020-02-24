@@ -697,7 +697,7 @@
             "No resolve: ./**.notfound",
             "Resolve by shell: ./README.md",
             "Resolve by shell: ./**.notfound",
-            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: README.md node_modules/fast-glob/README.md",
             "Resolve by script-launcher:"
           ],
           "result:win32": [
@@ -709,7 +709,7 @@
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",
             "Resolve by shell: ./**.notfound",
-            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: README.md node_modules/fast-glob/README.md",
             "Resolve by script-launcher:"
           ]
         }
@@ -756,7 +756,7 @@
             "No resolve: ./**.notfound",
             "Resolve by shell: ./README.md",
             "Resolve by shell: ./**.notfound",
-            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: README.md node_modules/fast-glob/README.md",
             "Resolve by script-launcher: ./**.notfound"
           ],
           "result:win32": [
@@ -768,7 +768,7 @@
             "No resolve: ./\\*\\*.notfound",
             "Resolve by shell: ./**.md",
             "Resolve by shell: ./**.notfound",
-            "Resolve by script-launcher: README.md",
+            "Resolve by script-launcher: README.md node_modules/fast-glob/README.md",
             "Resolve by script-launcher: ./**.notfound"
           ]
         }

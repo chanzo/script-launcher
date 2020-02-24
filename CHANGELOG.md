@@ -6,6 +6,7 @@
 
 ### Changes
 * Removed `string-argv` dependency
+* Updated dev dependencies
 
 ### Breaking
 Changed quoted argument proccessing
