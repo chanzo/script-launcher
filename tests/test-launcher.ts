@@ -7,6 +7,7 @@ import { IConfig } from '../src/config-loader';
 import { version } from '../src/package.json';
 
 export interface ITests {
+  id: string;
   name: string;
   error?: string;
   'cmd-args': string[];
@@ -101,13 +102,25 @@ export class TestLauncher {
 
         // update and add auto id's
         for (const testConfigs of Object.values(configs)) {
-          for (let index = 0; index < testConfigs.length; index++) {
-            testConfigs[index] = {
+          for (let configIndex = 0; configIndex < testConfigs.length; configIndex++) {
+            testConfigs[configIndex] = {
               ...{ id: '0000' },
-              ...testConfigs[index]
+              ...testConfigs[configIndex]
             };
 
-            testConfigs[index].id = (autoId++).toString().padStart(4, '0');
+            const testConfig = testConfigs[configIndex];
+
+            testConfig.id = (autoId++).toString().padStart(4, '0');
+
+            for (let testIndex = 0; testIndex < testConfig.tests.length; testIndex++) {
+
+              testConfig.tests[testIndex] = {
+                ...{ id: '0000' },
+                ...testConfig.tests[testIndex]
+              };
+
+              testConfig.tests[testIndex].id = testConfig.id + '-' + (testIndex).toString().padStart(2, '0');
+            }
           }
         }
 
@@ -141,7 +154,8 @@ export class TestLauncher {
                   (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
                     id: testConfig.id,
                     version: version,
-                    node_version: process.version.replace(/^v/, '')
+                    node_version: process.version.replace(/^v/, ''),
+                    platform: process.platform
                   });
                 }
 
@@ -183,6 +197,7 @@ export class TestLauncher {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
     const emptyTest: ITests = {
+      'id': '9999',
       'name': 'empty',
       'npm-args': [],
       'cmd-args': [],

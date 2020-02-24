@@ -4,6 +4,7 @@ import { IConfig } from '../src/config-loader';
 import { IScript, IScriptTask } from '../src/scripts';
 import * as fs from 'fs';
 import { SectionType } from './markdown-parser';
+import { version } from '../src/package.json';
 
 const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
@@ -16,16 +17,19 @@ const testLauncher = new TestLauncher(tempFiles, ['', ''], [
 const sanatizeStrings = [
   '\\u001b\\[0m',
   '\\u001b\\[1m',
+  '\\u001b\\[2m',
   // '\\u001b\\[2K',
   '\\u001b\\[1G',
   '\\u001b\\[36m',
   '\\u001b\\[39m',
   '\\u001b\\[22m',
   '\\u001b\\[90m',
-  '\\u001b\\[32m'
+  '\\u001b\\[32m',
+  '\\r'
   // '\\u001b\\[\\?25l',
 ];
 const excludeStrings = [
+  'ECHO is on.',
   '\u001b[?25h',
   '\n'
 ];
@@ -37,6 +41,14 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
   for (let item of content) {
 
     item = item.replace('tests/temp/' + config.id + '/', '');
+    item = item.replace('tests\\temp\\' + config.id + '\\', '');
+
+    item = item.replace('.\\\\tests\\\\temp\\\\' + config.id, './tests/temp/' + config.id);
+
+    item = item.replace(/\√/g, '✔');
+    item = item.replace(/\…/g, '...');
+    item = item.replace(/\»/g, '›');
+    item = item.replace(/\>/g, '❯');
 
     for (const pattern of sanatizeStrings) {
       item = item.replace(new RegExp(pattern, 'g'), '');
@@ -156,9 +168,16 @@ async function main() {
                 expect(output).toStrictEqual(item.result);
               } catch (error) {
                 if (config.type === SectionType.bash) {
-                  console.log('### ' + config.name + ' (' + directory + ')\n```\n' + output.join('\n') + '\n```\n');
+                  console.log('### ' + config.name + ' (' + item.id + ')\n```\n' + output.join('\n') + '\n```\n');
                 } else {
-                  console.log('result (' + directory + '):', JSON.stringify(output, null, 2));
+                  let result = JSON.stringify(output, null, 2);
+
+                  result = result.replace(new RegExp(config.id, 'g'), '$id');
+                  result = result.replace(new RegExp(version, 'g'), '$version');
+                  result = result.replace(new RegExp(process.version.replace(/^v/, ''), 'g'), '$node_version');
+                  result = result.replace(new RegExp(process.platform, 'g'), '$platform');
+
+                  console.log('result (' + item.id + '):', result);
                 }
 
                 throw error;

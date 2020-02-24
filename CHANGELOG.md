@@ -1,5 +1,50 @@
 # Change Log
 
+## 1.26.3
+### Fixes
+* Debug logging fix related to change 1.26.2
+
+### Changes
+* Removed `string-argv` dependency
+* Optimize integration test for better maintainability
+* Updated dev dependencies
+
+### Breaking
+Changed quoted argument processing related to removal of `string-argv`
+``` json
+{
+  "scripts": {
+    "assignment:$value1:$value2:$value3:$value4:$value5": [
+      "echo value1: '$value1'",
+      "echo value2: '$value2'",
+      "echo value3: '$value3'",
+      "echo value4: '$value4'",
+      "echo value5: '$value5'"
+    ]
+  }
+}
+```
+
+#### Old proccessing
+Run: `npm start assignment:*:'*':"*":"'\"*\"'":"\"\'*\'\""`
+``` text
+value1: *
+value2: *
+value3: *
+value4: *
+value5: "*"
+```
+
+#### New proccessing
+Run: `npm start assignment:*:'*':"*":"'\"*\"'":"\"\'*\'\""`
+``` text
+value1: *
+value2: *
+value3: *
+value4: "*"
+value5: launch.ts launcher-config.json launcher-menu.json launcher-settings.json node_modules package-lock.json package.json
+```
+
 ## 1.26.2
 ### Changes
 * Updated dev dependencies

@@ -725,7 +725,7 @@ Migrating: package.json
 Script to migrate: 12
 Script to update: 2
 
-✔ Are you sure … yes
+✔ Are you sure ... yes
 
 Updating: package.json
 Creating: launcher-menu.json
