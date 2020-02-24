@@ -1,10 +1,9 @@
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { IProcess, ISpawnOptions, Process } from './spawn-process';
-import { parseArgsStringToArgv } from 'string-argv';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { confirmPrompt, formatTime, stringify, Colors } from './common';
+import { confirmPrompt, formatTime, stringify, stringToArgv, Colors } from './common';
 import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
@@ -48,7 +47,7 @@ export class Executor {
   }
 
   private static convertSingleQuote(command: string): string {
-    const argv = parseArgsStringToArgv(command);
+    const argv = stringToArgv(command);
     const result: string[] = [];
 
     for (let value of argv) {
@@ -209,7 +208,7 @@ export class Executor {
     let args = [];
 
     if (!options.shell) {
-      args = parseArgsStringToArgv(command);
+      args = stringToArgv(command);
       command = args[0];
       args.shift();
     }
@@ -621,7 +620,7 @@ export class Executor {
     return processes;
   }
 
-  private async evaluateConstraint(command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
+  private async evaluateConstraint(type: string, command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
     if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '\'' + outputPattern + '\'' + Colors.Normal);
 
     options = { ...options };
@@ -633,6 +632,8 @@ export class Executor {
 
       if (typeof result !== 'boolean') throw new Error('type not supported');
 
+      Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
+
       Logger.log('Result          : ' + result);
       Logger.log();
       Logger.log();
@@ -641,6 +642,14 @@ export class Executor {
     } catch (error) {
       // Not a valid javascript expression, continue
     }
+
+    if (process.platform === 'win32') {
+      command = Executor.convertSingleQuote(command);
+
+      if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+    }
+
+    Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
 
     if (fs.existsSync(path.join(path.resolve(options.cwd), command))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -662,12 +671,6 @@ export class Executor {
 
           return 'grep=' + (matches === null ? 'failed' : 'success');
         };
-      }
-
-      if (process.platform === 'win32') {
-        command = Executor.convertSingleQuote(command);
-
-        if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
       }
 
       const commandProcess = Process.spawn(command, [], options);
@@ -713,9 +716,7 @@ export class Executor {
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
 
-        Logger.log(Colors.Bold + 'Condition       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
-
-        if (!await this.evaluateConstraint(constraint, options, outputPattern)) {
+        if (!await this.evaluateConstraint('Condition', constraint, options, outputPattern)) {
           condition = false;
           break;
         }
@@ -742,9 +743,7 @@ export class Executor {
 
         constraint = Executor.removeEnvironment(constraint);
 
-        Logger.log(Colors.Bold + 'Exclusion       : ' + Colors.Normal + Colors.Green + '\'' + constraint + '\'' + Colors.Normal);
-
-        if (await this.evaluateConstraint(constraint, options, outputPattern)) {
+        if (await this.evaluateConstraint('Exclusion', constraint, options, outputPattern)) {
           exclusion = true;
           break;
         }

@@ -18,6 +18,7 @@
       },
       "tests": [
         {
+          "id": "0008-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -30,6 +31,7 @@
     {
       "id": "0009",
       "name": "Log output",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -45,13 +47,14 @@
       },
       "tests": [
         {
+          "id": "0009-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=1",
           "result": [
-            "Loaded config:  tests/temp/$id/launcher-config.json",
+            "Loaded config:  launcher-config.json",
             "",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
+            "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
@@ -67,36 +70,17 @@
             "",
             "ExitCode: 1",
             "Elapsed: 237ms"
-          ],
-          "result:win32": [
-            "Loaded config:  tests\\temp\\$id\\launcher-config.json",
-            "",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
-            "Version           : $version",
-            "Lifecycle event   : start",
-            "Launch script     : [ 'build-stuff' ]",
-            "Launch arguments  : [ '--directory=.\\\\tests\\\\temp\\\\$id', '--logLevel=1' ]",
-            "",
-            "Script id       : build-stuff",
-            "Circular        : false",
-            "Script params   : {}",
-            "Script args     : [ 'build-stuff' ]",
-            "",
-            "Command 1",
-            "Command 2",
-            "",
-            "ExitCode: 1",
-            "Elapsed: 237ms"
           ]
         },
         {
+          "id": "0009-01",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=2",
           "result": [
-            "Loaded config:  tests/temp/$id/launcher-config.json",
+            "Loaded config:  launcher-config.json",
             "",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
+            "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
@@ -108,45 +92,45 @@
             "Script args     : [ 'build-stuff' ]",
             "",
             "",
-            "\u001b[1mLauncher Settings Values\u001b[0m",
+            "Launcher Settings Values",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mLauncher Settings Arrays\u001b[0m",
+            "Launcher Settings Arrays",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[2mCommand 1\u001b[0m",
+            "Command 1",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mtrue\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
+            "Process pid     : \u001b[33m11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 2'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 2' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[2mCommand 2\u001b[0m",
+            "Command 2",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
@@ -154,13 +138,13 @@
             "Elapsed: 237ms"
           ],
           "result:win32": [
-            "Loaded config:  tests\\temp\\$id\\launcher-config.json",
+            "Loaded config:  launcher-config.json",
             "",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
+            "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Launch arguments  : [ '--directory=.\\\\tests\\\\temp\\\\$id', '--logLevel=2' ]",
+            "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=2' ]",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -168,45 +152,45 @@
             "Script args     : [ 'build-stuff' ]",
             "",
             "",
-            "\u001b[1mLauncher Settings Values\u001b[0m",
+            "Launcher Settings Values",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mLauncher Settings Arrays\u001b[0m",
+            "Launcher Settings Arrays",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[90mCommand 1\u001b[0m",
+            "Command 1",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mtrue\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
+            "Process pid     : \u001b[33m11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 2'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 2' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[90mCommand 2\u001b[0m",
+            "Command 2",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
@@ -215,18 +199,19 @@
           ]
         },
         {
+          "id": "0009-02",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=3",
           "result": [
-            "Loaded config:  tests/temp/$id/launcher-config.json",
+            "Loaded config:  launcher-config.json",
             "",
-            "Config:  {\n  \u001b[0m\"scripts\":\u001b[0m {\n    \u001b[0m\"scripts\":\u001b[0m {\n      \u001b[0m\"build-stuff\":\u001b[0m [\n        \u001b[32m\"echo Command 1\"\u001b[0m,\n        \u001b[32m\"exit 1 || true\"\u001b[0m,\n        \u001b[32m\"echo Command 2\"\u001b[0m,\n        \u001b[32m\"exit 1\"\u001b[0m,\n        \u001b[32m\"echo Command 3\"\u001b[0m\n      ]\n    }\n  },\n  \u001b[0m\"menu\":\u001b[0m {\n    \u001b[0m\"description\":\u001b[0m \u001b[32m\"\"\u001b[0m\n  },\n  \u001b[0m\"options\":\u001b[0m {\n    \u001b[0m\"logLevel\":\u001b[0m \u001b[33m0\u001b[0m,\n    \u001b[0m\"files\":\u001b[0m [\n      \u001b[32m\"launcher-config.json\"\u001b[0m,\n      \u001b[32m\"launcher-scripts.json\"\u001b[0m,\n      \u001b[32m\"launcher-settings.json\"\u001b[0m,\n      \u001b[32m\"launcher-menu.json\"\u001b[0m,\n      \u001b[32m\"launcher-custom.json\"\u001b[0m\n    ],\n    \u001b[0m\"script\":\u001b[0m {\n      \u001b[0m\"shell\":\u001b[0m \u001b[33mtrue\u001b[0m\n    },\n    \u001b[0m\"glob\":\u001b[0m {},\n    \u001b[0m\"menu\":\u001b[0m {\n      \u001b[0m\"defaultChoice\":\u001b[0m \u001b[32m\"\"\u001b[0m,\n      \u001b[0m\"defaultScript\":\u001b[0m \u001b[32m\"\"\u001b[0m,\n      \u001b[0m\"timeout\":\u001b[0m \u001b[33m0\u001b[0m,\n      \u001b[0m\"pageSize\":\u001b[0m \u001b[33m7\u001b[0m\n    }\n  },\n  \u001b[0m\"settings\":\u001b[0m {}\n}",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
+            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
+            "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Process platform  : linux",
+            "Process platform  : $platform",
             "Script shell      : true",
             "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    list: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false\n  },\n  optionals: [],\n  unknowns: []\n}",
             "",
@@ -234,49 +219,49 @@
             "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
-            "Script object   : [\n  \u001b[32m\"echo Command 1\"\u001b[0m,\n  \u001b[32m\"exit 1 || true\"\u001b[0m,\n  \u001b[32m\"echo Command 2\"\u001b[0m,\n  \u001b[32m\"exit 1\"\u001b[0m,\n  \u001b[32m\"echo Command 3\"\u001b[0m\n]",
-            "Script expanded : {\n  \u001b[0m\"circular\":\u001b[0m \u001b[33mfalse\u001b[0m,\n  \u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
+            "Script object   : [\n  \"echo Command 1\",\n  \"exit 1 || true\",\n  \"echo Command 2\",\n  \"exit 1\",\n  \"echo Command 3\"\n]",
+            "Script expanded : {\n  \"circular\": \u001b[33mfalse,\n  \"parameters\": {},\n  \"sequential\": [\n    \"echo Command 1\",\n    \"exit 1 || true\",\n    \"echo Command 2\",\n    \"exit 1\",\n    \"echo Command 3\"\n  ]\n}",
             "",
             "",
-            "\u001b[1mLauncher Settings Values\u001b[0m",
-            "",
-            "",
-            "Total: 0",
-            "",
-            "",
-            "\u001b[1mLauncher Settings Arrays\u001b[0m",
+            "Launcher Settings Values",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Launcher Settings Arrays",
             "",
-            "\u001b[2mCommand 1\u001b[0m",
+            "",
+            "Total: 0",
+            "",
+            "",
+            "Spawn action    : 'echo Command 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
+            "",
+            "Command 1",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mtrue\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
+            "Process pid     : \u001b[33m11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 2'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 2' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[2mCommand 2\u001b[0m",
+            "Command 2",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
@@ -284,64 +269,64 @@
             "Elapsed: 237ms"
           ],
           "result:win32": [
-            "Loaded config:  tests\\temp\\$id\\launcher-config.json",
+            "Loaded config:  launcher-config.json",
             "",
-            "Config:  {\n  \u001b[0m\"scripts\":\u001b[0m {\n    \u001b[0m\"scripts\":\u001b[0m {\n      \u001b[0m\"build-stuff\":\u001b[0m [\n        \u001b[32m\"echo Command 1\"\u001b[0m,\n        \u001b[32m\"exit 1 || true\"\u001b[0m,\n        \u001b[32m\"echo Command 2\"\u001b[0m,\n        \u001b[32m\"exit 1\"\u001b[0m,\n        \u001b[32m\"echo Command 3\"\u001b[0m\n      ]\n    }\n  },\n  \u001b[0m\"menu\":\u001b[0m {\n    \u001b[0m\"description\":\u001b[0m \u001b[32m\"\"\u001b[0m\n  },\n  \u001b[0m\"options\":\u001b[0m {\n    \u001b[0m\"logLevel\":\u001b[0m \u001b[33m0\u001b[0m,\n    \u001b[0m\"files\":\u001b[0m [\n      \u001b[32m\"launcher-config.json\"\u001b[0m,\n      \u001b[32m\"launcher-scripts.json\"\u001b[0m,\n      \u001b[32m\"launcher-settings.json\"\u001b[0m,\n      \u001b[32m\"launcher-menu.json\"\u001b[0m,\n      \u001b[32m\"launcher-custom.json\"\u001b[0m\n    ],\n    \u001b[0m\"script\":\u001b[0m {\n      \u001b[0m\"shell\":\u001b[0m \u001b[33mtrue\u001b[0m\n    },\n    \u001b[0m\"glob\":\u001b[0m {},\n    \u001b[0m\"menu\":\u001b[0m {\n      \u001b[0m\"defaultChoice\":\u001b[0m \u001b[32m\"\"\u001b[0m,\n      \u001b[0m\"defaultScript\":\u001b[0m \u001b[32m\"\"\u001b[0m,\n      \u001b[0m\"timeout\":\u001b[0m \u001b[33m0\u001b[0m,\n      \u001b[0m\"pageSize\":\u001b[0m \u001b[33m7\u001b[0m\n    }\n  },\n  \u001b[0m\"settings\":\u001b[0m {}\n}",
-            "\u001b[1mDate              : 2019-09-16 10:33:20.628\u001b[0m",
+            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
+            "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Process platform  : win32",
+            "Process platform  : $platform",
             "Script shell      : true",
-            "Launch arguments  : { arguments:\n   { logLevel: 3,\n     init: false,\n     migrate: false,\n     confirm: undefined,\n     help: false,\n     version: false,\n     config: null,\n     script: null,\n     ansi: true,\n     directory: 'tests\\\\temp\\\\$id',\n     menuTimeout: 0,\n     params: 9007199254740991 },\n  optionals: [] }",
+            "Launch arguments  : { arguments:\n   { logLevel: 3,\n     init: false,\n     list: false,\n     migrate: false,\n     confirm: undefined,\n     help: false,\n     version: false,\n     config: null,\n     script: null,\n     ansi: true,\n     directory: 'tests\\\\temp\\\\$id',\n     menuTimeout: 0,\n     params: 9007199254740991,\n     concurrent: false },\n  optionals: [],\n  unknowns: [] }",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
-            "Script object   : [\n  \u001b[32m\"echo Command 1\"\u001b[0m,\n  \u001b[32m\"exit 1 || true\"\u001b[0m,\n  \u001b[32m\"echo Command 2\"\u001b[0m,\n  \u001b[32m\"exit 1\"\u001b[0m,\n  \u001b[32m\"echo Command 3\"\u001b[0m\n]",
-            "Script expanded : {\n  \u001b[0m\"circular\":\u001b[0m \u001b[33mfalse\u001b[0m\"parameters\":\u001b[0m {},\n  \u001b[0m\"sequential\":\u001b[0m [\n    \u001b[32m\"echo Command 1\"\u001b[0m,\n    \u001b[32m\"exit 1 || true\"\u001b[0m,\n    \u001b[32m\"echo Command 2\"\u001b[0m,\n    \u001b[32m\"exit 1\"\u001b[0m,\n    \u001b[32m\"echo Command 3\"\u001b[0m\n  ]\n}",
+            "Script object   : [\n  \"echo Command 1\",\n  \"exit 1 || true\",\n  \"echo Command 2\",\n  \"exit 1\",\n  \"echo Command 3\"\n]",
+            "Script expanded : {\n  \"circular\": \u001b[33mfalse,\n  \"parameters\": {},\n  \"sequential\": [\n    \"echo Command 1\",\n    \"exit 1 || true\",\n    \"echo Command 2\",\n    \"exit 1\",\n    \"echo Command 3\"\n  ]\n}",
             "",
             "",
-            "\u001b[1mLauncher Settings Values\u001b[0m",
-            "",
-            "",
-            "Total: 0",
-            "",
-            "",
-            "\u001b[1mLauncher Settings Arrays\u001b[0m",
+            "Launcher Settings Values",
             "",
             "",
             "Total: 0",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Launcher Settings Arrays",
             "",
-            "\u001b[90mCommand 1\u001b[0m",
+            "",
+            "Total: 0",
+            "",
+            "",
+            "Spawn action    : 'echo Command 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
+            "",
+            "Command 1",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mtrue\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
+            "Process pid     : \u001b[33m11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'echo Command 2'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'echo Command 2' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "",
-            "\u001b[90mCommand 2\u001b[0m",
+            "Command 2",
             "",
             "Process exited  : pid=11111  code=0  signal=null   elapsed=4ms",
             "",
             "",
-            "\u001b[1mSpawn action   \u001b[0m : \u001b[32m'exit 1'\u001b[0m []",
-            "Spawn options   : { order=\u001b[36msequential\u001b[0m, supress=\u001b[33mfalse\u001b[0m }",
-            "Process pid     : \u001b[33m11111\u001b[0m",
+            "Spawn action    : 'exit 1' []",
+            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
+            "Process pid     : \u001b[33m11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
@@ -378,6 +363,7 @@
       },
       "tests": [
         {
+          "id": "0010-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -392,6 +378,7 @@
           ]
         },
         {
+          "id": "0010-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -421,6 +408,7 @@
       },
       "tests": [
         {
+          "id": "0011-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -428,6 +416,7 @@
           ]
         },
         {
+          "id": "0011-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -450,6 +439,7 @@
       },
       "tests": [
         {
+          "id": "0012-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -457,6 +447,7 @@
           ]
         },
         {
+          "id": "0012-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -464,6 +455,7 @@
           ]
         },
         {
+          "id": "0012-02",
           "lifecycle": "start",
           "npm-args": "assignments:*",
           "result": [
@@ -471,17 +463,38 @@
           ]
         },
         {
+          "id": "0012-03",
+          "lifecycle": "start",
+          "npm-args": "assignments:'*'",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "id": "0012-04",
           "lifecycle": "start",
           "npm-args": "assignments:\"*\"",
+          "result": [
+            "value1: *"
+          ]
+        },
+        {
+          "id": "0012-05",
+          "lifecycle": "start",
+          "npm-args": "assignments:'\"*\"'",
           "result": [
             "value1: \"*\""
           ]
         },
         {
+          "id": "0012-06",
           "lifecycle": "start",
-          "npm-args": "assignments:'*'",
+          "npm-args": "assignments:\"'*'\"",
           "result": [
             "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
+          ],
+          "result:win32": [
+            "value1: *"
           ]
         }
       ]
@@ -503,6 +516,7 @@
       },
       "tests": [
         {
+          "id": "0013-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -523,6 +537,7 @@
       },
       "tests": [
         {
+          "id": "0014-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -550,6 +565,7 @@
       },
       "tests": [
         {
+          "id": "0015-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -566,6 +582,7 @@
     {
       "id": "0016",
       "name": "Auto arguments",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -577,6 +594,7 @@
       },
       "tests": [
         {
+          "id": "0016-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -584,10 +602,7 @@
             "arg2",
             "arg3"
           ],
-          "result": [],
-          "result:win32": [
-            "ECHO is on."
-          ]
+          "result": []
         }
       ]
     },
@@ -606,6 +621,7 @@
       },
       "tests": [
         {
+          "id": "0017-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -631,6 +647,7 @@
       },
       "tests": [
         {
+          "id": "0018-00",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -668,6 +685,7 @@
       },
       "tests": [
         {
+          "id": "0019-00",
           "lifecycle": "start",
           "npm-args": "nonull-false",
           "result": [
@@ -726,6 +744,7 @@
       },
       "tests": [
         {
+          "id": "0020-00",
           "lifecycle": "start",
           "npm-args": "nonull-true",
           "result": [
@@ -772,6 +791,7 @@
       },
       "tests": [
         {
+          "id": "0021-00",
           "lifecycle": "start",
           "npm-args": [
             "build:*",
@@ -784,6 +804,7 @@
           ]
         },
         {
+          "id": "0021-01",
           "lifecycle": "start",
           "npm-args": [
             "build:all",

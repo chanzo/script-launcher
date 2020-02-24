@@ -1,6 +1,6 @@
 {
   "name": "script-launcher",
-  "version": "1.26.2",
+  "version": "1.26.3",
   "description": "Enhance your package.json scripts with features like: menus, functions, arrays, concurrency and many more.",
   "main": "launch.js",
   "keywords": [
@@ -29,9 +29,8 @@
   "dependencies": {
     "cross-spawn": "~7.0.1",
     "deepmerge": "~4.2.2",
-    "fast-glob": "~3.1.1",
+    "fast-glob": "~3.2.2",
     "pretty-time": "~1.1.0",
-    "prompts": "~2.3.0",
-    "string-argv": "~0.3.1"
+    "prompts": "~2.3.1"
   }
 }

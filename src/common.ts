@@ -153,3 +153,77 @@ export async function confirmPrompt(message: string, autoValue?: boolean): Promi
 
   return choice[0] as boolean;
 }
+
+export function stringToArgv(value: string): string[] {
+  const result: string[] = [];
+  const spaces = '\t ';
+  const quotes = '\"\'';
+  let start = 0;
+  let index = 0;
+
+  function scanSpace(): string {
+    if (!(spaces + quotes).includes(value[index])) {
+      start = index;
+      while (index < value.length && !(spaces + quotes).includes(value[index])) index++;
+
+      return value.substr(start, index - start);
+    }
+
+    return null;
+  }
+
+  function scanQuote(): string {
+    if (value[index] === '\'') {
+      start = ++index;
+      while (index < value.length && value[index] !== '\'') index++;
+
+      return value.substr(start, index++ - start);
+    }
+
+    if (value[index] === '\"') {
+      start = ++index;
+      while (index < value.length && value[index] !== '\"') index++;
+
+      return value.substr(start, index++ - start);
+    }
+
+    return null;
+  }
+
+  let param = null;
+
+  while (index < value.length) {
+    if (!spaces.includes(value[index])) {
+      if (param === null) param = '';
+
+      const quoteParam = scanQuote();
+
+      if (quoteParam !== null) {
+        param += quoteParam;
+        continue;
+      }
+
+      const spaceParam = scanSpace();
+
+      if (spaceParam !== null) {
+        param += spaceParam;
+        continue;
+      }
+    }
+
+    if (param !== null) {
+      result.push(param);
+      param = null;
+    }
+
+    index++;
+  }
+
+  if (param !== null) {
+    result.push(param);
+    param = null;
+  }
+
+  return result;
+
+}

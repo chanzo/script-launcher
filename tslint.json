@@ -48,7 +48,8 @@
     "array-type": [
       true,
       "array-simple"
-    ]
+    ],
+    "no-consecutive-blank-lines": true
   },
   "rulesDirectory": []
 }
