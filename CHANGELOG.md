@@ -6,10 +6,11 @@
 
 ### Changes
 * Removed `string-argv` dependency
+* Optimize integration test for better maintainability
 * Updated dev dependencies
 
 ### Breaking
-Changed quoted argument proccessing
+Changed quoted argument processing related to removal of `string-argv`
 ``` json
 {
   "scripts": {
