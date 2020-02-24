@@ -6,7 +6,7 @@ import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { confirmPrompt, toPromise, Colors } from './common';
 import { SelectPrompt } from 'prompts/lib/elements';
 
-export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, confirm: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, menuConfirm: boolean, confirm: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   try {
     let script: IScriptInfo & { timedout: boolean } = {
       name: config.options.menu.defaultChoice,
@@ -24,16 +24,20 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
       script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
 
-      if (!script.timedout && await confirmPrompt('Save selection')) {
-        saveCustomConfig(config.customFile, {
-          menu: {},
-          options: {
-            menu: {
-              defaultChoice: script.name,
-              defaultScript: script.script,
-            },
-          },
-        } as IConfig);
+      if (!script.timedout && menuConfirm && !await confirmPrompt('Are you sure', undefined, true)) {
+        return {
+          startTime: process.hrtime(),
+          exitCode: 0,
+        };
+        // saveCustomConfig(config.customFile, {
+        //   menu: {},
+        //   options: {
+        //     menu: {
+        //       defaultChoice: script.name,
+        //       defaultScript: script.script,
+        //     },
+        //   },
+        // } as IConfig);
       }
       console.log();
     } else {

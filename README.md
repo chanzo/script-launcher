@@ -58,7 +58,6 @@ npm start test -- ./tests/debug.test.ts
 ### Dependencies 
 * [cross-spawn](https://www.npmjs.com/package/cross-spawn) - A cross platform solution to node's spawn and spawnSync.            
 * [deepmerge](https://www.npmjs.com/package/deepmerge) - Merges the enumerable attributes of two or more objects deeply.     
-* [glob](https://www.npmjs.com/package/glob) - Match files using the patterns the shell uses, like stars and stuff.
-* [Inquirer.js](https://www.npmjs.com/package/inquirer) - A collection of common interactive command line user interfaces.    
+* [fast-glob](https://www.npmjs.com/package/fast-glob) - It's a very fast and efficient glob library for Node.js.
 * [pretty-time](https://www.npmjs.com/package/pretty-time) - Easily format the time from node.js process.hrtime.
-* [string-argv](https://www.npmjs.com/package/string-argv) - Parses a string into an argument array to mimic process.argv.       
+* [prompts](https://www.npmjs.com/package/prompts) - Lightweight, beautiful and user-friendly prompts

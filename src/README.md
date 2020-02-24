@@ -910,6 +910,7 @@ If the *nonull* script-launcher option is set, and no match was found, then the 
 * **defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
 * **menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
 * **timeout:** Auto close/select a menu value after a specified time.
+* **confirm:** Enable disable menu confirmation prompt.
 
 The default value is presented in the following example:
 ``` JSON
@@ -921,7 +922,8 @@ The default value is presented in the following example:
     "menu": {
       "defaultChoice": "",
       "defaultScript": "",
-      "timeout": 0
+      "timeout": 0,
+      "confirm" :true
     }
   }
 }

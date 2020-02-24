@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.27.0
+### Changes
+* Updated readme dependency documentation
+* Added [menu option](src#menu-options) for enabling and disabling the menu confirmation prompt.
+
 ## 1.26.3
 ### Fixes
 * Debug logging fix related to change 1.26.2

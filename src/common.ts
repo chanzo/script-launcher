@@ -137,11 +137,11 @@ export function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> 
   });
 }
 
-export async function confirmPrompt(message: string, autoValue?: boolean): Promise<boolean> {
+export async function confirmPrompt(message: string, autoValue?: boolean, defaultValue: boolean = false): Promise<boolean> {
   const confirmPrompt = new ConfirmPrompt({
     type: 'confirm',
     name: 'value',
-    initial: autoValue !== undefined ? autoValue : false,
+    initial: autoValue !== undefined ? autoValue : defaultValue,
     message: message,
   });
 
