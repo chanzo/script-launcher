@@ -29,15 +29,6 @@ export async function launchMenu(environment: { [name: string]: string }, settin
           startTime: process.hrtime(),
           exitCode: 0,
         };
-        // saveCustomConfig(config.customFile, {
-        //   menu: {},
-        //   options: {
-        //     menu: {
-        //       defaultChoice: script.name,
-        //       defaultScript: script.script,
-        //     },
-        //   },
-        // } as IConfig);
       }
       console.log();
     } else {
@@ -317,13 +308,4 @@ function isMenuObject(object: any) {
   if ((object as IScriptTask)['sequential-else'] && (object as IScriptTask)['sequential-else'] instanceof Array) return false;
 
   return true;
-}
-
-function saveCustomConfig(configFile: string, config: IConfig): void {
-  const jsonData = JSON.stringify(config, null, 2);
-
-  fs.writeFileSync(configFile, jsonData);
-
-  console.log();
-  console.log(Colors.Bold + 'Selection saved to: ' + Colors.Dim + configFile + Colors.Normal);
 }
