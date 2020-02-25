@@ -767,7 +767,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript.length === 0) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, launchArgs.arguments.confirm, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, config.options.menu.confirm, launchArgs.arguments.confirm, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
