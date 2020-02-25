@@ -37,6 +37,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Repeaters (String)](#repeaters-string)
   * [Repeaters (Object)](#repeaters-object)
   * [Interactive menu](#interactive-menu)
+  * [Menu save default script](#menu-save-default-script)
 * [Launcher arguments](#launcher-arguments)
   * [Launcher Command: init](#launcher-command-init)
   * [Launcher Command: migrate](#launcher-command-migrate)
@@ -624,8 +625,7 @@ Example using an object array.
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. 
 
 * **description** keyword is used as a description of presented values.
-
-Use `npm start` to show the menu, after selecting your desired action you will have the option to save your selection. If you choose to do so, your selection will be saved in the `launcher-custom.json` file. Use `npm start menu` to ignore the `defaultScript` option, in the `launcher-custom.json` file, so the menu will be interactive. 
+* Use a colon to separate the menu item name and description.
 
 The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information on all the available options.
 
@@ -659,6 +659,41 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
   "options": {
     "menu": {
       "defaultChoice": "hva:development"
+    }
+  }
+}
+```
+
+### Menu save default script
+Use the **menu** section options to specify a **defaultScript**, this will disable the interactive menu. 
+
+Best practices is to specify the menu default options in the **launcher-custom.json** file, and add this file the your **.gitignore**. Now every developer can customize its menu without interfering with the project defaults.
+
+Use `npm start menu` to ignore the **defaultScript** option, so the menu will be interactive. 
+
+**Run**: `npm start` to use this example.
+``` JSON
+{
+  "scripts": {
+    "serve:$environment": "echo Serve script: $environment",
+    "build:$environment": "echo Build script: $environment"
+  },
+  "menu": {
+    "description": "organization",
+    "uva:University of Amsterdam.": {
+      "description": "environment",
+      "serve": "serve:uva",
+      "build": "build:uva"
+    },
+    "hva:Amsterdam University of Applied Sciences.": {
+      "description": "environment",
+      "serve": "serve:hva",
+      "build": "build:hva"
+    }
+  },
+  "options": {
+    "menu": {
+      "defaultScript": "build:hva"
     }
   }
 }
@@ -910,6 +945,7 @@ If the *nonull* script-launcher option is set, and no match was found, then the 
 * **defaultChoice:** Specify the default selected entries of your menu separated by a colon. 
 * **menu defaultScript:** Auto start a specific script, this will disable the interactive menu. 
 * **timeout:** Auto close/select a menu value after a specified time.
+* **confirm:** Enable disable menu confirmation prompt.
 
 The default value is presented in the following example:
 ``` JSON
@@ -921,7 +957,8 @@ The default value is presented in the following example:
     "menu": {
       "defaultChoice": "",
       "defaultScript": "",
-      "timeout": 0
+      "timeout": 0,
+      "confirm" :true
     }
   }
 }

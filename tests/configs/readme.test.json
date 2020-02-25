@@ -551,10 +551,27 @@
     },
     {
       "id": "0042",
-      "name": "Launcher settings",
+      "name": "Menu save default script",
+      "sanatize": true,
       "tests": [
         {
           "id": "0042-00",
+          "lifecycle": "start",
+          "result": [
+            "Auto menu:                               (Use the menu by running: npm start menu)",
+            "Executing: npm start build:hva",
+            "",
+            "Build script: hva"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0043",
+      "name": "Launcher settings",
+      "tests": [
+        {
+          "id": "0043-00",
           "lifecycle": "start",
           "npm-args": "build:dev",
           "result": [
@@ -567,7 +584,7 @@
           ]
         },
         {
-          "id": "0042-01",
+          "id": "0043-01",
           "lifecycle": "start",
           "npm-args": "build:acc",
           "result": [
@@ -580,7 +597,7 @@
           ]
         },
         {
-          "id": "0042-02",
+          "id": "0043-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -595,11 +612,11 @@
       ]
     },
     {
-      "id": "0043",
+      "id": "0044",
       "name": "Reference scripts by using wildcards",
       "tests": [
         {
-          "id": "0043-00",
+          "id": "0044-00",
           "lifecycle": "start",
           "npm-args": "build:*",
           "result": [
@@ -609,7 +626,7 @@
           ]
         },
         {
-          "id": "0043-01",
+          "id": "0044-01",
           "lifecycle": "start",
           "npm-args": "build:all",
           "result": [
@@ -619,7 +636,7 @@
           ]
         },
         {
-          "id": "0043-02",
+          "id": "0044-02",
           "cmd-args": [
             "--concurrent",
             "build:*"
@@ -633,12 +650,12 @@
       ]
     },
     {
-      "id": "0044",
+      "id": "0045",
       "name": "Launcher arguments",
       "sanatize": true,
       "tests": [
         {
-          "id": "0044-00",
+          "id": "0045-00",
           "cmd-args": [
             "--help"
           ]
@@ -646,7 +663,7 @@
       ]
     },
     {
-      "id": "0045",
+      "id": "0046",
       "name": "Launcher Command: init",
       "sanatize": true,
       "files": {
@@ -654,13 +671,13 @@
       },
       "tests": [
         {
-          "id": "0045-00",
+          "id": "0046-00",
           "cmd-args": [
             "init"
           ]
         },
         {
-          "id": "0045-01",
+          "id": "0046-01",
           "cmd-args": [
             "init",
             "basic"
@@ -669,7 +686,7 @@
       ]
     },
     {
-      "id": "0046",
+      "id": "0047",
       "name": "Launcher Command: migrate",
       "sanatize": true,
       "files": {
@@ -715,7 +732,7 @@
       },
       "tests": [
         {
-          "id": "0046-00",
+          "id": "0047-00",
           "cmd-args": [
             "migrate",
             "--params=1"
@@ -724,7 +741,7 @@
       ]
     },
     {
-      "id": "0047",
+      "id": "0048",
       "name": "Launcher Command: script",
       "sanatize": true,
       "files": {
@@ -743,14 +760,14 @@
       },
       "tests": [
         {
-          "id": "0047-00",
+          "id": "0048-00",
           "cmd-args": [
             "build:css",
             "build:js"
           ]
         },
         {
-          "id": "0047-01",
+          "id": "0048-01",
           "cmd-args": [
             "build:css",
             "build:js",
@@ -760,7 +777,7 @@
       ]
     },
     {
-      "id": "0048",
+      "id": "0049",
       "name": "Launcher Command: list",
       "files": {
         "launcher-config": {
@@ -793,20 +810,20 @@
       },
       "tests": [
         {
-          "id": "0048-00",
+          "id": "0049-00",
           "cmd-args": [
             "list"
           ]
         },
         {
-          "id": "0048-01",
+          "id": "0049-01",
           "cmd-args": [
             "list",
             "menu"
           ]
         },
         {
-          "id": "0048-02",
+          "id": "0049-02",
           "cmd-args": [
             "list",
             "completion"
