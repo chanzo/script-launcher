@@ -710,7 +710,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     }
 
     if (launchArgs.arguments.list) {
-      if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'script') {
+      if (launchArgs.optionals[0] === 'script') {
         const choices: string[] = Object.keys(configLoad.config.scripts.scripts).sort();
         const unique = [...new Set(choices)];
 
@@ -732,7 +732,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         return;
       }
 
-      if (launchArgs.optionals[0] === 'completion') {
+      if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'complete') {
         const scripts = Object.keys(configLoad.config.scripts.scripts).filter((item) => !item.includes('$'));
         const menu = getMenuScripts(configLoad.config.menu).filter((item) => !scripts.includes(item));
         const choices: string[] = [...menu, ...scripts].sort();
@@ -747,7 +747,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
       console.error('List option not supported: ' + launchArgs.optionals);
       console.error();
-      console.error('Use: script, menu or completion');
+      console.error('Use: script, menu or complete');
 
       throw new Error();
     }
