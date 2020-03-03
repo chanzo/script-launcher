@@ -812,7 +812,8 @@
         {
           "id": "0049-00",
           "cmd-args": [
-            "list"
+            "list",
+            "script"
           ]
         },
         {
@@ -826,7 +827,7 @@
           "id": "0049-02",
           "cmd-args": [
             "list",
-            "completion"
+            "complete"
           ]
         }
       ]
