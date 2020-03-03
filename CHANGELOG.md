@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.27.1
+### Changes
+
 ## 1.27.0
 ### Changes
 * Updated readme dependency documentation
