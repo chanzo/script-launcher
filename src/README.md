@@ -785,23 +785,23 @@ Building: .js files
 ### Launcher Command: list
 Use the **list** command to display the available scripts. This can be used for [enabling tab completion](#enable-tab-completion).
 
-**Run**: `npx launch list`
+**Run**: `npx launch list` for listing available scripts.
 ``` bash
-serve:$project:dev
 serve:$project:$config
+serve:$project:dev
 ```
 
-**Run**: `npx launch list menu`
+**Run**: `npx launch list menu` for listing available menu scripts.
 ``` bash
-serve:uva:dev
-serve:uva:acc
-serve:uva:prd
-serve:hva:dev
 serve:hva:acc
+serve:hva:dev
 serve:hva:prd
+serve:uva:acc
+serve:uva:dev
+serve:uva:prd
 ```
 
-**Run**: `npx launch list completion`
+**Run**: `npx launch list completion` for listing scripts that can be used for tab completion.
 ``` bash
 serve:hva:acc
 serve:hva:dev

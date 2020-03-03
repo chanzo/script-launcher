@@ -2,6 +2,8 @@
 
 ## 1.27.1
 ### Changes
+* Updated [**list**](src#launcher-command-list) argument so output will be sorted and only contains unique values.
+* Updated dev dependencies
 
 ## 1.27.0
 ### Changes

@@ -712,7 +712,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchArgs.arguments.list) {
       if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'script') {
         const choices: string[] = Object.keys(configLoad.config.scripts.scripts).sort();
-        const unique = choices.filter((value, index, array) => array.indexOf(value) === index);
+        const unique = [...new Set(choices)];
 
         for (const item of unique) {
           console.log(item);
@@ -723,7 +723,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
       if (launchArgs.optionals[0] === 'menu') {
         const choices = getMenuScripts(configLoad.config.menu).sort();
-        const unique = choices.filter((value, index, array) => array.indexOf(value) === index);
+        const unique = [...new Set(choices)];
 
         for (const item of unique) {
           console.log(item);
@@ -736,7 +736,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         const scripts = Object.keys(configLoad.config.scripts.scripts).filter((item) => !item.includes('$'));
         const menu = getMenuScripts(configLoad.config.menu).filter((item) => !scripts.includes(item));
         const choices: string[] = [...menu, ...scripts].sort();
-        const unique = choices.filter((value, index, array) => array.indexOf(value) === index);
+        const unique = [...new Set(choices)];
 
         for (const item of unique) {
           console.log(item);
