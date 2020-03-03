@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.27.2
+### Breaking
+* Changed `npx launch list completion` to `npx launch list complete`
+* Changed the default for `npx launch list` this command will now output the same as `npx launch list complete`
+
 ## 1.27.1
 ### Changes
 * Updated [**list**](src#launcher-command-list) argument so output will be sorted and only contains unique values.
