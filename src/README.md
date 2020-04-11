@@ -629,7 +629,7 @@ Use the **menu** section to create an interactive landing menu, so a new develop
 
 The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information on all the available options.
 
-**Run**: `npm start` to use this example.
+**Run**: `npm start` , `npm start menu`, or `npm start menu uva:acceptance` to use this example.
 ``` JSON
 {
   "scripts": {

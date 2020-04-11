@@ -367,7 +367,8 @@
         "launcher-settings": {
           "options": {
             "menu": {
-              "timeout": 1
+              "timeout": 1,
+              "confirm": false
             }
           }
         }
@@ -384,6 +385,38 @@
             "",
             "Start development server",
             "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "id": "0037-01",
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
+            "✔ Select organization › hva",
+            "",
+            "Executing: npm start serve:hva:dev",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "id": "0037-02",
+          "lifecycle": "start",
+          "npm-args": [
+            "menu",
+            "uva:acceptance"
+          ],
+          "result": [
+            "? Select organization › - Use arrow-keys. Return to submit.\n❯   \u001b[4muva\u001b[24m - University of Amsterdam.\n    hva\n",
+            "✔ Select organization › uva",
+            "? Select environment › - Use arrow-keys. Return to submit.\n    development\n❯   \u001b[4macceptance\u001b[24m\n    production\n",
+            "✔ Select environment › acceptance",
+            "",
+            "Executing: npm start serve:uva:acc",
+            "",
+            "ng serve uva -c=acc"
           ]
         }
       ]

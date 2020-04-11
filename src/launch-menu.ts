@@ -8,12 +8,13 @@ import { SelectPrompt } from 'prompts/lib/elements';
 
 export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, menuConfirm: boolean, confirm: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   try {
+    const defaultChoice = config.options.menu.defaultChoice.split(':');
     let script: IScriptInfo & { timedout: boolean } = {
       name: config.options.menu.defaultChoice,
       inline: false,
       multiple: false,
       parameters: {},
-      arguments: args,
+      arguments: [],
       script: config.options.menu.defaultScript,
       timedout: false,
     };
@@ -21,8 +22,20 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
     if (interactive || !script.script) {
       const pageSize = config.options.menu.pageSize;
+      let autoIndex = 0;
 
-      script = await timeoutMenu(config.menu, pageSize, config.options.menu.defaultChoice, timeout);
+      if (args.length > 0) {
+        const items = args[0].split(':');
+        const length = items.length < defaultChoice.length ? items.length : defaultChoice.length;
+
+        for (let index = 0; index < length; index++) {
+          defaultChoice[index] = items[index];
+        }
+
+        autoIndex = length;
+      }
+
+      script = await timeoutMenu(config.menu, pageSize, defaultChoice, timeout, autoIndex);
 
       if (!script.timedout && menuConfirm && !await confirmPrompt('Are you sure', undefined, true)) {
         return {
@@ -45,6 +58,8 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     }
 
     const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, testmode);
+
+    script.arguments = args;
 
     return {
       startTime: executor.startTime,
@@ -158,7 +173,7 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
   return '';
 }
 
-async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string, timeout: number): Promise<IScriptInfo & { timedout: boolean }> {
+async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string[], timeout: number, autoIndex: number): Promise<IScriptInfo & { timedout: boolean }> {
   let menuPromise: Promise<IScriptInfo> & { close: () => void };
   let timeoutId: NodeJS.Timeout = null;
   let currentTimeout = timeout;
@@ -203,18 +218,17 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   }
 
   try {
-    const defaults = defaultChoice.split(':');
-    menuPromise = promptMenu(menu, pageSize, defaults, []);
+    menuPromise = promptMenu(menu, pageSize, defaultChoice, [], autoIndex);
     const scriptInfo = await menuPromise;
 
     if (scriptInfo === null) {
       return {
-        name: defaultChoice,
+        name: defaultChoice.join(':'),
         inline: false,
         multiple: false,
         parameters: {},
         arguments: [],
-        script: getDefaultScript(menu, defaults),
+        script: getDefaultScript(menu, defaultChoice),
         timedout: true,
       };
     }
@@ -230,7 +244,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string,
   }
 }
 
-function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[]): Promise<IScriptInfo> & { close: () => void } {
+function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: string[], autoIndex: number): Promise<IScriptInfo> & { close: () => void } {
   const choices = createChoices(menu);
   let close = false;
 
@@ -254,7 +268,10 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
       choices: choices,
     },
   );
+
   const menuPromise = toPromise(selectMenu);
+
+  if (autoIndex > 0) selectMenu.submit();
 
   const resultPromise = menuPromise.then((answer) => {
     if (close || answer.length === 0) return null;
@@ -285,7 +302,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
       };
     }
 
-    return promptMenu(menuItem as IMenu, pageSize, defaults, choice);
+    return promptMenu(menuItem as IMenu, pageSize, defaults, choice, autoIndex - 1);
   }) as Promise<IScriptInfo> & { close: () => void };
 
   resultPromise.close = () => {
