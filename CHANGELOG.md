@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.28.0
+### Changes
+* Updated dependencies
+* Added a default selection menu argument
+
+#### Default menu selection argument example
+``` bash
+npm start menu build:development
+```
+
 ## 1.27.2
 ### Breaking
 * Changed `npx launch list completion` to `npx launch list complete`

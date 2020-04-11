@@ -769,6 +769,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript[0] === 'menu' && scripts.length === 0) {
       interactive = true;
       launchScript = [];
+      commandArgs.shift();
     }
 
     if (launchScript.length === 0) {
