@@ -1,4 +1,8 @@
 # Change Log
+## 1.28.2
+### Changes
+* Minor documentation updates
+
 ## 1.28.1
 ### Changes
 * Added the default selection [menu option](src#menu-options)
@@ -6,7 +10,7 @@
 ## 1.28.0
 ### Changes
 * Updated dependencies
-* Added a default selection [menu argument](#interactive-menu)
+* Added a default selection [menu argument](src#interactive-menu)
 
 #### Default menu selection argument example
 ``` bash

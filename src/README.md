@@ -65,7 +65,7 @@ Use **launch init** to create a starter configuration based on one of the availa
 npx launch init basic
 ```
 
-If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add [custom run scripts](#start-a-specific-launch-script,-by-using-the-npm-run) for starting Script Launcher.
+If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add [custom run scripts](#start-a-specific-launch-script-by-using-the-npm-run) for starting Script Launcher.
 
 Example: **package.json**
 ``` JSON
@@ -103,8 +103,8 @@ Example: **package.json**
 {
     ...
     "scripts": {
-        "serve:dev": "launch",
-        "build:production": "launch"
+        "lint": "launch",
+        "test": "launch"
         ...
     },
     ...
@@ -113,8 +113,8 @@ Example: **package.json**
 
 Example run commands
 ``` bash
-npm run serve:dev
-npm run build:production
+npm run lint
+npm run test
 ```
 
 ## Migrate package.json scripts
