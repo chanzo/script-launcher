@@ -21,11 +21,12 @@ export async function launchMenu(environment: { [name: string]: string }, settin
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
     if (interactive || !script.script) {
+      const defaultSelect = args.length > 0 ? args[0] : config.options.menu.defaultSelect;
       const pageSize = config.options.menu.pageSize;
       let autoIndex = 0;
 
-      if (args.length > 0) {
-        const items = args[0].split(':');
+      if (defaultSelect) {
+        const items = defaultSelect.split(':');
         const length = items.length < defaultChoice.length ? items.length : defaultChoice.length;
 
         for (let index = 0; index < length; index++) {
