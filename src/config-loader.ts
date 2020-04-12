@@ -20,6 +20,7 @@ interface IOptions {
   menu: {
     defaultScript: IScript;
     defaultChoice: string;
+    defaultSelect: string;
     confirm: boolean;
     timeout: number;
     pageSize: number;
@@ -73,6 +74,7 @@ export class Config {
       menu: {
         defaultChoice: '',
         defaultScript: '',
+        defaultSelect: '',
         confirm: true,
         timeout: 0,
         pageSize: 7,
