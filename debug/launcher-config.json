@@ -2,11 +2,11 @@
   "scripts": {
     "build:$config": [
       "echo ${launch_style_bold}build:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
-      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url",
+      "echo ng build -c=$config --deploy-url $launch_setting_${config}_url $*",
       ""
     ],
     "serve:$config": [
-      "build:$config",
+      "build:$config $*",
       "echo ${launch_style_bold}serve:$launch_style_normal $launch_setting_name $launch_setting_${config}_version",
       "echo ng serve -c=$config --deploy-url $launch_setting_${config}_url",
       "",

@@ -564,6 +564,76 @@
     {
       "id": "0041",
       "name": "Interactive menu",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project:dev": {
+              "concurrent": [
+                "echo Start development server",
+                "echo ng serve $project -c=dev"
+              ]
+            },
+            "serve:$project:$config": "echo ng serve $project -c=$config"
+          },
+          "menu": {
+            "description": "organization",
+            "uva": {
+              "description": "environment",
+              "development": "serve:uva:dev",
+              "acceptance": "serve:uva:acc",
+              "production": "serve:uva:prd"
+            },
+            "separator": "",
+            "hva": {
+              "description": "environment",
+              "development": "serve:hva:dev",
+              "acceptance": "serve:hva:acc",
+              "production": "serve:hva:prd"
+            }
+          },
+          "options": {
+            "menu": {
+              "defaultScript": "serve:hva:dev",
+              "defaultChoice": "hva:development",
+              "defaultSelect": "uva:acceptance",
+              "confirm": false
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0041-00",
+          "lifecycle": "start",
+          "result": [
+            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
+            "Executing: npm start serve:hva:dev",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "id": "0041-01",
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "? Select organization › - Use arrow-keys. Return to submit.\n❯   \u001b[4muva\u001b[24m\n    hva\n",
+            "✔ Select organization › uva",
+            "? Select environment › - Use arrow-keys. Return to submit.\n    development\n❯   \u001b[4macceptance\u001b[24m\n    production\n",
+            "✔ Select environment › acceptance",
+            "",
+            "Executing: npm start serve:uva:acc",
+            "",
+            "ng serve uva -c=acc"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0042",
+      "name": "Interactive menu",
       "files": {
         "launcher-config": {
           "scripts": {
@@ -573,7 +643,7 @@
       },
       "tests": [
         {
-          "id": "0041-00",
+          "id": "0042-00",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -583,12 +653,12 @@
       ]
     },
     {
-      "id": "0042",
+      "id": "0043",
       "name": "Menu save default script",
       "sanatize": true,
       "tests": [
         {
-          "id": "0042-00",
+          "id": "0043-00",
           "lifecycle": "start",
           "result": [
             "Auto menu:                               (Use the menu by running: npm start menu)",
@@ -600,11 +670,11 @@
       ]
     },
     {
-      "id": "0043",
+      "id": "0044",
       "name": "Launcher settings",
       "tests": [
         {
-          "id": "0043-00",
+          "id": "0044-00",
           "lifecycle": "start",
           "npm-args": "build:dev",
           "result": [
@@ -617,7 +687,7 @@
           ]
         },
         {
-          "id": "0043-01",
+          "id": "0044-01",
           "lifecycle": "start",
           "npm-args": "build:acc",
           "result": [
@@ -630,7 +700,7 @@
           ]
         },
         {
-          "id": "0043-02",
+          "id": "0044-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -645,11 +715,11 @@
       ]
     },
     {
-      "id": "0044",
+      "id": "0045",
       "name": "Reference scripts by using wildcards",
       "tests": [
         {
-          "id": "0044-00",
+          "id": "0045-00",
           "lifecycle": "start",
           "npm-args": "build:*",
           "result": [
@@ -659,7 +729,7 @@
           ]
         },
         {
-          "id": "0044-01",
+          "id": "0045-01",
           "lifecycle": "start",
           "npm-args": "build:all",
           "result": [
@@ -669,7 +739,7 @@
           ]
         },
         {
-          "id": "0044-02",
+          "id": "0045-02",
           "cmd-args": [
             "--concurrent",
             "build:*"
@@ -683,12 +753,12 @@
       ]
     },
     {
-      "id": "0045",
+      "id": "0046",
       "name": "Launcher arguments",
       "sanatize": true,
       "tests": [
         {
-          "id": "0045-00",
+          "id": "0046-00",
           "cmd-args": [
             "--help"
           ]
@@ -696,7 +766,7 @@
       ]
     },
     {
-      "id": "0046",
+      "id": "0047",
       "name": "Launcher Command: init",
       "sanatize": true,
       "files": {
@@ -704,13 +774,13 @@
       },
       "tests": [
         {
-          "id": "0046-00",
+          "id": "0047-00",
           "cmd-args": [
             "init"
           ]
         },
         {
-          "id": "0046-01",
+          "id": "0047-01",
           "cmd-args": [
             "init",
             "basic"
@@ -719,7 +789,7 @@
       ]
     },
     {
-      "id": "0047",
+      "id": "0048",
       "name": "Launcher Command: migrate",
       "sanatize": true,
       "files": {
@@ -765,7 +835,7 @@
       },
       "tests": [
         {
-          "id": "0047-00",
+          "id": "0048-00",
           "cmd-args": [
             "migrate",
             "--params=1"
@@ -774,7 +844,7 @@
       ]
     },
     {
-      "id": "0048",
+      "id": "0049",
       "name": "Launcher Command: script",
       "sanatize": true,
       "files": {
@@ -793,14 +863,14 @@
       },
       "tests": [
         {
-          "id": "0048-00",
+          "id": "0049-00",
           "cmd-args": [
             "build:css",
             "build:js"
           ]
         },
         {
-          "id": "0048-01",
+          "id": "0049-01",
           "cmd-args": [
             "build:css",
             "build:js",
@@ -810,7 +880,7 @@
       ]
     },
     {
-      "id": "0049",
+      "id": "0050",
       "name": "Launcher Command: list",
       "files": {
         "launcher-config": {
@@ -843,21 +913,21 @@
       },
       "tests": [
         {
-          "id": "0049-00",
+          "id": "0050-00",
           "cmd-args": [
             "list",
             "script"
           ]
         },
         {
-          "id": "0049-01",
+          "id": "0050-01",
           "cmd-args": [
             "list",
             "menu"
           ]
         },
         {
-          "id": "0049-02",
+          "id": "0050-02",
           "cmd-args": [
             "list",
             "complete"
