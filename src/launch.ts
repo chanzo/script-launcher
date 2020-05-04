@@ -8,6 +8,7 @@ import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors }
 import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
+import * as os from 'os'
 
 interface IArgs {
   init: boolean;
@@ -23,6 +24,7 @@ interface IArgs {
   menuTimeout: number;
   params: number;
   concurrent: boolean;
+  limit: number;
   script?: string;
 }
 
@@ -486,6 +488,7 @@ function showHelp() {
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
     params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
     concurrent: '  ' + Colors.Cyan + 'concurrent=  ' + Colors.Normal + 'Execute commandline wildcard matches in parallel.',
+    limit: '  ' + Colors.Cyan + 'limit=       ' + Colors.Normal + 'Limit the number of commands to execute in parallel.',
   });
 }
 
@@ -602,6 +605,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         menuTimeout: undefined,
         params: undefined,
         concurrent: false,
+        limit: undefined,
       },
       optionals: [],
       unknowns: [],
@@ -617,6 +621,10 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
     if (argsString.includes('--params') && launchArgs.arguments.params === undefined) launchArgs.arguments.params = 1;
     if (launchArgs.arguments.params === undefined) launchArgs.arguments.params = Number.MAX_SAFE_INTEGER;
+
+    if (launchArgs.arguments.limit === undefined) launchArgs.arguments.limit = config.options.limit;
+    if (launchArgs.arguments.limit === 0) launchArgs.arguments.limit = os.cpus().length;
+    if (launchArgs.arguments.limit < 1) launchArgs.arguments.limit = 1;
 
     Logger.level = launchArgs.arguments.logLevel;
 
@@ -775,7 +783,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript.length === 0) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, config.options.menu.confirm, launchArgs.arguments.confirm, testmode);
+      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, config.options.menu.confirm, launchArgs.arguments.confirm, launchArgs.arguments.limit, testmode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -805,7 +813,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, launchArgs.arguments.limit, testmode);
 
     startTime = executor.startTime;
 

@@ -26,7 +26,8 @@
             "  \u001b[36mdirectory=   \u001b[0mThe directory from which configuration files are loaded.",
             "  \u001b[36mmenuTimeout= \u001b[0mSet menu timeout in seconds.",
             "  \u001b[36mparams=      \u001b[0mSet the number of parameters to preserve.",
-            "  \u001b[36mconcurrent=  \u001b[0mExecute commandline wildcard matches in parallel."
+            "  \u001b[36mconcurrent=  \u001b[0mExecute commandline wildcard matches in parallel.",
+            "  \u001b[36mlimit=       \u001b[0mLimit the number of commands to execute in parallel."
           ]
         },
         {
