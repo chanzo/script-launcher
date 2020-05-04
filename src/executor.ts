@@ -3,7 +3,7 @@ import { IProcess, ISpawnOptions, Process } from './spawn-process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './logger';
-import { confirmPrompt, formatTime, stringify, stringToArgv, Colors } from './common';
+import { confirmPrompt, formatTime, stringify, stringToArgv, Colors, Limiter } from './common';
 import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
@@ -301,8 +301,9 @@ export class Executor {
   private readonly globOptions: glob.Options;
   private readonly confirm?: boolean;
   private readonly testmode: boolean;
+  private readonly limit: number;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.Options, confirm: boolean | undefined, testmode: boolean) {
+  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.Options, confirm: boolean | undefined, limit: number, testmode: boolean) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;
@@ -311,6 +312,7 @@ export class Executor {
     this.confirm = confirm;
     this.testmode = testmode;
     this.startTime = process.hrtime();
+    this.limit = limit;
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -321,6 +323,7 @@ export class Executor {
       shell: this.shell,
       suppress: false,
       testmode: this.testmode,
+      limit: this.limit
     };
 
     if (Logger.level > 0) {
@@ -536,7 +539,7 @@ export class Executor {
     return result;
   }
 
-  private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order): Promise<IProcesses> {
+  private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order, limiter = new Limiter(options.limit)): Promise<IProcesses> {
     const processes: IProcesses = [];
     const suppress = options.suppress;
 
@@ -576,11 +579,21 @@ export class Executor {
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
+          await limiter.enter();
+
           const commandProcess = Process.spawn(command, info.args, options);
 
           processes.push(commandProcess);
 
-          if (order === Order.sequential && await commandProcess.wait() !== 0) break;
+          if (order === Order.sequential) {
+            const exitCode = await commandProcess.wait();
+
+            limiter.leave();
+
+            if (exitCode !== 0) break;
+          } else {
+            commandProcess.wait().then(() => limiter.leave());
+          }
         }
       } else {
         const concurrent: Array<ITasks | string> = [...task.concurrent];
@@ -600,8 +613,8 @@ export class Executor {
           }
         }
 
-        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent);
-        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential);
+        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent, limiter);
+        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential, limiter);
 
         processes.push(concurrentProcesses);
         processes.push(sequentialProcesses);

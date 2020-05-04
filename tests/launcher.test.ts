@@ -91,6 +91,7 @@ async function main() {
     'Script shell',
     'Menu options',
     'Logging',
+    'Limit Concurrency',
     'Launcher options',
     'Glob Options',
     'Migrate package.json scripts',

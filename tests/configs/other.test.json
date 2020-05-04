@@ -206,14 +206,14 @@
           "result": [
             "Loaded config:  launcher-config.json",
             "",
-            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"defaultSelect\": \"\",\n      \"confirm\": \u001b[33mtrue,\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
+            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"limit\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"defaultSelect\": \"\",\n      \"confirm\": \u001b[33mtrue,\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
             "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
             "Process platform  : $platform",
             "Script shell      : true",
-            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    list: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false\n  },\n  optionals: [],\n  unknowns: []\n}",
+            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    list: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false,\n    limit: 32\n  },\n  optionals: [],\n  unknowns: []\n}",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -814,6 +814,126 @@
             "Building: index.css file",
             "Building: index.js file",
             "Building: index.html file"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0022",
+      "name": "Concurrent limit",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "sleep:$time:$message": "node -e \"setTimeout(() => {console.log('$message');}, $time)\"",
+            "concurrent": [
+              {
+                "sequential": [
+                  "sleep:0050:S0-0",
+                  "sleep:0050:S0-1",
+                  "sleep:0050:S0-2"
+                ],
+                "concurrent": [
+                  {
+                    "sequential": [
+                      "sleep:0300:S1-0",
+                      "sleep:0050:S1-1",
+                      "sleep:0050:S1-2"
+                    ],
+                    "concurrent": [
+                      "sleep:1600:C0-0",
+                      "sleep:1400:C0-1",
+                      "sleep:1200:C0-2"
+                    ]
+                  },
+                  {
+                    "sequential": [
+                      "sleep:0600:S2-0",
+                      "sleep:0050:S2-1",
+                      "sleep:0050:S2-2"
+                    ],
+                    "concurrent": [
+                      "sleep:1800:C1-0",
+                      "sleep:1600:C1-1",
+                      "sleep:1400:C1-2"
+                    ]
+                  },
+                  {
+                    "sequential": [
+                      "sleep:0900:S3-0",
+                      "sleep:0050:S3-1",
+                      "sleep:0050:S3-2"
+                    ],
+                    "concurrent": [
+                      "sleep:2000:C2-0",
+                      "sleep:1800:C2-1",
+                      "sleep:1600:C2-2"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "limit": 100
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0022-00",
+          "lifecycle": "start",
+          "npm-args": "concurrent",
+          "result": [
+            "S0-0",
+            "S0-1",
+            "S1-0",
+            "S0-2",
+            "S1-1",
+            "S1-2",
+            "S2-0",
+            "S2-1",
+            "S2-2",
+            "S3-0",
+            "S3-1",
+            "S3-2",
+            "C0-2",
+            "C0-1",
+            "C1-2",
+            "C0-0",
+            "C1-1",
+            "C2-2",
+            "C1-0",
+            "C2-1",
+            "C2-0"
+          ]
+        },
+        {
+          "id": "0022-01",
+          "lifecycle": "start",
+          "npm-args": "concurrent",
+          "cmd-args": "--limit=4",
+          "result": [
+            "S1-0",
+            "C0-2",
+            "C0-1",
+            "C0-0",
+            "S2-0",
+            "C1-0",
+            "C1-2",
+            "C1-1",
+            "S3-0",
+            "S0-0",
+            "C2-1",
+            "S1-1",
+            "S2-1",
+            "S3-1",
+            "S0-1",
+            "C2-0",
+            "S1-2",
+            "S2-2",
+            "S3-2",
+            "S0-2",
+            "C2-2"
           ]
         }
       ]

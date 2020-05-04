@@ -14,6 +14,7 @@ export interface IProcess {
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
   testmode?: boolean;
+  limit: number;
   extraLogInfo?: (process: IProcess) => string;
 }
 

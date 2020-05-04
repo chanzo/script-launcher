@@ -442,7 +442,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 ```
 
 ### Concurrent scripts
-This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
+This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background. Use the `limit` argument or option to limit the number of commands to execute in parallel.
 
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON
@@ -722,6 +722,7 @@ Options:
   menuTimeout= Set menu timeout in seconds.
   params=      Set the number of parameters to preserve.
   concurrent=  Execute commandline wildcard matches in parallel.
+  limit=       Limit the number of commands to execute in parallel.
 ```
 
 ### Launcher Command: init
@@ -977,6 +978,21 @@ The default value is presented in the following example:
   },
   "options": {
     "logLevel": 0
+  }
+}
+```
+
+### Limit Concurrency
+Use the **limit** option to limit the number of commands to execute in parallel. When using the value 0 the number of available cpus will be used.
+
+The default value is presented in the following example:
+``` JSON
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "limit": 0
   }
 }
 ```

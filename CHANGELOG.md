@@ -1,4 +1,8 @@
 # Change Log
+## 1.29.0
+### Changes
+* Added the `limit` argument and option to limit the number of commands to execute in parallel
+
 ## 1.28.2
 ### Changes
 * Minor documentation updates

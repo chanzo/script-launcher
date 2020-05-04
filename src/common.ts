@@ -227,3 +227,46 @@ export function stringToArgv(value: string): string[] {
   return result;
 
 }
+
+export class Limiter {
+  constructor(maximum: number) {
+    this.currentCount = 0;
+    this.maximumCount = maximum;
+
+    this.resolvers = [];
+  }
+
+  async enter(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      if (this.currentCount < this.maximumCount) {
+        this.currentCount++;
+
+        resolve(this.currentCount);
+
+        return;
+      }
+
+      this.resolvers.push(resolve);
+    });
+  }
+
+  leave(): number {
+    this.currentCount--;
+
+    while (this.currentCount < this.maximumCount && this.resolvers.length > 0) {
+      const resolver = this.resolvers[0];
+
+      this.resolvers.shift();
+
+      this.currentCount++;
+
+      resolver(this.currentCount);
+    }
+
+    return this.currentCount;
+  }
+
+  private resolvers: Array<(value?: number | PromiseLike<number>) => void>;
+  private currentCount: number;
+  private maximumCount: number;
+}
