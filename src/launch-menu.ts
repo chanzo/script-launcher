@@ -6,7 +6,7 @@ import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { confirmPrompt, toPromise, Colors } from './common';
 import { SelectPrompt } from 'prompts/lib/elements';
 
-export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, menuConfirm: boolean, confirm: boolean, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, menuConfirm: boolean, confirm: boolean, limit: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
   try {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
     let script: IScriptInfo & { timedout: boolean } = {
@@ -58,7 +58,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
       console.log();
     }
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, limit, testmode);
 
     script.arguments = args;
 
