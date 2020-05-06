@@ -445,7 +445,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 ### Concurrent scripts
 This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
 
-Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) to limit the number of commands to execute in parallel.
+Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) to limit the number of commands to execute in parallel..
 
 **Run**: `npm start build-stuff` to use this example.
 ``` JSON
