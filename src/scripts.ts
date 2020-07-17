@@ -36,7 +36,7 @@ export class Scripts {
     if (!meta) meta = { circular: false };
 
     if (length > 0) {
-      if (scripts.some((item) => item.multiple)) {
+      if (scripts.some(item => item.multiple)) {
         scripts = scripts.filter(Scripts.containsScript.bind(filters));
 
         if (scripts.length !== length) meta.circular = true;
@@ -49,7 +49,7 @@ export class Scripts {
           multiple: true,
           parameters: {},
           arguments: [],
-          script: resolvedScripts,
+          script: resolvedScripts
         };
       }
 
@@ -68,19 +68,19 @@ export class Scripts {
     return null;
   }
 
-  public static parse(pattern: string): { command: string, arguments: string[] } {
+  public static parse(pattern: string): { command: string; arguments: string[] } {
     const args = stringToArgv(pattern);
 
     return {
       command: args.length > 0 ? args[0] : '',
-      arguments: args.slice(1),
+      arguments: args.slice(1)
     };
   }
 
   private static containsScript(this: string[], script: IScriptInfo): boolean {
     const filters: string[] = this || [];
 
-    return !filters.some((filter) => Scripts.getParameters(script.name, filter, true) !== null);
+    return !filters.some(filter => Scripts.getParameters(script.name, filter, true) !== null);
   }
 
   private static resolveScripts(scripts: IScriptInfo[]): IScript[] {
@@ -100,13 +100,13 @@ export class Scripts {
   private static countParams(name: string): number {
     const columns = name.split(':');
 
-    return columns.filter((item) => item.startsWith('$')).length;
+    return columns.filter(item => item.startsWith('$')).length;
   }
 
   private static countValues(name: string): number {
     const columns = name.split(':');
 
-    return columns.length - columns.filter((item) => item.startsWith('$')).length;
+    return columns.length - columns.filter(item => item.startsWith('$')).length;
   }
 
   private static getParameters(signature: string, reference: string, wildcard: boolean): { [name: string]: string } {
@@ -169,7 +169,7 @@ export class Scripts {
             multiple: multiple,
             parameters: parameters,
             arguments: info.arguments,
-            script: script,
+            script: script
           });
         }
       }
@@ -185,7 +185,7 @@ export class Scripts {
               multiple: true,
               parameters: parameters,
               arguments: info.arguments,
-              script: script,
+              script: script
             });
           }
         }

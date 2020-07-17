@@ -1,4 +1,8 @@
 # Change Log
+## 1.30.0
+* Updated dependencies and dev dependencies
+* Added prettier
+
 ## 1.29.0
 ### Changes
 * Added the [`limit`](src#limit-concurrency) argument and option to limit the number of commands to execute in parallel
@@ -164,7 +168,7 @@ npx launch --concurrent myScript1 myScript2 build:* -- myArg1 myArg2 myArg3
 * Updated dev dependencies
 * Added unit tests for testing created files
 * Added unit tests for parameter migration
-* Added parameter migration support 
+* Added parameter migration support
 * Added params argument
 
 ## 1.22.9
@@ -285,7 +289,7 @@ npx launch --concurrent myScript1 myScript2 build:* -- myArg1 myArg2 myArg3
 
 ## 1.22.0
 ### Changes
-* Added an argument for a Basic `Basic yes/no prompt.` 
+* Added an argument for a Basic `Basic yes/no prompt.`
 ``` bash
 npx launch --confirm 'Are you sure'
 ```
@@ -301,7 +305,7 @@ npx launch --confirm 'Are you sure'
 ### Changes
 * Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
   * Removed **pageSize** options
-  * Removed support for the **seperator** in a menu 
+  * Removed support for the **seperator** in a menu
 * Added support for using environment value aliases. More examples at [Environment and command line argument values](src#environment-and-command-line-argument-values) and [Launcher settings](src#launcher-settings)
 ``` JSON
 {
@@ -426,7 +430,7 @@ Script expanded : {
   ]
 }
 ```
-* 
+*
 
 ## 1.15.2
 ### Fixes
@@ -658,7 +662,7 @@ Exmaple 4: \${PATH}
     ]
   }
 }
-``` 
+```
 
 
 
@@ -836,7 +840,7 @@ example:
     ]
   }
 }
-``` 
+```
 * Bug fix so Condition and Exclusion on the first script level are now working.
 example:
 ``` JSON

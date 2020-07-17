@@ -24,10 +24,10 @@ interface ITasks {
 
 enum Order {
   concurrent,
-  sequential,
+  sequential
 }
 
-interface IProcesses extends Array<IProcess | Promise<IProcesses>> { }
+interface IProcesses extends Array<IProcess | Promise<IProcesses>> {}
 
 export class Executor {
   private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
@@ -126,13 +126,13 @@ export class Executor {
 
             environment[environmentKey] = value;
 
-            Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + environmentKey + '=' + value + '\'' + Colors.Normal);
+            Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + "'" + environmentKey + '=' + value + "'" + Colors.Normal);
           }
         }
       } else {
         environment[match[1]] = match[2];
 
-        Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + '\'' + match[1] + '=' + match[2] + '\'' + Colors.Normal);
+        Logger.debug(Colors.Bold + 'Set environment' + Colors.Normal + ' : ' + Colors.Green + "'" + match[1] + '=' + match[2] + "'" + Colors.Normal);
       }
 
       return true;
@@ -161,12 +161,12 @@ export class Executor {
         last = index + 1;
       }
 
-      if (char === '\"') {
-        while (++index < value.length && value[index] !== '\"');
+      if (char === '"') {
+        while (++index < value.length && value[index] !== '"');
       }
 
-      if (char === '\'') {
-        while (++index < value.length && value[index] !== '\'');
+      if (char === "'") {
+        while (++index < value.length && value[index] !== "'");
       }
 
       index++;
@@ -195,7 +195,7 @@ export class Executor {
     return result.join(' ');
   }
 
-  private static getCommandInfo(command: string, options: ISpawnOptions): { command: string, args: string[], options: ISpawnOptions } {
+  private static getCommandInfo(command: string, options: ISpawnOptions): { command: string; args: string[]; options: ISpawnOptions } {
     if (!command) command = '';
 
     options = { ...options };
@@ -236,7 +236,7 @@ export class Executor {
     }
 
     if (command.startsWith('#')) {
-      Logger.log(Colors.Bold + 'Skipping action' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, args);
+      Logger.log(Colors.Bold + 'Skipping action' + Colors.Normal + ' : ' + Colors.Green + "'" + command + "'" + Colors.Normal, args);
 
       return { command: null, args, options };
     }
@@ -275,7 +275,6 @@ export class Executor {
   }
 
   private static isCircular(tasks: Array<ITasks | string>): boolean {
-
     for (const task of tasks) {
       if (typeof task !== 'string') {
         if (task.circular) return true;
@@ -303,7 +302,16 @@ export class Executor {
   private readonly testmode: boolean;
   private readonly limit: number;
 
-  public constructor(shell: boolean | string, environment: { [name: string]: string }, settings: ILaunchSetting, scripts: Scripts, globOptions: glob.Options, confirm: boolean | undefined, limit: number, testmode: boolean) {
+  public constructor(
+    shell: boolean | string,
+    environment: { [name: string]: string },
+    settings: ILaunchSetting,
+    scripts: Scripts,
+    globOptions: glob.Options,
+    confirm: boolean | undefined,
+    limit: number,
+    testmode: boolean
+  ) {
     this.shell = shell;
     this.environment = environment;
     this.settings = settings;
@@ -343,7 +351,7 @@ export class Executor {
       Logger.log(Colors.Bold + 'Launcher Settings Values' + Colors.Normal);
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       for (const [key, value] of settings) {
-        Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + '\'' + value + '\'' + Colors.Normal);
+        Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + "'" + value + "'" + Colors.Normal);
       }
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       Logger.log('Total: ' + settings.length);
@@ -378,8 +386,8 @@ export class Executor {
       }
     }
 
-    processes.push(...await this.executeTasks(concurrent, options, Order.concurrent));
-    processes.push(...await this.executeTasks(sequential, options, Order.sequential));
+    processes.push(...(await this.executeTasks(concurrent, options, Order.concurrent)));
+    processes.push(...(await this.executeTasks(sequential, options, Order.sequential)));
 
     return Executor.wait(processes);
   }
@@ -412,16 +420,16 @@ export class Executor {
       'concurrent-then': [],
       'sequential-then': [],
       'concurrent-else': [],
-      'sequential-else': [],
+      'sequential-else': []
     };
     const environment = {
       ...scriptInfo.parameters,
-      ...this.settings.values,
+      ...this.settings.values
     };
 
     for (const [name, value] of Object.entries(scriptInfo.parameters)) {
       if (value === undefined) {
-        throw new Error('The parameter \"' + name + '\" of script \"' + scriptInfo.name + '\" is ' + value + '.');
+        throw new Error('The parameter "' + name + '" of script "' + scriptInfo.name + '" is ' + value + '.');
       }
     }
 
@@ -470,7 +478,7 @@ export class Executor {
         multiple: false,
         parameters: null,
         arguments: scriptInfo.arguments,
-        script: { ...(scriptInfo.script as IScriptTask) },
+        script: { ...(scriptInfo.script as IScriptTask) }
       };
 
       (repeaterTask.script as IScriptTask).repeater = null;
@@ -491,7 +499,7 @@ export class Executor {
           'concurrent-then': task['concurrent-then'],
           'sequential-then': task['sequential-then'],
           'concurrent-else': task['concurrent-else'],
-          'sequential-else': task['sequential-else'],
+          'sequential-else': task['sequential-else']
         });
       }
     }
@@ -509,7 +517,6 @@ export class Executor {
     if (!(constraints instanceof Array)) throw new Error('Constraint object value not supported: ' + stringify(constraints));
 
     for (let constraint of constraints) {
-
       constraint = Executor.expandArguments(constraint, args);
       constraint = Executor.expandEnvironment(constraint, environment);
 
@@ -562,7 +569,7 @@ export class Executor {
         if (info.command) {
           let command = Executor.expandGlobs(info.command, {
             ...this.globOptions,
-            ...{ cwd: options.cwd },
+            ...{ cwd: options.cwd }
           });
 
           command = Executor.removeEnvironment(command);
@@ -576,7 +583,7 @@ export class Executor {
             if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
           }
 
-          Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + '\'' + command + '\'' + Colors.Normal, info.args);
+          Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + "'" + command + "'" + Colors.Normal, info.args);
           Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
           await limiter.enter();
@@ -634,7 +641,7 @@ export class Executor {
   }
 
   private async evaluateConstraint(type: string, command: string, options: ISpawnOptions, outputPattern: string): Promise<boolean> {
-    if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + '\'' + outputPattern + '\'' + Colors.Normal);
+    if (outputPattern) Logger.log('Grep pattern    : ' + Colors.Green + "'" + outputPattern + "'" + Colors.Normal);
 
     options = { ...options };
 
@@ -645,7 +652,7 @@ export class Executor {
 
       if (typeof result !== 'boolean') throw new Error('type not supported');
 
-      Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
+      Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + "'" + command + "'" + Colors.Normal);
 
       Logger.log('Result          : ' + result);
       Logger.log();
@@ -662,7 +669,7 @@ export class Executor {
       if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
     }
 
-    Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + '\'' + command + '\'' + Colors.Normal);
+    Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + "'" + command + "'" + Colors.Normal);
 
     if (fs.existsSync(path.join(path.resolve(options.cwd), command))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
@@ -679,7 +686,7 @@ export class Executor {
       options.stdio = ['inherit', 'pipe', 'pipe'];
 
       if (outputPattern) {
-        options.extraLogInfo = (process) => {
+        options.extraLogInfo = process => {
           const matches = (process.stdout + process.stderr).match(outputPattern);
 
           return 'grep=' + (matches === null ? 'failed' : 'success');
@@ -721,7 +728,7 @@ export class Executor {
 
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
-          ...{ cwd: options.cwd },
+          ...{ cwd: options.cwd }
         });
 
         constraint = Executor.removeEnvironment(constraint);
@@ -729,7 +736,7 @@ export class Executor {
         // Remove environment and argument escaping
         constraint = constraint.replace(/\\\$/g, '$');
 
-        if (!await this.evaluateConstraint('Condition', constraint, options, outputPattern)) {
+        if (!(await this.evaluateConstraint('Condition', constraint, options, outputPattern))) {
           condition = false;
           break;
         }
@@ -751,7 +758,7 @@ export class Executor {
 
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
-          ...{ cwd: options.cwd },
+          ...{ cwd: options.cwd }
         });
 
         constraint = Executor.removeEnvironment(constraint);
@@ -768,12 +775,12 @@ export class Executor {
 
       confirm = Executor.expandGlobs(confirm, {
         ...this.globOptions,
-        ...{ cwd: options.cwd },
+        ...{ cwd: options.cwd }
       });
 
       confirm = Executor.removeEnvironment(confirm);
 
-      Logger.log(Colors.Bold + 'Confirm         : ' + Colors.Normal + Colors.Green + '\'' + confirm + '\'' + Colors.Normal);
+      Logger.log(Colors.Bold + 'Confirm         : ' + Colors.Normal + Colors.Green + "'" + confirm + "'" + Colors.Normal);
 
       confirmation = await confirmPrompt(confirm, this.confirm);
 
@@ -783,7 +790,14 @@ export class Executor {
     return condition && confirmation && !exclusion;
   }
 
-  private expandTasks(parents: string[], tasks: IScript[], environment: { [name: string]: string }, args: string[], parameters: { [name: string]: string }, meta: { circular: boolean }): Array<ITasks | string> {
+  private expandTasks(
+    parents: string[],
+    tasks: IScript[],
+    environment: { [name: string]: string },
+    args: string[],
+    parameters: { [name: string]: string },
+    meta: { circular: boolean }
+  ): Array<ITasks | string> {
     const result: Array<ITasks | string> = [];
 
     for (let task of tasks) {
@@ -823,7 +837,7 @@ export class Executor {
           multiple: false,
           parameters: parameters,
           arguments: args,
-          script: task,
+          script: task
         };
 
         if ((task as IScriptTask).repeater) {

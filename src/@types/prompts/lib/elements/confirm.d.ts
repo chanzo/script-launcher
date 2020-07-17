@@ -1,4 +1,4 @@
-import { Prompt } from "./prompt";
+import { Prompt } from './prompt';
 
 export class ConfirmPrompt extends Prompt {
   constructor(opts: any);

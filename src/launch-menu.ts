@@ -6,7 +6,18 @@ import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { confirmPrompt, toPromise, Colors } from './common';
 import { SelectPrompt } from 'prompts/lib/elements';
 
-export async function launchMenu(environment: { [name: string]: string }, settings: ILaunchSetting, config: Config, args: string[], interactive: boolean, timeout: number, menuConfirm: boolean, confirm: boolean, limit: number, testmode: boolean): Promise<{ startTime: [number, number], exitCode: number }> {
+export async function launchMenu(
+  environment: { [name: string]: string },
+  settings: ILaunchSetting,
+  config: Config,
+  args: string[],
+  interactive: boolean,
+  timeout: number,
+  menuConfirm: boolean,
+  confirm: boolean,
+  limit: number,
+  testmode: boolean
+): Promise<{ startTime: [number, number]; exitCode: number }> {
   try {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
     let script: IScriptInfo & { timedout: boolean } = {
@@ -16,7 +27,7 @@ export async function launchMenu(environment: { [name: string]: string }, settin
       parameters: {},
       arguments: [],
       script: config.options.menu.defaultScript,
-      timedout: false,
+      timedout: false
     };
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
@@ -38,15 +49,29 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
       script = await timeoutMenu(config.menu, pageSize, defaultChoice, timeout, autoIndex);
 
-      if (!script.timedout && menuConfirm && !await confirmPrompt('Are you sure', undefined, true)) {
+      if (!script.timedout && menuConfirm && !(await confirmPrompt('Are you sure', undefined, true))) {
         return {
           startTime: process.hrtime(),
-          exitCode: 0,
+          exitCode: 0
         };
       }
       console.log();
     } else {
-      console.log(Colors.Bold + 'Auto menu: ' + Colors.Dim + script.name.padEnd(28) + Colors.Normal + Colors.Dim + '  (Use the menu by running:' + Colors.Bold + ' npm start menu' + Colors.Normal + Colors.Dim + ')' + Colors.Normal);
+      console.log(
+        Colors.Bold +
+          'Auto menu: ' +
+          Colors.Dim +
+          script.name.padEnd(28) +
+          Colors.Normal +
+          Colors.Dim +
+          '  (Use the menu by running:' +
+          Colors.Bold +
+          ' npm start menu' +
+          Colors.Normal +
+          Colors.Dim +
+          ')' +
+          Colors.Normal
+      );
     }
 
     if (!script.name.startsWith('menu:')) script.name = 'menu:' + script.name;
@@ -64,12 +89,12 @@ export async function launchMenu(environment: { [name: string]: string }, settin
 
     return {
       startTime: executor.startTime,
-      exitCode: await executor.execute(script),
+      exitCode: await executor.execute(script)
     };
   } catch {
     return {
       startTime: [0, 0],
-      exitCode: 0,
+      exitCode: 0
     };
   }
 }
@@ -93,19 +118,19 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
   return result[0];
 }
 
-function getMenuItem(label: string): { name: string, help: string } {
+function getMenuItem(label: string): { name: string; help: string } {
   const match = label.match(/(.*?)\:(.*)$/);
 
   if (match) {
     return {
       name: match[1],
-      help: match[2],
+      help: match[2]
     };
   }
 
   return {
     name: label,
-    help: '',
+    help: ''
   };
 }
 
@@ -141,7 +166,7 @@ function createChoices(menu: IMenu): prompts.Choice[] {
         choices.push({
           title: name,
           value: name,
-          description: menuHelp[name],
+          description: menuHelp[name]
         } as any);
       }
     }
@@ -168,7 +193,6 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
     if (Array.isArray(value)) return value;
 
     menu = value as IMenu;
-
   } while (index < 30);
 
   return '';
@@ -181,7 +205,6 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string[
 
   if (currentTimeout > 0) {
     timeoutId = setInterval(() => {
-
       if (--currentTimeout > 0) {
         process.stdout.write('\x1b[s'); // Save cursor position
 
@@ -230,15 +253,15 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string[
         parameters: {},
         arguments: [],
         script: getDefaultScript(menu, defaultChoice),
-        timedout: true,
+        timedout: true
       };
     }
 
     return {
       ...scriptInfo,
       ...{
-        timedout: false,
-      },
+        timedout: false
+      }
     };
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
@@ -256,25 +279,23 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
     throw new Error('Nothing to do: Menu not available and no action specified.');
   }
 
-  let initialIndex = choices.findIndex((item) => item.title === defaults[0]);
+  let initialIndex = choices.findIndex(item => item.title === defaults[0]);
 
   if (initialIndex === -1) initialIndex = 0;
 
-  const selectMenu = new SelectPrompt(
-    {
-      type: 'select',
-      name: 'value',
-      message: 'Select' + (menu.description ? ' ' + menu.description : ''),
-      initial: initialIndex,
-      choices: choices,
-    },
-  );
+  const selectMenu = new SelectPrompt({
+    type: 'select',
+    name: 'value',
+    message: 'Select' + (menu.description ? ' ' + menu.description : ''),
+    initial: initialIndex,
+    choices: choices
+  });
 
   const menuPromise = toPromise(selectMenu);
 
   if (autoIndex > 0) selectMenu.submit();
 
-  const resultPromise = menuPromise.then((answer) => {
+  const resultPromise = menuPromise.then(answer => {
     if (close || answer.length === 0) return null;
 
     const menuItem = findMenuItem(menu, answer[0]);
@@ -299,7 +320,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
         multiple: false,
         parameters: {},
         arguments: [],
-        script: menuItem as IScript,
+        script: menuItem as IScript
       };
     }
 

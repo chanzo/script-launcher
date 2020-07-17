@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "Script launcher debug package.json, used test stuff.",
   "scripts": {
-    "start": "npm run --silent lint && ts-node launch.ts",
-    "serve:dev": "npm run --silent lint && ts-node launch.ts",
-    "lint": "(cd .. && npm --silent start lint)"
+    "start": "ts-node launch.ts",
+    "serve:dev": "ts-node launch.ts"
   },
   "repository": {
     "type": "git",

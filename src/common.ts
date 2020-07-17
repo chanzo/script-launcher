@@ -11,7 +11,7 @@ export enum Colors {
   Cyan = '\x1b[36m',
   Bold = '\x1b[1m',
   Dim = '\x1b[2m',
-  Normal = '\x1b[0m',
+  Normal = '\x1b[0m'
 }
 
 export function stringify(value: any, replacer?: (this: any, key: string, value: any) => any, space: string | number = 2): string {
@@ -19,7 +19,7 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
     value = JSON.stringify(value, replacer, space);
   }
 
-  return value.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+  return value.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
     let cls = Colors.Yellow;
     if (/^"/.test(match)) {
       if (/:$/.test(match)) {
@@ -46,7 +46,7 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
   const result: IArguments<T> = {
     arguments: {} as T,
     optionals: [],
-    unknowns: [],
+    unknowns: []
   };
 
   defaultData = defaultData instanceof Function ? defaultData() : defaultData;
@@ -62,9 +62,9 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
     let value: string | boolean | number = true;
 
     if (columns.length > 1) {
-      if (name === columns[0]) throw new Error('Unexpected value for command (\"' + name + '\") use option syntax instead (\"--' + name + '=' + columns[1] + '\").');
+      if (name === columns[0]) throw new Error('Unexpected value for command ("' + name + '") use option syntax instead ("--' + name + '=' + columns[1] + '").');
 
-      if (!validArguments.includes(name)) throw new Error('The specified option (\"--' + name + '\") is invalid.');
+      if (!validArguments.includes(name)) throw new Error('The specified option ("--' + name + '") is invalid.');
 
       value = Number.parseInt(columns[1], 10);
 
@@ -74,7 +74,9 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
 
       const defaultArgument = defaultData.arguments[name];
 
-      if (defaultArgument !== null && defaultArgument !== undefined && typeof defaultData.arguments[name] !== typeof value) throw new Error('Unexpected type \"' + typeof value + '\" for argument \"' + name + '\". The argument should be of type \"' + typeof defaultData[name] + '\".');
+      if (defaultArgument !== null && defaultArgument !== undefined && typeof defaultData.arguments[name] !== typeof value) {
+        throw new Error('Unexpected type "' + typeof value + '" for argument "' + name + '". The argument should be of type "' + typeof defaultData[name] + '".');
+      }
     } else {
       if (!commandFound) {
         if (!validArguments.includes(name)) {
@@ -93,7 +95,6 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
   }
 
   if (result !== null) {
-
     if (defaultData === null) return result;
     if (defaultData instanceof Function) return result;
     if (typeof defaultData === 'string') return result;
@@ -105,7 +106,7 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
   return defaultData;
 }
 
-export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: string | string[]; }): void {
+export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: string | string[] }): void {
   console.log('Usage: ' + name + ' [command] [options...]');
 
   for (const description of Object.values(descriptions)) {
@@ -132,8 +133,8 @@ export function toPromise(prompt: Prompt, options: IOptions = {}): Promise<any> 
 
   return new Promise((resolve, reject) => {
     prompt.on('state', onState);
-    prompt.on('submit', (args) => resolve(onSubmit(args)));
-    prompt.on('abort', (args) => reject(onAbort(args)));
+    prompt.on('submit', args => resolve(onSubmit(args)));
+    prompt.on('abort', args => reject(onAbort(args)));
   });
 }
 
@@ -142,7 +143,7 @@ export async function confirmPrompt(message: string, autoValue?: boolean, defaul
     type: 'confirm',
     name: 'value',
     initial: autoValue !== undefined ? autoValue : defaultValue,
-    message: message,
+    message: message
   });
 
   const confirmPromise = toPromise(confirmPrompt);
@@ -157,7 +158,7 @@ export async function confirmPrompt(message: string, autoValue?: boolean, defaul
 export function stringToArgv(value: string): string[] {
   const result: string[] = [];
   const spaces = '\t ';
-  const quotes = '\"\'';
+  const quotes = '"\'';
   let start = 0;
   let index = 0;
 
@@ -173,16 +174,16 @@ export function stringToArgv(value: string): string[] {
   }
 
   function scanQuote(): string {
-    if (value[index] === '\'') {
+    if (value[index] === "'") {
       start = ++index;
-      while (index < value.length && value[index] !== '\'') index++;
+      while (index < value.length && value[index] !== "'") index++;
 
       return value.substr(start, index++ - start);
     }
 
-    if (value[index] === '\"') {
+    if (value[index] === '"') {
       start = ++index;
-      while (index < value.length && value[index] !== '\"') index++;
+      while (index < value.length && value[index] !== '"') index++;
 
       return value.substr(start, index++ - start);
     }
@@ -225,7 +226,6 @@ export function stringToArgv(value: string): string[] {
   }
 
   return result;
-
 }
 
 export class Limiter {

@@ -30,13 +30,13 @@ export class Process implements IProcess {
         pid: -1,
         stderr: '',
         stdout: '',
-        wait: async () => 0,
+        wait: async () => 0
       };
     }
 
     const childProcess = spawn(command, args, options);
 
-    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '\'' + options.cwd + '\'' + Colors.Normal);
+    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + "'" + options.cwd + "'" + Colors.Normal);
 
     return new Process(childProcess, options);
   }
@@ -95,7 +95,8 @@ export class Process implements IProcess {
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
         childProcess.on('close', (code, signal) => {
-          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
+          setImmediate(() => {
+            // Proccess all events in event queue, to flush the out streams.
             if (childProcess.stdout) childProcess.stdout.removeAllListeners('data');
             if (childProcess.stderr) childProcess.stderr.removeAllListeners('data');
 
@@ -124,7 +125,7 @@ export class Process implements IProcess {
           Logger.log();
         });
 
-        childProcess.on('error', (error) => {
+        childProcess.on('error', error => {
           this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
           this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
 
@@ -171,7 +172,7 @@ export class Process implements IProcess {
   }
 
   private showOutputData(childProcess: ChildProcess): void {
-    childProcess.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stdout += content;
@@ -184,7 +185,7 @@ export class Process implements IProcess {
       }
     });
 
-    childProcess.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stderr += content;
@@ -199,8 +200,7 @@ export class Process implements IProcess {
   }
 
   private testOutputData(childProcess: ChildProcess): void {
-
-    childProcess.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stdout += content;
@@ -209,7 +209,7 @@ export class Process implements IProcess {
       }
     });
 
-    childProcess.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stderr += content;
