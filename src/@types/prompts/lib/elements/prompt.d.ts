@@ -1,4 +1,3 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
-export class Prompt extends EventEmitter {
-}
+export class Prompt extends EventEmitter {}

@@ -40,7 +40,7 @@ export class ConsoleInterceptor implements IIntercepted {
   private readonly stdoutWrite: IStdoutWrite;
   private readonly stderrWrite: IStdoutWrite;
 
-  constructor(private readonly excludes: string[] = []) {
+  public constructor(private readonly excludes: string[] = []) {
     this.functions = ConsoleInterceptor.setConsoleFunctions({
       log: (...args: any[]) => { this.recordConsole('log', ...args); },
       debug: (...args: any[]) => { this.recordConsole('debug', ...args); },
@@ -63,7 +63,7 @@ export class ConsoleInterceptor implements IIntercepted {
     };
   }
 
-  public close() {
+  public close(): void {
     if (this.functions) ConsoleInterceptor.setConsoleFunctions(this.functions);
 
     process.stdout.write = this.stdoutWrite;
@@ -91,7 +91,7 @@ export class ConsoleInterceptor implements IIntercepted {
     return currentFunctions;
   }
 
-  private recordConsole(name: LogTargets, ...args: any[]) {
+  private recordConsole(name: LogTargets, ...args: any[]): void {
     const value = (format as (...args: any[]) => string)(...args); // Unsing as for typing bug fix
 
     if (!this.excludes.includes(value)) {

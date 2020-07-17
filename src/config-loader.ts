@@ -45,32 +45,17 @@ export interface IConfig {
 }
 
 export class Config {
-
-  get customFile(): string {
-    const match = this.options.files.reverse().find((item) => basename(item) === 'launcher-custom.json');
-
-    if (match) return match;
-
-    return 'launcher-custom.json';
-  }
-
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
-      description: '',
+      description: ''
     },
     options: {
       logLevel: 0,
       limit: 0,
-      files: [
-        'launcher-config.json',
-        'launcher-scripts.json',
-        'launcher-settings.json',
-        'launcher-menu.json',
-        'launcher-custom.json',
-      ],
+      files: ['launcher-config.json', 'launcher-scripts.json', 'launcher-settings.json', 'launcher-menu.json', 'launcher-custom.json'],
       script: {
-        shell: true,
+        shell: true
       },
       glob: {},
       menu: {
@@ -79,22 +64,32 @@ export class Config {
         defaultSelect: '',
         confirm: true,
         timeout: 0,
-        pageSize: 7,
-      },
+        pageSize: 7
+      }
     },
-    settings: {
-
-    },
+    settings: {}
   };
 
-  public static load(directory: string): { files: string[], config: Config } {
+  public readonly scripts: Scripts;
+  public readonly menu: IMenu;
+  public readonly options: IOptions;
+  public readonly settings: ISettings;
+  public get customFile(): string {
+    const match = this.options.files.reverse().find(item => basename(item) === 'launcher-custom.json');
+
+    if (match) return match;
+
+    return 'launcher-custom.json';
+  }
+
+  public static load(directory: string): { files: string[]; config: Config } {
     const hash = new Set<string>();
     let config = new Config(Config.default);
     let files = Config.default.options.files;
     let loaded: number;
     const loadedFiles = [];
 
-    if (!existsSync(directory)) throw Error('Directory \"' + directory + '\" not found.');
+    if (!existsSync(directory)) throw Error('Directory "' + directory + '" not found.');
 
     do {
       loaded = 0;
@@ -109,7 +104,7 @@ export class Config {
               loadedFiles.push(fullPath);
             }
           } catch (error) {
-            throw new Error('Error loading config file \"' + fullPath + '\" ' + error);
+            throw new Error('Error loading config file "' + fullPath + '" ' + error);
           }
 
           hash.add(file);
@@ -122,12 +117,11 @@ export class Config {
 
     return {
       files: loadedFiles,
-      config: config,
+      config: config
     };
   }
 
   public static evaluateShellOption(shellOption: (boolean | string) | { [platform: string]: boolean | string }, defaultOption: boolean | string): boolean | string {
-
     if (typeof shellOption !== 'object') return shellOption;
 
     let shell = shellOption[process.platform];
@@ -141,13 +135,35 @@ export class Config {
     return defaultOption;
   }
 
-  private static verifyScriptNames(scripts: IScripts) {
+  public merge(file: string): Config {
+    const absolutePath = resolve(file);
+    const current: IConfig = {
+      menu: this.menu,
+      options: this.options,
+      scripts: this.scripts.scripts,
+      settings: this.settings
+    };
+    const config = deepmerge<IConfig>(current, require(absolutePath));
+
+    Config.verifyScriptNames(config.scripts);
+
+    return new Config(config);
+  }
+
+  private constructor(config: IConfig) {
+    this.scripts = new Scripts(config.scripts);
+    this.menu = config.menu;
+    this.options = config.options;
+    this.settings = config.settings;
+  }
+
+  private static verifyScriptNames(scripts: IScripts): void {
     const hash = new Set<string>();
 
     for (const key of Object.keys(scripts)) {
       const value = key.replace(/\$\w+(\:|$)/g, '$1');
 
-      if (hash.has(value)) throw new Error('Duplicate object key: \'' + key + '\'');
+      if (hash.has(value)) throw new Error("Duplicate object key: '" + key + "'");
 
       hash.add(value);
     }
@@ -161,32 +177,5 @@ export class Config {
     }
 
     return {} as IConfig;
-  }
-
-  public readonly scripts: Scripts;
-  public readonly menu: IMenu;
-  public readonly options: IOptions;
-  public readonly settings: ISettings;
-
-  private constructor(config: IConfig) {
-    this.scripts = new Scripts(config.scripts);
-    this.menu = config.menu;
-    this.options = config.options;
-    this.settings = config.settings;
-  }
-
-  public merge(file: string): Config {
-    const absolutePath = resolve(file);
-    const current: IConfig = {
-      menu: this.menu,
-      options: this.options,
-      scripts: this.scripts.scripts,
-      settings: this.settings,
-    };
-    const config = deepmerge<IConfig>(current, require(absolutePath));
-
-    Config.verifyScriptNames(config.scripts);
-
-    return new Config(config);
   }
 }

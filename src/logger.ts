@@ -3,10 +3,6 @@ type LogWriter = (message?: any, ...optionalParams: any[]) => void;
 export class Logger {
   public static level = 0;
 
-  private static nullWriter(message?: any, ...optionalParams: any[]): void {
-    // Null writer no action required
-  }
-
   public static get debug(): LogWriter {
     return Logger.level > 2 ? console.debug : Logger.nullWriter;
   }
@@ -18,5 +14,9 @@ export class Logger {
   }
   public static get error(): LogWriter {
     return Logger.level >= 0 ? console.error : Logger.nullWriter;
+  }
+
+  private static nullWriter(message?: any, ...optionalParams: any[]): void {
+    // Null writer no action required
   }
 }

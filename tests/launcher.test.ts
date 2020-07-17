@@ -77,7 +77,7 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
   return result;
 }
 
-async function main() {
+async function main(): Promise<void> {
   testLauncher.loadConfig(testFiles);
   testLauncher.loadMarkdown(readmeFile, 'Implementation examples (readme.md)', [
     'Installation',
