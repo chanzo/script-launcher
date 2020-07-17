@@ -4,11 +4,21 @@
     "build:Build node package.": [
       "build"
     ],
-    "test:Test node package.": {
-      "run:Run all tests and exit.": [
+    "tools": {
+      "Code style": {
+        "check:Check files": [
+          "lint:check || true",
+          "pretty:check || true"
+        ],
+        "write:Update files": [
+          "lint:write",
+          "pretty:write"
+        ]
+      },
+      "Run tests:Run all tests and exit.": [
         "test"
       ],
-      "watch:Watch files for changes and rerun all tests.": [
+      "Watch tests:Watch files for changes and rerun all tests.": [
         "test --watchAll"
       ]
     }

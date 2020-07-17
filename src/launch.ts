@@ -8,7 +8,7 @@ import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors }
 import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
-import * as os from 'os'
+import * as os from 'os';
 
 interface IArgs {
   init: boolean;
@@ -64,7 +64,7 @@ const npmScripts = [
   'postrestart',
   'preshrinkwrap',
   'shrinkwrap',
-  'postshrinkwrap',
+  'postshrinkwrap'
 ];
 
 function showLoadedFiles(files: string[]): void {
@@ -74,7 +74,7 @@ function showLoadedFiles(files: string[]): void {
   Logger.info();
 }
 
-function showTemplates() {
+function showTemplates(): void {
   const templatePath = path.join(__dirname, 'templates');
 
   console.log(Colors.Bold + 'Available templates:' + Colors.Normal);
@@ -85,7 +85,6 @@ function showTemplates() {
   }
   console.log();
   console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npx launch init basic');
-
 }
 
 function copyTemplateFiles(template: string, directory: string): void {
@@ -136,12 +135,12 @@ function splitCommand(command: string): string[] {
       }
     }
 
-    if (value.startsWith('\"')) {
-      while (++index < command.length && command[index] !== '\"');
+    if (value.startsWith('"')) {
+      while (++index < command.length && command[index] !== '"');
     }
 
-    if (value.startsWith('\'')) {
-      while (++index < command.length && command[index] !== '\'');
+    if (value.startsWith("'")) {
+      while (++index < command.length && command[index] !== "'");
     }
 
     index++;
@@ -176,7 +175,7 @@ function checkMigratePrerequisites(directory: string, scripts: { [name: string]:
 
 function migrateMenu(scripts: { [name: string]: string }): IMenu {
   const menuEntries: IMenu = {
-    description: '',
+    description: ''
   };
 
   for (const [key] of Object.entries(scripts)) {
@@ -196,7 +195,7 @@ function migrateMenu(scripts: { [name: string]: string }): IMenu {
 
       if (nextMenu[entry] === undefined) {
         nextMenu[entry] = {
-          description: '',
+          description: ''
         };
       }
 
@@ -211,7 +210,7 @@ function migrateMenu(scripts: { [name: string]: string }): IMenu {
   return menuEntries;
 }
 
-function migrateScripts(scripts: { [name: string]: string }): { source: { [name: string]: string }, target: IScripts } {
+function migrateScripts(scripts: { [name: string]: string }): { source: { [name: string]: string }; target: IScripts } {
   const sourceScripts: { [name: string]: string } = {};
   const targetScripts: IScripts = {};
 
@@ -219,7 +218,7 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
     let values = splitCommand(value);
 
     if (values.length > 1) {
-      values = values.map((item) => {
+      values = values.map(item => {
         if (item.startsWith('npm run ')) {
           item = item.trim().replace('npm run ', '');
           item = item.trim().replace(' || true', '');
@@ -227,7 +226,7 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
         }
         return item;
       });
-      values = values.map((item) => {
+      values = values.map(item => {
         if (item.startsWith('cd ')) {
           item = item.trim().replace('cd ', '');
           item = item.trim().replace(' || true', '');
@@ -246,7 +245,7 @@ function migrateScripts(scripts: { [name: string]: string }): { source: { [name:
 
   return {
     source: sourceScripts,
-    target: targetScripts,
+    target: targetScripts
   };
 }
 
@@ -260,7 +259,7 @@ function objectFromEntries<T>(entries: Array<[string, T]>): { [name: string]: T 
   return object;
 }
 
-function parameterize(key: string, value: string, preserveParams: number): { key: string, value: string, params: string[] } {
+function parameterize(key: string, value: string, preserveParams: number): { key: string; value: string; params: string[] } {
   const params = key.split(':');
   let index = 0;
 
@@ -290,7 +289,7 @@ function getScriptDefinitions(scripts: { [name: string]: string }, preserveParam
     if (definition === undefined) {
       definition = {
         keys: [],
-        params: [],
+        params: []
       };
       definitions[parameters.value] = definition;
     }
@@ -305,19 +304,19 @@ function getScriptDefinitions(scripts: { [name: string]: string }, preserveParam
   return objectFromEntries(sorted);
 }
 
-function expandParams(name: string, command: string, params: string[][]): Array<{ name: string, command: string }> {
-  let match: { index: number, value: string[] } = null;
+function expandParams(name: string, command: string, params: string[][]): Array<{ name: string; command: string }> {
+  let match: { index: number; value: string[] } = null;
   const length = (params.find(() => true) || { length: 0 }).length;
   const keys = name.split(':');
 
   for (let index = 0; index < length; index++) {
     if (keys[index].startsWith('$')) {
-      const value = [...new Set(params.map((item) => item[index]))];
+      const value = [...new Set(params.map(item => item[index]))];
 
       if (match === null || value.length <= match.value.length) {
         match = {
           index: index,
-          value: value,
+          value: value
         };
       }
     }
@@ -326,23 +325,23 @@ function expandParams(name: string, command: string, params: string[][]): Array<
   if (match === null) return [];
 
   const expression = new RegExp('\\$param' + match.index, 'g');
-  const result: Array<{ name: string, command: string }> = [];
+  const result: Array<{ name: string; command: string }> = [];
 
   for (const item of match.value) {
     result.push({
       name: name.replace(expression, item),
-      command: command.replace(expression, item),
+      command: command.replace(expression, item)
     });
   }
 
   return result;
 }
 
-function resolveConflicts(scripts: { [name: string]: string }, name: string, command: string, params: string[][]): Array<{ name: string, command: string }> {
+function resolveConflicts(scripts: { [name: string]: string }, name: string, command: string, params: string[][]): Array<{ name: string; command: string }> {
   if (scripts[name] === undefined) return [{ name, command }];
 
   const expanded = expandParams(name, command, params);
-  const result: Array<{ name: string, command: string }> = [];
+  const result: Array<{ name: string; command: string }> = [];
 
   for (const item of expanded) {
     result.push(...resolveConflicts(scripts, item.name, item.command, params));
@@ -357,7 +356,7 @@ function combineScripts(scripts: { [name: string]: string }, preserveParams: num
 
   for (const [script, definition] of Object.entries(definitions)) {
     for (const key of definition.keys) {
-      const scripts: Array<{ name: string, command: string }> = [];
+      const scripts: Array<{ name: string; command: string }> = [];
 
       scripts.push(...resolveConflicts(combineScripts, key, script, definition.params));
 
@@ -399,11 +398,11 @@ async function migratePackageJson(directory: string, preserveParams: number, con
   Logger.log('package.json:', content);
   Logger.log();
   Logger.log('launcher-menu.json:', {
-    menu: menuEntries,
+    menu: menuEntries
   });
   Logger.log();
   Logger.log('launcher-config.json:', {
-    scripts: scripts.target,
+    scripts: scripts.target
   });
   Logger.log();
 
@@ -418,15 +417,28 @@ async function migratePackageJson(directory: string, preserveParams: number, con
     fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
 
     console.log(Colors.Bold + 'Creating:' + Colors.Normal, menuFile.replace(process.cwd() + path.sep, ''));
-    fs.writeFileSync(menuFile, JSON.stringify({
-      menu: menuEntries,
-    }, null, 2));
+    fs.writeFileSync(
+      menuFile,
+      JSON.stringify(
+        {
+          menu: menuEntries
+        },
+        null,
+        2
+      )
+    );
 
     console.log(Colors.Bold + 'Creating:' + Colors.Normal, configFile.replace(process.cwd() + path.sep, ''));
-    fs.writeFileSync(configFile, JSON.stringify({
-      scripts: scripts.target,
-    }, null, 2));
-
+    fs.writeFileSync(
+      configFile,
+      JSON.stringify(
+        {
+          scripts: scripts.target
+        },
+        null,
+        2
+      )
+    );
   }
 }
 
@@ -466,21 +478,14 @@ function updatePackageJson(directory: string): void {
   }
 }
 
-function showHelp() {
+function showHelp(): void {
   showArgsHelp<IArgs>('launch', {
-    init: [
-      '',
-      'Commands:',
-      '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.',
-    ],
+    init: ['', 'Commands:', '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.'],
     list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + '[type] List available launcher scripts.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
-    logLevel: [
-      '',
-      'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.',
-    ],
+    logLevel: ['', 'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.'],
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
@@ -488,11 +493,11 @@ function showHelp() {
     menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
     params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
     concurrent: '  ' + Colors.Cyan + 'concurrent=  ' + Colors.Normal + 'Execute commandline wildcard matches in parallel.',
-    limit: '  ' + Colors.Cyan + 'limit=       ' + Colors.Normal + 'Limit the number of commands to execute in parallel.',
+    limit: '  ' + Colors.Cyan + 'limit=       ' + Colors.Normal + 'Limit the number of commands to execute in parallel.'
   });
 }
 
-function disableAnsiColors() {
+function disableAnsiColors(): void {
   for (const key of Object.keys(Colors)) {
     (Colors as any)[key] = '';
   }
@@ -518,7 +523,7 @@ function getEnviromentValues(): { [name: string]: string } {
 function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILaunchSetting {
   const result: ILaunchSetting = {
     values: {},
-    arrays: {},
+    arrays: {}
   };
 
   for (const [key, value] of Object.entries(settings)) {
@@ -530,7 +535,7 @@ function getLaunchSetting(settings: ISettings, prefix = 'launch_setting_'): ILau
       for (const item of value) {
         if (typeof item !== 'object') {
           result.arrays[name].push({
-            ['_']: item as string,
+            ['_']: item as string
           });
 
           continue;
@@ -605,10 +610,10 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         menuTimeout: undefined,
         params: undefined,
         concurrent: false,
-        limit: undefined,
+        limit: undefined
       },
       optionals: [],
-      unknowns: [],
+      unknowns: []
     });
 
     launchArgs.arguments.directory = path.join(launchArgs.arguments.directory); // remove starting ./
@@ -645,7 +650,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     const settings = getLaunchSetting(config.settings);
     const environment = {
       ...getEnviromentValues(),
-      ...settings.values,
+      ...settings.values
     };
 
     if (testmode) environment.launch_time_start = formatTime(new Date('2019-09-16T12:33:20.628').getTime(), 0);
@@ -741,8 +746,8 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       }
 
       if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'complete') {
-        const scripts = Object.keys(configLoad.config.scripts.scripts).filter((item) => !item.includes('$'));
-        const menu = getMenuScripts(configLoad.config.menu).filter((item) => !scripts.includes(item));
+        const scripts = Object.keys(configLoad.config.scripts.scripts).filter(item => !item.includes('$'));
+        const menu = getMenuScripts(configLoad.config.menu).filter(item => !scripts.includes(item));
         const choices: string[] = [...menu, ...scripts].sort();
         const unique = [...new Set(choices)];
 
@@ -783,7 +788,18 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchScript.length === 0) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, commandArgs, interactive, launchArgs.arguments.menuTimeout, config.options.menu.confirm, launchArgs.arguments.confirm, launchArgs.arguments.limit, testmode);
+      const result = await launchMenu(
+        environment,
+        settings,
+        config,
+        commandArgs,
+        interactive,
+        launchArgs.arguments.menuTimeout,
+        config.options.menu.confirm,
+        launchArgs.arguments.confirm,
+        launchArgs.arguments.limit,
+        testmode
+      );
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -797,7 +813,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     if (scriptInfo.multiple && launchArgs.arguments.concurrent) {
       scriptInfo.script = {
-        concurrent: scriptInfo.script,
+        concurrent: scriptInfo.script
       } as IScript;
     }
 

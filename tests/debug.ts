@@ -56,7 +56,7 @@ async function run(command: string): Promise<void> {
 
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
 
     // const interceptor = new ConsoleInterceptor();

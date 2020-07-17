@@ -19,6 +19,19 @@ export interface ISpawnOptions extends SpawnOptions {
 }
 
 export class Process implements IProcess {
+  public readonly pid: number;
+  private outputCount = 0;
+  private readonly exitPromise: Promise<number>;
+  private _stdout = '';
+  private _stderr = '';
+
+  public get stdout(): string {
+    return this._stdout;
+  }
+
+  public get stderr(): string {
+    return this._stderr;
+  }
   public static spawn(command: string, args: string[], options: ISpawnOptions): IProcess {
     if ((Logger.level > 1 || options.testmode) && options) {
       options = { ...options };
@@ -30,50 +43,20 @@ export class Process implements IProcess {
         pid: -1,
         stderr: '',
         stdout: '',
-        wait: async () => 0,
+        wait: async () => 0
       };
     }
 
     const childProcess = spawn(command, args, options);
 
-    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + '\'' + options.cwd + '\'' + Colors.Normal);
+    if (options.cwd) Logger.log('Process dir     : ' + Colors.Green + "'" + options.cwd + "'" + Colors.Normal);
 
     return new Process(childProcess, options);
   }
 
-  private static getStdioOption(stdio: StdioOptions, index: number): string {
-    if (typeof stdio === 'string') return stdio;
-
-    if (stdio !== undefined && index < stdio.length) return stdio[index].toString();
-
-    return '';
+  public wait(): Promise<number> {
+    return this.exitPromise;
   }
-
-  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
-    if (Process.getStdioOption(stdio, 1) === 'pipe') {
-      const data = childProcess.stdout.read();
-
-      if (data) return data.toString();
-    }
-
-    return defaultValue;
-  }
-
-  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
-    if (Process.getStdioOption(stdio, 2) === 'pipe') {
-      const data = childProcess.stderr.read();
-
-      if (data) return data.toString();
-    }
-
-    return defaultValue;
-  }
-
-  public readonly pid: number;
-  private outputCount = 0;
-  private readonly exitPromise: Promise<number>;
-  private _stdout: string = '';
-  private _stderr: string = '';
 
   private constructor(childProcess: ChildProcess, options: ISpawnOptions) {
     const startTime = process.hrtime();
@@ -95,7 +78,8 @@ export class Process implements IProcess {
     this.exitPromise = new Promise<number>((resolve, reject) => {
       try {
         childProcess.on('close', (code, signal) => {
-          setImmediate(() => { // Proccess all events in event queue, to flush the out streams.
+          setImmediate(() => {
+            // Proccess all events in event queue, to flush the out streams.
             if (childProcess.stdout) childProcess.stdout.removeAllListeners('data');
             if (childProcess.stderr) childProcess.stderr.removeAllListeners('data');
 
@@ -124,7 +108,7 @@ export class Process implements IProcess {
           Logger.log();
         });
 
-        childProcess.on('error', (error) => {
+        childProcess.on('error', error => {
           this._stdout = Process.getStdout(childProcess, options.stdio, this._stdout);
           this._stderr = Process.getStderr(childProcess, options.stdio, this._stderr);
 
@@ -158,20 +142,36 @@ export class Process implements IProcess {
     });
   }
 
-  public wait(): Promise<number> {
-    return this.exitPromise;
+  private static getStdioOption(stdio: StdioOptions, index: number): string {
+    if (typeof stdio === 'string') return stdio;
+
+    if (stdio !== undefined && index < stdio.length) return stdio[index].toString();
+
+    return '';
   }
 
-  get stdout(): string {
-    return this._stdout;
+  private static getStdout(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 1) === 'pipe') {
+      const data = childProcess.stdout.read();
+
+      if (data) return data.toString();
+    }
+
+    return defaultValue;
   }
 
-  get stderr(): string {
-    return this._stderr;
+  private static getStderr(childProcess: ChildProcess, stdio: StdioOptions, defaultValue: string): string {
+    if (Process.getStdioOption(stdio, 2) === 'pipe') {
+      const data = childProcess.stderr.read();
+
+      if (data) return data.toString();
+    }
+
+    return defaultValue;
   }
 
   private showOutputData(childProcess: ChildProcess): void {
-    childProcess.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stdout += content;
@@ -184,7 +184,7 @@ export class Process implements IProcess {
       }
     });
 
-    childProcess.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stderr += content;
@@ -199,8 +199,7 @@ export class Process implements IProcess {
   }
 
   private testOutputData(childProcess: ChildProcess): void {
-
-    childProcess.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stdout += content;
@@ -209,7 +208,7 @@ export class Process implements IProcess {
       }
     });
 
-    childProcess.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', data => {
       const content = (data.toString() as string).trim();
       if (content) {
         this._stderr += content;

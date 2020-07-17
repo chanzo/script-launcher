@@ -1,14 +1,7 @@
 {
   "scripts": {
-    "lint": [
-      "echo Linting sources files...",
-      "tslint --project src $*",
-      "tslint --project tests $*",
-      "echo No lint errors found...",
-      ""
-    ],
     "build": [
-      "lint",
+      "lint:check",
       "echo Building node package...",
       "rimraf ./dist/package",
       "tsc --build src",
@@ -28,6 +21,23 @@
       "#rimraf ./dist/test",
       "#tsc --build tests",
       "jest --verbose $*"
+    ],
+    "lint:check": [
+      "echo Linting sources files...",
+      "tslint --project src $*",
+      "tslint --project tests $*",
+      "echo No lint errors found...",
+      ""
+    ],
+    "lint:write": "lint:check --fix",
+    "pretty:check": "prettier --check ./src/**/*.{js,ts,html,scss} $*",
+    "pretty:write": [
+      "echo Update formatting...",
+      "prettier --write ./src/**/*.{js,ts,html,scss} $*"
+    ],
+    "pre:commit": [
+      "pretty:check",
+      "lint:check"
     ]
   },
   "options": {
