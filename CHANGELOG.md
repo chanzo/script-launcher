@@ -2,6 +2,7 @@
 ## 1.30.0
 * Updated dependencies and dev dependencies
 * Added prettier
+* Updated tslint settings
 
 ## 1.29.0
 ### Changes
