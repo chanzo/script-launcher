@@ -32,6 +32,107 @@ interface IProcesses extends Array<IProcess | Promise<IProcesses>> {}
 export class Executor {
   private static readonly assignmentPattern = `^(\\w+\)=([\\$\\w\\,\\.\\-\\@\\#\\%\\^\\*\\:\\;\\+\\/\\\\~\\=\\[\\]\\{\\}\\"\\']+|\".*\"|\'.*\')$`;
 
+  public readonly startTime: [number, number];
+
+  private readonly shell: boolean | string;
+  private readonly environment: { [name: string]: string };
+  private readonly settings: ILaunchSetting;
+  private readonly scripts: Scripts;
+  private readonly globOptions: glob.Options;
+  private readonly confirm?: boolean;
+  private readonly testmode: boolean;
+  private readonly limit: number;
+
+  public constructor(
+    shell: boolean | string,
+    environment: { [name: string]: string },
+    settings: ILaunchSetting,
+    scripts: Scripts,
+    globOptions: glob.Options,
+    confirm: boolean | undefined,
+    limit: number,
+    testmode: boolean
+  ) {
+    this.shell = shell;
+    this.environment = environment;
+    this.settings = settings;
+    this.scripts = scripts;
+    this.globOptions = globOptions;
+    this.confirm = confirm;
+    this.testmode = testmode;
+    this.startTime = process.hrtime();
+    this.limit = limit;
+  }
+
+  public async execute(scriptInfo: IScriptInfo): Promise<number> {
+    const tasks = this.expand(scriptInfo);
+    const options: ISpawnOptions = {
+      stdio: 'inherit',
+      env: this.environment,
+      shell: this.shell,
+      suppress: false,
+      testmode: this.testmode,
+      limit: this.limit
+    };
+
+    if (Logger.level > 0) {
+      Logger.info('Script id       :', scriptInfo.name);
+      Logger.info('Circular        :', Executor.isCircular([tasks]));
+      Logger.info('Script params   :', scriptInfo.parameters);
+      Logger.info('Script args     :', scriptInfo.arguments);
+      Logger.debug('Script object   : ' + stringify(scriptInfo.script));
+      Logger.debug('Script expanded : ' + stringify(tasks, Executor.removeEmpties));
+      Logger.info();
+      Logger.log();
+    }
+
+    if (Logger.level > 1) {
+      const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
+
+      Logger.log(Colors.Bold + 'Launcher Settings Values' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      for (const [key, value] of settings) {
+        Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + "'" + value + "'" + Colors.Normal);
+      }
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Total: ' + settings.length);
+      Logger.log();
+      Logger.log();
+      Logger.log(Colors.Bold + 'Launcher Settings Arrays' + Colors.Normal);
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      for (const [key, value] of Object.entries(this.settings.arrays)) {
+        Logger.log(Colors.Dim + key + Colors.Normal + '=' + stringify(value));
+      }
+      Logger.log(''.padEnd(process.stdout.columns, '-'));
+      Logger.log('Total: ' + settings.length);
+      Logger.log();
+      Logger.log();
+    }
+
+    const processes: IProcesses = [];
+    const concurrent: Array<ITasks | string> = [...tasks.concurrent];
+    const sequential: Array<ITasks | string> = [...tasks.sequential];
+
+    if (Executor.containsConstraint(tasks)) {
+      try {
+        if (await this.evaluateTask(tasks, options)) {
+          concurrent.push(...tasks['concurrent-then']);
+          sequential.push(...tasks['sequential-then']);
+        } else {
+          concurrent.push(...tasks['concurrent-else']);
+          sequential.push(...tasks['sequential-else']);
+        }
+      } catch {
+        return 0;
+      }
+    }
+
+    processes.push(...(await this.executeTasks(concurrent, options, Order.concurrent)));
+    processes.push(...(await this.executeTasks(sequential, options, Order.sequential)));
+
+    return Executor.wait(processes);
+  }
+
   private static isEmptyTask(tasks: ITasks): boolean {
     if (tasks.confirm.length > 0) return false;
     if (tasks.condition.length > 0) return false;
@@ -105,7 +206,7 @@ export class Executor {
     return text;
   }
 
-  private static removeEnvironment(text: string) {
+  private static removeEnvironment(text: string): string {
     text = text.replace(/([^\\]|^)\$\w+/g, '$1');
     text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
 
@@ -289,107 +390,6 @@ export class Executor {
     }
 
     return false;
-  }
-
-  public readonly startTime: [number, number];
-
-  private readonly shell: boolean | string;
-  private readonly environment: { [name: string]: string };
-  private readonly settings: ILaunchSetting;
-  private readonly scripts: Scripts;
-  private readonly globOptions: glob.Options;
-  private readonly confirm?: boolean;
-  private readonly testmode: boolean;
-  private readonly limit: number;
-
-  public constructor(
-    shell: boolean | string,
-    environment: { [name: string]: string },
-    settings: ILaunchSetting,
-    scripts: Scripts,
-    globOptions: glob.Options,
-    confirm: boolean | undefined,
-    limit: number,
-    testmode: boolean
-  ) {
-    this.shell = shell;
-    this.environment = environment;
-    this.settings = settings;
-    this.scripts = scripts;
-    this.globOptions = globOptions;
-    this.confirm = confirm;
-    this.testmode = testmode;
-    this.startTime = process.hrtime();
-    this.limit = limit;
-  }
-
-  public async execute(scriptInfo: IScriptInfo): Promise<number> {
-    const tasks = this.expand(scriptInfo);
-    const options: ISpawnOptions = {
-      stdio: 'inherit',
-      env: this.environment,
-      shell: this.shell,
-      suppress: false,
-      testmode: this.testmode,
-      limit: this.limit
-    };
-
-    if (Logger.level > 0) {
-      Logger.info('Script id       :', scriptInfo.name);
-      Logger.info('Circular        :', Executor.isCircular([tasks]));
-      Logger.info('Script params   :', scriptInfo.parameters);
-      Logger.info('Script args     :', scriptInfo.arguments);
-      Logger.debug('Script object   : ' + stringify(scriptInfo.script));
-      Logger.debug('Script expanded : ' + stringify(tasks, Executor.removeEmpties));
-      Logger.info();
-      Logger.log();
-    }
-
-    if (Logger.level > 1) {
-      const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
-
-      Logger.log(Colors.Bold + 'Launcher Settings Values' + Colors.Normal);
-      Logger.log(''.padEnd(process.stdout.columns, '-'));
-      for (const [key, value] of settings) {
-        Logger.log(Colors.Dim + key + Colors.Normal + '=' + Colors.Green + "'" + value + "'" + Colors.Normal);
-      }
-      Logger.log(''.padEnd(process.stdout.columns, '-'));
-      Logger.log('Total: ' + settings.length);
-      Logger.log();
-      Logger.log();
-      Logger.log(Colors.Bold + 'Launcher Settings Arrays' + Colors.Normal);
-      Logger.log(''.padEnd(process.stdout.columns, '-'));
-      for (const [key, value] of Object.entries(this.settings.arrays)) {
-        Logger.log(Colors.Dim + key + Colors.Normal + '=' + stringify(value));
-      }
-      Logger.log(''.padEnd(process.stdout.columns, '-'));
-      Logger.log('Total: ' + settings.length);
-      Logger.log();
-      Logger.log();
-    }
-
-    const processes: IProcesses = [];
-    const concurrent: Array<ITasks | string> = [...tasks.concurrent];
-    const sequential: Array<ITasks | string> = [...tasks.sequential];
-
-    if (Executor.containsConstraint(tasks)) {
-      try {
-        if (await this.evaluateTask(tasks, options)) {
-          concurrent.push(...tasks['concurrent-then']);
-          sequential.push(...tasks['sequential-then']);
-        } else {
-          concurrent.push(...tasks['concurrent-else']);
-          sequential.push(...tasks['sequential-else']);
-        }
-      } catch {
-        return 0;
-      }
-    }
-
-    processes.push(...(await this.executeTasks(concurrent, options, Order.concurrent)));
-    processes.push(...(await this.executeTasks(sequential, options, Order.sequential)));
-
-    return Executor.wait(processes);
   }
 
   private preprocessScripts(scripts: IScript[] | string): IScript[] {

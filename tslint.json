@@ -5,24 +5,137 @@
   ],
   "jsRules": {},
   "rules": {
+    "align": {
+      "options": [
+        "parameters",
+        "statements"
+      ]
+    },
+    "array-type": [
+      true,
+      "array-simple"
+    ],
+    "arrow-return-shorthand": true,
     "curly": [
       true,
       "ignore-same-line"
     ],
-    "variable-name": [
+    "eofline": true,
+    "import-blacklist": [
       true,
-      "allow-leading-underscore"
+      "rxjs/Rx"
     ],
+    "import-spacing": true,
+    "indent": {
+      "options": [
+        "spaces"
+      ]
+    },
     "max-line-length": [
       true,
       512
     ],
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "protected-static-field",
+          "private-static-field",
+          "public-instance-field",
+          "protected-instance-field",
+          "private-instance-field",
+          "public-static-accessor",
+          "public-instance-accessor",
+          "protected-static-accessor",
+          "protected-instance-accessor",
+          "private-static-accessor",
+          "private-instance-accessor",
+          "public-constructor",
+          "public-static-method",
+          "public-instance-method",
+          "protected-constructor",
+          "protected-static-method",
+          "protected-instance-method",
+          "private-constructor",
+          "private-static-method",
+          "private-instance-method"
+        ]
+      }
+    ],
+    "member-access": [
+      true,
+      "check-accessor",
+      "check-constructor",
+      "check-parameter-property"
+    ],
+    "no-for-in": true,
+    "no-empty": false,
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
+    "no-non-null-assertion": true,
+    "no-redundant-jsdoc": true,
+    "no-switch-case-fall-through": true,
+    "no-var-requires": false,
+    "object-literal-key-quotes": [
+      true,
+      "consistent"
+    ],
+    "semicolon": {
+      "options": [
+        "always"
+      ]
+    },
+    "deprecation": {
+      "severity": "warning"
+    },
     "space-before-function-paren": [
       true,
       {
         "anonymous": "always"
       }
     ],
+    "typedef": [
+      true,
+      "call-signature"
+    ],
+    "typedef-whitespace": {
+      "options": [
+        {
+          "call-signature": "nospace",
+          "index-signature": "nospace",
+          "parameter": "nospace",
+          "property-declaration": "nospace",
+          "variable-declaration": "nospace"
+        },
+        {
+          "call-signature": "onespace",
+          "index-signature": "onespace",
+          "parameter": "onespace",
+          "property-declaration": "onespace",
+          "variable-declaration": "onespace"
+        }
+      ]
+    },
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-leading-underscore"
+      ]
+    },
+    "whitespace": {
+      "options": [
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-separator",
+        "check-type",
+        "check-typecast"
+      ]
+    },
     "ordered-imports": [
       true,
       {
@@ -39,13 +152,13 @@
     "no-shadowed-variable": false,
     "max-classes-per-file": [
       true,
-      1
+      2
     ],
-    "array-type": [
+    "no-consecutive-blank-lines": true,
+    "no-unused-expression": [
       true,
-      "array-simple"
-    ],
-    "no-consecutive-blank-lines": true
+      "allow-new"
+    ]
   },
   "rulesDirectory": []
 }

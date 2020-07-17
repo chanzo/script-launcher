@@ -50,7 +50,7 @@ export class TestLauncher {
     return Object.entries(this._configs);
   }
 
-  constructor(
+  public constructor(
     private readonly tempPath: string,
     private readonly defaultArgs: string[],
     private readonly excludes: string[] = []
@@ -329,7 +329,7 @@ export class TestLauncher {
     }
   }
 
-  public create(directory: string, files: { [name: string]: IConfig }) {
+  public create(directory: string, files: { [name: string]: IConfig }): void {
     const testDirectory = path.join(this.tempPath, directory);
 
     fs.mkdirSync(testDirectory, {
@@ -367,7 +367,7 @@ export class TestLauncher {
     return text;
   }
 
-  private deleteFiles(directory: string, pattern: string) {
+  private deleteFiles(directory: string, pattern: string): void {
     const expression = new RegExp(pattern);
 
     for (const fileName of fs.readdirSync(directory)) {

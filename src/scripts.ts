@@ -29,6 +29,11 @@ export interface IScriptInfo {
 }
 
 export class Scripts {
+  public readonly scripts: IScripts;
+
+  public constructor(scripts: IScripts) {
+    this.scripts = scripts;
+  }
   public static select(scripts: IScriptInfo[], filters: string[] = null, meta: { circular: boolean } = null): IScriptInfo {
     const length = scripts.length;
 
@@ -75,6 +80,49 @@ export class Scripts {
       command: args.length > 0 ? args[0] : '',
       arguments: args.slice(1)
     };
+  }
+
+  public find(...patterns: string[]): IScriptInfo[] {
+    const scripts: IScriptInfo[] = [];
+    const multiple = patterns.length > 1;
+
+    for (const pattern of patterns) {
+      const info = Scripts.parse(pattern);
+
+      for (const [name, script] of Object.entries(this.scripts)) {
+        const parameters = Scripts.getParameters(name, info.command, multiple);
+
+        if (parameters !== null) {
+          scripts.push({
+            name: name,
+            inline: false,
+            multiple: multiple,
+            parameters: parameters,
+            arguments: info.arguments,
+            script: script
+          });
+        }
+      }
+
+      if (scripts.length === 0) {
+        for (const [name, script] of Object.entries(this.scripts)) {
+          const parameters = Scripts.getParameters(name, info.command, true);
+
+          if (parameters !== null) {
+            scripts.push({
+              name: name,
+              inline: false,
+              multiple: true,
+              parameters: parameters,
+              arguments: info.arguments,
+              script: script
+            });
+          }
+        }
+      }
+    }
+
+    return scripts;
   }
 
   private static containsScript(this: string[], script: IScriptInfo): boolean {
@@ -144,54 +192,5 @@ export class Scripts {
     if (signatureParams.length !== referenceParams.length + defaultParameters) return null;
 
     return parameters;
-  }
-
-  public readonly scripts: IScripts;
-
-  public constructor(scripts: IScripts) {
-    this.scripts = scripts;
-  }
-
-  public find(...patterns: string[]): IScriptInfo[] {
-    const scripts: IScriptInfo[] = [];
-    const multiple = patterns.length > 1;
-
-    for (const pattern of patterns) {
-      const info = Scripts.parse(pattern);
-
-      for (const [name, script] of Object.entries(this.scripts)) {
-        const parameters = Scripts.getParameters(name, info.command, multiple);
-
-        if (parameters !== null) {
-          scripts.push({
-            name: name,
-            inline: false,
-            multiple: multiple,
-            parameters: parameters,
-            arguments: info.arguments,
-            script: script
-          });
-        }
-      }
-
-      if (scripts.length === 0) {
-        for (const [name, script] of Object.entries(this.scripts)) {
-          const parameters = Scripts.getParameters(name, info.command, true);
-
-          if (parameters !== null) {
-            scripts.push({
-              name: name,
-              inline: false,
-              multiple: true,
-              parameters: parameters,
-              arguments: info.arguments,
-              script: script
-            });
-          }
-        }
-      }
-    }
-
-    return scripts;
   }
 }

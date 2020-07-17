@@ -45,14 +45,6 @@ export interface IConfig {
 }
 
 export class Config {
-  get customFile(): string {
-    const match = this.options.files.reverse().find(item => basename(item) === 'launcher-custom.json');
-
-    if (match) return match;
-
-    return 'launcher-custom.json';
-  }
-
   public static readonly default: IConfig = {
     scripts: {},
     menu: {
@@ -77,6 +69,18 @@ export class Config {
     },
     settings: {}
   };
+
+  public readonly scripts: Scripts;
+  public readonly menu: IMenu;
+  public readonly options: IOptions;
+  public readonly settings: ISettings;
+  public get customFile(): string {
+    const match = this.options.files.reverse().find(item => basename(item) === 'launcher-custom.json');
+
+    if (match) return match;
+
+    return 'launcher-custom.json';
+  }
 
   public static load(directory: string): { files: string[]; config: Config } {
     const hash = new Set<string>();
@@ -131,7 +135,29 @@ export class Config {
     return defaultOption;
   }
 
-  private static verifyScriptNames(scripts: IScripts) {
+  public merge(file: string): Config {
+    const absolutePath = resolve(file);
+    const current: IConfig = {
+      menu: this.menu,
+      options: this.options,
+      scripts: this.scripts.scripts,
+      settings: this.settings
+    };
+    const config = deepmerge<IConfig>(current, require(absolutePath));
+
+    Config.verifyScriptNames(config.scripts);
+
+    return new Config(config);
+  }
+
+  private constructor(config: IConfig) {
+    this.scripts = new Scripts(config.scripts);
+    this.menu = config.menu;
+    this.options = config.options;
+    this.settings = config.settings;
+  }
+
+  private static verifyScriptNames(scripts: IScripts): void {
     const hash = new Set<string>();
 
     for (const key of Object.keys(scripts)) {
@@ -151,32 +177,5 @@ export class Config {
     }
 
     return {} as IConfig;
-  }
-
-  public readonly scripts: Scripts;
-  public readonly menu: IMenu;
-  public readonly options: IOptions;
-  public readonly settings: ISettings;
-
-  private constructor(config: IConfig) {
-    this.scripts = new Scripts(config.scripts);
-    this.menu = config.menu;
-    this.options = config.options;
-    this.settings = config.settings;
-  }
-
-  public merge(file: string): Config {
-    const absolutePath = resolve(file);
-    const current: IConfig = {
-      menu: this.menu,
-      options: this.options,
-      scripts: this.scripts.scripts,
-      settings: this.settings
-    };
-    const config = deepmerge<IConfig>(current, require(absolutePath));
-
-    Config.verifyScriptNames(config.scripts);
-
-    return new Config(config);
   }
 }

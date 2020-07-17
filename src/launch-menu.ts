@@ -335,7 +335,7 @@ function promptMenu(menu: IMenu, pageSize: number, defaults: string[], choice: s
   return resultPromise;
 }
 
-function isMenuObject(object: any) {
+function isMenuObject(object: any): boolean {
   if (object instanceof Array) return false;
   if (typeof object === 'string') return false;
 

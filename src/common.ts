@@ -229,14 +229,17 @@ export function stringToArgv(value: string): string[] {
 }
 
 export class Limiter {
-  constructor(maximum: number) {
+  private resolvers: Array<(value?: number | PromiseLike<number>) => void>;
+  private currentCount: number;
+  private maximumCount: number;
+  public constructor(maximum: number) {
     this.currentCount = 0;
     this.maximumCount = maximum;
 
     this.resolvers = [];
   }
 
-  async enter(): Promise<number> {
+  public async enter(): Promise<number> {
     return new Promise((resolve, reject) => {
       if (this.currentCount < this.maximumCount) {
         this.currentCount++;
@@ -250,7 +253,7 @@ export class Limiter {
     });
   }
 
-  leave(): number {
+  public leave(): number {
     this.currentCount--;
 
     while (this.currentCount < this.maximumCount && this.resolvers.length > 0) {
@@ -265,8 +268,4 @@ export class Limiter {
 
     return this.currentCount;
   }
-
-  private resolvers: Array<(value?: number | PromiseLike<number>) => void>;
-  private currentCount: number;
-  private maximumCount: number;
 }

@@ -2,7 +2,7 @@ import * as launcher from '../src/launch';
 import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 import { promisify } from 'util';
 
-async function launch(lifecycle: string, directory: string, cmdArgs: string[], npmArgs: string[]) {
+async function launch(lifecycle: string, directory: string, cmdArgs: string[], npmArgs: string[]): void {
   return await launcher.main(lifecycle, [
     '', '', '--logLevel=0', '--directory=' + directory,
     ...cmdArgs,
@@ -135,7 +135,7 @@ async function test0018(intercept: boolean = true): Promise<{ result: string[], 
   };
 }
 
-async function main() {
+async function main(): Promise<void> {
   describe('debug', () => {
     for (let index = 0; index < 10; index++) {
       test('test0001-' + index, async () => {

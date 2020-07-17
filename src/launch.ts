@@ -74,7 +74,7 @@ function showLoadedFiles(files: string[]): void {
   Logger.info();
 }
 
-function showTemplates() {
+function showTemplates(): void {
   const templatePath = path.join(__dirname, 'templates');
 
   console.log(Colors.Bold + 'Available templates:' + Colors.Normal);
@@ -478,7 +478,7 @@ function updatePackageJson(directory: string): void {
   }
 }
 
-function showHelp() {
+function showHelp(): void {
   showArgsHelp<IArgs>('launch', {
     init: ['', 'Commands:', '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.'],
     list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + '[type] List available launcher scripts.',
@@ -497,7 +497,7 @@ function showHelp() {
   });
 }
 
-function disableAnsiColors() {
+function disableAnsiColors(): void {
   for (const key of Object.keys(Colors)) {
     (Colors as any)[key] = '';
   }
