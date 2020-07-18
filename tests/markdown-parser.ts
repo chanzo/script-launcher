@@ -5,7 +5,7 @@ export enum SectionType {
   unknown,
   json,
   bash
-};
+}
 
 export interface ISectionTest {
   title: string;
@@ -19,7 +19,7 @@ export interface ISectionTest {
 export class MarkdownParser {
   private readonly sections: Map<string, string[]>;
 
-  constructor(fileName: string, exclude: string[] = []) {
+  public constructor(fileName: string, exclude: string[] = []) {
     const buffer = fs.readFileSync(fileName);
     const fileContent = buffer.toString().split('\n');
 
