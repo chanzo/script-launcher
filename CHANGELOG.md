@@ -1,4 +1,7 @@
 # Change Log
+## 1.31.0
+* Updated dependencies and dev dependencies
+
 ## 1.30.0
 * Updated dependencies and dev dependencies
 * Added prettier

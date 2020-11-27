@@ -18,26 +18,26 @@
     "deepmerge": "~4.2.2",
     "fast-glob": "~3.2.4",
     "pretty-time": "~1.1.0",
-    "prompts": "~2.3.2"
+    "prompts": "~2.4.0"
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.2",
     "@types/glob": "^7.1.3",
-    "@types/inquirer": "^6.5.0",
-    "@types/jest": "^26.0.4",
-    "@types/node": "^14.0.23",
+    "@types/inquirer": "^7.3.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.10",
     "@types/pretty-time": "^1.1.0",
-    "@types/prompts": "^2.0.8",
+    "@types/prompts": "^2.0.9",
     "cpx": "^1.5.0",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "prettier": "^2.0.5",
+    "husky": "^4.3.0",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.0",
     "rimraf": "^3.0.2",
-    "script-launcher": "^1.30.0",
-    "ts-jest": "^26.1.3",
-    "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
-    "typescript": "^3.9.7"
+    "script-launcher": "^1.31.0",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.0.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
   },
   "husky": {
     "hooks": {

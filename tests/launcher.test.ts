@@ -183,7 +183,7 @@ async function main(): Promise<void> {
 
                 throw error;
               }
-            }, 10000);
+            }, 20000);
           }
         });
       }
