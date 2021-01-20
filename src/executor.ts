@@ -525,7 +525,7 @@ export class Executor {
 
       if (scriptInfo) {
         if (scriptInfo.multiple) {
-          for (let script of scriptInfo.script) {
+          for (let script of scriptInfo.script as string[]) {
             script = Executor.expandArguments(script, args);
             script = Executor.expandEnvironment(script, environment);
 
@@ -810,7 +810,7 @@ export class Executor {
 
         if (scriptInfo) {
           if (scriptInfo.multiple) {
-            for (let script of scriptInfo.script) {
+            for (let script of scriptInfo.script as string[]) {
               script = Executor.expandArguments(script, args);
               script = Executor.expandEnvironment(script, environment);
 
