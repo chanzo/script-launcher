@@ -79,7 +79,7 @@ Example: **package.json**
     ...
 }
 ```
-You are now ready to start use Script Launcher by running: `npm start` or `npm run serve:dev`.
+You are now ready to start use Script Launcher by running: `npm start` or `npm start serve:dev`.
 
 ## Usage examples
 
