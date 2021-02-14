@@ -13,7 +13,6 @@
       "echo Done..."
     ],
     "postinstall": [
-      "husky install",
       "debug",
       "npm install"
     ],
