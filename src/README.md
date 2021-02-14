@@ -1,16 +1,16 @@
 [![npm version](https://badge.fury.io/js/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
 [![GitHub last commit](https://img.shields.io/github/last-commit/chanzo/script-launcher.svg?maxAge=2400)](#)
 [![downloads-image](https://img.shields.io/npm/dm/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
-[![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher) 
-[![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev) 
-[![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE) 
+[![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher)
+[![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev)
+[![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE)
 
 [![GitHub forks](https://img.shields.io/github/forks/chanzo/script-launcher.svg?style=social&label=Fork)](https://github.com/chanzo/script-launcher/fork)
-[![GitHub stars](https://img.shields.io/github/stars/chanzo/script-launcher.svg?style=social&label=Star)](https://github.com/chanzo/script-launcher) 
+[![GitHub stars](https://img.shields.io/github/stars/chanzo/script-launcher.svg?style=social&label=Star)](https://github.com/chanzo/script-launcher)
 
 # Script Launcher
 
-Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience. 
+Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience.
 
 ![alt text](usage-animation.gif "Script Launcher usage example")
 
@@ -26,6 +26,7 @@ Enhance your **package.json** scripts with features like: menus, functions, arra
   * [Reference scripts](#reference-scripts)
   * [Reference scripts by using wildcards](#reference-scripts-by-using-wildcards)
   * [Environment and command line argument values](#environment-and-command-line-argument-values)
+  * [Environment String Manipulation and Expanding Variables](#environment-string-manipulation-and-expanding-variables)
   * [Launch arguments, command arguments, parameters and arguments](#launch-arguments-command-arguments-parameters-and-arguments)
   * [Escaping characters](#escaping-characters)
   * [Environment values and special commands](#environment-values-and-special-commands)
@@ -159,7 +160,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
     "deploy:tst": "npm run deploy:uva:tst && npm run deploy:hva:tst",
     "deploy:acc": "npm run deploy:uva:acc && npm run deploy:hva:acc",
     "deploy:prd": "npm run deploy:uva:prd && npm run deploy:hva:prd"
-  }        
+  }
 }
 ```
 
@@ -295,7 +296,7 @@ Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selec
 
 
 ### Environment and command line argument values
-Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases. 
+Use the dollar-sign in the script command, to references command line arguments and environment variables on Linux, Mac and windows in a consistent manner. It is also possible to set environment variables and use aliases.
 
 For compatibility reasons: when using a script id that is equal to the command being executed, all arguments are appended automatically.
 
@@ -320,6 +321,40 @@ For compatibility reasons: when using a script id that is equal to the command b
 }
 ```
 In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
+
+### Environment String Manipulation and Expanding Variables
+| Pattern                 | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| ${var:num1:num2}        | Substring                                           |
+| ${var/pattern/string}   | Find and replace (only replace first occurrence)    |
+| ${var//pattern/string}  | Find and replace all occurrences                    |
+| ${var,}                 | Convert first character to lowercase.               |
+| ${var,,}                | Convert all characters to lowercase.                |
+| ${var^}                 | Convert first character to uppercase.               |
+| ${var^^}                | Convert all character to uppercase..                |
+
+**Run**: `npm start build-stuff arg1 ARG2 arg3` to use this example.
+``` JSON
+{
+  "scripts": {
+    "build-stuff": [
+      "var=app-uva=hva-prd",
+      "echo ${var::-8}",
+      "echo ${var:8}",
+      "echo ${var:4:7}",
+      "echo ${var/-/=}",
+      "echo ${var//-/=}",
+      "echo ${var^^}",
+      "echo ${var^}",
+      "var=APP-UVA=HVA-PRD",
+      "echo ${var,,}",
+      "echo ${var,}",
+      "echo ${*^^}",
+      "echo ${2*,}"
+    ]
+  }
+}
+```
 
 ### Launch arguments, command arguments, parameters and arguments
 * **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
@@ -587,7 +622,7 @@ Example using a string array.
 ```
 
 ### Repeaters (Object)
-Example using an object array. 
+Example using an object array.
 **Run**: `npm start ping` to use this example.
 ``` JSON
 {
@@ -625,7 +660,7 @@ Example using an object array.
 ```
 
 ### Interactive menu
-Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily. 
+Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily.
 
 * **description** keyword is used as a description of presented values.
 * Use a colon to separate the menu item name and description.
@@ -668,11 +703,11 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 ```
 
 ### Menu save default script
-Use the **menu** section options to specify a **defaultScript**, this will disable the interactive menu. 
+Use the **menu** section options to specify a **defaultScript**, this will disable the interactive menu.
 
 Best practices is to specify the menu default options in the **launcher-custom.json** file, and add this file the your **.gitignore**. Now every developer can customize its menu without interfering with the project defaults.
 
-Use `npm start menu` to ignore the **defaultScript** option, so the menu will be interactive. 
+Use `npm start menu` to ignore the **defaultScript** option, so the menu will be interactive.
 
 **Run**: `npm start` to use this example.
 ``` JSON
@@ -946,9 +981,9 @@ If the *nonull* script-launcher option is set, and no match was found, then the 
 ```
 
 ### Menu options
-* **defaultChoice:** Specify the default chosen entries of your menu, separated by a colon. 
-* **defaultSelect:** Specify the default selected entries of your menu, separated by a colon. 
-* **defaultScript:** Auto start a specific script, this will disable the interactive menu. 
+* **defaultChoice:** Specify the default chosen entries of your menu, separated by a colon.
+* **defaultSelect:** Specify the default selected entries of your menu, separated by a colon.
+* **defaultScript:** Auto start a specific script, this will disable the interactive menu.
 * **timeout:** Auto close/select a menu value after a specified time.
 * **confirm:** Enable disable menu confirmation prompt.
 
