@@ -24,7 +24,7 @@
           "id": "0026-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js"
+          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js"
         }
       ]
     },
@@ -177,7 +177,7 @@
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js",
+            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js",
             "Markdown files: README.md"
           ]
         }
