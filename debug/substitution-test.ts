@@ -7,13 +7,17 @@ const substitutions = [
   // ['app-uva-hva-prd','${var::-8}'    ],
   // ['app-uva-hva-prd','${var:4:7}'    ],
   // ['app-uva-hva-prd','${var:8:16}'   ],
+  ['uva-prd','${var%%-*}'     ],
+  ['uva-prd','${var##*-}'     ],
+  ['app-uva-hva-prd','${var%%-*}'     ],
+  ['app-uva-hva-prd','${var##*-}'     ],
 
-  ['app-uva=hva-prd','${var%%*}'      ],
-  ['app-uva=hva-prd','${var%%=*}'     ],
-  ['app-uva=hva-prd','${var%%-*}'     ],
-  ['app-uva=hva-prd','${var%%-*=*}'   ],
-  ['app-uva=hva-prd','${var%%=*-*}'   ],
-  ['app-uva=hva-prd','${var%%uva}'    ],
+  // ['app-uva=hva-prd','${var%%*}'      ],
+  // ['app-uva=hva-prd','${var%%=*}'     ],
+  // ['app-uva=hva-prd','${var%%-*}'     ],
+  // ['app-uva=hva-prd','${var%%-*=*}'   ],
+  // ['app-uva=hva-prd','${var%%=*-*}'   ],
+  // ['app-uva=hva-prd','${var%%uva}'    ],
 
   // ['app-uva-hva-prd','${var%%=*}'    ],
   // ['app-uva-hva-prd','${var%%-*}'    ],
@@ -77,7 +81,7 @@ for (const [input,substitution] of substitutions) {
   // console.log('       ouput:',ouput);
   // console.log('    expected:',expected.padEnd(40) + ' ' + (success?'oke':'error'));
   // console.log();
-  console.log(substitution.padEnd(16) + input +'    ( '+ ouput.padStart(15) +' = '+expected.padEnd(15) + ' )    ' + (success?'oke':'error') );
+  console.log(substitution.padEnd(16) + input.padEnd(15) +'    ( '+ ouput.padStart(15) +' = '+expected.padEnd(15) + ' )    ' + (success?'oke':'error') );
 
   if (!success) errors++;
 }

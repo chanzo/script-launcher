@@ -781,6 +781,10 @@
         "launcher-config": {
           "scripts": {
             "build-stuff": [
+              "var=uva-hva",
+              "echo ${var%%-*} ${var##*-}",
+              "var=app-uva-hva-prd",
+              "echo ${var%%-*} ${var##*-}",
               "var=app-uva=hva-prd",
               "echo ${var::-8} ${var:8} ${var:4:7} ${var1::-8} ${var1:8} ${var1:4:7}",
               "echo ${var/-/=} ${var//-/=} ${var1/-/=} ${var1//-/=}",
@@ -799,6 +803,8 @@
             "build-stuff"
           ],
           "result": [
+            "uva hva",
+            "app prd",
             "app-uva hva-prd uva=hva",
             "app=uva=hva-prd app=uva=hva=prd",
             "APP-UVA=HVA-PRD App-uva=hva-prd",
@@ -814,6 +820,7 @@
         "launcher-config": {
           "scripts": {
             "build-stuff": [
+              "echo ${*%% *} ${*##* }",
               "echo ${*::-8} ${*:8} ${*:4:7}",
               "echo ${*/a/A} ${*//a/A}",
               "echo ${1*^^} ${1*^} ${5*^^} ${5*^}",
@@ -834,6 +841,7 @@
             "prd"
           ],
           "result": [
+            "app prd",
             "app UVA hva prd UVA hva",
             "App UVA hva prd App UVA hvA prd",
             "APP UVA HVA PRD App UVA hva prd",

@@ -17,8 +17,9 @@ export class Variables {
         text = text.replace(expressions.pattern2, (substring, args) => {
           const matches = substring.match(expressions.pattern3);
           const operator = matches[1];
+          const prefix = args.length > 0 ? args[0] : '';
 
-          return args[0] + Variables.evaluateSubstitution(value, operator);
+          return prefix + Variables.evaluateSubstitution(value, operator);
         });
 
         if (text.match(/([^\\]|^)\$/) === null) break;
@@ -72,24 +73,6 @@ export class Variables {
     return result;
   }
 
-  private static findLongestRear(matches: IMatches[], seperators: string[], index = 0): string {
-    if (seperators.length === 0) return '';
-
-    seperators = [...seperators];
-
-    const seperator = seperators.shift();
-
-    while (index < matches.length) {
-      if (matches[index].seperator === seperator) {
-        if (Variables.findLongestRear(matches, seperators, index + 1) !== null) return matches[index].value;
-      }
-
-      index++;
-    }
-
-    return null;
-  }
-
   private static evaluateSubstitution(value: string, operator: string): string {
     if (operator.startsWith(':')) {
       // ${var:num1:num2}	Substring
@@ -120,32 +103,33 @@ export class Variables {
         .substr(2)
         .split('*')
         .filter(item => item);
-
-      // console.log('seperators:', seperators);
-
       const matches = Variables.split(value, seperators);
-      const result = Variables.findLongestRear(matches, seperators);
 
-      // console.log('matches:', matches);
-
-      if (result === null) return value;
-
-      return result;
+      return matches.length > 0 ? matches[0].value : value;
     }
 
     if (operator.startsWith('%')) {
-      // ${var%pattern}	Remove from shortest rear (end) pattern
-      return value;
+      // ${var%%pattern}	Remove from longest rear (end) pattern
+
+      throw new Error('Not implemented');
     }
 
     if (operator.startsWith('##')) {
-      // ${var##pattern}	Remove from longest front pattern
-      return value;
+      // ${var%%pattern}	Remove from longest rear (end) pattern
+
+      const seperators = operator
+        .substr(2)
+        .split('*')
+        .filter(item => item);
+      const matches = Variables.split(value, seperators);
+
+      return matches.length > 0 ? matches[matches.length - 1].value : value;
     }
 
     if (operator.startsWith('#')) {
       // ${var#pattern}	Remove from shortest front pattern
-      return value;
+
+      throw new Error('Not implemented');
     }
 
     if (operator.startsWith('//')) {
