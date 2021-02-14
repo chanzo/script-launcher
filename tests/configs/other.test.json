@@ -776,6 +776,82 @@
     },
     {
       "id": "0021",
+      "name": "Expand variable and string manipulation",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build-stuff": [
+              "var=uva-hva",
+              "echo ${var%%-*} ${var##*-}",
+              "var=app-uva-hva-prd",
+              "echo ${var%%-*} ${var##*-}",
+              "var=app-uva=hva-prd",
+              "echo ${var::-8} ${var:8} ${var:4:7} ${var1::-8} ${var1:8} ${var1:4:7}",
+              "echo ${var/-/=} ${var//-/=} ${var1/-/=} ${var1//-/=}",
+              "echo ${var^^} ${var^} ${var1^^} ${var1^}",
+              "var=APP-UVA=HVA-PRD",
+              "echo ${var,,} ${var,} ${var1,,} ${var1,}"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0021-00",
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff"
+          ],
+          "result": [
+            "uva hva",
+            "app prd",
+            "app-uva hva-prd uva=hva",
+            "app=uva=hva-prd app=uva=hva=prd",
+            "APP-UVA=HVA-PRD App-uva=hva-prd",
+            "app-uva=hva-prd aPP-UVA=HVA-PRD"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0022",
+      "name": "Expand variable and string manipulation",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build-stuff": [
+              "echo ${*%% *} ${*##* }",
+              "echo ${*::-8} ${*:8} ${*:4:7}",
+              "echo ${*/a/A} ${*//a/A}",
+              "echo ${1*^^} ${1*^} ${5*^^} ${5*^}",
+              "echo ${1*,,} ${1*,} ${5*,,} ${5*,}"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0022-00",
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff",
+            "app",
+            "UVA",
+            "hva",
+            "prd"
+          ],
+          "result": [
+            "app prd",
+            "app UVA hva prd UVA hva",
+            "App UVA hva prd App UVA hvA prd",
+            "APP UVA HVA PRD App UVA hva prd",
+            "app uva hva prd app UVA hva prd"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0023",
       "name": "Reference scripts by using wildcards and arguments",
       "files": {
         "launcher-config": {
@@ -791,7 +867,7 @@
       },
       "tests": [
         {
-          "id": "0021-00",
+          "id": "0023-00",
           "lifecycle": "start",
           "npm-args": [
             "build:*",
@@ -804,7 +880,7 @@
           ]
         },
         {
-          "id": "0021-01",
+          "id": "0023-01",
           "lifecycle": "start",
           "npm-args": [
             "build:all",
@@ -819,7 +895,7 @@
       ]
     },
     {
-      "id": "0022",
+      "id": "0024",
       "name": "Concurrent limit",
       "files": {
         "launcher-config": {
@@ -880,7 +956,7 @@
       },
       "tests": [
         {
-          "id": "0022-00",
+          "id": "0024-00",
           "lifecycle": "start",
           "npm-args": "concurrent",
           "result": [
@@ -908,7 +984,7 @@
           ]
         },
         {
-          "id": "0022-01",
+          "id": "0024-01",
           "lifecycle": "start",
           "npm-args": "concurrent",
           "cmd-args": "--limit=4",

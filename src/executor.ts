@@ -7,6 +7,7 @@ import { confirmPrompt, formatTime, stringify, stringToArgv, Colors, Limiter } f
 import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
+import { Variables } from './variables';
 
 interface ITasks {
   circular: boolean;
@@ -171,46 +172,26 @@ export class Executor {
   }
 
   private static expandArguments(text: string, args: string[]): string {
+    const variables: Array<[string, string]> = [];
+
     for (let index = 0; index < args.length; index++) {
-      text = text.replace(new RegExp('([^\\\\]|^)\\$' + index + '\\*', 'g'), '$1' + args.slice(index).join(' '));
-      text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + index + '\\*\\}', 'g'), '$1' + args.slice(index).join(' '));
-
-      text = text.replace(new RegExp('([^\\\\]|^)\\$' + index, 'g'), '$1' + args[index]);
-      text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + index + '\\}', 'g'), '$1' + args[index]);
-
-      if (text.match(/([^\\]|^)\$/) === null) break;
+      variables.push([index + '\\*', args.slice(index).join(' ')]);
+      variables.push([index.toString(), args[index]]);
     }
 
-    text = text.replace(/([^\\]|^)\$\*/g, '$1' + args.slice(1).join(' '));
-    text = text.replace(/([^\\]|^)\$\{\*\}/g, '$1' + args.slice(1).join(' '));
-    text = text.replace(/([^\\]|^)\$\d+\*?/g, '$1');
-    text = text.replace(/([^\\]|^)\$\{\d+\*?\}/g, '$1');
+    variables.push(['\\*', args.slice(1).join(' ')]);
 
-    return text;
+    text = Variables.expand(text, variables);
+
+    return Variables.remove(text, '\\d+');
   }
 
   private static expandEnvironment(text: string, environment: { [name: string]: string }): string {
-    let previousText: string;
-
-    do {
-      previousText = text;
-
-      for (const [name, value] of Object.entries(environment)) {
-        text = text.replace(new RegExp('([^\\\\]|^)\\$' + name + '([^\\w]|$)', 'g'), '$1' + value + '$2');
-        text = text.replace(new RegExp('([^\\\\]|^)\\$\\{' + name + '\\}', 'g'), '$1' + value);
-
-        if (text.match(/([^\\]|^)\$/) === null) break;
-      }
-    } while (text.match(/([^\\]|^)\$/) !== null && text !== previousText);
-
-    return text;
+    return Variables.expand(text, Object.entries(environment));
   }
 
   private static removeEnvironment(text: string): string {
-    text = text.replace(/([^\\]|^)\$\w+/g, '$1');
-    text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
-
-    return text;
+    return Variables.remove(text, '\\w+');
   }
 
   private static extendEnvironment(environment: { [name: string]: string }, command: string): boolean {

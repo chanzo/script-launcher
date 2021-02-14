@@ -1,11 +1,11 @@
 {
   "Implementation examples (readme.md)": [
     {
-      "id": "0023",
+      "id": "0025",
       "name": "Sequential scripts",
       "tests": [
         {
-          "id": "0023-00",
+          "id": "0025-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -17,35 +17,35 @@
       ]
     },
     {
-      "id": "0024",
+      "id": "0026",
       "name": "Change directory",
       "tests": [
         {
-          "id": "0024-00",
+          "id": "0026-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js"
+          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js"
         }
       ]
     },
     {
-      "id": "0025",
+      "id": "0027",
       "name": "Parameters and functions",
       "tests": [
         {
-          "id": "0025-00",
+          "id": "0027-00",
           "lifecycle": "start",
           "npm-args": "serve",
           "result": "ng serve uva -c=dev"
         },
         {
-          "id": "0025-01",
+          "id": "0027-01",
           "lifecycle": "start",
           "npm-args": "serve::tst",
           "result": "ng serve uva -c=tst"
         },
         {
-          "id": "0025-02",
+          "id": "0027-02",
           "lifecycle": "start",
           "npm-args": "serve:hva:prd",
           "result": "ng serve hva -c=prd"
@@ -53,11 +53,11 @@
       ]
     },
     {
-      "id": "0026",
+      "id": "0028",
       "name": "Reference scripts",
       "tests": [
         {
-          "id": "0026-00",
+          "id": "0028-00",
           "lifecycle": "start",
           "npm-args": "deploy:tst",
           "result": [
@@ -70,12 +70,12 @@
       ]
     },
     {
-      "id": "0027",
+      "id": "0029",
       "name": "Environment values and special commands",
       "sanatize": true,
       "tests": [
         {
-          "id": "0027-00",
+          "id": "0029-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -100,12 +100,12 @@
       ]
     },
     {
-      "id": "0028",
+      "id": "0030",
       "name": "Environment and command line argument values",
       "sanatize": true,
       "tests": [
         {
-          "id": "0028-00",
+          "id": "0030-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -124,7 +124,7 @@
           ]
         },
         {
-          "id": "0028-01",
+          "id": "0030-01",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -139,26 +139,56 @@
       ]
     },
     {
-      "id": "0029",
+      "id": "0031",
+      "name": "Environment String Manipulation and Expanding Variables",
+      "sanatize": true,
+      "tests": [
+        {
+          "id": "0031-00",
+          "lifecycle": "start",
+          "npm-args": [
+            "build-stuff",
+            "arg1",
+            "ARG2",
+            "arg3"
+          ],
+          "result": [
+            "app-uva",
+            "hva-prd",
+            "uva=hva",
+            "app=uva=hva-prd",
+            "app=uva=hva=prd",
+            "APP-UVA=HVA-PRD",
+            "App-uva=hva-prd",
+            "app-uva=hva-prd",
+            "aPP-UVA=HVA-PRD",
+            "ARG1 ARG2 ARG3",
+            "aRG2 arg3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0032",
       "name": "Glob patterns",
       "tests": [
         {
-          "id": "0029-00",
+          "id": "0032-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
-            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js",
+            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js",
             "Markdown files: README.md"
           ]
         }
       ]
     },
     {
-      "id": "0030",
+      "id": "0033",
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
-          "id": "0030-00",
+          "id": "0033-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff:param1:param2",
@@ -186,11 +216,11 @@
       ]
     },
     {
-      "id": "0031",
+      "id": "0034",
       "name": "Escaping characters",
       "tests": [
         {
-          "id": "0031-00",
+          "id": "0034-00",
           "lifecycle": "start",
           "npm-args": [
             "escaping",
@@ -212,12 +242,12 @@
       ]
     },
     {
-      "id": "0032",
+      "id": "0035",
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
         {
-          "id": "0032-00",
+          "id": "0035-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -232,12 +262,12 @@
       ]
     },
     {
-      "id": "0033",
+      "id": "0036",
       "name": "Inline script blocks",
       "transformer": "inlineScriptBlocks",
       "tests": [
         {
-          "id": "0033-00",
+          "id": "0036-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -252,7 +282,7 @@
       ]
     },
     {
-      "id": "0034",
+      "id": "0037",
       "name": "Condition and exclusion constraints",
       "files": {
         "launcher-settings": {
@@ -263,7 +293,7 @@
       },
       "tests": [
         {
-          "id": "0034-00",
+          "id": "0037-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -282,12 +312,12 @@
       ]
     },
     {
-      "id": "0035",
+      "id": "0038",
       "name": "Confirmation prompt",
       "sanatize": true,
       "tests": [
         {
-          "id": "0035-00",
+          "id": "0038-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "confirm",
@@ -297,7 +327,7 @@
           ]
         },
         {
-          "id": "0035-01",
+          "id": "0038-01",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=true",
@@ -307,7 +337,7 @@
           ]
         },
         {
-          "id": "0035-02",
+          "id": "0038-02",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=false",
@@ -319,11 +349,11 @@
       ]
     },
     {
-      "id": "0036",
+      "id": "0039",
       "name": "Repeaters (String)",
       "tests": [
         {
-          "id": "0036-00",
+          "id": "0039-00",
           "lifecycle": "start",
           "npm-args": "ping",
           "result": [
@@ -335,11 +365,11 @@
       ]
     },
     {
-      "id": "0037",
+      "id": "0040",
       "name": "Repeaters (Object)",
       "tests": [
         {
-          "id": "0037-00",
+          "id": "0040-00",
           "lifecycle": "start",
           "npm-args": "ping",
           "result": [
@@ -360,7 +390,7 @@
       ]
     },
     {
-      "id": "0038",
+      "id": "0041",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -375,7 +405,7 @@
       },
       "tests": [
         {
-          "id": "0038-00",
+          "id": "0041-00",
           "lifecycle": "start",
           "result": [
             "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
@@ -388,7 +418,7 @@
           ]
         },
         {
-          "id": "0038-01",
+          "id": "0041-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -402,7 +432,7 @@
           ]
         },
         {
-          "id": "0038-02",
+          "id": "0041-02",
           "lifecycle": "start",
           "npm-args": [
             "menu",
@@ -422,7 +452,7 @@
       ]
     },
     {
-      "id": "0039",
+      "id": "0042",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -445,7 +475,7 @@
       },
       "tests": [
         {
-          "id": "0039-00",
+          "id": "0042-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: build                         (Use the menu by running: npm start menu)",
@@ -457,7 +487,7 @@
       ]
     },
     {
-      "id": "0040",
+      "id": "0043",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -480,7 +510,7 @@
       },
       "tests": [
         {
-          "id": "0040-00",
+          "id": "0043-00",
           "lifecycle": "start",
           "result": [
             "? Select › - Use arrow-keys. Return to submit.\n    serve\n❯   \u001b[4mbuild\u001b[24m\n",
@@ -494,7 +524,7 @@
       ]
     },
     {
-      "id": "0041",
+      "id": "0044",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -535,7 +565,7 @@
       },
       "tests": [
         {
-          "id": "0041-00",
+          "id": "0044-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: hva:development               (Use the menu by running: npm start menu)",
@@ -546,7 +576,7 @@
           ]
         },
         {
-          "id": "0041-01",
+          "id": "0044-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -562,7 +592,7 @@
       ]
     },
     {
-      "id": "0042",
+      "id": "0045",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -604,7 +634,7 @@
       },
       "tests": [
         {
-          "id": "0042-00",
+          "id": "0045-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: hva:development               (Use the menu by running: npm start menu)",
@@ -615,7 +645,7 @@
           ]
         },
         {
-          "id": "0042-01",
+          "id": "0045-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -632,7 +662,7 @@
       ]
     },
     {
-      "id": "0043",
+      "id": "0046",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -643,7 +673,7 @@
       },
       "tests": [
         {
-          "id": "0043-00",
+          "id": "0046-00",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -653,12 +683,12 @@
       ]
     },
     {
-      "id": "0044",
+      "id": "0047",
       "name": "Menu save default script",
       "sanatize": true,
       "tests": [
         {
-          "id": "0044-00",
+          "id": "0047-00",
           "lifecycle": "start",
           "result": [
             "Auto menu:                               (Use the menu by running: npm start menu)",
@@ -670,11 +700,11 @@
       ]
     },
     {
-      "id": "0045",
+      "id": "0048",
       "name": "Launcher settings",
       "tests": [
         {
-          "id": "0045-00",
+          "id": "0048-00",
           "lifecycle": "start",
           "npm-args": "build:dev",
           "result": [
@@ -687,7 +717,7 @@
           ]
         },
         {
-          "id": "0045-01",
+          "id": "0048-01",
           "lifecycle": "start",
           "npm-args": "build:acc",
           "result": [
@@ -700,7 +730,7 @@
           ]
         },
         {
-          "id": "0045-02",
+          "id": "0048-02",
           "lifecycle": "start",
           "npm-args": "build:production",
           "result": [
@@ -715,11 +745,11 @@
       ]
     },
     {
-      "id": "0046",
+      "id": "0049",
       "name": "Reference scripts by using wildcards",
       "tests": [
         {
-          "id": "0046-00",
+          "id": "0049-00",
           "lifecycle": "start",
           "npm-args": "build:*",
           "result": [
@@ -729,7 +759,7 @@
           ]
         },
         {
-          "id": "0046-01",
+          "id": "0049-01",
           "lifecycle": "start",
           "npm-args": "build:all",
           "result": [
@@ -739,7 +769,7 @@
           ]
         },
         {
-          "id": "0046-02",
+          "id": "0049-02",
           "cmd-args": [
             "--concurrent",
             "build:*"
@@ -753,12 +783,12 @@
       ]
     },
     {
-      "id": "0047",
+      "id": "0050",
       "name": "Launcher arguments",
       "sanatize": true,
       "tests": [
         {
-          "id": "0047-00",
+          "id": "0050-00",
           "cmd-args": [
             "--help"
           ]
@@ -766,7 +796,7 @@
       ]
     },
     {
-      "id": "0048",
+      "id": "0051",
       "name": "Launcher Command: init",
       "sanatize": true,
       "files": {
@@ -774,13 +804,13 @@
       },
       "tests": [
         {
-          "id": "0048-00",
+          "id": "0051-00",
           "cmd-args": [
             "init"
           ]
         },
         {
-          "id": "0048-01",
+          "id": "0051-01",
           "cmd-args": [
             "init",
             "basic"
@@ -789,7 +819,7 @@
       ]
     },
     {
-      "id": "0049",
+      "id": "0052",
       "name": "Launcher Command: migrate",
       "sanatize": true,
       "files": {
@@ -835,7 +865,7 @@
       },
       "tests": [
         {
-          "id": "0049-00",
+          "id": "0052-00",
           "cmd-args": [
             "migrate",
             "--params=1"
@@ -844,7 +874,7 @@
       ]
     },
     {
-      "id": "0050",
+      "id": "0053",
       "name": "Launcher Command: script",
       "sanatize": true,
       "files": {
@@ -863,14 +893,14 @@
       },
       "tests": [
         {
-          "id": "0050-00",
+          "id": "0053-00",
           "cmd-args": [
             "build:css",
             "build:js"
           ]
         },
         {
-          "id": "0050-01",
+          "id": "0053-01",
           "cmd-args": [
             "build:css",
             "build:js",
@@ -880,7 +910,7 @@
       ]
     },
     {
-      "id": "0051",
+      "id": "0054",
       "name": "Launcher Command: list",
       "files": {
         "launcher-config": {
@@ -913,21 +943,21 @@
       },
       "tests": [
         {
-          "id": "0051-00",
+          "id": "0054-00",
           "cmd-args": [
             "list",
             "script"
           ]
         },
         {
-          "id": "0051-01",
+          "id": "0054-01",
           "cmd-args": [
             "list",
             "menu"
           ]
         },
         {
-          "id": "0051-02",
+          "id": "0054-02",
           "cmd-args": [
             "list",
             "complete"
