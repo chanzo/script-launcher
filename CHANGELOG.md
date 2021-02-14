@@ -2,6 +2,7 @@
 
 ## 1.33.0
 * Added [Environment String Manipulation and Expanding Variables](src#environment-string-manipulation-and-expanding-variables) support
+* Updated dev dependencies
 
 ## 1.32.0
 * Updated dependencies and dev dependencies
