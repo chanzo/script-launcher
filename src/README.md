@@ -231,11 +231,11 @@ This example uses square brackets to start multiple script one by one. This feat
   <summary>
     <b>Output</b>
   </summary>
-  <textarea rows="3" style="resize: none;overflow-y: hidden;background: #00000020; border: none; color:#FFFFFF;padding:16px 8px 16px 6px">
+  ```bash
   Build step 1
   Build step 2
   Build step 3
-  </textarea>
+  ```
 </details>
 &nbsp;
 
