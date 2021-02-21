@@ -227,6 +227,17 @@ This example uses square brackets to start multiple script one by one. This feat
   }
 }
 ```
+<details>
+  <summary>
+    <b>Output</b>
+  </summary>
+  <textarea rows="3" style="resize: none;overflow-y: hidden;background: #00000020; border: none; color:#FFFFFF;padding:16px 8px 16px 6px">
+  Build step 1
+  Build step 2
+  Build step 3
+  </textarea>
+</details>
+&nbsp;
 
 ### Change directory
 Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from within a different location.
