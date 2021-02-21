@@ -228,7 +228,7 @@ This example uses square brackets to start multiple script one by one. This feat
 }
 ```
 <details>
-  <summary><b>Output:</b></summary>
+  <summary><strong>Output:</strong></summary>
 
   ```bash
   Build step 1
