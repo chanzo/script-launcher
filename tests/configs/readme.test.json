@@ -181,12 +181,6 @@
             "escaping",
             "arg1"
           ],
-          "result": [
-            "$1                         : arg1",
-            "$npm_config_node_version   : $node_version",
-            "${1}                       : arg1",
-            "${npm_config_node_version} : $node_version"
-          ],
           "result:win32": [
             "\"$1                        \" : arg1",
             "\"$npm_config_node_version  \" : $node_version",
@@ -235,12 +229,6 @@
           "id": "0037-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": [
-            "/bin/sh: 1: node_modules_test: not found",
-            "npm install",
-            "npm start",
-            "Test platform type."
-          ],
           "result:win32": [
             "'node_modules_test' is not recognized as an internal or external command,\r\noperable program or batch file.",
             "npm install",

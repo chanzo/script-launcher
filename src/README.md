@@ -176,7 +176,8 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
-// Example when using Script Launcher //
+// Example when using the Script Launcher migrate command:
+// npx launch migrate --params
 {
   "scripts": {
     "build:$project:$config": "ng build $project -c=$config --prod",
@@ -479,6 +480,16 @@ Use a backslash in the script command, to escaping variables.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  $1                         : arg1
+  $npm_config_node_version   : 14.15.5
+  ${1}                       : arg1
+  ${npm_config_node_version} : 14.15.5
+  ```
+</details>
 
 ### Environment values and special commands
 | Pattern                 | Type        | Description                                           |
@@ -697,6 +708,16 @@ The value of the **condition** and **exclusion** statement can be a string or an
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  /bin/sh: 1: node_modules_test: not found
+  npm install
+  npm start
+  Test platform type.
+  ```
+</details>
 
 ### Repeaters (String)
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
@@ -983,7 +1004,7 @@ serve:uva:prd
 ```
 
 ## Launcher settings
-The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
+The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters-string) implementation examples section for more information on repeaters.
 
 **Run**: `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
