@@ -229,6 +229,7 @@ This example uses square brackets to start multiple script one by one. This feat
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` text
   Build step 1
   Build step 2
@@ -252,6 +253,7 @@ Specify an existing directory as an script command and it will change to that di
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` bash
   common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
   ```
@@ -290,6 +292,7 @@ Use an existing script id in the command section to execute another script in yo
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
 ``` TEXT
 ng build uva -c=tst
 firebase deploy --public dist/uva -P uva-tst
@@ -380,6 +383,7 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
 ``` bash
 app-uva
 hva-prd
@@ -430,6 +434,7 @@ aRG2 arg3
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   --------------------------------
   Main Parameter 1: param1
@@ -536,6 +541,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
   Markdown files: README.md
@@ -574,6 +580,7 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   Background job : 1
   Background job : 2
@@ -616,6 +623,7 @@ This example uses the inline script blocks to run multiple script in parallel an
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   Background job : 1
   Background job : 2
@@ -709,6 +717,7 @@ Example using a string array.
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   Action: ping www.google.com
   Action: ping duckduckgo.com
@@ -755,6 +764,7 @@ Example using an object array.
 ```
 <details>
   <summary><strong>Output:</strong></summary>
+
   ``` TEXT
   Google
   --------------------------------
