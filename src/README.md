@@ -229,7 +229,7 @@ This example uses square brackets to start multiple script one by one. This feat
 ```
 <details>
   <summary><strong>Output:</strong></summary>
-  ``` TEXT
+  ``` text
   Build step 1
   Build step 2
   Build step 3
@@ -252,7 +252,7 @@ Specify an existing directory as an script command and it will change to that di
 ```
 <details>
   <summary><strong>Output:</strong></summary>
-  ``` TEXT
+  ``` bash
   common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
   ```
 </details>
@@ -290,12 +290,12 @@ Use an existing script id in the command section to execute another script in yo
 ```
 <details>
   <summary><strong>Output:</strong></summary>
-  ``` TEXT
-  ng build uva -c=tst
-  firebase deploy --public dist/uva -P uva-tst
-  ng build hva -c=tst
-  firebase deploy --public dist/hva -P hva-tst
-  ```
+``` TEXT
+ng build uva -c=tst
+firebase deploy --public dist/uva -P uva-tst
+ng build hva -c=tst
+firebase deploy --public dist/hva -P hva-tst
+```
 </details>
 
 ### Reference scripts by using wildcards
@@ -380,19 +380,19 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 ```
 <details>
   <summary><strong>Output:</strong></summary>
-  ``` TEXT
-  app-uva
-  hva-prd
-  uva=hva
-  app=uva=hva-prd
-  app=uva=hva=prd
-  APP-UVA=HVA-PRD
-  App-uva=hva-prd
-  app-uva=hva-prd
-  aPP-UVA=HVA-PRD
-  ARG1 ARG2 ARG3
-  aRG2 arg3
-  ```
+``` bash
+app-uva
+hva-prd
+uva=hva
+app=uva=hva-prd
+app=uva=hva=prd
+APP-UVA=HVA-PRD
+App-uva=hva-prd
+app-uva=hva-prd
+aPP-UVA=HVA-PRD
+ARG1 ARG2 ARG3
+aRG2 arg3
+```
 </details>
 
 ### Launch arguments, command arguments, parameters and arguments
