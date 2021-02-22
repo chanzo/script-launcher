@@ -70,7 +70,7 @@ npx launch init basic
 If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add [custom run scripts](#start-a-specific-launch-script-by-using-the-npm-run) for starting Script Launcher.
 
 Example: **package.json**
-``` JSON
+``` TEXT
 {
     ...
     "scripts": {
@@ -101,15 +101,25 @@ Basically you can now use `npm start` instead of `npm run`.
 For a cusom run script to work, you have to add a script to your **package.json** file, make sure there is a similar named script in your **launcher-config.json** file.
 
 Example: **package.json**
-``` JSON
+``` TEXT
 {
     ...
     "scripts": {
         "lint": "launch",
-        "test": "launch"
+        "test": "launch",
         ...
     },
     ...
+}
+```
+
+Example: **launcher-config.json**
+``` JSON
+{
+    "scripts": {
+        "lint": "echo Linting code...",
+        "test": "echo Testing code..."
+    }
 }
 ```
 
@@ -230,7 +240,7 @@ This example uses square brackets to start multiple script one by one. This feat
 <details>
   <summary><strong>Output:</strong></summary>
 
-  ``` text
+  ``` TEXT
   Build step 1
   Build step 2
   Build step 3
@@ -254,7 +264,7 @@ Specify an existing directory as an script command and it will change to that di
 <details>
   <summary><strong>Output:</strong></summary>
 
-  ``` bash
+  ``` TEXT
   common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
   ```
 </details>
@@ -293,12 +303,12 @@ Use an existing script id in the command section to execute another script in yo
 <details>
   <summary><strong>Output:</strong></summary>
 
-``` TEXT
-ng build uva -c=tst
-firebase deploy --public dist/uva -P uva-tst
-ng build hva -c=tst
-firebase deploy --public dist/hva -P hva-tst
-```
+  ``` TEXT
+  ng build uva -c=tst
+  firebase deploy --public dist/uva -P uva-tst
+  ng build hva -c=tst
+  firebase deploy --public dist/hva -P hva-tst
+  ```
 </details>
 
 ### Reference scripts by using wildcards
@@ -384,19 +394,19 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 <details>
   <summary><strong>Output:</strong></summary>
 
-``` bash
-app-uva
-hva-prd
-uva=hva
-app=uva=hva-prd
-app=uva=hva=prd
-APP-UVA=HVA-PRD
-App-uva=hva-prd
-app-uva=hva-prd
-aPP-UVA=HVA-PRD
-ARG1 ARG2 ARG3
-aRG2 arg3
-```
+  ``` TEXT
+  app-uva
+  hva-prd
+  uva=hva
+  app=uva=hva-prd
+  app=uva=hva=prd
+  APP-UVA=HVA-PRD
+  App-uva=hva-prd
+  app-uva=hva-prd
+  aPP-UVA=HVA-PRD
+  ARG1 ARG2 ARG3
+  aRG2 arg3
+  ```
 </details>
 
 ### Launch arguments, command arguments, parameters and arguments
@@ -1032,7 +1042,7 @@ The **files** options can be used to configure the config files to load when sta
 By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of Script Launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1053,7 +1063,7 @@ The default value of this list is presented in the following example:
 The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method. If you want to specify a shell for a specific platform, use one of the [platform names](https://nodejs.org/api/process.html#process_process_platform) as a nested object name. If there is no platform name match found the default will be used.
 
 Example shell option for specific platform
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1076,7 +1086,7 @@ Example shell option for specific platform
 ```
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1110,7 +1120,7 @@ If the *nonull* script-launcher option is set, and no match was found, then the 
 * **confirm:** Enable disable menu confirmation prompt.
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1131,7 +1141,7 @@ The default value is presented in the following example:
 The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1146,7 +1156,7 @@ The default value is presented in the following example:
 Use the **limit** option to limit the number of commands to execute in parallel. When using the value 0 the number of available cpus will be used.
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
