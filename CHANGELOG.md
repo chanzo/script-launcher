@@ -1,7 +1,8 @@
 # Change Log
 
-## 1.33.1
-* Readme update
+## 1.33.2
+* Added output examples to `README.md`
+* Updated dev dependencies
 
 ## 1.33.0
 * Added [Environment String Manipulation and Expanding Variables](src#environment-string-manipulation-and-expanding-variables) support
