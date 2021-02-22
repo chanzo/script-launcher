@@ -2,6 +2,7 @@
 
 ## 1.33.2
 * Added output examples to `README.md`
+* Added test support for `README.md` output examples
 * Updated dev dependencies
 
 ## 1.33.0
