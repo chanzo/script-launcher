@@ -45,7 +45,7 @@ export class MarkdownParser {
 
     for (const [title, content] of this.sections) {
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
-      const sections = MarkdownParser.getSections(content, '^```(.*)');
+      const sections = MarkdownParser.getSections(content, '^\\s*```(.*)');
 
       result.push(...MarkdownParser.parseSectionJSONTests(sections, title, commands));
       result.push(...MarkdownParser.parseSectionBashTests(sections, title, commands));
@@ -57,6 +57,7 @@ export class MarkdownParser {
   private static parseSectionJSONTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
     const result: ISectionTest[] = [];
     const content = sections.get('JSON');
+    const output = sections.get('TEXT') || [];
 
     if (content) {
       let config: IConfig = {} as any;
@@ -69,10 +70,16 @@ export class MarkdownParser {
           sectionError = 'Unable to load markdown example: ' + error.message;
         }
 
+        let outputResult = null;
+
+        if (output[result.length]){
+          outputResult = output[result.length].map(item => item.trim());
+        }
+
         result.push({
           title: title,
           config: config,
-          result: null,
+          result: outputResult,
           type: SectionType.json,
           commands: commands,
           error: sectionError

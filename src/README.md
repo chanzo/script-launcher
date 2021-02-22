@@ -229,14 +229,12 @@ This example uses square brackets to start multiple script one by one. This feat
 ```
 <details>
   <summary><strong>Output:</strong></summary>
-
-  ```bash
+  ``` TEXT
   Build step 1
   Build step 2
   Build step 3
   ```
 </details>
-&nbsp;
 
 ### Change directory
 Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from within a different location.
@@ -252,6 +250,12 @@ Specify an existing directory as an script command and it will change to that di
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
+  ```
+</details>
 
 ### Parameters and functions
 Use the dollar-sign in the script id and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
@@ -284,6 +288,15 @@ Use an existing script id in the command section to execute another script in yo
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  ng build uva -c=tst
+  firebase deploy --public dist/uva -P uva-tst
+  ng build hva -c=tst
+  firebase deploy --public dist/hva -P hva-tst
+  ```
+</details>
 
 ### Reference scripts by using wildcards
 Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
@@ -365,6 +378,22 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  app-uva
+  hva-prd
+  uva=hva
+  app=uva=hva-prd
+  app=uva=hva=prd
+  APP-UVA=HVA-PRD
+  App-uva=hva-prd
+  app-uva=hva-prd
+  aPP-UVA=HVA-PRD
+  ARG1 ARG2 ARG3
+  aRG2 arg3
+  ```
+</details>
 
 ### Launch arguments, command arguments, parameters and arguments
 * **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
@@ -399,6 +428,25 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  --------------------------------
+  Main Parameter 1: param1
+  Main Parameter 2: param2
+  Main Arguments 1: arg1
+  Main Arguments 2: arg2
+  Main All arguments: arg1 arg2 arg3
+  Main Offset arguments: arg2 arg3
+  --------------------------------
+  Function Parameter 1: param1
+  Function Parameter 2: funcParam
+  Function Arguments 1: funcArg
+  Function Arguments 2: arg1
+  Function All arguments: funcArg arg1
+  --------------------------------
+  ```
+</details>
 
 ### Escaping characters
 Use a backslash in the script command, to escaping variables.
@@ -486,6 +534,13 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
+  Markdown files: README.md
+  ```
+</details>
 
 ### Concurrent scripts
 This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
@@ -517,6 +572,17 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  Background job : 1
+  Background job : 2
+  Sequential job : 3
+  Sequential job : 4
+  Completed job : 1
+  Completed job : 2
+  ```
+</details>
 
 ### Inline script blocks
 This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
@@ -548,6 +614,17 @@ This example uses the inline script blocks to run multiple script in parallel an
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  Background job : 1
+  Background job : 2
+  Completed job : 1
+  Completed job : 2
+  Sequential job : 3
+  Sequential job : 4
+  ```
+</details>
 
 ### Confirmation prompt
 Confirmation prompts can be used for asking a confirmation to continue. Use the **confirm** argument to auto confirm.
@@ -630,6 +707,14 @@ Example using a string array.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  Action: ping www.google.com
+  Action: ping duckduckgo.com
+  Action: ping bing.com
+  ```
+</details>
 
 ### Repeaters (Object)
 Example using an object array.
@@ -668,6 +753,23 @@ Example using an object array.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+  ``` TEXT
+  Google
+  --------------------------------
+  Action: ping www.google.com
+
+  DuckDuckGo
+  --------------------------------
+  Action: ping duckduckgo.com
+
+  Bing
+  --------------------------------
+  Action: ping bing.com
+
+  ```
+</details>
 
 ### Interactive menu
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily.
