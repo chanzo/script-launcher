@@ -7,12 +7,7 @@
         {
           "id": "0025-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "Build step 1",
-            "Build step 2",
-            "Build step 3"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -23,8 +18,7 @@
         {
           "id": "0026-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": "common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js"
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -59,13 +53,7 @@
         {
           "id": "0028-00",
           "lifecycle": "start",
-          "npm-args": "deploy:tst",
-          "result": [
-            "ng build uva -c=tst",
-            "firebase deploy --public dist/uva -P uva-tst",
-            "ng build hva -c=tst",
-            "firebase deploy --public dist/hva -P hva-tst"
-          ]
+          "npm-args": "deploy:tst"
         }
       ]
     },
@@ -151,19 +139,6 @@
             "arg1",
             "ARG2",
             "arg3"
-          ],
-          "result": [
-            "app-uva",
-            "hva-prd",
-            "uva=hva",
-            "app=uva=hva-prd",
-            "app=uva=hva=prd",
-            "APP-UVA=HVA-PRD",
-            "App-uva=hva-prd",
-            "app-uva=hva-prd",
-            "aPP-UVA=HVA-PRD",
-            "ARG1 ARG2 ARG3",
-            "aRG2 arg3"
           ]
         }
       ]
@@ -175,11 +150,7 @@
         {
           "id": "0032-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js",
-            "Markdown files: README.md"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -195,22 +166,6 @@
             "arg1",
             "arg2",
             "arg3"
-          ],
-          "result": [
-            "--------------------------------",
-            "Main Parameter 1: param1",
-            "Main Parameter 2: param2",
-            "Main Arguments 1: arg1",
-            "Main Arguments 2: arg2",
-            "Main All arguments: arg1 arg2 arg3",
-            "Main Offset arguments: arg2 arg3",
-            "--------------------------------",
-            "Function Parameter 1: param1",
-            "Function Parameter 2: funcParam",
-            "Function Arguments 1: funcArg",
-            "Function Arguments 2: arg1",
-            "Function All arguments: funcArg arg1",
-            "--------------------------------"
           ]
         }
       ]
@@ -225,12 +180,6 @@
           "npm-args": [
             "escaping",
             "arg1"
-          ],
-          "result": [
-            "$1                         : arg1",
-            "$npm_config_node_version   : $node_version",
-            "${1}                       : arg1",
-            "${npm_config_node_version} : $node_version"
           ],
           "result:win32": [
             "\"$1                        \" : arg1",
@@ -249,15 +198,7 @@
         {
           "id": "0035-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "Background job : 1",
-            "Background job : 2",
-            "Sequential job : 3",
-            "Sequential job : 4",
-            "Completed job : 1",
-            "Completed job : 2"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -269,15 +210,7 @@
         {
           "id": "0036-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "Background job : 1",
-            "Background job : 2",
-            "Completed job : 1",
-            "Completed job : 2",
-            "Sequential job : 3",
-            "Sequential job : 4"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -296,12 +229,6 @@
           "id": "0037-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "result": [
-            "/bin/sh: 1: node_modules_test: not found",
-            "npm install",
-            "npm start",
-            "Test platform type."
-          ],
           "result:win32": [
             "'node_modules_test' is not recognized as an internal or external command,\r\noperable program or batch file.",
             "npm install",
@@ -355,12 +282,7 @@
         {
           "id": "0039-00",
           "lifecycle": "start",
-          "npm-args": "ping",
-          "result": [
-            "Action: ping www.google.com",
-            "Action: ping duckduckgo.com",
-            "Action: ping bing.com"
-          ]
+          "npm-args": "ping"
         }
       ]
     },
@@ -371,21 +293,7 @@
         {
           "id": "0040-00",
           "lifecycle": "start",
-          "npm-args": "ping",
-          "result": [
-            "Google",
-            "--------------------------------",
-            "Action: ping www.google.com",
-            "",
-            "DuckDuckGo",
-            "--------------------------------",
-            "Action: ping duckduckgo.com",
-            "",
-            "Bing",
-            "--------------------------------",
-            "Action: ping bing.com",
-            ""
-          ]
+          "npm-args": "ping"
         }
       ]
     },

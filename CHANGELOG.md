@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.33.2
+* Added output examples to `README.md`
+* Added test support for `README.md` output examples
+* Updated dev dependencies
+
 ## 1.33.0
 * Added [Environment String Manipulation and Expanding Variables](src#environment-string-manipulation-and-expanding-variables) support
 * Updated dev dependencies

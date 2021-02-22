@@ -70,7 +70,7 @@ npx launch init basic
 If not already done so, change your **package.json** start script, so it will start Script Launcher. If you do not want to change your start script, you can also add [custom run scripts](#start-a-specific-launch-script-by-using-the-npm-run) for starting Script Launcher.
 
 Example: **package.json**
-``` JSON
+``` TEXT
 {
     ...
     "scripts": {
@@ -101,15 +101,25 @@ Basically you can now use `npm start` instead of `npm run`.
 For a cusom run script to work, you have to add a script to your **package.json** file, make sure there is a similar named script in your **launcher-config.json** file.
 
 Example: **package.json**
-``` JSON
+``` TEXT
 {
     ...
     "scripts": {
         "lint": "launch",
-        "test": "launch"
+        "test": "launch",
         ...
     },
     ...
+}
+```
+
+Example: **launcher-config.json**
+``` JSON
+{
+    "scripts": {
+        "lint": "echo Linting code...",
+        "test": "echo Testing code..."
+    }
 }
 ```
 
@@ -166,7 +176,8 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 ``` JSON
-// Example when using Script Launcher //
+// Example when using the Script Launcher migrate command:
+// npx launch migrate --params
 {
   "scripts": {
     "build:$project:$config": "ng build $project -c=$config --prod",
@@ -227,6 +238,15 @@ This example uses square brackets to start multiple script one by one. This feat
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Build step 1
+  Build step 2
+  Build step 3
+  ```
+</details>
 
 ### Change directory
 Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from within a different location.
@@ -242,6 +262,13 @@ Specify an existing directory as an script command and it will change to that di
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
+  ```
+</details>
 
 ### Parameters and functions
 Use the dollar-sign in the script id and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
@@ -274,6 +301,16 @@ Use an existing script id in the command section to execute another script in yo
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  ng build uva -c=tst
+  firebase deploy --public dist/uva -P uva-tst
+  ng build hva -c=tst
+  firebase deploy --public dist/hva -P hva-tst
+  ```
+</details>
 
 ### Reference scripts by using wildcards
 Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
@@ -355,6 +392,23 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  app-uva
+  hva-prd
+  uva=hva
+  app=uva=hva-prd
+  app=uva=hva=prd
+  APP-UVA=HVA-PRD
+  App-uva=hva-prd
+  app-uva=hva-prd
+  aPP-UVA=HVA-PRD
+  ARG1 ARG2 ARG3
+  aRG2 arg3
+  ```
+</details>
 
 ### Launch arguments, command arguments, parameters and arguments
 * **Launch arguments:** These are values passed to `laucher` directly, for example: `launch init` or `launch version`
@@ -389,6 +443,26 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  --------------------------------
+  Main Parameter 1: param1
+  Main Parameter 2: param2
+  Main Arguments 1: arg1
+  Main Arguments 2: arg2
+  Main All arguments: arg1 arg2 arg3
+  Main Offset arguments: arg2 arg3
+  --------------------------------
+  Function Parameter 1: param1
+  Function Parameter 2: funcParam
+  Function Arguments 1: funcArg
+  Function Arguments 2: arg1
+  Function All arguments: funcArg arg1
+  --------------------------------
+  ```
+</details>
 
 ### Escaping characters
 Use a backslash in the script command, to escaping variables.
@@ -406,6 +480,16 @@ Use a backslash in the script command, to escaping variables.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  $1                         : arg1
+  $npm_config_node_version   : 14.15.5
+  ${1}                       : arg1
+  ${npm_config_node_version} : 14.15.5
+  ```
+</details>
 
 ### Environment values and special commands
 | Pattern                 | Type        | Description                                           |
@@ -476,6 +560,14 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
+  Markdown files: README.md
+  ```
+</details>
 
 ### Concurrent scripts
 This example uses the **concurrent** keyword to run multiple script in parallel and the **sequential** keyword to start multiple script one by one. This feature is convenient in a development environment, when you want to start development server in the background.
@@ -507,6 +599,18 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Background job : 1
+  Background job : 2
+  Sequential job : 3
+  Sequential job : 4
+  Completed job : 1
+  Completed job : 2
+  ```
+</details>
 
 ### Inline script blocks
 This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
@@ -538,6 +642,18 @@ This example uses the inline script blocks to run multiple script in parallel an
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Background job : 1
+  Background job : 2
+  Completed job : 1
+  Completed job : 2
+  Sequential job : 3
+  Sequential job : 4
+  ```
+</details>
 
 ### Confirmation prompt
 Confirmation prompts can be used for asking a confirmation to continue. Use the **confirm** argument to auto confirm.
@@ -592,6 +708,16 @@ The value of the **condition** and **exclusion** statement can be a string or an
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  /bin/sh: 1: node_modules_test: not found
+  npm install
+  npm start
+  Test platform type.
+  ```
+</details>
 
 ### Repeaters (String)
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
@@ -620,6 +746,15 @@ Example using a string array.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Action: ping www.google.com
+  Action: ping duckduckgo.com
+  Action: ping bing.com
+  ```
+</details>
 
 ### Repeaters (Object)
 Example using an object array.
@@ -658,6 +793,24 @@ Example using an object array.
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Google
+  --------------------------------
+  Action: ping www.google.com
+
+  DuckDuckGo
+  --------------------------------
+  Action: ping duckduckgo.com
+
+  Bing
+  --------------------------------
+  Action: ping bing.com
+
+  ```
+</details>
 
 ### Interactive menu
 Use the **menu** section to create an interactive landing menu, so a new developer can get start on your project more easily.
@@ -851,7 +1004,7 @@ serve:uva:prd
 ```
 
 ## Launcher settings
-The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters) implementation examples section for more information on repeaters.
+The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters-string) implementation examples section for more information on repeaters.
 
 **Run**: `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
 ``` JSON
@@ -910,7 +1063,7 @@ The **files** options can be used to configure the config files to load when sta
 By using this option it's possible the split your configuration over multiple files. It's a good practice is to split your script and menu configurations to their own file. You could also include the `package.json` file in this list, then you can use the strength of Script Launcher in your `package.json` file.
 
 The default value of this list is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -931,7 +1084,7 @@ The default value of this list is presented in the following example:
 The **script shell** options can be used to configure the spawn shell, this value is passed to the [options shell](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) of the node **child_process.spawn** method. If you want to specify a shell for a specific platform, use one of the [platform names](https://nodejs.org/api/process.html#process_process_platform) as a nested object name. If there is no platform name match found the default will be used.
 
 Example shell option for specific platform
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -954,7 +1107,7 @@ Example shell option for specific platform
 ```
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -988,7 +1141,7 @@ If the *nonull* script-launcher option is set, and no match was found, then the 
 * **confirm:** Enable disable menu confirmation prompt.
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1009,7 +1162,7 @@ The default value is presented in the following example:
 The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled  1=info  2=log  2=debug
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
@@ -1024,7 +1177,7 @@ The default value is presented in the following example:
 Use the **limit** option to limit the number of commands to execute in parallel. When using the value 0 the number of available cpus will be used.
 
 The default value is presented in the following example:
-``` JSON
+``` TEXT
 {
   "scripts": {
     ...
