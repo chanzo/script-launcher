@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.33.3
+* Added more output examples to `README.md`
+
 ## 1.33.2
 * Added output examples to `README.md`
 * Added test support for `README.md` output examples

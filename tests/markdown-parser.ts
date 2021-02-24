@@ -11,7 +11,7 @@ export interface ISectionTest {
   title: string;
   type: SectionType;
   config: IConfig;
-  result: string[];
+  result: string[][];
   commands: string[];
   error?: string;
 }
@@ -70,10 +70,10 @@ export class MarkdownParser {
           sectionError = 'Unable to load markdown example: ' + error.message;
         }
 
-        let outputResult = null;
+        let outputResult: string[][] = null;
 
         if (output[result.length]){
-          outputResult = output[result.length].map(item => item.trim());
+          outputResult = output.map(item => item.map(item => item.trim()));
         }
 
         result.push({
@@ -100,7 +100,7 @@ export class MarkdownParser {
         result.push({
           title: title,
           config: null,
-          result: item.map(row => row.replace('\r', '')),
+          result: [item.map(row => row.replace('\r', ''))],
           type: SectionType.bash,
           commands: [commands[index++]],
           error: null
