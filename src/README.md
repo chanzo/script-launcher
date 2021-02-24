@@ -282,6 +282,22 @@ Use the dollar-sign in the script id and command, to specify script function par
 }
 ```
 
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  ng serve uva -c=dev
+  ```
+
+  ``` TEXT
+  ng serve uva -c=tst
+  ```
+
+  ``` TEXT
+  ng serve hva -c=prd
+  ```
+</details>
+
 ### Reference scripts
 Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse scripts from another script, with different arguments if desired.
 
@@ -330,6 +346,15 @@ Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selec
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Building: .css files
+  Building: .js files
+  Building: .html files
+  ```
+</details>
 
 
 ### Environment and command line argument values
@@ -358,6 +383,23 @@ For compatibility reasons: when using a script id that is equal to the command b
 }
 ```
 In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
+<details>
+  <summary><strong>Output 1:</strong></summary>
+
+  ``` TEXT
+  Node version: 14.15.5
+  Node version: 14.15.5
+  Argument 1 : arg1
+  Argument 2 : arg2
+  All arguments: arg1 arg2 arg3
+  Offset arguments: arg2 arg3
+  Environment : my-env
+  ```
+
+  ``` TEXT
+  arg1 arg2 arg3
+  ```
+</details>
 
 ### Environment String Manipulation and Expanding Variables
 | Pattern                 | Description                                         |
@@ -671,6 +713,15 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 }
 ```
 
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  ✔ Are you sure you want to continue ... yes
+  You are sure!
+  ```
+</details>
+
 ### Condition and exclusion constraints
 * **condition:** Must evaluate to true or 0 for the corresponding script block to be executed.
 * **exclusion:** Must evaluate to false or !0 for the corresponding script block to be executed.
@@ -890,6 +941,17 @@ Use `npm start menu` to ignore the **defaultScript** option, so the menu will be
 }
 ```
 
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  Auto menu:                               (Use the menu by running: npm start menu)
+  Executing: npm start build:hva
+
+  Build script: hva
+  ```
+</details>
+
 ## Launcher arguments
 Use the **help** for a list of available options.
 
@@ -1053,6 +1115,36 @@ The launcher settings can be used to specify named values that can be used by th
   }
 }
 ```
+<details>
+  <summary><strong>Output:</strong></summary>
+
+  ``` TEXT
+  name: example
+  version: 2.0.0
+  ng build -c=dev --deploy-url example.dev.com
+
+  Deploying to: server1.dev.com
+  Deploying to: server2.dev.com
+  ```
+
+  ``` TEXT
+  name: example
+  version: 1.9.0
+  ng build -c=acc --deploy-url example.acc.com
+
+  Deploying to: server1.acc.com
+  Deploying to: server2.acc.com
+  ```
+
+  ``` TEXT
+  name: example
+  version: 1.8.0
+  ng build -c=production --deploy-url example.prd.com
+
+  Deploying to: server1.prd.com
+  Deploying to: server2.prd.com
+  ```
+</details>
 
 ## Launcher options
 The launcher **options** can be used the customize the default behavior of Script Launcher.

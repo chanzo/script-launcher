@@ -29,20 +29,17 @@
         {
           "id": "0027-00",
           "lifecycle": "start",
-          "npm-args": "serve",
-          "result": "ng serve uva -c=dev"
+          "npm-args": "serve"
         },
         {
           "id": "0027-01",
           "lifecycle": "start",
-          "npm-args": "serve::tst",
-          "result": "ng serve uva -c=tst"
+          "npm-args": "serve::tst"
         },
         {
           "id": "0027-02",
           "lifecycle": "start",
-          "npm-args": "serve:hva:prd",
-          "result": "ng serve hva -c=prd"
+          "npm-args": "serve:hva:prd"
         }
       ]
     },
@@ -100,15 +97,6 @@
             "arg1",
             "arg2",
             "arg3"
-          ],
-          "result": [
-            "Node version: $node_version",
-            "Node version: $node_version",
-            "Argument 1 : arg1",
-            "Argument 2 : arg2",
-            "All arguments: arg1 arg2 arg3",
-            "Offset arguments: arg2 arg3",
-            "Environment : my-env"
           ]
         },
         {
@@ -119,9 +107,6 @@
             "arg1",
             "arg2",
             "arg3"
-          ],
-          "result": [
-            "arg1 arg2 arg3"
           ]
         }
       ]
@@ -247,11 +232,7 @@
           "id": "0038-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
-          "cmd-args": "confirm",
-          "result": [
-            "✔ Are you sure you want to continue ... yes",
-            "You are sure!"
-          ]
+          "cmd-args": "confirm"
         },
         {
           "id": "0038-01",
@@ -265,6 +246,7 @@
         },
         {
           "id": "0038-02",
+          "name2": "npm start build-stuff --confirm=false",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--confirm=false",
@@ -597,13 +579,7 @@
       "tests": [
         {
           "id": "0047-00",
-          "lifecycle": "start",
-          "result": [
-            "Auto menu:                               (Use the menu by running: npm start menu)",
-            "Executing: npm start build:hva",
-            "",
-            "Build script: hva"
-          ]
+          "lifecycle": "start"
         }
       ]
     },
@@ -614,41 +590,17 @@
         {
           "id": "0048-00",
           "lifecycle": "start",
-          "npm-args": "build:dev",
-          "result": [
-            "name: example",
-            "version: 2.0.0",
-            "ng build -c=dev --deploy-url example.dev.com",
-            "",
-            "Deploying to: server1.dev.com",
-            "Deploying to: server2.dev.com"
-          ]
+          "npm-args": "build:dev"
         },
         {
           "id": "0048-01",
           "lifecycle": "start",
-          "npm-args": "build:acc",
-          "result": [
-            "name: example",
-            "version: 1.9.0",
-            "ng build -c=acc --deploy-url example.acc.com",
-            "",
-            "Deploying to: server1.acc.com",
-            "Deploying to: server2.acc.com"
-          ]
+          "npm-args": "build:acc"
         },
         {
           "id": "0048-02",
           "lifecycle": "start",
-          "npm-args": "build:production",
-          "result": [
-            "name: example",
-            "version: 1.8.0",
-            "ng build -c=production --deploy-url example.prd.com",
-            "",
-            "Deploying to: server1.prd.com",
-            "Deploying to: server2.prd.com"
-          ]
+          "npm-args": "build:production"
         }
       ]
     },
@@ -659,33 +611,18 @@
         {
           "id": "0049-00",
           "lifecycle": "start",
-          "npm-args": "build:*",
-          "result": [
-            "Building: .css files",
-            "Building: .js files",
-            "Building: .html files"
-          ]
+          "npm-args": "build:*"
         },
         {
           "id": "0049-01",
           "lifecycle": "start",
-          "npm-args": "build:all",
-          "result": [
-            "Building: .css files",
-            "Building: .js files",
-            "Building: .html files"
-          ]
+          "npm-args": "build:all"
         },
         {
           "id": "0049-02",
           "cmd-args": [
             "--concurrent",
             "build:*"
-          ],
-          "result": [
-            "Building: .css files",
-            "Building: .js files",
-            "Building: .html files"
           ]
         }
       ]

@@ -252,6 +252,8 @@ export class TestLauncher {
       }
 
       if (config.tests.filter((item) => !item.empty).length > 0) {
+        let testIndex = 0;
+
         for (const command of section.commands) {
           const test = config.tests.find((item) => item.name === command);
 
@@ -267,7 +269,9 @@ export class TestLauncher {
                 test.error = 'This markdown test should not have result content!';
                 continue;
               }
-              test.result = section.result;
+              test.result = section.result[testIndex];
+
+              if (testIndex < section.result.length - 1) testIndex++;
             }
           }
         }
