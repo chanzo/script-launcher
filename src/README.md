@@ -226,7 +226,7 @@ To test an example, copy the json content from the example to the file named **l
 ### Sequential scripts
 This example uses square brackets to start multiple script one by one. This feature will make long script lines more readable.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -238,6 +238,8 @@ This example uses square brackets to start multiple script one by one. This feat
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -251,7 +253,7 @@ This example uses square brackets to start multiple script one by one. This feat
 ### Change directory
 Specify an existing directory as an script command and it will change to that directory for the next scripts it executes. This can be handy if your script have to be run from within a different location.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -262,6 +264,8 @@ Specify an existing directory as an script command and it will change to that di
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -273,7 +277,7 @@ Specify an existing directory as an script command and it will change to that di
 ### Parameters and functions
 Use the dollar-sign in the script id and command, to specify script function parameter. You can specify a default value by using the equal sign. This feature makes it possible to start one script with different parameters.
 
-**Run**: `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc, to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -281,6 +285,7 @@ Use the dollar-sign in the script id and command, to specify script function par
   }
 }
 ```
+**Run**: `npm start serve` , `npm start serve::tst` or `npm start serve:hva:prd` etc.
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -301,7 +306,7 @@ Use the dollar-sign in the script id and command, to specify script function par
 ### Reference scripts
 Use an existing script id in the command section to execute another script in your config file. This feature makes it possible to reuse scripts from another script, with different arguments if desired.
 
-**Run**: `npm start deploy:tst` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -317,6 +322,8 @@ Use an existing script id in the command section to execute another script in yo
   }
 }
 ```
+**Run**: `npm start deploy:tst`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -331,7 +338,7 @@ Use an existing script id in the command section to execute another script in yo
 ### Reference scripts by using wildcards
 Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selecting function by there parameters, this will result in a parameter containing the wildcard..
 
-**Run**: `npm start build:*` , `npm start build:all` or `npx launch --concurrent build:*` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -346,6 +353,8 @@ Use wildcards '*' to select multiple scripts. Wildcards cannot be used for selec
   }
 }
 ```
+**Run**: `npm start build:*` , `npm start build:all` or `npx launch --concurrent build:*`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -362,7 +371,7 @@ Use the dollar-sign in the script command, to references command line arguments 
 
 For compatibility reasons: when using a script id that is equal to the command being executed, all arguments are appended automatically.
 
-**Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -382,6 +391,8 @@ For compatibility reasons: when using a script id that is equal to the command b
   }
 }
 ```
+**Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3`
+
 In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
 <details>
   <summary><strong>Output 1:</strong></summary>
@@ -412,7 +423,7 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 | ${var^}                 | Convert first character to uppercase.               |
 | ${var^^}                | Convert all character to uppercase..                |
 
-**Run**: `npm start build-stuff arg1 ARG2 arg3` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -434,6 +445,8 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+**Run**: `npm start build-stuff arg1 ARG2 arg3`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -458,8 +471,7 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 * **Function arguments:** These are values passed from scripts to a function. Arguments are accessed by a number, for example: `$1`
 * **Parameters:** These are for passing a fixed set of values to a function. Parameters are accessed by their name, for example: `$project`
 
-**Run**: `npm start build-stuff:param1:param2 arg1 arg2 arg3` to use this example.
-
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -485,6 +497,8 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   }
 }
 ```
+**Run**: `npm start build-stuff:param1:param2 arg1 arg2 arg3`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -509,7 +523,7 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
 ### Escaping characters
 Use a backslash in the script command, to escaping variables.
 
-**Run**: `npm start escaping arg1` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -522,6 +536,8 @@ Use a backslash in the script command, to escaping variables.
   }
 }
 ```
+**Run**: `npm start escaping arg1`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -556,7 +572,7 @@ Use a backslash in the script command, to escaping variables.
 | **"#"**                 | Command     | Added at the begining for a line to disable execution |
 | **"\|?"**               | Command     | Grep like functionality                               |
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -586,11 +602,12 @@ Use a backslash in the script command, to escaping variables.
   }
 }
 ```
+**Run**: `npm start build-stuff`
 
 ### Glob patterns
 Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -602,6 +619,8 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -616,7 +635,7 @@ This example uses the **concurrent** keyword to run multiple script in parallel 
 
 Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) to limit the number of commands to execute in parallel..
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -641,6 +660,8 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -657,7 +678,7 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
 ### Inline script blocks
 This example uses the inline script blocks to run multiple script in parallel and to run multiple script one by one.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -684,6 +705,8 @@ This example uses the inline script blocks to run multiple script in parallel an
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -700,7 +723,7 @@ This example uses the inline script blocks to run multiple script in parallel an
 ### Confirmation prompt
 Confirmation prompts can be used for asking a confirmation to continue. Use the **confirm** argument to auto confirm.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -712,6 +735,7 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
   }
 }
 ```
+**Run**: `npm start build-stuff`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -728,7 +752,7 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 
 The value of the **condition** and **exclusion** statement can be a string or an array of strings containing a JavaScript expression returning a Boolean, directory name or a shell command.
 
-**Run**: `npm start build-stuff` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
  "scripts": {
@@ -759,6 +783,8 @@ The value of the **condition** and **exclusion** statement can be a string or an
   }
 }
 ```
+**Run**: `npm start build-stuff`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -774,7 +800,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
 The **repeater** statement must contain a reference to a settings array. The corresponding script block will be executed for each instance in the settings array.
 
 Example using a string array.
-**Run**: `npm start ping` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -797,6 +823,8 @@ Example using a string array.
   }
 }
 ```
+**Run**: `npm start ping`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -809,7 +837,7 @@ Example using a string array.
 
 ### Repeaters (Object)
 Example using an object array.
-**Run**: `npm start ping` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -844,6 +872,8 @@ Example using an object array.
   }
 }
 ```
+**Run**: `npm start ping`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
@@ -871,7 +901,7 @@ Use the **menu** section to create an interactive landing menu, so a new develop
 
 The **options.menu.timeout** can be used to auto close the menu after a specified time. Use the [Menu options](#menu-options) section for more information on all the available options.
 
-**Run**: `npm start` , `npm start menu`, or `npm start menu uva:acceptance` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -905,6 +935,7 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
   }
 }
 ```
+**Run**: `npm start` , `npm start menu`, or `npm start menu uva:acceptance`
 
 ### Menu save default script
 Use the **menu** section options to specify a **defaultScript**, this will disable the interactive menu.
@@ -913,7 +944,7 @@ Best practices is to specify the menu default options in the **launcher-custom.j
 
 Use `npm start menu` to ignore the **defaultScript** option, so the menu will be interactive.
 
-**Run**: `npm start` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -940,6 +971,7 @@ Use `npm start menu` to ignore the **defaultScript** option, so the menu will be
   }
 }
 ```
+**Run**: `npm start`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -955,7 +987,6 @@ Use `npm start menu` to ignore the **defaultScript** option, so the menu will be
 ## Launcher arguments
 Use the **help** for a list of available options.
 
-**Run**: `npx launch --help` this will list the available options
 ``` bash
 Usage: launch [command] [options...]
 
@@ -977,11 +1008,11 @@ Options:
   concurrent=  Execute commandline wildcard matches in parallel.
   limit=       Limit the number of commands to execute in parallel.
 ```
+**Run**: `npx launch --help`
 
 ### Launcher Command: init
 Use the **init** command to create a starter configuration for you project.
 
-**Run**: `npx launch init` this will list the available templates
 ``` bash
 Available templates:
 
@@ -991,8 +1022,8 @@ blank
 
 Example usage: npx launch init basic
 ```
+**Run**: `npx launch init` this will list the available templates
 
-**Run**: `npx launch init basic` this will create a basic starter configuration
 ``` bash
 Create starter config: basic
 
@@ -1003,11 +1034,11 @@ Updating package.json.
 
 Start script of package.json updated.
 ```
+**Run**: `npx launch init basic` this will create a basic starter configuration
 
 ### Launcher Command: migrate
 Use the **migrate** command to convert your **package.json** script to a script-launcher configuration. Use the **params** option the parameterize your script functions.
 
-**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
 ``` bash
 Migrating: package.json
 
@@ -1020,26 +1051,26 @@ Updating: package.json
 Creating: launcher-menu.json
 Creating: launcher-config.json
 ```
+**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
 
 ### Launcher Command: script
 Start one or more script directly from the command line sequentially or concurrently
 
+``` bash
+Building: .css files
+Building: .js files
+```
 **Run**: `npx launch build:css build:js` to start one or more script in sequence
-``` bash
-Building: .css files
-Building: .js files
-```
 
-**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
 ``` bash
 Building: .css files
 Building: .js files
 ```
+**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
 
 ### Launcher Command: list
 Use the **list** command to display the available scripts. This can be used for [enabling tab completion](#enable-tab-completion).
 
-**Run**: `npx launch list complete` for listing scripts that can be used for tab completion. This is the default value.
 ``` bash
 serve:hva:acc
 serve:hva:dev
@@ -1048,14 +1079,14 @@ serve:uva:acc
 serve:uva:dev
 serve:uva:prd
 ```
+**Run**: `npx launch list complete` for listing scripts that can be used for tab completion. This is the default value.
 
-**Run**: `npx launch list script` for listing available scripts.
 ``` bash
 serve:$project:$config
 serve:$project:dev
 ```
+**Run**: `npx launch list script` for listing available scripts.
 
-**Run**: `npx launch list menu` for listing available menu scripts.
 ``` bash
 serve:hva:acc
 serve:hva:dev
@@ -1064,11 +1095,12 @@ serve:uva:acc
 serve:uva:dev
 serve:uva:prd
 ```
+**Run**: `npx launch list menu` for listing available menu scripts.
 
 ## Launcher settings
 The launcher settings can be used to specify named values that can be used by the launcher scripts. Consult the [repeaters](#repeaters-string) implementation examples section for more information on repeaters.
 
-**Run**: `npm start build:dev` , `npm start build:acc` or `npm start build:production` to use this example.
+**Create file**: launcher-config.json
 ``` JSON
 {
   "scripts": {
@@ -1115,6 +1147,8 @@ The launcher settings can be used to specify named values that can be used by th
   }
 }
 ```
+**Run**: `npm start build:dev` , `npm start build:acc` or `npm start build:production`
+
 <details>
   <summary><strong>Output:</strong></summary>
 
