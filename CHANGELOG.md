@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.33.4
+* Updated [Implementation examples](src#implementation-examples) `README.md`
+
 ## 1.33.3
 * Added more output examples to `README.md`
 * Updated dev dependencies
