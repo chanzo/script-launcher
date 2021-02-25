@@ -395,7 +395,7 @@ For compatibility reasons: when using a script id that is equal to the command b
 
 In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
 <details>
-  <summary><strong>Output 1:</strong></summary>
+  <summary><strong>Output:</strong></summary>
 
   ``` TEXT
   Node version: 14.15.5
