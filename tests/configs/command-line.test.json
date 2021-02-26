@@ -100,7 +100,8 @@
             "      \"defaultChoice\": \"serve:development\"",
             "    }",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         }
       ]

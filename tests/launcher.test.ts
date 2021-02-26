@@ -10,9 +10,7 @@ const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
 const readmeFile = path.join(__dirname, '..', 'src', 'README.md');
 
-const testLauncher = new TestLauncher(tempFiles, ['', ''], [
-  '\u001b[?25l'
-]);
+const testLauncher = new TestLauncher(tempFiles, ['', ''], ['\u001b[?25l']);
 
 const sanatizeStrings = [
   '\\u001b\\[0m',
@@ -28,18 +26,13 @@ const sanatizeStrings = [
   '\\r'
   // '\\u001b\\[\\?25l',
 ];
-const excludeStrings = [
-  'ECHO is on.',
-  '\u001b[?25h',
-  '\n'
-];
+const excludeStrings = ['ECHO is on.', '\u001b[?25h', '\n'];
 
 function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): ReadonlyArray<string> {
   const result = [];
   let previous: string = null;
 
   for (let item of content) {
-
     item = item.replace('tests/temp/' + config.id + '/', '');
     item = item.replace('tests\\temp\\' + config.id + '\\', '');
 
@@ -136,54 +129,55 @@ async function main(): Promise<void> {
 
             // if (config.id !== '0044' || item.name !== 'npx launch init') continue;
 
-            test(item.name.padEnd(56), async () => {
-              if (item.error) throw new Error(item.error);
+            test(
+              item.name.padEnd(56),
+              async () => {
+                if (item.error) throw new Error(item.error);
 
-              if (item.restore && config.files !== undefined) testLauncher.create(directory, config.files);
+                if (item.restore && config.files !== undefined) testLauncher.create(directory, config.files);
 
-              let output: ReadonlyArray<string>;
+                let output: ReadonlyArray<string>;
 
-              if (item['cat-args'].length > 0) {
-                const content = [];
+                if (item['cat-args'].length > 0) {
+                  const content = [];
 
-                for (const file of item['cat-args']) {
-                  const fileName = path.join(tempFiles, directory, file);
-                  const buffer = fs.readFileSync(fileName);
+                  for (const file of item['cat-args']) {
+                    const fileName = path.join(tempFiles, directory, file);
+                    const buffer = fs.readFileSync(fileName);
 
-                  content.push(...buffer.toString().split('\n'));
-                }
+                    content.push(...buffer.toString().split('\n'));
+                  }
 
-                output = content;
-              } else {
-                const result = await testLauncher.launch(item.lifecycle, directory, [
-                  ...item['cmd-args'],
-                  ...item['npm-args']
-                ], JSON.stringify({ remain: item['npm-args'] }));
-
-                output = result.all;
-              }
-
-              if (config.sanatize) output = sanatizeOutput(output, config);
-
-              try {
-                expect(output).toStrictEqual(item.result);
-              } catch (error) {
-                if (config.type === SectionType.bash) {
-                  console.log('### ' + config.name + ' (' + item.id + ')\n```\n' + output.join('\n') + '\n```\n');
+                  output = content;
                 } else {
-                  let result = JSON.stringify(output, null, 2);
+                  const result = await testLauncher.launch(item.lifecycle, directory, [...item['cmd-args'], ...item['npm-args']], JSON.stringify({ remain: item['npm-args'] }));
 
-                  result = result.replace(new RegExp(config.id, 'g'), '$id');
-                  result = result.replace(new RegExp(version, 'g'), '$version');
-                  result = result.replace(new RegExp(process.version.replace(/^v/, ''), 'g'), '$node_version');
-                  result = result.replace(new RegExp(process.platform, 'g'), '$platform');
-
-                  console.log('result (' + item.id + '):', result);
+                  output = result.all;
                 }
 
-                throw error;
-              }
-            }, 20000);
+                if (config.sanatize) output = sanatizeOutput(output, config);
+
+                try {
+                  expect(output).toStrictEqual(item.result);
+                } catch (error) {
+                  if (config.type === SectionType.bash) {
+                    console.log('### ' + config.name + ' (' + item.id + ')\n```\n' + output.join('\n') + '\n```\n');
+                  } else {
+                    let result = JSON.stringify(output, null, 2);
+
+                    result = result.replace(new RegExp(config.id, 'g'), '$id');
+                    result = result.replace(new RegExp(version, 'g'), '$version');
+                    result = result.replace(new RegExp(process.version.replace(/^v/, ''), 'g'), '$node_version');
+                    result = result.replace(new RegExp(process.platform, 'g'), '$platform');
+
+                    console.log('result (' + item.id + '):', result);
+                  }
+
+                  throw error;
+                }
+              },
+              20000
+            );
           }
         });
       }

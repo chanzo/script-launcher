@@ -7,5 +7,14 @@
   "quoteProps": "preserve",
   "trailingComma": "none",
   "bracketSpacing": true,
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "semi": true,
+        "printWidth": 24
+      }
+    }
+  ]
 }

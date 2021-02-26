@@ -36,7 +36,7 @@ export class MarkdownParser {
         this.sections.set(key, value[0]);
       }
     } catch (error) {
-      console.error('Error loading \"' + fileName + '\" markdown file ', error.message);
+      console.error('Error loading "' + fileName + '" markdown file ', error.message);
     }
   }
 
@@ -72,7 +72,7 @@ export class MarkdownParser {
 
         let outputResult: string[][] = null;
 
-        if (output[result.length]){
+        if (output[result.length]) {
           outputResult = output.map(item => item.map(item => item.trim()));
         }
 
