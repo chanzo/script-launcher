@@ -105,8 +105,8 @@
             "",
             "",
             "Spawn action    : 'echo Command 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 1",
             "",
@@ -114,14 +114,14 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=true }",
+            "Process pid     : 11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
             "Spawn action    : 'echo Command 2' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 2",
             "",
@@ -129,8 +129,8 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
@@ -165,8 +165,8 @@
             "",
             "",
             "Spawn action    : 'echo Command 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 1",
             "",
@@ -174,14 +174,14 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=true }",
+            "Process pid     : 11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
             "Spawn action    : 'echo Command 2' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 2",
             "",
@@ -189,8 +189,8 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
@@ -206,21 +206,96 @@
           "result": [
             "Loaded config:  launcher-config.json",
             "",
-            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"limit\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"defaultSelect\": \"\",\n      \"confirm\": \u001b[33mtrue,\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
+            "Config:  {",
+            "  \"scripts\": {",
+            "    \"scripts\": {",
+            "      \"build-stuff\": [",
+            "        \"echo Command 1\",",
+            "        \"exit 1 || true\",",
+            "        \"echo Command 2\",",
+            "        \"exit 1\",",
+            "        \"echo Command 3\"",
+            "      ]",
+            "    }",
+            "  },",
+            "  \"menu\": {",
+            "    \"description\": \"\"",
+            "  },",
+            "  \"options\": {",
+            "    \"logLevel\": 0,",
+            "    \"limit\": 0,",
+            "    \"files\": [",
+            "      \"launcher-config.json\",",
+            "      \"launcher-scripts.json\",",
+            "      \"launcher-settings.json\",",
+            "      \"launcher-menu.json\",",
+            "      \"launcher-custom.json\"",
+            "    ],",
+            "    \"script\": {",
+            "      \"shell\": true",
+            "    },",
+            "    \"glob\": {},",
+            "    \"menu\": {",
+            "      \"defaultChoice\": \"\",",
+            "      \"defaultScript\": \"\",",
+            "      \"defaultSelect\": \"\",",
+            "      \"confirm\": true,",
+            "      \"timeout\": 0,",
+            "      \"pageSize\": 7",
+            "    }",
+            "  },",
+            "  \"settings\": {}",
+            "}",
             "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
             "Process platform  : $platform",
             "Script shell      : true",
-            "Launch arguments  : {\n  arguments: {\n    logLevel: 3,\n    init: false,\n    list: false,\n    migrate: false,\n    confirm: undefined,\n    help: false,\n    version: false,\n    config: null,\n    script: null,\n    ansi: true,\n    directory: 'tests/temp/$id',\n    menuTimeout: 0,\n    params: 9007199254740991,\n    concurrent: false,\n    limit: 32\n  },\n  optionals: [],\n  unknowns: []\n}",
+            "Launch arguments  : {",
+            "  arguments: {",
+            "    logLevel: 3,",
+            "    init: false,",
+            "    list: false,",
+            "    migrate: false,",
+            "    confirm: undefined,",
+            "    help: false,",
+            "    version: false,",
+            "    config: null,",
+            "    script: null,",
+            "    ansi: true,",
+            "    directory: 'tests/temp/$id',",
+            "    menuTimeout: 0,",
+            "    params: 9007199254740991,",
+            "    concurrent: false,",
+            "    limit: 32",
+            "  },",
+            "  optionals: [],",
+            "  unknowns: []",
+            "}",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
-            "Script object   : [\n  \"echo Command 1\",\n  \"exit 1 || true\",\n  \"echo Command 2\",\n  \"exit 1\",\n  \"echo Command 3\"\n]",
-            "Script expanded : {\n  \"circular\": \u001b[33mfalse,\n  \"parameters\": {},\n  \"sequential\": [\n    \"echo Command 1\",\n    \"exit 1 || true\",\n    \"echo Command 2\",\n    \"exit 1\",\n    \"echo Command 3\"\n  ]\n}",
+            "Script object   : [",
+            "  \"echo Command 1\",",
+            "  \"exit 1 || true\",",
+            "  \"echo Command 2\",",
+            "  \"exit 1\",",
+            "  \"echo Command 3\"",
+            "]",
+            "Script expanded : {",
+            "  \"circular\": false,",
+            "  \"parameters\": {},",
+            "  \"sequential\": [",
+            "    \"echo Command 1\",",
+            "    \"exit 1 || true\",",
+            "    \"echo Command 2\",",
+            "    \"exit 1\",",
+            "    \"echo Command 3\"",
+            "  ]",
+            "}",
             "",
             "",
             "Launcher Settings Values",
@@ -236,8 +311,8 @@
             "",
             "",
             "Spawn action    : 'echo Command 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 1",
             "",
@@ -245,14 +320,14 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=true }",
+            "Process pid     : 11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
             "Spawn action    : 'echo Command 2' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 2",
             "",
@@ -260,8 +335,8 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "Process exited  : pid=11111  code=1  signal=null   elapsed=4ms",
             "",
             "",
@@ -271,7 +346,7 @@
           "result:win32": [
             "Loaded config:  launcher-config.json",
             "",
-            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": \u001b[33m0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": \u001b[33mtrue\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"confirm\": \u001b[33mtrue,\n      \"timeout\": \u001b[33m0,\n      \"pageSize\": \u001b[33m7\n    }\n  },\n  \"settings\": {}\n}",
+            "Config:  {\n  \"scripts\": {\n    \"scripts\": {\n      \"build-stuff\": [\n        \"echo Command 1\",\n        \"exit 1 || true\",\n        \"echo Command 2\",\n        \"exit 1\",\n        \"echo Command 3\"\n      ]\n    }\n  },\n  \"menu\": {\n    \"description\": \"\"\n  },\n  \"options\": {\n    \"logLevel\": 0,\n    \"files\": [\n      \"launcher-config.json\",\n      \"launcher-scripts.json\",\n      \"launcher-settings.json\",\n      \"launcher-menu.json\",\n      \"launcher-custom.json\"\n    ],\n    \"script\": {\n      \"shell\": true\n    },\n    \"glob\": {},\n    \"menu\": {\n      \"defaultChoice\": \"\",\n      \"defaultScript\": \"\",\n      \"confirm\": true,\n      \"timeout\": 0,\n      \"pageSize\": 7\n    }\n  },\n  \"settings\": {}\n}",
             "Date              : 2019-09-16 10:33:20.628",
             "Version           : $version",
             "Lifecycle event   : start",
@@ -285,7 +360,7 @@
             "Script params   : {}",
             "Script args     : [ 'build-stuff' ]",
             "Script object   : [\n  \"echo Command 1\",\n  \"exit 1 || true\",\n  \"echo Command 2\",\n  \"exit 1\",\n  \"echo Command 3\"\n]",
-            "Script expanded : {\n  \"circular\": \u001b[33mfalse,\n  \"parameters\": {},\n  \"sequential\": [\n    \"echo Command 1\",\n    \"exit 1 || true\",\n    \"echo Command 2\",\n    \"exit 1\",\n    \"echo Command 3\"\n  ]\n}",
+            "Script expanded : {\n  \"circular\": false,\n  \"parameters\": {},\n  \"sequential\": [\n    \"echo Command 1\",\n    \"exit 1 || true\",\n    \"echo Command 2\",\n    \"exit 1\",\n    \"echo Command 3\"\n  ]\n}",
             "",
             "",
             "Launcher Settings Values",
@@ -301,8 +376,8 @@
             "",
             "",
             "Spawn action    : 'echo Command 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 1",
             "",
@@ -310,14 +385,14 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mtrue }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=true }",
+            "Process pid     : 11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
             "Spawn action    : 'echo Command 2' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "",
             "Command 2",
             "",
@@ -325,8 +400,8 @@
             "",
             "",
             "Spawn action    : 'exit 1' []",
-            "Spawn options   : { order=sequential, supress=\u001b[33mfalse }",
-            "Process pid     : \u001b[33m11111",
+            "Spawn options   : { order=sequential, supress=false }",
+            "Process pid     : 11111",
             "Process error   : pid=11111  code=Error: spawn exit 1 ENOENT   elapsed=5ms",
             "",
             "",
@@ -1010,6 +1085,250 @@
             "C2-0",
             "C2-1",
             "C2-2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0025",
+      "name": "Interactive menu",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve": "echo Serve script",
+            "build": "echo Build script"
+          },
+          "menu": {
+            "serve": "serve",
+            "build": "build"
+          },
+          "options": {
+            "menu": {
+              "defaultChoice": "build",
+              "defaultScript": "build"
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0025-00",
+          "lifecycle": "start",
+          "result": [
+            "Auto menu: build                         (Use the menu by running: npm start menu)",
+            "Executing: npm start build",
+            "",
+            "Build script"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0026",
+      "name": "Interactive menu",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve": "echo Serve script",
+            "build": "echo Build script"
+          },
+          "menu": {
+            "serve": "serve",
+            "build": "build"
+          },
+          "options": {
+            "menu": {
+              "defaultChoice": "build",
+              "timeout": 1
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0026-00",
+          "lifecycle": "start",
+          "result": [
+            "? Select › - Use arrow-keys. Return to submit.",
+            "    serve",
+            "❯   build",
+            "",
+            "✔ Select › build",
+            "",
+            "Executing: npm start build",
+            "",
+            "Build script"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0027",
+      "name": "Interactive menu",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project:dev": {
+              "concurrent": [
+                "echo Start development server",
+                "echo ng serve $project -c=dev"
+              ]
+            },
+            "serve:$project:$config": "echo ng serve $project -c=$config"
+          },
+          "menu": {
+            "description": "organization",
+            "uva": {
+              "description": "environment",
+              "development": "serve:uva:dev",
+              "acceptance": "serve:uva:acc",
+              "production": "serve:uva:prd"
+            },
+            "separator": "",
+            "hva": {
+              "description": "environment",
+              "development": "serve:hva:dev",
+              "acceptance": "serve:hva:acc",
+              "production": "serve:hva:prd"
+            }
+          },
+          "options": {
+            "menu": {
+              "defaultScript": "serve:hva:dev",
+              "defaultChoice": "hva:development",
+              "timeout": 1
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0027-00",
+          "lifecycle": "start",
+          "result": [
+            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
+            "Executing: npm start serve:hva:dev",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "id": "0027-01",
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "? Select organization › - Use arrow-keys. Return to submit.",
+            "    uva",
+            "❯   hva",
+            "",
+            "✔ Select organization › hva",
+            "",
+            "Executing: npm start serve:hva:dev",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0028",
+      "name": "Interactive menu",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "serve:$project:dev": {
+              "concurrent": [
+                "echo Start development server",
+                "echo ng serve $project -c=dev"
+              ]
+            },
+            "serve:$project:$config": "echo ng serve $project -c=$config"
+          },
+          "menu": {
+            "description": "organization",
+            "uva": {
+              "description": "environment",
+              "development": "serve:uva:dev",
+              "acceptance": "serve:uva:acc",
+              "production": "serve:uva:prd"
+            },
+            "separator": "",
+            "hva": {
+              "description": "environment",
+              "development": "serve:hva:dev",
+              "acceptance": "serve:hva:acc",
+              "production": "serve:hva:prd"
+            }
+          },
+          "options": {
+            "menu": {
+              "defaultScript": "serve:hva:dev",
+              "defaultChoice": "hva:development",
+              "defaultSelect": "uva:acceptance",
+              "confirm": false
+            }
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0028-00",
+          "lifecycle": "start",
+          "result": [
+            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
+            "Executing: npm start serve:hva:dev",
+            "",
+            "Start development server",
+            "ng serve hva -c=dev"
+          ]
+        },
+        {
+          "id": "0028-01",
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "? Select organization › - Use arrow-keys. Return to submit.",
+            "❯   uva",
+            "    hva",
+            "",
+            "✔ Select organization › uva",
+            "? Select environment › - Use arrow-keys. Return to submit.",
+            "    development",
+            "❯   acceptance",
+            "    production",
+            "",
+            "✔ Select environment › acceptance",
+            "",
+            "Executing: npm start serve:uva:acc",
+            "",
+            "ng serve uva -c=acc"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0029",
+      "name": "Interactive menu",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "menu": "echo Menu script"
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0029-00",
+          "lifecycle": "start",
+          "npm-args": "menu",
+          "result": [
+            "Menu script"
           ]
         }
       ]

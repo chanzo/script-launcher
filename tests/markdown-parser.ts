@@ -36,7 +36,7 @@ export class MarkdownParser {
         this.sections.set(key, value[0]);
       }
     } catch (error) {
-      console.error('Error loading \"' + fileName + '\" markdown file ', error.message);
+      console.error('Error loading "' + fileName + '" markdown file ', error.message);
     }
   }
 
@@ -56,8 +56,8 @@ export class MarkdownParser {
 
   private static parseSectionJSONTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
     const result: ISectionTest[] = [];
-    const content = sections.get('JSON');
-    const output = sections.get('TEXT') || [];
+    const content = sections.get('json');
+    const output = sections.get('text') || [];
 
     if (content) {
       let config: IConfig = {} as any;
@@ -72,9 +72,7 @@ export class MarkdownParser {
 
         let outputResult: string[][] = null;
 
-        if (output[result.length]){
-          outputResult = output.map(item => item.map(item => item.trim()));
-        }
+        if (output[result.length]) outputResult = output;
 
         result.push({
           title: title,

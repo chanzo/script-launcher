@@ -42,12 +42,24 @@ export class ConsoleInterceptor implements IIntercepted {
 
   public constructor(private readonly excludes: string[] = []) {
     this.functions = ConsoleInterceptor.setConsoleFunctions({
-      log: (...args: any[]) => { this.recordConsole('log', ...args); },
-      debug: (...args: any[]) => { this.recordConsole('debug', ...args); },
-      info: (...args: any[]) => { this.recordConsole('info', ...args); },
-      error: (...args: any[]) => { this.recordConsole('error', ...args); },
-      trace: (...args: any[]) => { this.recordConsole('trace', ...args); },
-      warn: (...args: any[]) => { this.recordConsole('warn', ...args); }
+      log: (...args: any[]) => {
+        this.recordConsole('log', ...args);
+      },
+      debug: (...args: any[]) => {
+        this.recordConsole('debug', ...args);
+      },
+      info: (...args: any[]) => {
+        this.recordConsole('info', ...args);
+      },
+      error: (...args: any[]) => {
+        this.recordConsole('error', ...args);
+      },
+      trace: (...args: any[]) => {
+        this.recordConsole('trace', ...args);
+      },
+      warn: (...args: any[]) => {
+        this.recordConsole('warn', ...args);
+      }
     });
     this.stdoutWrite = process.stdout.write;
     this.stderrWrite = process.stderr.write;
@@ -99,6 +111,5 @@ export class ConsoleInterceptor implements IIntercepted {
 
       this[name].push(value);
     }
-
   }
 }

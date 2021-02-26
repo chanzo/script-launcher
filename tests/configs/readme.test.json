@@ -1,96 +1,78 @@
 {
   "Implementation examples (readme.md)": [
     {
-      "id": "0025",
+      "id": "0030",
       "name": "Sequential scripts",
       "tests": [
         {
-          "id": "0025-00",
+          "id": "0030-00",
           "lifecycle": "start",
           "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0026",
+      "id": "0031",
       "name": "Change directory",
       "tests": [
         {
-          "id": "0026-00",
+          "id": "0031-00",
           "lifecycle": "start",
           "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0027",
+      "id": "0032",
       "name": "Parameters and functions",
       "tests": [
         {
-          "id": "0027-00",
+          "id": "0032-00",
           "lifecycle": "start",
           "npm-args": "serve"
         },
         {
-          "id": "0027-01",
+          "id": "0032-01",
           "lifecycle": "start",
           "npm-args": "serve::tst"
         },
         {
-          "id": "0027-02",
+          "id": "0032-02",
           "lifecycle": "start",
           "npm-args": "serve:hva:prd"
         }
       ]
     },
     {
-      "id": "0028",
+      "id": "0033",
       "name": "Reference scripts",
       "tests": [
         {
-          "id": "0028-00",
+          "id": "0033-00",
           "lifecycle": "start",
           "npm-args": "deploy:tst"
         }
       ]
     },
     {
-      "id": "0029",
+      "id": "0034",
       "name": "Environment values and special commands",
       "sanatize": true,
       "tests": [
         {
-          "id": "0029-00",
+          "id": "0034-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "grep example",
-            "Version: $version",
-            "Platform: $platform",
-            "Time: 2019-09-16 10:33:20.628",
-            "--------------------------------",
-            "Color: \u001b[94mBlue",
-            "Color: Bold",
-            "Color: Cyan",
-            "Color: Dim",
-            "",
-            "Color: Green",
-            "Color: \u001b[31mRed",
-            "Color: \u001b[33mYellow",
-            "--------------------------------",
-            "Current: 2019-09-16 10:33:42.285",
-            "Elapsed: 137ms"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0030",
+      "id": "0035",
       "name": "Environment and command line argument values",
       "sanatize": true,
       "tests": [
         {
-          "id": "0030-00",
+          "id": "0035-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -100,7 +82,7 @@
           ]
         },
         {
-          "id": "0030-01",
+          "id": "0035-01",
           "lifecycle": "start",
           "npm-args": [
             "echo",
@@ -112,12 +94,12 @@
       ]
     },
     {
-      "id": "0031",
+      "id": "0036",
       "name": "Environment String Manipulation and Expanding Variables",
       "sanatize": true,
       "tests": [
         {
-          "id": "0031-00",
+          "id": "0036-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -129,22 +111,22 @@
       ]
     },
     {
-      "id": "0032",
+      "id": "0037",
       "name": "Glob patterns",
       "tests": [
         {
-          "id": "0032-00",
+          "id": "0037-00",
           "lifecycle": "start",
           "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0033",
+      "id": "0038",
       "name": "Launch arguments, command arguments, parameters and arguments",
       "tests": [
         {
-          "id": "0033-00",
+          "id": "0038-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff:param1:param2",
@@ -156,11 +138,11 @@
       ]
     },
     {
-      "id": "0034",
+      "id": "0039",
       "name": "Escaping characters",
       "tests": [
         {
-          "id": "0034-00",
+          "id": "0039-00",
           "lifecycle": "start",
           "npm-args": [
             "escaping",
@@ -176,31 +158,31 @@
       ]
     },
     {
-      "id": "0035",
+      "id": "0040",
       "name": "Concurrent scripts",
       "transformer": "concurrentScripts",
       "tests": [
         {
-          "id": "0035-00",
+          "id": "0040-00",
           "lifecycle": "start",
           "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0036",
+      "id": "0041",
       "name": "Inline script blocks",
       "transformer": "inlineScriptBlocks",
       "tests": [
         {
-          "id": "0036-00",
+          "id": "0041-00",
           "lifecycle": "start",
           "npm-args": "build-stuff"
         }
       ]
     },
     {
-      "id": "0037",
+      "id": "0042",
       "name": "Condition and exclusion constraints",
       "files": {
         "launcher-settings": {
@@ -211,7 +193,7 @@
       },
       "tests": [
         {
-          "id": "0037-00",
+          "id": "0042-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result:win32": [
@@ -224,63 +206,56 @@
       ]
     },
     {
-      "id": "0038",
+      "id": "0043",
       "name": "Confirmation prompt",
       "sanatize": true,
       "tests": [
         {
-          "id": "0038-00",
+          "id": "0043-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "confirm"
         },
         {
-          "id": "0038-01",
-          "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--confirm=true",
-          "result": [
-            "✔ Are you sure you want to continue ... yes",
-            "You are sure!"
+          "id": "0043-01",
+          "cmd-args": [
+            "build-stuff",
+            "confirm"
           ]
         },
         {
-          "id": "0038-02",
-          "name2": "npm start build-stuff --confirm=false",
-          "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--confirm=false",
-          "result": [
-            "✔ Are you sure you want to continue ... no",
-            "You are not sure!"
+          "id": "0043-02",
+          "cmd-args": [
+            "build-stuff",
+            "--confirm=false"
           ]
         }
       ]
     },
     {
-      "id": "0039",
+      "id": "0044",
       "name": "Repeaters (String)",
       "tests": [
         {
-          "id": "0039-00",
+          "id": "0044-00",
           "lifecycle": "start",
           "npm-args": "ping"
         }
       ]
     },
     {
-      "id": "0040",
+      "id": "0045",
       "name": "Repeaters (Object)",
       "tests": [
         {
-          "id": "0040-00",
+          "id": "0045-00",
           "lifecycle": "start",
           "npm-args": "ping"
         }
       ]
     },
     {
-      "id": "0041",
+      "id": "0046",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -295,280 +270,21 @@
       },
       "tests": [
         {
-          "id": "0041-00",
-          "lifecycle": "start",
-          "result": [
-            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
-            "✔ Select organization › hva",
-            "",
-            "Executing: npm start serve:hva:dev",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ]
-        },
-        {
-          "id": "0041-01",
-          "lifecycle": "start",
-          "npm-args": "menu",
-          "result": [
-            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m - Amsterdam University of Applied Sciences.\n",
-            "✔ Select organization › hva",
-            "",
-            "Executing: npm start serve:hva:dev",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ]
-        },
-        {
-          "id": "0041-02",
+          "id": "0046-00",
           "lifecycle": "start",
           "npm-args": [
             "menu",
             "uva:acceptance"
-          ],
-          "result": [
-            "? Select organization › - Use arrow-keys. Return to submit.\n❯   \u001b[4muva\u001b[24m - University of Amsterdam.\n    hva\n",
-            "✔ Select organization › uva",
-            "? Select environment › - Use arrow-keys. Return to submit.\n    development\n❯   \u001b[4macceptance\u001b[24m\n    production\n",
-            "✔ Select environment › acceptance",
-            "",
-            "Executing: npm start serve:uva:acc",
-            "",
-            "ng serve uva -c=acc"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0042",
-      "name": "Interactive menu",
-      "sanatize": true,
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "serve": "echo Serve script",
-            "build": "echo Build script"
-          },
-          "menu": {
-            "serve": "serve",
-            "build": "build"
-          },
-          "options": {
-            "menu": {
-              "defaultChoice": "build",
-              "defaultScript": "build"
-            }
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0042-00",
-          "lifecycle": "start",
-          "result": [
-            "Auto menu: build                         (Use the menu by running: npm start menu)",
-            "Executing: npm start build",
-            "",
-            "Build script"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0043",
-      "name": "Interactive menu",
-      "sanatize": true,
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "serve": "echo Serve script",
-            "build": "echo Build script"
-          },
-          "menu": {
-            "serve": "serve",
-            "build": "build"
-          },
-          "options": {
-            "menu": {
-              "defaultChoice": "build",
-              "timeout": 1
-            }
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0043-00",
-          "lifecycle": "start",
-          "result": [
-            "? Select › - Use arrow-keys. Return to submit.\n    serve\n❯   \u001b[4mbuild\u001b[24m\n",
-            "✔ Select › build",
-            "",
-            "Executing: npm start build",
-            "",
-            "Build script"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0044",
-      "name": "Interactive menu",
-      "sanatize": true,
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "serve:$project:dev": {
-              "concurrent": [
-                "echo Start development server",
-                "echo ng serve $project -c=dev"
-              ]
-            },
-            "serve:$project:$config": "echo ng serve $project -c=$config"
-          },
-          "menu": {
-            "description": "organization",
-            "uva": {
-              "description": "environment",
-              "development": "serve:uva:dev",
-              "acceptance": "serve:uva:acc",
-              "production": "serve:uva:prd"
-            },
-            "separator": "",
-            "hva": {
-              "description": "environment",
-              "development": "serve:hva:dev",
-              "acceptance": "serve:hva:acc",
-              "production": "serve:hva:prd"
-            }
-          },
-          "options": {
-            "menu": {
-              "defaultScript": "serve:hva:dev",
-              "defaultChoice": "hva:development",
-              "timeout": 1
-            }
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0044-00",
-          "lifecycle": "start",
-          "result": [
-            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
-            "Executing: npm start serve:hva:dev",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
           ]
         },
         {
-          "id": "0044-01",
+          "id": "0046-01",
           "lifecycle": "start",
-          "npm-args": "menu",
-          "result": [
-            "? Select organization › - Use arrow-keys. Return to submit.\n    uva\n❯   \u001b[4mhva\u001b[24m\n",
-            "✔ Select organization › hva",
-            "",
-            "Executing: npm start serve:hva:dev",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0045",
-      "name": "Interactive menu",
-      "sanatize": true,
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "serve:$project:dev": {
-              "concurrent": [
-                "echo Start development server",
-                "echo ng serve $project -c=dev"
-              ]
-            },
-            "serve:$project:$config": "echo ng serve $project -c=$config"
-          },
-          "menu": {
-            "description": "organization",
-            "uva": {
-              "description": "environment",
-              "development": "serve:uva:dev",
-              "acceptance": "serve:uva:acc",
-              "production": "serve:uva:prd"
-            },
-            "separator": "",
-            "hva": {
-              "description": "environment",
-              "development": "serve:hva:dev",
-              "acceptance": "serve:hva:acc",
-              "production": "serve:hva:prd"
-            }
-          },
-          "options": {
-            "menu": {
-              "defaultScript": "serve:hva:dev",
-              "defaultChoice": "hva:development",
-              "defaultSelect": "uva:acceptance",
-              "confirm": false
-            }
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0045-00",
-          "lifecycle": "start",
-          "result": [
-            "Auto menu: hva:development               (Use the menu by running: npm start menu)",
-            "Executing: npm start serve:hva:dev",
-            "",
-            "Start development server",
-            "ng serve hva -c=dev"
-          ]
+          "npm-args": "menu"
         },
         {
-          "id": "0045-01",
-          "lifecycle": "start",
-          "npm-args": "menu",
-          "result": [
-            "? Select organization › - Use arrow-keys. Return to submit.\n❯   \u001b[4muva\u001b[24m\n    hva\n",
-            "✔ Select organization › uva",
-            "? Select environment › - Use arrow-keys. Return to submit.\n    development\n❯   \u001b[4macceptance\u001b[24m\n    production\n",
-            "✔ Select environment › acceptance",
-            "",
-            "Executing: npm start serve:uva:acc",
-            "",
-            "ng serve uva -c=acc"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0046",
-      "name": "Interactive menu",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "menu": "echo Menu script"
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0046-00",
-          "lifecycle": "start",
-          "npm-args": "menu",
-          "result": [
-            "Menu script"
-          ]
+          "id": "0046-02",
+          "lifecycle": "start"
         }
       ]
     },

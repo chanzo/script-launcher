@@ -50,11 +50,7 @@ export class TestLauncher {
     return Object.entries(this._configs);
   }
 
-  public constructor(
-    private readonly tempPath: string,
-    private readonly defaultArgs: string[],
-    private readonly excludes: string[] = []
-  ) {
+  public constructor(private readonly tempPath: string, private readonly defaultArgs: string[], private readonly excludes: string[] = []) {
     this._configs = {};
 
     fs.mkdirSync(tempPath, {
@@ -68,7 +64,6 @@ export class TestLauncher {
         const fullFileName = path.join(fullDirectoryName, file);
         fs.unlinkSync(fullFileName);
       }
-
     }
   }
 
@@ -113,21 +108,19 @@ export class TestLauncher {
             testConfig.id = (autoId++).toString().padStart(4, '0');
 
             for (let testIndex = 0; testIndex < testConfig.tests.length; testIndex++) {
-
               testConfig.tests[testIndex] = {
                 ...{ id: '0000' },
                 ...testConfig.tests[testIndex]
               };
 
-              testConfig.tests[testIndex].id = testConfig.id + '-' + (testIndex).toString().padStart(2, '0');
+              testConfig.tests[testIndex].id = testConfig.id + '-' + testIndex.toString().padStart(2, '0');
             }
           }
         }
 
-        fs.writeFileSync(fileName, JSON.stringify(configs, null, 2));
+        fs.writeFileSync(fileName, JSON.stringify(configs, null, 2) + '\n');
 
         for (const [name, testConfigs] of Object.entries(configs)) {
-
           if (result[name] === undefined) result[name] = [];
 
           for (const testConfig of testConfigs) {
@@ -163,7 +156,6 @@ export class TestLauncher {
               }
 
               if (test['cat-args'].length > 0) {
-
                 if (test.lifecycle !== undefined) test.error = 'cat-args and lifecycle can not be combined';
                 if (test['cmd-args'].length > 0) test.error = 'cat-args and cmd-args can not be combined';
                 if (test['npm-args'].length > 0) test.error = 'cat-args and npm-args can not be combined';
@@ -213,7 +205,7 @@ export class TestLauncher {
     }
 
     for (const section of sections) {
-      let config = configs.find((item) => item.name === section.title);
+      let config = configs.find(item => item.name === section.title);
 
       if (config === undefined) {
         config = {
@@ -231,11 +223,13 @@ export class TestLauncher {
       config.type = section.type;
 
       if (section.commands.length === 0) {
-        config.tests = [{
-          ...emptyTest,
-          name: 'Missing command',
-          error: 'Markdown section is missing test commands!'
-        }];
+        config.tests = [
+          {
+            ...emptyTest,
+            name: 'Missing command',
+            error: 'Markdown section is missing test commands!'
+          }
+        ];
         continue;
       }
 
@@ -251,11 +245,11 @@ export class TestLauncher {
         continue;
       }
 
-      if (config.tests.filter((item) => !item.empty).length > 0) {
+      if (config.tests.filter(item => !item.empty).length > 0) {
         let testIndex = 0;
 
         for (const command of section.commands) {
-          const test = config.tests.find((item) => item.name === command);
+          const test = config.tests.find(item => item.name === command);
 
           if (!test) {
             config.tests.push({
@@ -286,7 +280,7 @@ export class TestLauncher {
 
       if (config.files !== undefined && config.files['launcher-config'] !== undefined && section.config !== null) {
         for (const test of config.tests) {
-          test.error = 'This markdown test should not have \"launcher-config\" file content!';
+          test.error = 'This markdown test should not have "launcher-config" file content!';
         }
         continue;
       }
@@ -298,7 +292,6 @@ export class TestLauncher {
   }
 
   public transformConfigs(transforms: { [name: string]: TransformCallback }): void {
-
     for (const [name, configs] of Object.entries(this._configs)) {
       for (const testConfig of configs) {
         if (testConfig.transformer) {

@@ -3,17 +3,11 @@ import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 import { promisify } from 'util';
 
 async function launch(lifecycle: string, directory: string, cmdArgs: string[], npmArgs: string[]): Promise<void> {
-  return await launcher.main(lifecycle, [
-    '', '', '--logLevel=0', '--directory=' + directory,
-    ...cmdArgs,
-    ...npmArgs
-  ], JSON.stringify({ remain: npmArgs }), true);
+  return await launcher.main(lifecycle, ['', '', '--logLevel=0', '--directory=' + directory, ...cmdArgs, ...npmArgs], JSON.stringify({ remain: npmArgs }), true);
 }
 
 function NewInterceptor(intercept: boolean): ConsoleInterceptor {
-  if (intercept) return new ConsoleInterceptor([
-    '\u001b[?25l'
-  ]);
+  if (intercept) return new ConsoleInterceptor(['\u001b[?25l']);
 
   return {
     close: () => {
@@ -29,10 +23,8 @@ function NewInterceptor(intercept: boolean): ConsoleInterceptor {
   } as any;
 }
 
-async function test0001(intercept: boolean = true): Promise<{ result: string[], intercepted: IIntercepted }> {
-  const result = [
-    'ng build --configuration=production --deploy-url example.prd.com'
-  ];
+async function test0001(intercept: boolean = true): Promise<{ result: string[]; intercepted: IIntercepted }> {
+  const result = ['ng build --configuration=production --deploy-url example.prd.com'];
   const interceptor = NewInterceptor(intercept);
 
   try {
@@ -47,12 +39,8 @@ async function test0001(intercept: boolean = true): Promise<{ result: string[], 
   };
 }
 
-async function test0002(intercept: boolean = true): Promise<{ result: string[], intercepted: IIntercepted }> {
-  const result = [
-    'Argument 1 : data1',
-    'Argument 2 : data2',
-    'Argument 3 :'
-  ];
+async function test0002(intercept: boolean = true): Promise<{ result: string[]; intercepted: IIntercepted }> {
+  const result = ['Argument 1 : data1', 'Argument 2 : data2', 'Argument 3 :'];
   const interceptor = NewInterceptor(intercept);
 
   try {
@@ -67,7 +55,7 @@ async function test0002(intercept: boolean = true): Promise<{ result: string[], 
   };
 }
 
-async function test0017(intercept: boolean = true): Promise<{ result: string[], intercepted: IIntercepted }> {
+async function test0017(intercept: boolean = true): Promise<{ result: string[]; intercepted: IIntercepted }> {
   const result = [
     '',
     '\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ',
@@ -101,7 +89,7 @@ async function test0017(intercept: boolean = true): Promise<{ result: string[], 
   };
 }
 
-async function test0018(intercept: boolean = true): Promise<{ result: string[], intercepted: IIntercepted }> {
+async function test0018(intercept: boolean = true): Promise<{ result: string[]; intercepted: IIntercepted }> {
   const result = [
     '',
     '\u001b[32m?\u001b[39m \u001b[1mSelect organization:\u001b[22m\u001b[0m \u001b[0m\u001b[2m(Use arrow keys)\u001b[22m\n  uva \n  \u001b[2m──────────────\u001b[22m\n\u001b[36m❯ hva\u001b[39m ',

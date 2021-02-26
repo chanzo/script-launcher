@@ -53,12 +53,10 @@ async function run(command: string): Promise<void> {
   // });
 
   // await exitPromise;
-
 }
 
 async function main(): Promise<void> {
   try {
-
     // const interceptor = new ConsoleInterceptor();
 
     for (let index = 0; index < 2; index++) {
@@ -71,7 +69,6 @@ async function main(): Promise<void> {
   } catch (error) {
     console.log('error:', error);
   }
-
 }
 
 main();

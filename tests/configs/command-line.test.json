@@ -100,7 +100,8 @@
             "      \"defaultChoice\": \"serve:development\"",
             "    }",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         }
       ]
@@ -131,7 +132,7 @@
             "",
             "Updating package.json.",
             "",
-            "\u001b[33mSkipped: start script already in use."
+            "Skipped: start script already in use."
           ]
         }
       ]
@@ -249,7 +250,7 @@
           "result": [
             "Migrating: package.json",
             "",
-            "\u001b[31mFailed: launcher-menu.json already exists."
+            "Failed: launcher-menu.json already exists."
           ]
         },
         {
@@ -330,7 +331,8 @@
             "    \"serve:uva:tst\": \"echo ng serv uva --configuration=tst\",",
             "    \"test\": \"echo ng test\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -403,7 +405,8 @@
             "    },",
             "    \"deploy:...:command\": \"deploy\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -415,7 +418,8 @@
             "    \"test\": \"launch\",",
             "    \"start\": \"launch\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -475,7 +479,8 @@
             "    \"serve:$param1:prd\": \"echo ng serv $param1 --configuration=prd --prod\",",
             "    \"test\": \"echo ng test\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -548,7 +553,8 @@
             "    },",
             "    \"deploy:...:command\": \"deploy\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         }
       ]
