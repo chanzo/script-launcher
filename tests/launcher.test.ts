@@ -23,6 +23,9 @@ const sanatizeStrings = [
   '\\u001b\\[22m',
   '\\u001b\\[90m',
   '\\u001b\\[32m',
+  '\\u001b\\[94m',
+  '\\u001b\\[31m',
+  '\\u001b\\[33m',
   '\\r'
   // '\\u001b\\[\\?25l',
 ];
@@ -117,6 +120,8 @@ async function main(): Promise<void> {
         const directory = config.id.toString().padStart(4, '0');
 
         if (config.files !== undefined) testLauncher.create(directory, config.files);
+
+        // if (config.name !== 'Confirmation prompt') continue;
 
         describe(config.name, () => {
           if (config.tests.length === 0) test.todo('test command');

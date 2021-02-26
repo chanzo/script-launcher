@@ -80,7 +80,7 @@ If not already done so, change your **package.json** start script, so it will st
 
 Example: **package.json**
 
-```TEXT
+```text
 {
     ...
     "scripts": {
@@ -118,7 +118,7 @@ For a cusom run script to work, you have to add a script to your **package.json*
 
 Example: **package.json**
 
-```TEXT
+```text
 {
     ...
     "scripts": {
@@ -132,12 +132,12 @@ Example: **package.json**
 
 Example: **launcher-config.json**
 
-```JSON
+```json
 {
-    "scripts": {
-        "lint": "echo Linting code...",
-        "test": "echo Testing code..."
-    }
+  "scripts": {
+    "lint": "echo Linting code...",
+    "test": "echo Testing code..."
+  }
 }
 ```
 
@@ -168,7 +168,7 @@ npx launch migrate --params
 
 In a traditional **package.json** you can only run scripts on a per line basis. With larger projects that have multiple environments, this can quickly become a hassle and difficult to maintain, like the example below:
 
-```JSON
+```json
 // Traditional package.json scripts //
 {
   "scripts": {
@@ -198,7 +198,7 @@ In a traditional **package.json** you can only run scripts on a per line basis. 
 
 With **script-launcher** you have the benefits of using variables, script references and many more features, so you can make the above example easier to maintain:
 
-```JSON
+```json
 // Example when using the Script Launcher migrate command:
 // npx launch migrate --params
 {
@@ -220,7 +220,7 @@ To start this example you would use: `npm start build:uva:tst`, `npm start deplo
 
 It's also possible to extend the example with an interactive menu, so a new developer can get start on your project more easily:
 
-```JSON
+```json
 {
   "menu": {
     "description": "deploy organization",
@@ -255,7 +255,7 @@ This example uses square brackets to start multiple script one by one. This feat
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": [
@@ -272,7 +272,7 @@ This example uses square brackets to start multiple script one by one. This feat
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Build step 1
 Build step 2
 Build step 3
@@ -287,7 +287,7 @@ Specify an existing directory as an script command and it will change to that di
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": [
@@ -303,7 +303,7 @@ Specify an existing directory as an script command and it will change to that di
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
 ```
 
@@ -316,7 +316,7 @@ Use the dollar-sign in the script id and command, to specify script function par
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "serve:$project=uva:$config=dev": "echo ng serve $project -c=$config"
@@ -329,15 +329,15 @@ Use the dollar-sign in the script id and command, to specify script function par
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 ng serve uva -c=dev
 ```
 
-```TEXT
+```text
 ng serve uva -c=tst
 ```
 
-```TEXT
+```text
 ng serve hva -c=prd
 ```
 
@@ -350,7 +350,7 @@ Use an existing script id in the command section to execute another script in yo
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build:$project:$config": "echo ng build $project -c=$config",
@@ -371,7 +371,7 @@ Use an existing script id in the command section to execute another script in yo
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 ng build uva -c=tst
 firebase deploy --public dist/uva -P uva-tst
 ng build hva -c=tst
@@ -387,7 +387,7 @@ Use wildcards '\*' to select multiple scripts. Wildcards cannot be used for sele
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build:css": "echo Building: .css files",
@@ -407,7 +407,7 @@ Use wildcards '\*' to select multiple scripts. Wildcards cannot be used for sele
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Building: .css files
 Building: .js files
 Building: .html files
@@ -424,7 +424,7 @@ For compatibility reasons: when using a script id that is equal to the command b
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": [
@@ -444,14 +444,14 @@ For compatibility reasons: when using a script id that is equal to the command b
 }
 ```
 
-**Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3`
-
 In this example **node** will be an alias for **$npm_config_node**. So **$node_version** corresponds to **$npm_config_node_version**
+
+**Run**: `npm start build-stuff arg1 arg2 arg3` or `npm start echo arg1 arg2 arg3`
 
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Node version: 14.15.5
 Node version: 14.15.5
 Argument 1 : arg1
@@ -461,7 +461,7 @@ Offset arguments: arg2 arg3
 Environment : my-env
 ```
 
-```TEXT
+```text
 arg1 arg2 arg3
 ```
 
@@ -482,7 +482,7 @@ arg1 arg2 arg3
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": [
@@ -509,7 +509,7 @@ arg1 arg2 arg3
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 app-uva
 hva-prd
 uva=hva
@@ -535,7 +535,7 @@ aRG2 arg3
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "myFunc:$funcParam1:$funcParam2": [
@@ -566,7 +566,7 @@ aRG2 arg3
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 --------------------------------
 Main Parameter 1: param1
 Main Parameter 2: param2
@@ -592,7 +592,7 @@ Use a backslash in the script command, to escaping variables.
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "escaping": [
@@ -610,7 +610,7 @@ Use a backslash in the script command, to escaping variables.
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 $1                         : arg1
 $npm_config_node_version   : 14.15.5
 ${1}                       : arg1
@@ -646,7 +646,7 @@ ${npm_config_node_version} : 14.15.5
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": {
@@ -678,13 +678,38 @@ ${npm_config_node_version} : 14.15.5
 
 **Run**: `npm start build-stuff`
 
+<details>
+  <summary><strong>Output:</strong></summary>
+
+```text
+grep example
+Version: 1.33.5
+Platform: linux
+Time: 2019-09-16 10:33:20.628
+--------------------------------
+Color: Blue
+Color: Bold
+Color: Cyan
+Color: Dim
+
+Color: Green
+Color: Red
+Color: Yellow
+--------------------------------
+Current: 2019-09-16 10:33:42.285
+Elapsed: 137ms
+```
+
+</details>
+&nbsp;
+
 ### Glob patterns
 
 Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) package, so you can use any of the supported glob patterns in your scripts.
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": [
@@ -701,7 +726,7 @@ Script Launcher makes use of the [Glob](https://www.npmjs.com/package/glob) pack
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Javascript files files: common.js config-loader.js executor.js launch-menu.js launch.js logger.js scripts.js spawn-process.js variables.js
 Markdown files: README.md
 ```
@@ -717,7 +742,7 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
@@ -747,7 +772,7 @@ Use the `limit` [argument](#launcher-arguments) or [option](#limit-concurrency) 
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Background job : 1
 Background job : 2
 Sequential job : 3
@@ -765,7 +790,7 @@ This example uses the inline script blocks to run multiple script in parallel an
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "sleep:$time": "node -e \"setTimeout(() => {}, $time)\"",
@@ -797,7 +822,7 @@ This example uses the inline script blocks to run multiple script in parallel an
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Background job : 1
 Background job : 2
 Completed job : 1
@@ -815,7 +840,7 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build-stuff": {
@@ -827,14 +852,24 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 }
 ```
 
-**Run**: `npm start build-stuff`
+**Run**: `npm start build-stuff` , `npx launch build-stuff confirm` or `npx launch build-stuff --confirm=false`
 
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 ✔ Are you sure you want to continue ... yes
 You are sure!
+```
+
+```text
+✔ Are you sure you want to continue ... yes
+You are sure!
+```
+
+```text
+✔ Are you sure you want to continue ... no
+You are not sure!
 ```
 
 </details>
@@ -849,9 +884,9 @@ The value of the **condition** and **exclusion** statement can be a string or an
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
- "scripts": {
+  "scripts": {
     "build-stuff": [
       {
         "exclusion": "node_modules_test",
@@ -885,7 +920,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 /bin/sh: 1: node_modules_test: not found
 npm install
 npm start
@@ -902,7 +937,7 @@ The **repeater** statement must contain a reference to a settings array. The cor
 Example using a string array.
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "ping": [
@@ -930,7 +965,7 @@ Example using a string array.
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Action: ping www.google.com
 Action: ping duckduckgo.com
 Action: ping bing.com
@@ -944,7 +979,7 @@ Action: ping bing.com
 Example using an object array.
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "ping": [
@@ -984,7 +1019,7 @@ Example using an object array.
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Google
 --------------------------------
 Action: ping www.google.com
@@ -1013,7 +1048,7 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "serve:$project:dev": {
@@ -1059,7 +1094,7 @@ Use `npm start menu` to ignore the **defaultScript** option, so the menu will be
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "serve:$environment": "echo Serve script: $environment",
@@ -1091,7 +1126,7 @@ Use `npm start menu` to ignore the **defaultScript** option, so the menu will be
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 Auto menu:                               (Use the menu by running: npm start menu)
 Executing: npm start build:hva
 
@@ -1234,7 +1269,7 @@ The launcher settings can be used to specify named values that can be used by th
 
 **Create file**: launcher-config.json
 
-```JSON
+```json
 {
   "scripts": {
     "build:$config": [
@@ -1286,7 +1321,7 @@ The launcher settings can be used to specify named values that can be used by th
 <details>
   <summary><strong>Output:</strong></summary>
 
-```TEXT
+```text
 name: example
 version: 2.0.0
 ng build -c=dev --deploy-url example.dev.com
@@ -1295,7 +1330,7 @@ Deploying to: server1.dev.com
 Deploying to: server2.dev.com
 ```
 
-```TEXT
+```text
 name: example
 version: 1.9.0
 ng build -c=acc --deploy-url example.acc.com
@@ -1304,7 +1339,7 @@ Deploying to: server1.acc.com
 Deploying to: server2.acc.com
 ```
 
-```TEXT
+```text
 name: example
 version: 1.8.0
 ng build -c=production --deploy-url example.prd.com
@@ -1328,7 +1363,7 @@ By using this option it's possible the split your configuration over multiple fi
 
 The default value of this list is presented in the following example:
 
-```TEXT
+```text
 {
   "scripts": {
     ...
@@ -1351,7 +1386,7 @@ The **script shell** options can be used to configure the spawn shell, this valu
 
 Example shell option for specific platform
 
-```TEXT
+```text
 {
   "scripts": {
     ...
@@ -1375,7 +1410,7 @@ Example shell option for specific platform
 
 The default value is presented in the following example:
 
-```TEXT
+```text
 {
   "scripts": {
     ...
@@ -1393,7 +1428,7 @@ The default value is presented in the following example:
 [Official documentation of the `fast-glob` options](https://www.npmjs.com/package/fast-glob#options-3)
 If the _nonull_ script-launcher option is set, and no match was found, then the match contains the original pattern.
 
-```JSON
+```json
 {
   "options": {
     "glob": {
@@ -1413,7 +1448,7 @@ If the _nonull_ script-launcher option is set, and no match was found, then the 
 
 The default value is presented in the following example:
 
-```TEXT
+```text
 {
   "scripts": {
     ...
@@ -1432,11 +1467,11 @@ The default value is presented in the following example:
 
 ### Logging
 
-The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled 1=info 2=log 2=debug
+The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled 1=info 2=log 3=debug
 
 The default value is presented in the following example:
 
-```TEXT
+```text
 {
   "scripts": {
     ...
@@ -1453,7 +1488,7 @@ Use the **limit** option to limit the number of commands to execute in parallel.
 
 The default value is presented in the following example:
 
-```TEXT
+```text
 {
   "scripts": {
     ...

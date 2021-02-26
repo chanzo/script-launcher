@@ -132,7 +132,7 @@
             "",
             "Updating package.json.",
             "",
-            "\u001b[33mSkipped: start script already in use."
+            "Skipped: start script already in use."
           ]
         }
       ]
@@ -250,7 +250,7 @@
           "result": [
             "Migrating: package.json",
             "",
-            "\u001b[31mFailed: launcher-menu.json already exists."
+            "Failed: launcher-menu.json already exists."
           ]
         },
         {

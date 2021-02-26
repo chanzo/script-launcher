@@ -62,25 +62,7 @@
         {
           "id": "0029-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "result": [
-            "grep example",
-            "Version: $version",
-            "Platform: $platform",
-            "Time: 2019-09-16 10:33:20.628",
-            "--------------------------------",
-            "Color: \u001b[94mBlue",
-            "Color: Bold",
-            "Color: Cyan",
-            "Color: Dim",
-            "",
-            "Color: Green",
-            "Color: \u001b[31mRed",
-            "Color: \u001b[33mYellow",
-            "--------------------------------",
-            "Current: 2019-09-16 10:33:42.285",
-            "Elapsed: 137ms"
-          ]
+          "npm-args": "build-stuff"
         }
       ]
     },
@@ -236,23 +218,16 @@
         },
         {
           "id": "0038-01",
-          "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--confirm=true",
-          "result": [
-            "✔ Are you sure you want to continue ... yes",
-            "You are sure!"
+          "cmd-args": [
+            "build-stuff",
+            "confirm"
           ]
         },
         {
           "id": "0038-02",
-          "name2": "npm start build-stuff --confirm=false",
-          "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--confirm=false",
-          "result": [
-            "✔ Are you sure you want to continue ... no",
-            "You are not sure!"
+          "cmd-args": [
+            "build-stuff",
+            "--confirm=false"
           ]
         }
       ]

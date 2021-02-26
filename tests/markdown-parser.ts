@@ -56,8 +56,8 @@ export class MarkdownParser {
 
   private static parseSectionJSONTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
     const result: ISectionTest[] = [];
-    const content = sections.get('JSON');
-    const output = sections.get('TEXT') || [];
+    const content = sections.get('json');
+    const output = sections.get('text') || [];
 
     if (content) {
       let config: IConfig = {} as any;

@@ -113,7 +113,13 @@ Changed quoted argument processing related to removal of `string-argv`
 ```json
 {
   "scripts": {
-    "assignment:$value1:$value2:$value3:$value4:$value5": ["echo value1: '$value1'", "echo value2: '$value2'", "echo value3: '$value3'", "echo value4: '$value4'", "echo value5: '$value5'"]
+    "assignment:$value1:$value2:$value3:$value4:$value5": [
+      "echo value1: '$value1'",
+      "echo value2: '$value2'",
+      "echo value3: '$value3'",
+      "echo value4: '$value4'",
+      "echo value5: '$value5'"
+    ]
   }
 }
 ```

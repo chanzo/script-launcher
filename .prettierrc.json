@@ -15,6 +15,13 @@
         "semi": true,
         "printWidth": 24
       }
+    },
+    {
+      "files": "*.md",
+      "options": {
+        "semi": true,
+        "printWidth": 24
+      }
     }
   ]
 }
