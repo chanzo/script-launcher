@@ -279,6 +279,7 @@ Build step 3
 ```
 
 </details>
+&nbsp;
 
 ### Change directory
 
@@ -307,6 +308,7 @@ common.js config-loader.js executor.js launch-menu.js launch.js logger.js script
 ```
 
 </details>
+&nbsp;
 
 ### Parameters and functions
 
@@ -340,6 +342,7 @@ ng serve hva -c=prd
 ```
 
 </details>
+&nbsp;
 
 ### Reference scripts
 
@@ -376,6 +379,7 @@ firebase deploy --public dist/hva -P hva-tst
 ```
 
 </details>
+&nbsp;
 
 ### Reference scripts by using wildcards
 
@@ -410,6 +414,7 @@ Building: .html files
 ```
 
 </details>
+&nbsp;
 
 ### Environment and command line argument values
 
@@ -461,6 +466,7 @@ arg1 arg2 arg3
 ```
 
 </details>
+&nbsp;
 
 ### Environment String Manipulation and Expanding Variables
 
@@ -518,6 +524,7 @@ aRG2 arg3
 ```
 
 </details>
+&nbsp;
 
 ### Launch arguments, command arguments, parameters and arguments
 
@@ -577,6 +584,7 @@ Function All arguments: funcArg arg1
 ```
 
 </details>
+&nbsp;
 
 ### Escaping characters
 
@@ -610,6 +618,7 @@ ${npm_config_node_version} : 14.15.5
 ```
 
 </details>
+&nbsp;
 
 ### Environment values and special commands
 
@@ -698,6 +707,7 @@ Markdown files: README.md
 ```
 
 </details>
+&nbsp;
 
 ### Concurrent scripts
 
@@ -747,6 +757,7 @@ Completed job : 2
 ```
 
 </details>
+&nbsp;
 
 ### Inline script blocks
 
@@ -796,6 +807,7 @@ Sequential job : 4
 ```
 
 </details>
+&nbsp;
 
 ### Confirmation prompt
 
@@ -826,6 +838,7 @@ You are sure!
 ```
 
 </details>
+&nbsp;
 
 ### Condition and exclusion constraints
 
@@ -880,6 +893,7 @@ Test platform type.
 ```
 
 </details>
+&nbsp;
 
 ### Repeaters (String)
 
@@ -923,6 +937,7 @@ Action: ping bing.com
 ```
 
 </details>
+&nbsp;
 
 ### Repeaters (Object)
 
@@ -985,6 +1000,7 @@ Action: ping bing.com
 ```
 
 </details>
+&nbsp;
 
 ### Interactive menu
 
@@ -1083,6 +1099,7 @@ Build script: hva
 ```
 
 </details>
+&nbsp;
 
 ## Launcher arguments
 
@@ -1297,6 +1314,7 @@ Deploying to: server2.prd.com
 ```
 
 </details>
+&nbsp;
 
 ## Launcher options
 
