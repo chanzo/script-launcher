@@ -1,20 +1,30 @@
-[![npm version](https://badge.fury.io/js/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
-[![GitHub last commit](https://img.shields.io/github/last-commit/chanzo/script-launcher.svg?maxAge=2400)](#)
-[![downloads-image](https://img.shields.io/npm/dm/script-launcher.svg)](https://www.npmjs.com/package/script-launcher)
-[![Dependency Status](https://david-dm.org/chanzo/script-launcher.svg)](https://david-dm.org/chanzo/script-launcher)
-[![devDependency Status](https://david-dm.org/chanzo/script-launcher/dev-status.svg)](https://david-dm.org/chanzo/script-launcher?type=dev)
-[![License](https://img.shields.io/npm/l/script-launcher.svg)](/LICENSE)
-
-[![GitHub forks](https://img.shields.io/github/forks/chanzo/script-launcher.svg?style=social&label=Fork)](https://github.com/chanzo/script-launcher/fork)
-[![GitHub stars](https://img.shields.io/github/stars/chanzo/script-launcher.svg?style=social&label=Star)](https://github.com/chanzo/script-launcher)
-
 # Script Launcher
+
+[![NPM version][npm-image]][npm-url]
+[![GitHub last commit][github-last-commit]](#)
+[![Downloads][downloads-image]][npm-url]
+[![Dependency status][david-dm-image]][david-dm-url]
+[![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url]
+[![License][license-image]](/LICENSE)
+
+[npm-url]:https://npmjs.org/package/script-launcher
+[npm-image]:https://img.shields.io/npm/v/script-launcher.svg
+[downloads-image]:https://img.shields.io/npm/dm/script-launcher.svg
+[github-last-commit]:https://img.shields.io/github/last-commit/chanzo/script-launcher.svg?maxAge=2400
+
+[david-dm-url]:https://david-dm.org/chanzo/script-launcher
+[david-dm-image]:https://img.shields.io/david/chanzo/script-launcher.svg
+[david-dm-dev-url]:https://david-dm.org/chanzo/script-launcher?type=dev
+[david-dm-dev-image]:https://img.shields.io/david/dev/chanzo/script-launcher.svg
+[license-image]:https://img.shields.io/npm/l/script-launcher.svg
+
+
 
 Enhance your **package.json** scripts with features like: menus, functions, arrays, concurrency and many more. The features of Script Launcher are specialized in such a way, that working with Mac, Linux and Windows can be seamless experience.
 
 ![alt text](usage-animation.gif "Script Launcher usage example")
 
-# Table of Contents
+## Table of Contents
 * [Installation](#installation)
 * [Usage examples](#usage-examples)
 * [Migrate package.json scripts](#migrate-packagejson-scripts)

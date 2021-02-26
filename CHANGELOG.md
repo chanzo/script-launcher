@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.33.5
+* Refactored prettier setup
+* Refactored `REAMDE.md` badges
+
 ## 1.33.4
 * Updated [Implementation examples](src#implementation-examples) `README.md`
 

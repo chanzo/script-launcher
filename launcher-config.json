@@ -31,10 +31,12 @@
       ""
     ],
     "lint:write": "lint:check --fix",
-    "pretty:check": "prettier --check ./src/**/*.{js,ts,html,scss} $*",
+    "pretty:check": [
+      "prettier --check ."
+    ],
     "pretty:write": [
       "echo Update formatting...",
-      "prettier --write ./src/**/*.{js,ts,html,scss} $*"
+      "prettier --write ."
     ],
     "pre:commit": [
       "pretty:check",
