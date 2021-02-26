@@ -331,7 +331,8 @@
             "    \"serve:uva:tst\": \"echo ng serv uva --configuration=tst\",",
             "    \"test\": \"echo ng test\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -404,7 +405,8 @@
             "    },",
             "    \"deploy:...:command\": \"deploy\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -416,7 +418,8 @@
             "    \"test\": \"launch\",",
             "    \"start\": \"launch\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -476,7 +479,8 @@
             "    \"serve:$param1:prd\": \"echo ng serv $param1 --configuration=prd --prod\",",
             "    \"test\": \"echo ng test\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         },
         {
@@ -549,7 +553,8 @@
             "    },",
             "    \"deploy:...:command\": \"deploy\"",
             "  }",
-            "}"
+            "}",
+            ""
           ]
         }
       ]

@@ -118,7 +118,7 @@ export class TestLauncher {
           }
         }
 
-        fs.writeFileSync(fileName, JSON.stringify(configs, null, 2));
+        fs.writeFileSync(fileName, JSON.stringify(configs, null, 2) + '\n');
 
         for (const [name, testConfigs] of Object.entries(configs)) {
           if (result[name] === undefined) result[name] = [];

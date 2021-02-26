@@ -4,6 +4,7 @@
 
 - Refactored prettier setup
 - Refactored `REAMDE.md` badges
+- Updated `script-launcher` templates, to be prettier compliant
 
 ## 1.33.4
 

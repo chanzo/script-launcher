@@ -414,7 +414,7 @@ async function migratePackageJson(directory: string, preserveParams: number, con
   if (await confirmPrompt('Are you sure', autoValue)) {
     console.log();
     console.log(Colors.Bold + 'Updating:' + Colors.Normal, packageFile.replace(process.cwd() + path.sep, ''));
-    fs.writeFileSync(packageFile, JSON.stringify(content, null, 2));
+    fs.writeFileSync(packageFile, JSON.stringify(content, null, 2) + '\n');
 
     console.log(Colors.Bold + 'Creating:' + Colors.Normal, menuFile.replace(process.cwd() + path.sep, ''));
     fs.writeFileSync(
@@ -425,7 +425,7 @@ async function migratePackageJson(directory: string, preserveParams: number, con
         },
         null,
         2
-      )
+      ) + '\n'
     );
 
     console.log(Colors.Bold + 'Creating:' + Colors.Normal, configFile.replace(process.cwd() + path.sep, ''));
@@ -437,7 +437,7 @@ async function migratePackageJson(directory: string, preserveParams: number, con
         },
         null,
         2
-      )
+      ) + '\n'
     );
   }
 }
@@ -470,7 +470,7 @@ function updatePackageJson(directory: string): void {
 
     content.scripts.start = 'launch';
 
-    fs.writeFileSync(fileName, JSON.stringify(content, null, 2));
+    fs.writeFileSync(fileName, JSON.stringify(content, null, 2) + '\n');
 
     console.log(Colors.Bold + 'Start script of package.json updated.' + Colors.Normal);
   } catch (error) {
