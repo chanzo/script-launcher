@@ -16,11 +16,13 @@ const sanatizeStrings = [
   '\\u001b\\[0m',
   '\\u001b\\[1m',
   '\\u001b\\[2m',
+  '\\u001b\\[4m',
   // '\\u001b\\[2K',
   '\\u001b\\[1G',
   '\\u001b\\[36m',
   '\\u001b\\[39m',
   '\\u001b\\[22m',
+  '\\u001b\\[24m',
   '\\u001b\\[90m',
   '\\u001b\\[32m',
   '\\u001b\\[94m',
@@ -62,7 +64,9 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
       previous = null;
     }
 
-    result.push(item);
+    for (const value of item.split('\n')) {
+      result.push(value);
+    }
   }
 
   if (previous) {
@@ -121,7 +125,7 @@ async function main(): Promise<void> {
 
         if (config.files !== undefined) testLauncher.create(directory, config.files);
 
-        // if (config.name !== 'Confirmation prompt') continue;
+        // if (config.name !== 'Interactive menu') continue;
 
         describe(config.name, () => {
           if (config.tests.length === 0) test.todo('test command');

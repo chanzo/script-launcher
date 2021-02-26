@@ -1082,7 +1082,44 @@ The **options.menu.timeout** can be used to auto close the menu after a specifie
 }
 ```
 
-**Run**: `npm start` , `npm start menu`, or `npm start menu uva:acceptance`
+**Run**: `npm start menu uva:acceptance` , `npm start menu` or `npm start`
+
+<details>
+  <summary><strong>Output:</strong></summary>
+
+```text
+? Select organization › - Use arrow-keys. Return to submit.
+❯   uva - University of Amsterdam.
+    hva
+
+✔ Select organization › uva
+? Select environment › - Use arrow-keys. Return to submit.
+    development
+❯   acceptance
+    production
+
+✔ Select environment › acceptance
+
+Executing: npm start serve:uva:acc
+
+ng serve uva -c=acc
+```
+
+```text
+? Select organization › - Use arrow-keys. Return to submit.
+    uva
+❯   hva - Amsterdam University of Applied Sciences.
+
+✔ Select organization › hva
+
+Executing: npm start serve:hva:dev
+
+Start development server
+ng serve hva -c=dev
+```
+
+</details>
+&nbsp;
 
 ### Menu save default script
 
@@ -1140,6 +1177,8 @@ Build script: hva
 
 Use the **help** for a list of available options.
 
+**Run**: `npx launch --help`
+
 ```bash
 Usage: launch [command] [options...]
 
@@ -1162,11 +1201,11 @@ Options:
   limit=       Limit the number of commands to execute in parallel.
 ```
 
-**Run**: `npx launch --help`
-
 ### Launcher Command: init
 
 Use the **init** command to create a starter configuration for you project.
+
+**Run**: `npx launch init` this will list the available templates
 
 ```bash
 Available templates:
@@ -1178,7 +1217,7 @@ blank
 Example usage: npx launch init basic
 ```
 
-**Run**: `npx launch init` this will list the available templates
+**Run**: `npx launch init basic` this will create a basic starter configuration
 
 ```bash
 Create starter config: basic
@@ -1191,11 +1230,11 @@ Updating package.json.
 Start script of package.json updated.
 ```
 
-**Run**: `npx launch init basic` this will create a basic starter configuration
-
 ### Launcher Command: migrate
 
 Use the **migrate** command to convert your **package.json** script to a script-launcher configuration. Use the **params** option the parameterize your script functions.
+
+**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
 
 ```bash
 Migrating: package.json
@@ -1210,16 +1249,9 @@ Creating: launcher-menu.json
 Creating: launcher-config.json
 ```
 
-**Run**: `npx launch migrate --params=1` this will convert your **package.json** scripts
-
 ### Launcher Command: script
 
 Start one or more script directly from the command line sequentially or concurrently
-
-```bash
-Building: .css files
-Building: .js files
-```
 
 **Run**: `npx launch build:css build:js` to start one or more script in sequence
 
@@ -1230,9 +1262,16 @@ Building: .js files
 
 **Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
 
+```bash
+Building: .css files
+Building: .js files
+```
+
 ### Launcher Command: list
 
 Use the **list** command to display the available scripts. This can be used for [enabling tab completion](#enable-tab-completion).
+
+**Run**: `npx launch list complete` for listing scripts that can be used for tab completion. This is the default value.
 
 ```bash
 serve:hva:acc
@@ -1243,14 +1282,14 @@ serve:uva:dev
 serve:uva:prd
 ```
 
-**Run**: `npx launch list complete` for listing scripts that can be used for tab completion. This is the default value.
+**Run**: `npx launch list script` for listing available scripts.
 
 ```bash
 serve:$project:$config
 serve:$project:dev
 ```
 
-**Run**: `npx launch list script` for listing available scripts.
+**Run**: `npx launch list menu` for listing available menu scripts.
 
 ```bash
 serve:hva:acc
@@ -1260,8 +1299,6 @@ serve:uva:acc
 serve:uva:dev
 serve:uva:prd
 ```
-
-**Run**: `npx launch list menu` for listing available menu scripts.
 
 ## Launcher settings
 

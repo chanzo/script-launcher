@@ -72,9 +72,7 @@ export class MarkdownParser {
 
         let outputResult: string[][] = null;
 
-        if (output[result.length]) {
-          outputResult = output.map(item => item.map(item => item.trim()));
-        }
+        if (output[result.length]) outputResult = output;
 
         result.push({
           title: title,
