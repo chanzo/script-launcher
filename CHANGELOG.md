@@ -1,6 +1,55 @@
 # Change Log
 
+## 1.34.0
+
+### Breaking
+
+- The environment variable `launch_time_elapsed` now represents the elapsed time scoped to a function and not the total elapsed time.
+
+#### Example `launcher-config.json`
+
+```json
+{
+  "scripts": {
+    "build:$step": [
+      "sleep 2",
+      "echo Build:$step $launch_time_elapsed"
+    ],
+    "build": [
+      "build:Step1",
+      "build:Step2",
+      "",
+      "echo Total Elapsed: $launch_time_elapsed"
+    ]
+  }
+}
+```
+
+#### Old Output
+
+```text
+Build:Step1 2s 13ms
+Build:Step2 4s 26ms
+
+Total Elapsed: 4s 26ms
+```
+
+#### New Output
+
+```
+Build:Step1 2s 13ms
+Build:Step2 2s 13ms
+
+Total Elapsed: 4s 26ms
+```
+
+### Changes
+
+- Updated dev dependencies
+
 ## 1.33.5
+
+### Changes
 
 - Refactored prettier setup
 - Refactored `REAMDE.md` badges
@@ -9,14 +58,20 @@
 
 ## 1.33.4
 
+### Changes
+
 - Updated [Implementation examples](src#implementation-examples) `README.md`
 
 ## 1.33.3
+
+### Changes
 
 - Added more output examples to `README.md`
 - Updated dev dependencies
 
 ## 1.33.2
+
+### Changes
 
 - Added output examples to `README.md`
 - Added test support for `README.md` output examples
@@ -24,18 +79,26 @@
 
 ## 1.33.0
 
+### Changes
+
 - Added [Environment String Manipulation and Expanding Variables](src#environment-string-manipulation-and-expanding-variables) support
 - Updated dev dependencies
 
 ## 1.32.0
 
+### Changes
+
 - Updated dependencies and dev dependencies
 
 ## 1.31.0
 
+### Changes
+
 - Updated dependencies and dev dependencies
 
 ## 1.30.0
+
+### Changes
 
 - Updated dependencies and dev dependencies
 - Added prettier
