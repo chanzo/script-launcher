@@ -31,6 +31,7 @@
         "spaces"
       ]
     },
+    "no-eval": false,
     "max-line-length": [
       true,
       512

@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.34.1
+
+### Changes
+
+- Added support for using `require` in a javascript `condition`
+- Updated test for supporting `npm` version 7.6.0+
+
 ## 1.34.0
 
 ### Breaking

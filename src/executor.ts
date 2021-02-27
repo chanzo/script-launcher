@@ -626,10 +626,10 @@ export class Executor {
 
     options = { ...options };
 
-    const evaluateExpression = eval;
+    command = command.replace(/require\s*\(\s*'\.\//g, "require(process.cwd() + '/");
 
     try {
-      const result = evaluateExpression(command);
+      const result = eval(command);
 
       if (typeof result !== 'boolean') throw new Error('type not supported');
 
