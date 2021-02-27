@@ -429,9 +429,9 @@ For compatibility reasons: when using a script id that is equal to the command b
   "scripts": {
     "build-stuff": [
       "environment=my-env",
-      "node=$npm_config_node",
-      "echo Node version: $node_version",
-      "echo Node version: $npm_config_node_version",
+      "package=$npm_package",
+      "echo Package version: $package_version",
+      "echo Package version: $npm_package_version",
       "echo Argument 1 : $1",
       "echo Argument 2 : $2",
       "echo",
@@ -452,8 +452,8 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   <summary><strong>Output:</strong></summary>
 
 ```text
-Node version: 14.15.5
-Node version: 14.15.5
+Package version: 1.34.1
+Package version: 1.34.1
 Argument 1 : arg1
 Argument 2 : arg2
 All arguments: arg1 arg2 arg3
@@ -596,10 +596,10 @@ Use a backslash in the script command, to escaping variables.
 {
   "scripts": {
     "escaping": [
-      "echo '\\$1                        ' : '$1'",
-      "echo '\\$npm_config_node_version  ' : '$npm_config_node_version'",
-      "echo '\\${1}                      ' : '${1}'",
-      "echo '\\${npm_config_node_version}' : '${npm_config_node_version}'"
+      "echo '\\$1                    ' : '$1'",
+      "echo '\\$npm_package_version  ' : '$npm_package_version'",
+      "echo '\\${1}                  ' : '${1}'",
+      "echo '\\${npm_package_version}' : '${npm_package_version}'"
     ]
   }
 }
@@ -611,10 +611,10 @@ Use a backslash in the script command, to escaping variables.
   <summary><strong>Output:</strong></summary>
 
 ```text
-$1                         : arg1
-$npm_config_node_version   : 14.15.5
-${1}                       : arg1
-${npm_config_node_version} : 14.15.5
+$1                     : arg1
+$npm_package_version   : 1.34.1
+${1}                   : arg1
+${npm_package_version} : 1.34.1
 ```
 
 </details>
@@ -683,7 +683,7 @@ ${npm_config_node_version} : 14.15.5
 
 ```text
 grep example
-Version: 1.34.0
+Version: 1.34.1
 Platform: linux
 Time: 2019-09-16 10:33:20.628
 --------------------------------
