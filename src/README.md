@@ -683,7 +683,7 @@ ${npm_config_node_version} : 14.15.5
 
 ```text
 grep example
-Version: 1.33.5
+Version: 1.34.0
 Platform: linux
 Time: 2019-09-16 10:33:20.628
 --------------------------------

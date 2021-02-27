@@ -128,8 +128,8 @@ export class Executor {
       }
     }
 
-    processes.push(...(await this.executeTasks(concurrent, options, Order.concurrent)));
-    processes.push(...(await this.executeTasks(sequential, options, Order.sequential)));
+    processes.push(...(await this.executeTasks(concurrent, options, Order.concurrent, process.hrtime())));
+    processes.push(...(await this.executeTasks(sequential, options, Order.sequential, process.hrtime())));
 
     return Executor.wait(processes);
   }
@@ -527,7 +527,7 @@ export class Executor {
     return result;
   }
 
-  private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order, limiter = new Limiter(options.limit)): Promise<IProcesses> {
+  private async executeTasks(tasks: Array<ITasks | string>, options: ISpawnOptions, order: Order, startTime: [number, number], limiter = new Limiter(options.limit)): Promise<IProcesses> {
     const processes: IProcesses = [];
     const suppress = options.suppress;
 
@@ -536,7 +536,7 @@ export class Executor {
 
       if (typeof task === 'string') {
         options.env.launch_time_current = formatTime();
-        options.env.launch_time_elapsed = prettyTime(process.hrtime(this.startTime), 'ms');
+        options.env.launch_time_elapsed = prettyTime(process.hrtime(startTime), 'ms');
 
         if (options.testmode) {
           options.env.launch_time_current = formatTime(new Date('2019-09-16T12:33:42.285').getTime(), 0);
@@ -601,8 +601,8 @@ export class Executor {
           }
         }
 
-        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent, limiter);
-        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential, limiter);
+        const concurrentProcesses = this.executeTasks(concurrent, options, Order.concurrent, process.hrtime(), limiter);
+        const sequentialProcesses = this.executeTasks(sequential, options, Order.sequential, process.hrtime(), limiter);
 
         processes.push(concurrentProcesses);
         processes.push(sequentialProcesses);
