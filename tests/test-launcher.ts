@@ -136,25 +136,6 @@ export class TestLauncher {
               if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
               if (!Array.isArray(test['cat-args'])) test['cat-args'] = [test['cat-args']];
 
-              if (test.result) {
-                let result = test.result;
-
-                if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
-
-                if (!Array.isArray(result) && result !== undefined) result = [result];
-
-                for (let index = 0; index < result.length; index++) {
-                  (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
-                    id: testConfig.id,
-                    version: version,
-                    node_version: process.version.replace(/^v/, ''),
-                    platform: process.platform
-                  });
-                }
-
-                test.result = result;
-              }
-
               if (test['cat-args'].length > 0) {
                 if (test.lifecycle !== undefined) test.error = 'cat-args and lifecycle can not be combined';
                 if (test['cmd-args'].length > 0) test.error = 'cat-args and cmd-args can not be combined';
@@ -180,6 +161,35 @@ export class TestLauncher {
           }
 
           result[name].push(...testConfigs);
+        }
+      }
+    }
+  }
+
+  public prepareTests(): void {
+    for (const testConfigs of Object.values(this._configs)) {
+      for (const testConfig of testConfigs) {
+        if (testConfig.tests === undefined) testConfig.tests = [];
+
+        for (const test of testConfig.tests as ITestsConfigFile[]) {
+          if (test.result) {
+            let result = test.result;
+
+            if (test['result:' + process.platform] !== undefined) result = test['result:' + process.platform];
+
+            if (!Array.isArray(result) && result !== undefined) result = [result];
+
+            for (let index = 0; index < result.length; index++) {
+              (result as string[])[index] = TestLauncher.expandEnvironment(result[index], {
+                id: testConfig.id,
+                version: version,
+                node_version: process.version.replace(/^v/, ''),
+                platform: process.platform
+              });
+            }
+
+            test.result = result;
+          }
         }
       }
     }
