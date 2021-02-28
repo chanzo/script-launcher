@@ -162,11 +162,11 @@ function checkCleanGit(): boolean {
   return true;
 }
 
-function checkMigratePrerequisites(directory: string, scripts: { [name: string]: string }): boolean {
+function checkMigratePrerequisites(directory: string, scripts: { [name: string]: string }, testmode: boolean): boolean {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
 
-  if (!checkCleanGit()) {
+  if (!testmode && !checkCleanGit()) {
     console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'Repository is not clean. Please commit or stash any changes before updating.');
     return false;
   }
@@ -395,7 +395,7 @@ async function migratePackageJson(directory: string, preserveParams: number, con
 
   const content = JSON.parse(fs.readFileSync(packageFile).toString()) as { scripts: { [name: string]: string } };
 
-  if (!checkMigratePrerequisites(directory, content.scripts)) return;
+  if (!checkMigratePrerequisites(directory, content.scripts, testmode)) return;
 
   const menuEntries = migrateMenu(content.scripts);
   const combinedScripts = combineScripts(content.scripts, preserveParams);

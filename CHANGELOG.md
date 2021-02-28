@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.35.0
+
+### Changes
+- Added Repository is clean check for `launch migrate`
+
 ## 1.34.2
 
 - Updated tests for supporting `win32`
