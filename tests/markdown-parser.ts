@@ -72,7 +72,9 @@ export class MarkdownParser {
 
         let outputResult: string[][] = null;
 
-        if (output[result.length]) outputResult = output;
+        if (output[result.length]) {
+          outputResult = output.map(item => item.map(item => item.replace(/\r$/, '')));
+        }
 
         result.push({
           title: title,

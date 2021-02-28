@@ -97,6 +97,7 @@ async function main(): Promise<void> {
     'Migrate package.json scripts',
     'Enable tab completion'
   ]);
+  testLauncher.prepareTests();
 
   const transforms: { [name: string]: TransformCallback } = {
     concurrentScripts: (name: string, config: IConfig) => {
@@ -125,7 +126,7 @@ async function main(): Promise<void> {
 
         if (config.files !== undefined) testLauncher.create(directory, config.files);
 
-        // if (config.name !== 'Interactive menu') continue;
+        // if (config.name !== 'Environment values and special commands') continue;
 
         describe(config.name, () => {
           if (config.tests.length === 0) test.todo('test command');
