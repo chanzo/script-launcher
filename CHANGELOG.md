@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.34.2
+
+- Updated tests for supporting `win32`
+
 ## 1.34.1
 
 ### Changes
