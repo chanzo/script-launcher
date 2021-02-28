@@ -3,6 +3,7 @@
 ## 1.35.0
 
 ### Changes
+
 - Added Repository is clean check for `launch migrate`
 
 ## 1.34.2
