@@ -9,6 +9,7 @@ import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 import * as os from 'os';
+import { execSync } from 'child_process';
 
 interface IArgs {
   init: boolean;
@@ -151,9 +152,24 @@ function splitCommand(command: string): string[] {
   return result;
 }
 
+function checkCleanGit(): boolean {
+  try {
+    const result = execSync('git status --porcelain', { encoding: 'utf8', stdio: 'pipe' });
+
+    return result.trim().length === 0;
+  } catch {}
+
+  return true;
+}
+
 function checkMigratePrerequisites(directory: string, scripts: { [name: string]: string }): boolean {
   const menuFile = path.join(directory, 'launcher-menu.json');
   const configFile = path.join(directory, 'launcher-config.json');
+
+  if (!checkCleanGit()) {
+    console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'Repository is not clean. Please commit or stash any changes before updating.');
+    return false;
+  }
 
   if (fs.existsSync(menuFile)) {
     console.log(Colors.Red + Colors.Bold + 'Failed:' + Colors.Normal, 'launcher-menu.json already exists.');
