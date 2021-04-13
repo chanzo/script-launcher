@@ -103,7 +103,23 @@ npm start
 
 You can also show the menu by running: `npx launch`
 
-### Start a specific launch script, by using the `npm start`
+<details>
+  <summary><strong>Output:</strong></summary>
+
+```text
+✔ Select action › serve
+✔ Select environment › acc
+✔ Are you sure … yes
+
+Executing: npm start serve:acc
+
+Serve acc command.
+```
+
+</details>
+&nbsp;
+
+### Start a specific launcher script
 
 ```bash
 npm start serve:dev
@@ -111,6 +127,38 @@ npm start build:production
 ```
 
 Basically you can now use `npm start` instead of `npm run`.
+
+<details>
+  <summary><strong>Output:</strong></summary>
+
+```text
+Serve dev command.
+Build production command.
+```
+
+</details>
+&nbsp;
+
+### List available launcher scripts
+
+```bash
+npx launch list
+```
+
+<details>
+  <summary><strong>Output:</strong></summary>
+
+```text
+build:acc
+build:dev
+build:production
+serve:acc
+serve:dev
+serve:production
+```
+
+</details>
+&nbsp;
 
 ### Start a specific launch script, by using the `npm run`
 
@@ -452,8 +500,8 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   <summary><strong>Output:</strong></summary>
 
 ```text
-Package version: 1.35.0
-Package version: 1.35.0
+Package version: 1.35.1
+Package version: 1.35.1
 Argument 1 : arg1
 Argument 2 : arg2
 All arguments: arg1 arg2 arg3
@@ -612,9 +660,9 @@ Use a backslash in the script command, to escaping variables.
 
 ```text
 $1                     : arg1
-$npm_package_version   : 1.35.0
+$npm_package_version   : 1.35.1
 ${1}                   : arg1
-${npm_package_version} : 1.35.0
+${npm_package_version} : 1.35.1
 ```
 
 </details>
@@ -683,7 +731,7 @@ ${npm_package_version} : 1.35.0
 
 ```text
 grep example
-Version: 1.35.0
+Version: 1.35.1
 Platform: linux
 Time: 2019-09-16 10:33:20.628
 --------------------------------

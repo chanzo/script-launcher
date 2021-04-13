@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.35.1
+
+### Changes
+
+- Updated dependencies and dev dependencies
+- Updated [Installation](src#installation) steps in the `README.md`
+
 ## 1.35.0
 
 ### Changes
