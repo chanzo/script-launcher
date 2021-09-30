@@ -21,7 +21,7 @@
         "exit 1"
       ]
     },
-    "postinstall": [
+    "prepare": [
       "husky install",
       "debug",
       "npm install"

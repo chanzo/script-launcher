@@ -2,6 +2,37 @@
   "Other tests": [
     {
       "id": "0008",
+      "name": "Default script",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "start": [
+              "echo Default script"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0008-00",
+          "lifecycle": "start",
+          "npm-args": "",
+          "result": [
+            "Default script"
+          ]
+        },
+        {
+          "id": "0008-01",
+          "lifecycle": "start",
+          "npm-args": "start",
+          "result": [
+            "Default script"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0009",
       "name": "Exit code",
       "files": {
         "launcher-config": {
@@ -18,7 +49,7 @@
       },
       "tests": [
         {
-          "id": "0008-00",
+          "id": "0009-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
@@ -29,7 +60,7 @@
       ]
     },
     {
-      "id": "0009",
+      "id": "0010",
       "name": "Log output",
       "sanatize": true,
       "files": {
@@ -47,7 +78,7 @@
       },
       "tests": [
         {
-          "id": "0009-00",
+          "id": "0010-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=1",
@@ -73,7 +104,7 @@
           ]
         },
         {
-          "id": "0009-01",
+          "id": "0010-01",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=2",
@@ -199,7 +230,7 @@
           ]
         },
         {
-          "id": "0009-02",
+          "id": "0010-02",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "cmd-args": "--logLevel=3",
@@ -484,7 +515,7 @@
       ]
     },
     {
-      "id": "0010",
+      "id": "0011",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -510,7 +541,7 @@
       },
       "tests": [
         {
-          "id": "0010-00",
+          "id": "0011-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -525,7 +556,7 @@
           ]
         },
         {
-          "id": "0010-01",
+          "id": "0011-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -542,7 +573,7 @@
       ]
     },
     {
-      "id": "0011",
+      "id": "0012",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -555,7 +586,7 @@
       },
       "tests": [
         {
-          "id": "0011-00",
+          "id": "0012-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -563,7 +594,7 @@
           ]
         },
         {
-          "id": "0011-01",
+          "id": "0012-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -573,7 +604,7 @@
       ]
     },
     {
-      "id": "0012",
+      "id": "0013",
       "name": "Variable assignments",
       "files": {
         "launcher-config": {
@@ -586,7 +617,7 @@
       },
       "tests": [
         {
-          "id": "0012-00",
+          "id": "0013-00",
           "lifecycle": "start",
           "npm-args": "assignments",
           "result": [
@@ -594,7 +625,7 @@
           ]
         },
         {
-          "id": "0012-01",
+          "id": "0013-01",
           "lifecycle": "start",
           "npm-args": "assignments:B",
           "result": [
@@ -602,7 +633,7 @@
           ]
         },
         {
-          "id": "0012-02",
+          "id": "0013-02",
           "lifecycle": "start",
           "npm-args": "assignments:*",
           "result": [
@@ -610,7 +641,7 @@
           ]
         },
         {
-          "id": "0012-03",
+          "id": "0013-03",
           "lifecycle": "start",
           "npm-args": "assignments:'*'",
           "result": [
@@ -618,7 +649,7 @@
           ]
         },
         {
-          "id": "0012-04",
+          "id": "0013-04",
           "lifecycle": "start",
           "npm-args": "assignments:\"*\"",
           "result": [
@@ -626,7 +657,7 @@
           ]
         },
         {
-          "id": "0012-05",
+          "id": "0013-05",
           "lifecycle": "start",
           "npm-args": "assignments:'\"*\"'",
           "result": [
@@ -634,7 +665,7 @@
           ]
         },
         {
-          "id": "0012-06",
+          "id": "0013-06",
           "lifecycle": "start",
           "npm-args": "assignments:\"'*'\"",
           "result": [
@@ -647,7 +678,7 @@
       ]
     },
     {
-      "id": "0013",
+      "id": "0014",
       "name": "Circular reference",
       "files": {
         "launcher-config": {
@@ -663,37 +694,11 @@
       },
       "tests": [
         {
-          "id": "0013-00",
+          "id": "0014-00",
           "lifecycle": "start",
           "npm-args": "build-stuff",
           "result": [
             "Circular"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "0014",
-      "name": "Auto arguments",
-      "files": {
-        "launcher-config": {
-          "scripts": {
-            "echo": "echo"
-          }
-        }
-      },
-      "tests": [
-        {
-          "id": "0014-00",
-          "lifecycle": "start",
-          "npm-args": [
-            "echo",
-            "arg1",
-            "arg2",
-            "arg3"
-          ],
-          "result": [
-            "arg1 arg2 arg3"
           ]
         }
       ]
@@ -704,9 +709,7 @@
       "files": {
         "launcher-config": {
           "scripts": {
-            "echo": [
-              "echo"
-            ]
+            "echo": "echo"
           }
         }
       },
@@ -729,12 +732,11 @@
     {
       "id": "0016",
       "name": "Auto arguments",
-      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
             "echo": [
-              "echo "
+              "echo"
             ]
           }
         }
@@ -749,19 +751,21 @@
             "arg2",
             "arg3"
           ],
-          "result": []
+          "result": [
+            "arg1 arg2 arg3"
+          ]
         }
       ]
     },
     {
       "id": "0017",
       "name": "Auto arguments",
+      "sanatize": true,
       "files": {
         "launcher-config": {
           "scripts": {
             "echo": [
-              "echo",
-              "echo"
+              "echo "
             ]
           }
         }
@@ -787,7 +791,8 @@
         "launcher-config": {
           "scripts": {
             "echo": [
-              "echo $2*"
+              "echo",
+              "echo"
             ]
           }
         }
@@ -802,6 +807,32 @@
             "arg2",
             "arg3"
           ],
+          "result": []
+        }
+      ]
+    },
+    {
+      "id": "0019",
+      "name": "Auto arguments",
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "echo": [
+              "echo $2*"
+            ]
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0019-00",
+          "lifecycle": "start",
+          "npm-args": [
+            "echo",
+            "arg1",
+            "arg2",
+            "arg3"
+          ],
           "result": [
             "arg2 arg3"
           ]
@@ -809,7 +840,7 @@
       ]
     },
     {
-      "id": "0019",
+      "id": "0020",
       "name": "Glob patterns",
       "files": {
         "launcher-config": {
@@ -832,7 +863,7 @@
       },
       "tests": [
         {
-          "id": "0019-00",
+          "id": "0020-00",
           "lifecycle": "start",
           "npm-args": "nonull-false",
           "result": [
@@ -863,7 +894,7 @@
       ]
     },
     {
-      "id": "0020",
+      "id": "0021",
       "name": "Glob patterns",
       "files": {
         "launcher-config": {
@@ -891,7 +922,7 @@
       },
       "tests": [
         {
-          "id": "0020-00",
+          "id": "0021-00",
           "lifecycle": "start",
           "npm-args": "nonull-true",
           "result": [
@@ -922,7 +953,7 @@
       ]
     },
     {
-      "id": "0021",
+      "id": "0022",
       "name": "Expand variable and string manipulation",
       "files": {
         "launcher-config": {
@@ -944,7 +975,7 @@
       },
       "tests": [
         {
-          "id": "0021-00",
+          "id": "0022-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff"
@@ -961,7 +992,7 @@
       ]
     },
     {
-      "id": "0022",
+      "id": "0023",
       "name": "Expand variable and string manipulation",
       "files": {
         "launcher-config": {
@@ -978,7 +1009,7 @@
       },
       "tests": [
         {
-          "id": "0022-00",
+          "id": "0023-00",
           "lifecycle": "start",
           "npm-args": [
             "build-stuff",
@@ -998,7 +1029,7 @@
       ]
     },
     {
-      "id": "0023",
+      "id": "0024",
       "name": "Reference scripts by using wildcards and arguments",
       "files": {
         "launcher-config": {
@@ -1014,7 +1045,7 @@
       },
       "tests": [
         {
-          "id": "0023-00",
+          "id": "0024-00",
           "lifecycle": "start",
           "npm-args": [
             "build:*",
@@ -1027,7 +1058,7 @@
           ]
         },
         {
-          "id": "0023-01",
+          "id": "0024-01",
           "lifecycle": "start",
           "npm-args": [
             "build:all",
@@ -1042,7 +1073,7 @@
       ]
     },
     {
-      "id": "0024",
+      "id": "0025",
       "name": "Concurrent limit",
       "files": {
         "launcher-config": {
@@ -1103,7 +1134,7 @@
       },
       "tests": [
         {
-          "id": "0024-00",
+          "id": "0025-00",
           "lifecycle": "start",
           "npm-args": "concurrent",
           "result": [
@@ -1131,7 +1162,7 @@
           ]
         },
         {
-          "id": "0024-01",
+          "id": "0025-01",
           "lifecycle": "start",
           "npm-args": "concurrent",
           "cmd-args": "--limit=4",
@@ -1162,7 +1193,7 @@
       ]
     },
     {
-      "id": "0025",
+      "id": "0026",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -1185,7 +1216,7 @@
       },
       "tests": [
         {
-          "id": "0025-00",
+          "id": "0026-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: build                         (Use the menu by running: npm start menu)",
@@ -1197,7 +1228,7 @@
       ]
     },
     {
-      "id": "0026",
+      "id": "0027",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -1220,7 +1251,7 @@
       },
       "tests": [
         {
-          "id": "0026-00",
+          "id": "0027-00",
           "lifecycle": "start",
           "result": [
             "? Select › - Use arrow-keys. Return to submit.",
@@ -1237,7 +1268,7 @@
       ]
     },
     {
-      "id": "0027",
+      "id": "0028",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -1278,7 +1309,7 @@
       },
       "tests": [
         {
-          "id": "0027-00",
+          "id": "0028-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: hva:development               (Use the menu by running: npm start menu)",
@@ -1289,7 +1320,7 @@
           ]
         },
         {
-          "id": "0027-01",
+          "id": "0028-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -1308,7 +1339,7 @@
       ]
     },
     {
-      "id": "0028",
+      "id": "0029",
       "name": "Interactive menu",
       "sanatize": true,
       "files": {
@@ -1350,7 +1381,7 @@
       },
       "tests": [
         {
-          "id": "0028-00",
+          "id": "0029-00",
           "lifecycle": "start",
           "result": [
             "Auto menu: hva:development               (Use the menu by running: npm start menu)",
@@ -1361,7 +1392,7 @@
           ]
         },
         {
-          "id": "0028-01",
+          "id": "0029-01",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [
@@ -1385,7 +1416,7 @@
       ]
     },
     {
-      "id": "0029",
+      "id": "0030",
       "name": "Interactive menu",
       "files": {
         "launcher-config": {
@@ -1396,7 +1427,7 @@
       },
       "tests": [
         {
-          "id": "0029-00",
+          "id": "0030-00",
           "lifecycle": "start",
           "npm-args": "menu",
           "result": [

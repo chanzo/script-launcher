@@ -1,11 +1,11 @@
 {
   "name": "script-launcher-source",
-  "version": "1.36.0",
+  "version": "1.36.1",
   "description": "Script launcher repo root package.json, used mainly to execute build scripts. This package is not published to npm.",
   "main": "",
   "scripts": {
     "start": "launch",
-    "postinstall": "launch"
+    "prepare": "launch"
   },
   "repository": {
     "type": "git",
