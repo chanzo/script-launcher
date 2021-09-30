@@ -1,6 +1,7 @@
 # Change Log
 
 ## 1.36.0
+
 - Updated dependencies and dev dependencies
 - Added support for default start script that can replace the default menu.
 

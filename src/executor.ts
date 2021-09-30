@@ -332,7 +332,7 @@ export class Executor {
 
     if (Executor.extendEnvironment(options.env, command)) return { command: null, args, options };
 
-    if (options.cwd instanceof URL){
+    if (options.cwd instanceof URL) {
       throw new Error('A directory type of type URL is not supported.');
     }
 
@@ -553,7 +553,7 @@ export class Executor {
         options = info.options;
 
         if (info.command) {
-          if (options.cwd instanceof URL){
+          if (options.cwd instanceof URL) {
             throw new Error('A directory type of type URL is not supported.');
           }
 
@@ -661,7 +661,7 @@ export class Executor {
 
     Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + "'" + command + "'" + Colors.Normal);
 
-    if (options.cwd instanceof URL){
+    if (options.cwd instanceof URL) {
       throw new Error('A directory type of type URL is not supported.');
     }
 
@@ -720,7 +720,7 @@ export class Executor {
           outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
-        if (options.cwd instanceof URL){
+        if (options.cwd instanceof URL) {
           throw new Error('A directory type of type URL is not supported.');
         }
 
@@ -754,7 +754,7 @@ export class Executor {
           outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
-        if (options.cwd instanceof URL){
+        if (options.cwd instanceof URL) {
           throw new Error('A directory type of type URL is not supported.');
         }
 
@@ -775,7 +775,7 @@ export class Executor {
     for (let confirm of task.confirm) {
       confirm = Executor.expandEnvironment(confirm, options.env);
 
-      if (options.cwd instanceof URL){
+      if (options.cwd instanceof URL) {
         throw new Error('A directory type of type URL is not supported.');
       }
 
