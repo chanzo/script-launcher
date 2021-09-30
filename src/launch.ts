@@ -794,11 +794,20 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (scriptId) commandArgs.unshift(scriptId);
 
     const scripts = config.scripts.find(...launchScript);
+    const defaultScript = config.scripts.find('start');
 
-    if (launchScript[0] === 'menu' && scripts.length === 0) {
-      interactive = true;
-      launchScript = [];
-      commandArgs.shift();
+    if (scripts.length === 0) {
+      if (launchScript[0] === 'menu') {
+        interactive = true;
+        launchScript = [];
+        commandArgs.shift();
+        defaultScript.length = 0;
+      }
+
+      if (defaultScript.length > 0) {
+        scripts.push(...defaultScript);
+        launchScript = ['start'];
+      }
     }
 
     if (launchScript.length === 0) {

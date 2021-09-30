@@ -8,6 +8,7 @@ import glob = require('fast-glob');
 import prettyTime = require('pretty-time');
 import { ILaunchSetting } from './config-loader';
 import { Variables } from './variables';
+import { URL } from 'url';
 
 interface ITasks {
   circular: boolean;
@@ -331,6 +332,10 @@ export class Executor {
 
     if (Executor.extendEnvironment(options.env, command)) return { command: null, args, options };
 
+    if (options.cwd instanceof URL) {
+      throw new Error('A directory type of type URL is not supported.');
+    }
+
     const fullPath = path.join(path.resolve(options.cwd), command);
 
     if (fs.existsSync(fullPath)) {
@@ -548,6 +553,10 @@ export class Executor {
         options = info.options;
 
         if (info.command) {
+          if (options.cwd instanceof URL) {
+            throw new Error('A directory type of type URL is not supported.');
+          }
+
           let command = Executor.expandGlobs(info.command, {
             ...this.globOptions,
             ...{ cwd: options.cwd }
@@ -652,6 +661,10 @@ export class Executor {
 
     Logger.log(Colors.Bold + type + '       : ' + Colors.Normal + Colors.Green + "'" + command + "'" + Colors.Normal);
 
+    if (options.cwd instanceof URL) {
+      throw new Error('A directory type of type URL is not supported.');
+    }
+
     if (fs.existsSync(path.join(path.resolve(options.cwd), command))) {
       Logger.log(''.padEnd(process.stdout.columns, '-'));
       Logger.log(Colors.Dim + 'directory exists' + Colors.Normal);
@@ -707,6 +720,10 @@ export class Executor {
           outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
+        if (options.cwd instanceof URL) {
+          throw new Error('A directory type of type URL is not supported.');
+        }
+
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
           ...{ cwd: options.cwd }
@@ -737,6 +754,10 @@ export class Executor {
           outputPattern = Executor.removeEnvironment(outputPattern);
         }
 
+        if (options.cwd instanceof URL) {
+          throw new Error('A directory type of type URL is not supported.');
+        }
+
         constraint = Executor.expandGlobs(constraint, {
           ...this.globOptions,
           ...{ cwd: options.cwd }
@@ -753,6 +774,10 @@ export class Executor {
 
     for (let confirm of task.confirm) {
       confirm = Executor.expandEnvironment(confirm, options.env);
+
+      if (options.cwd instanceof URL) {
+        throw new Error('A directory type of type URL is not supported.');
+      }
 
       confirm = Executor.expandGlobs(confirm, {
         ...this.globOptions,
