@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.36.1
+
+- Added default script test
+- Reinstalled husky
+
 ## 1.36.0
 
 - Updated dependencies and dev dependencies

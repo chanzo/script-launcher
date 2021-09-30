@@ -1,11 +1,11 @@
 {
   "name": "script-launcher-source",
-  "version": "1.36.0",
+  "version": "1.36.1",
   "description": "Script launcher repo root package.json, used mainly to execute build scripts. This package is not published to npm.",
   "main": "",
   "scripts": {
     "start": "launch",
-    "postinstall": "launch"
+    "prepare": "launch"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "jest": "^27.2.4",
     "prettier": "^2.4.1",
     "rimraf": "^3.0.2",
-    "script-launcher": "^1.35.1",
+    "script-launcher": "^1.36.1",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "tslint": "^6.1.3",
