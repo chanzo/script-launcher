@@ -1585,6 +1585,23 @@ The default value is presented in the following example:
 }
 ```
 
+### Dry Run
+
+Use the **dry** option to prevent the execution of the scripts.
+
+The default value is presented in the following example:
+
+```text
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "dry": false
+  }
+}
+```
+
 ### Enable tab completion
 
 To enable tab completion for **script-launcher** in your current terminal, execute the following commands. This will test if you are using tab completion on `npm start` if so, it will execute `npx launch list completion` if not, it will execute the default npm completion function `_npm_completion`.
