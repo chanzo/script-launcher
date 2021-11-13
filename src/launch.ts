@@ -19,6 +19,7 @@ interface IArgs {
   help: boolean;
   version: boolean;
   logLevel: number;
+  dry: boolean;
   config: string;
   ansi: boolean;
   directory: string;
@@ -502,6 +503,7 @@ function showHelp(): void {
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     logLevel: ['', 'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.'],
+    dry: '  ' + Colors.Cyan + 'dry=         ' + Colors.Normal + 'Do not execute commands.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
@@ -613,6 +615,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     const launchArgs = parseArgs<IArgs>(argsString, {
       arguments: {
         logLevel: undefined,
+        dry: undefined,
         init: false,
         list: false,
         migrate: false,
@@ -639,6 +642,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     let interactive = false;
 
     if (launchArgs.arguments.logLevel === undefined) launchArgs.arguments.logLevel = config.options.logLevel;
+    if (launchArgs.arguments.dry === undefined) launchArgs.arguments.dry = config.options.dry;
     if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
     if (argsString.includes('--params') && launchArgs.arguments.params === undefined) launchArgs.arguments.params = 1;
     if (launchArgs.arguments.params === undefined) launchArgs.arguments.params = Number.MAX_SAFE_INTEGER;
@@ -647,6 +651,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
     if (launchArgs.arguments.limit === 0) launchArgs.arguments.limit = os.cpus().length;
     if (launchArgs.arguments.limit < 1) launchArgs.arguments.limit = 1;
 
+    if (launchArgs.arguments.dry && launchArgs.arguments.logLevel < 1) launchArgs.arguments.logLevel = 1;
     Logger.level = launchArgs.arguments.logLevel;
 
     if (launchArgs.arguments.config) {
@@ -823,6 +828,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         config.options.menu.confirm,
         launchArgs.arguments.confirm,
         launchArgs.arguments.limit,
+        launchArgs.arguments.dry,
         testmode
       );
 
@@ -854,7 +860,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, launchArgs.arguments.limit, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, launchArgs.arguments.limit, launchArgs.arguments.dry, testmode);
 
     startTime = executor.startTime;
 

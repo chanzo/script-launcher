@@ -1239,6 +1239,7 @@ Commands:
 
 Options:
   logLevel=    Set log level.
+  dry=         Do not execute commands.
   config=      Merge in an extra config file.
   confirm=     Auto value for confirm conditions.
   ansi=        Enable or disable ansi color output.
