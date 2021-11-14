@@ -14,6 +14,7 @@ export interface IProcess {
 export interface ISpawnOptions extends SpawnOptions {
   suppress?: boolean;
   testmode?: boolean;
+  dry?: boolean;
   limit: number;
   extraLogInfo?: (process: IProcess) => string;
 }
@@ -39,6 +40,16 @@ export class Process implements IProcess {
     }
 
     if (!command) {
+      return {
+        pid: -1,
+        stderr: '',
+        stdout: '',
+        wait: async () => 0
+      };
+    }
+
+    if (options.dry) {
+      Logger.info('Dry Command     : ' + Colors.Yellow + "'" + command + ' ' + args.join(' ') + "'" + Colors.Normal);
       return {
         pid: -1,
         stderr: '',

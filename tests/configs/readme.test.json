@@ -376,6 +376,29 @@
     },
     {
       "id": "0052",
+      "name": "Launcher Options: dry",
+      "sanatize": true,
+      "files": {
+        "launcher-config": {
+          "scripts": {
+            "build:css": "echo Building: .css files",
+            "build:js": "echo Building: .js files"
+          }
+        }
+      },
+      "tests": [
+        {
+          "id": "0052-00",
+          "cmd-args": [
+            "build:css",
+            "build:js",
+            "--dry"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0053",
       "name": "Launcher Command: init",
       "sanatize": true,
       "files": {
@@ -383,13 +406,13 @@
       },
       "tests": [
         {
-          "id": "0052-00",
+          "id": "0053-00",
           "cmd-args": [
             "init"
           ]
         },
         {
-          "id": "0052-01",
+          "id": "0053-01",
           "cmd-args": [
             "init",
             "basic"
@@ -398,7 +421,7 @@
       ]
     },
     {
-      "id": "0053",
+      "id": "0054",
       "name": "Launcher Command: migrate",
       "sanatize": true,
       "files": {
@@ -444,7 +467,7 @@
       },
       "tests": [
         {
-          "id": "0053-00",
+          "id": "0054-00",
           "cmd-args": [
             "migrate",
             "--params=1"
@@ -453,7 +476,7 @@
       ]
     },
     {
-      "id": "0054",
+      "id": "0055",
       "name": "Launcher Command: script",
       "sanatize": true,
       "files": {
@@ -472,14 +495,14 @@
       },
       "tests": [
         {
-          "id": "0054-00",
+          "id": "0055-00",
           "cmd-args": [
             "build:css",
             "build:js"
           ]
         },
         {
-          "id": "0054-01",
+          "id": "0055-01",
           "cmd-args": [
             "build:css",
             "build:js",
@@ -489,7 +512,7 @@
       ]
     },
     {
-      "id": "0055",
+      "id": "0056",
       "name": "Launcher Command: list",
       "files": {
         "launcher-config": {
@@ -522,21 +545,21 @@
       },
       "tests": [
         {
-          "id": "0055-00",
+          "id": "0056-00",
           "cmd-args": [
             "list",
             "script"
           ]
         },
         {
-          "id": "0055-01",
+          "id": "0056-01",
           "cmd-args": [
             "list",
             "menu"
           ]
         },
         {
-          "id": "0055-02",
+          "id": "0056-02",
           "cmd-args": [
             "list",
             "complete"
