@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.37.0
+
+- Added the [dry run](srcl#launcher-options-dry) option
+
 ## 1.36.1
 
 - Added default script test

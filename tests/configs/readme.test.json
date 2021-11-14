@@ -65,7 +65,7 @@
           "npm-args": "build-stuff",
           "result:win32": [
             "grep example",
-            "Version: 1.36.1",
+            "Version: 1.37.0",
             "Platform: win32",
             "Time: 2019-09-16 10:33:20.628",
             "--------------------------------",
