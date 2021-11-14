@@ -9,7 +9,7 @@
 
 ### New Contributor
 
-@snickbit made their first contribution in #148
+First contribution from @snickbit in #148
 
 ## 1.36.1
 
