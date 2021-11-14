@@ -1250,6 +1250,31 @@ Options:
   limit=       Limit the number of commands to execute in parallel.
 ```
 
+## Launcher Options: dry
+
+**Run**: `npx launch build:css build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
+
+```bash
+Loaded config:  launcher-config.json
+
+Date              : 2019-09-16 10:33:20.628
+Version           : 1.36.1
+Lifecycle event   : undefined
+Launch script     : [ 'build:css', 'build:js' ]
+Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
+
+Script id       : build:css
+Circular        : false
+Script params   : {}
+Script args     : [ 'build:css' ]
+
+Dry Command     : 'echo Building: .css files '
+Dry Command     : 'echo Building: .js files '
+
+ExitCode: 0
+Elapsed: 237ms
+```
+
 ### Launcher Command: init
 
 Use the **init** command to create a starter configuration for you project.
