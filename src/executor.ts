@@ -44,6 +44,7 @@ export class Executor {
   private readonly confirm?: boolean;
   private readonly testmode: boolean;
   private readonly limit: number;
+  private readonly dry: boolean;
 
   public constructor(
     shell: boolean | string,
@@ -53,6 +54,7 @@ export class Executor {
     globOptions: glob.Options,
     confirm: boolean | undefined,
     limit: number,
+    dry: boolean,
     testmode: boolean
   ) {
     this.shell = shell;
@@ -64,6 +66,7 @@ export class Executor {
     this.testmode = testmode;
     this.startTime = process.hrtime();
     this.limit = limit;
+    this.dry = dry;
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -74,7 +77,8 @@ export class Executor {
       shell: this.shell,
       suppress: false,
       testmode: this.testmode,
-      limit: this.limit
+      limit: this.limit,
+      dry: this.dry
     };
 
     if (Logger.level > 0) {

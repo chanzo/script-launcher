@@ -12,6 +12,7 @@ export interface IMenu {
 
 interface IOptions {
   logLevel: number;
+  dry: boolean;
   limit: number;
   files: string[];
   script: {
@@ -53,6 +54,7 @@ export class Config {
     options: {
       logLevel: 0,
       limit: 0,
+      dry: false,
       files: ['launcher-config.json', 'launcher-scripts.json', 'launcher-settings.json', 'launcher-menu.json', 'launcher-custom.json'],
       script: {
         shell: true

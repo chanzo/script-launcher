@@ -16,6 +16,7 @@ export async function launchMenu(
   menuConfirm: boolean,
   confirm: boolean,
   limit: number,
+  dry: boolean,
   testmode: boolean
 ): Promise<{ startTime: [number, number]; exitCode: number }> {
   try {
@@ -83,7 +84,7 @@ export async function launchMenu(
       console.log();
     }
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, limit, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, limit, dry, testmode);
 
     script.arguments = args;
 

@@ -1239,6 +1239,7 @@ Commands:
 
 Options:
   logLevel=    Set log level.
+  dry=         Do not execute commands.
   config=      Merge in an extra config file.
   confirm=     Auto value for confirm conditions.
   ansi=        Enable or disable ansi color output.
@@ -1247,6 +1248,31 @@ Options:
   params=      Set the number of parameters to preserve.
   concurrent=  Execute commandline wildcard matches in parallel.
   limit=       Limit the number of commands to execute in parallel.
+```
+
+## Launcher Options: dry
+
+**Run**: `npx launch build:css build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
+
+```bash
+Loaded config:  launcher-config.json
+
+Date              : 2019-09-16 10:33:20.628
+Version           : 1.36.1
+Lifecycle event   : undefined
+Launch script     : [ 'build:css', 'build:js' ]
+Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
+
+Script id       : build:css
+Circular        : false
+Script params   : {}
+Script args     : [ 'build:css' ]
+
+Dry Command     : 'echo Building: .css files '
+Dry Command     : 'echo Building: .js files '
+
+ExitCode: 0
+Elapsed: 237ms
 ```
 
 ### Launcher Command: init
@@ -1580,6 +1606,23 @@ The default value is presented in the following example:
   },
   "options": {
     "limit": 0
+  }
+}
+```
+
+### Dry Run
+
+Use the **dry** option to prevent the execution of the scripts.
+
+The default value is presented in the following example:
+
+```text
+{
+  "scripts": {
+    ...
+  },
+  "options": {
+    "dry": false
   }
 }
 ```
