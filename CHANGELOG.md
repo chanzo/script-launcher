@@ -2,14 +2,25 @@
 
 ## 1.37.0
 
+### Changes
+
 - Added the [dry run](srcl#launcher-options-dry) option
+- Updated dependencies and dev dependencies
+
+### New Contributor
+
+@snickbit made their first contribution in #148
 
 ## 1.36.1
+
+### Changes
 
 - Added default script test
 - Reinstalled husky
 
 ## 1.36.0
+
+### Changes
 
 - Updated dependencies and dev dependencies
 - Added support for default start script that can replace the default menu.
