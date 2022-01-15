@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.37.1
+
+### Changes
+
+- Updated dependencies and dev dependencies
+
 ## 1.37.0
 
 ### Changes
