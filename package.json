@@ -1,6 +1,6 @@
 {
   "name": "script-launcher-source",
-  "version": "1.37.0",
+  "version": "1.37.1",
   "description": "Script launcher repo root package.json, used mainly to execute build scripts. This package is not published to npm.",
   "main": "",
   "scripts": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "cross-spawn": "~7.0.3",
     "deepmerge": "~4.2.2",
-    "fast-glob": "~3.2.7",
+    "fast-glob": "~3.2.11",
     "pretty-time": "~1.1.0",
     "prompts": "~2.4.2"
   },
@@ -24,19 +24,19 @@
     "@types/cross-spawn": "^6.0.2",
     "@types/glob": "^7.2.0",
     "@types/inquirer": "^8.1.3",
-    "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.7",
-    "@types/pretty-time": "^1.1.1",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.8",
+    "@types/pretty-time": "^1.1.2",
     "@types/prompts": "^2.0.14",
     "cpx": "^1.5.0",
     "husky": "^7.0.4",
-    "jest": "^27.3.1",
-    "prettier": "^2.4.1",
+    "jest": "^27.4.7",
+    "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
-    "script-launcher": "^1.37.0",
-    "ts-jest": "^27.0.7",
+    "script-launcher": "^1.37.1",
+    "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.4"
   }
 }
