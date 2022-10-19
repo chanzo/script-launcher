@@ -501,8 +501,8 @@ In this example **node** will be an alias for **$npm_config_node**. So **$node_v
   <summary><strong>Output:</strong></summary>
 
 ```text
-Package version: 1.37.1
-Package version: 1.37.1
+Package version: 1.37.2
+Package version: 1.37.2
 Argument 1 : arg1
 Argument 2 : arg2
 All arguments: arg1 arg2 arg3
@@ -661,9 +661,9 @@ Use a backslash in the script command, to escaping variables.
 
 ```text
 $1                     : arg1
-$npm_package_version   : 1.37.1
+$npm_package_version   : 1.37.2
 ${1}                   : arg1
-${npm_package_version} : 1.37.1
+${npm_package_version} : 1.37.2
 ```
 
 </details>
@@ -732,7 +732,7 @@ ${npm_package_version} : 1.37.1
 
 ```text
 grep example
-Version: 1.37.1
+Version: 1.37.2
 Platform: linux
 Time: 2019-09-16 10:33:20.628
 --------------------------------
@@ -1259,7 +1259,7 @@ Options:
 Loaded config:  launcher-config.json
 
 Date              : 2019-09-16 10:33:20.628
-Version           : 1.37.1
+Version           : 1.37.2
 Lifecycle event   : undefined
 Launch script     : [ 'build:css', 'build:js' ]
 Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
