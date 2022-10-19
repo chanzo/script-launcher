@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.37.2
+
+### Changes
+
+- Updated dependencies and dev dependencies
+- Bug fix for parameter compatibility for node version 16: [issues-151](https://github.com/chanzo/script-launcher/issues/151) thanks to [@julianess](https://github.com/julianess)
+
+### New Contributor
+
+First contribution from [@julianess](https://github.com/julianess) in [#148](https://github.com/chanzo/script-launcher/pull/153)
+
 ## 1.37.1
 
 ### Changes
@@ -10,12 +21,12 @@
 
 ### Changes
 
-- Added the [dry run](srcl#launcher-options-dry) option
+- Added the [dry run](src/README.md#launcher-options-dry) option
 - Updated dependencies and dev dependencies
 
 ### New Contributor
 
-First contribution from @snickbit in #148
+First contribution from [@snickbit](https://github.com/snickbit) in [#148](https://github.com/chanzo/script-launcher/pull/148)
 
 ## 1.36.1
 
@@ -36,7 +47,7 @@ First contribution from @snickbit in #148
 ### Changes
 
 - Updated dependencies and dev dependencies
-- Updated [Installation](src#installation) steps in the `README.md`
+- Updated [Installation](src/README.md#installation) steps in the `README.md`
 
 ## 1.35.0
 
@@ -115,7 +126,7 @@ Total Elapsed: 4s 26ms
 
 ### Changes
 
-- Updated [Implementation examples](src#implementation-examples) `README.md`
+- Updated [Implementation examples](src/README.md#implementation-examples) `README.md`
 
 ## 1.33.3
 
@@ -136,7 +147,7 @@ Total Elapsed: 4s 26ms
 
 ### Changes
 
-- Added [Environment String Manipulation and Expanding Variables](src#environment-string-manipulation-and-expanding-variables) support
+- Added [Environment String Manipulation and Expanding Variables](src/README.md#environment-string-manipulation-and-expanding-variables) support
 - Updated dev dependencies
 
 ## 1.32.0
@@ -163,7 +174,7 @@ Total Elapsed: 4s 26ms
 
 ### Changes
 
-- Added the [`limit`](src#limit-concurrency) argument and option to limit the number of commands to execute in parallel
+- Added the [`limit`](src/README.md#limit-concurrency) argument and option to limit the number of commands to execute in parallel
 - Updated dev dependencies
 
 ## 1.28.2
@@ -176,14 +187,14 @@ Total Elapsed: 4s 26ms
 
 ### Changes
 
-- Added the default selection [menu option](src#menu-options)
+- Added the default selection [menu option](src/README.md#menu-options)
 
 ## 1.28.0
 
 ### Changes
 
 - Updated dependencies
-- Added a default selection [menu argument](src#interactive-menu)
+- Added a default selection [menu argument](src/README.md#interactive-menu)
 
 #### Default menu selection argument example
 
@@ -202,7 +213,7 @@ npm start menu build:development
 
 ### Changes
 
-- Updated [**list**](src#launcher-command-list) argument so output will be sorted and only contains unique values.
+- Updated [**list**](src/README.md#launcher-command-list) argument so output will be sorted and only contains unique values.
 - Updated dev dependencies
 
 ## 1.27.0
@@ -210,8 +221,8 @@ npm start menu build:development
 ### Changes
 
 - Updated readme dependency documentation
-- Added [menu option](src#menu-options) for enabling and disabling the menu confirmation prompt.
-- Changed `? Save selection › (y/N)` prompt, to `? Are you sure › (Y/n)` prompt. Use the [Menu save default script](src#menu-save-default-script) for saving your menu selection.
+- Added [menu option](src/README.md#menu-options) for enabling and disabling the menu confirmation prompt.
+- Changed `? Save selection › (y/N)` prompt, to `? Are you sure › (Y/n)` prompt. Use the [Menu save default script](src/README.md#menu-save-default-script) for saving your menu selection.
 
 ## 1.26.3
 
@@ -279,8 +290,8 @@ value5: launch.ts launcher-config.json launcher-menu.json launcher-settings.json
 
 ## 1.26.1
 
-- Added **list** command [options](src#launcher-command-list)
-- Added documentation for enabling [tab completion](src#enable-tab-completion) support in your current terminal
+- Added **list** command [options](src/README.md#launcher-command-list)
+- Added documentation for enabling [tab completion](src/README.md#enable-tab-completion) support in your current terminal
 - Updated dev dependencies
 
 ## 1.26.0
@@ -530,7 +541,7 @@ npx launch --confirm 'Are you sure'
 
 ### Changes
 
-- Added support for help texts in [menus](src#interactive-menu).
+- Added support for help texts in [menus](src/README.md#interactive-menu).
 
 ### Fixes
 
@@ -543,7 +554,7 @@ npx launch --confirm 'Are you sure'
 - Switched form **[inquirer](https://www.npmjs.com/package/inquirer)** to **[prompts](https://www.npmjs.com/package/prompts)**
   - Removed **pageSize** options
   - Removed support for the **seperator** in a menu
-- Added support for using environment value aliases. More examples at [Environment and command line argument values](src#environment-and-command-line-argument-values) and [Launcher settings](src#launcher-settings)
+- Added support for using environment value aliases. More examples at [Environment and command line argument values](src/README.md#environment-and-command-line-argument-values) and [Launcher settings](src/README.md#launcher-settings)
 
 ```JSON
 {
@@ -578,7 +589,7 @@ npx launch --confirm 'Are you sure'
 
 ### Changes
 
-- Added the [migrate argument](src#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
+- Added the [migrate argument](src/README.md#migrate-packagejson-scripts) to migrate your **package.json** to **launcher-config.json**
 
 ## 1.18.0
 
@@ -719,7 +730,7 @@ Script expanded : {
 ### Changes
 
 - Dev dependencies updated
-- Added the [pageSize](src#menu-options) menu option.
+- Added the [pageSize](src/README.md#menu-options) menu option.
 
 ## 1.14.2
 
@@ -850,7 +861,7 @@ Exmaple 4: \${PATH}
 
 - The **sequential** and **concurrent** statements no longer work in conjunction with the **condition** and **exclusion** statements. Use the **sequential-then**, **sequential-else**, **concurrent-then** and **concurrent-else** when working with conditions and or exclusions. Open the [Condition and exclusion constraints](src/README.md#condition-and-exclusion-constraints) topic for examples.
 - The **sequential-then** and **concurrent-then** statements will only be processed when there is a constraint specified that evaluates to a success value.
-- When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $\_ prefix. Open the [Repeaters](src#repeaters) topic for examples.
+- When working with repeaters the repeated value in no longer accessible via the repeater variable name. The repeated values are now accessible by using the $\_ prefix. Open the [Repeaters](src/README.md#repeaters) topic for examples.
 
 ```JSON
 {
