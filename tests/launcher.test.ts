@@ -161,7 +161,7 @@ async function main(): Promise<void> {
 
                   output = content;
                 } else {
-                  const result = await testLauncher.launch(item.lifecycle, directory, [...item['cmd-args'], ...item['npm-args']], JSON.stringify({ remain: item['npm-args'] }));
+                  const result = await testLauncher.launch(item.lifecycle, directory, [...item['cmd-args'], ...item['npm-args']], item['npm-args']);
 
                   output = result.all;
                 }
