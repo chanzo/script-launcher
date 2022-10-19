@@ -1,9 +1,8 @@
 import * as launcher from '../src/launch';
 import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
-import { promisify } from 'util';
 
 async function launch(lifecycle: string, directory: string, cmdArgs: string[], npmArgs: string[]): Promise<void> {
-  return await launcher.main(lifecycle, ['', '', '--logLevel=0', '--directory=' + directory, ...cmdArgs, ...npmArgs], JSON.stringify({ remain: npmArgs }), true);
+  return await launcher.main(lifecycle, ['', '', '--logLevel=0', '--directory=' + directory, ...cmdArgs, ...npmArgs], npmArgs, true);
 }
 
 function NewInterceptor(intercept: boolean): ConsoleInterceptor {

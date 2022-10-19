@@ -605,12 +605,12 @@ function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] =
   return result;
 }
 
-export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string, testmode: boolean = false): Promise<void> {
+export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string[], testmode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
 
   try {
-    const commandArgs: string[] = npmConfigArgv ? JSON.parse(npmConfigArgv).remain : [];
+    const commandArgs: string[] = npmConfigArgv || [];
     const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
     const launchArgs = parseArgs<IArgs>(argsString, {
       arguments: {

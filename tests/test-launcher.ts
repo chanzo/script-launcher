@@ -67,7 +67,7 @@ export class TestLauncher {
     }
   }
 
-  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string = ''): Promise<IIntercepted> {
+  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string[] = []): Promise<IIntercepted> {
     const testDirectory = path.join(this.tempPath, directory).replace(process.cwd(), '.');
     const interceptor = new ConsoleInterceptor(this.excludes);
 
