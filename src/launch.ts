@@ -104,7 +104,7 @@ function copyTemplateFiles(template: string, directory: string): void {
     const targetFile = path.join(directory, fileName);
 
     if (!fs.existsSync(targetFile)) {
-      console.log(Colors.Bold + 'Createing:' + Colors.Normal, targetFile.replace(process.cwd() + path.sep, ''));
+      console.log(Colors.Bold + 'Creating:' + Colors.Normal, targetFile.replace(process.cwd() + path.sep, ''));
       fs.copyFileSync(sourceFile, targetFile);
     } else {
       console.log(Colors.Yellow + Colors.Bold + 'Skipped:' + Colors.Normal, fileName + ' already exists.');
