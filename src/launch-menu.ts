@@ -1,6 +1,5 @@
 import * as prompts from 'prompts';
-import * as fs from 'fs';
-import { Config, IConfig, ILaunchSetting, IMenu } from './config-loader';
+import { Config, ILaunchSetting, IMenu } from './config-loader';
 import { Executor } from './executor';
 import { IScript, IScriptInfo, IScriptTask, Scripts } from './scripts';
 import { confirmPrompt, toPromise, Colors } from './common';

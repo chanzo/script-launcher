@@ -1297,8 +1297,8 @@ Example usage: npx launch init basic
 ```bash
 Create starter config: basic
 
-Createing: launcher-config.json
-Createing: launcher-menu.json
+Creating: launcher-config.json
+Creating: launcher-menu.json
 
 Updating package.json.
 
