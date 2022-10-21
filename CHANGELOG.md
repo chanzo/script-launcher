@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- Fix for broke compatibility of npm versions under v15
+- Fix for broken compatibility of npm versions under v15
 
 ## 1.37.2
 
