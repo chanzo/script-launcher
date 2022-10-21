@@ -2,5 +2,6 @@ node_modules
 custom-launcher.json
 dist
 .vscode
+.idea
 launcher-custom.json
 temp

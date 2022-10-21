@@ -42,40 +42,48 @@ interface IArguments<T> {
   unknowns: string[];
 }
 
-export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() => IArguments<T>) | null = null): IArguments<T> {
+export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | null = null): IArguments<T> {
   const result: IArguments<T> = {
     arguments: {} as T,
     optionals: [],
     unknowns: []
   };
 
-  defaultData = defaultData instanceof Function ? defaultData() : defaultData;
-
   const validArguments = Object.keys(defaultData.arguments);
   let commandFound = false;
 
-  for (const arg of argv) {
-    if (arg === '--') break;
+  for (const rawArgument of argv) {
+    // Everything behind "--" is passed as an argument for the called command
+    if (rawArgument === '--') break;
 
-    const columns = arg.split('=', 2);
-    const name = columns[0].replace(/^--/, '');
+    const splittedRawArgument = rawArgument.split('=', 2);
+    const [rawName, rawValue] = splittedRawArgument;
+    const name = rawName.replace(/^--/, '');
     let value: string | boolean | number = true;
 
-    if (columns.length > 1) {
-      if (name === columns[0]) throw new Error('Unexpected value for command ("' + name + '") use option syntax instead ("--' + name + '=' + columns[1] + '").');
+    // There is at least a value given for the argument
+    if (rawValue !== undefined) {
+      if (name === rawName) throw new Error(`Unexpected value for command ("${name}") use option syntax instead ("--${name}=${rawValue}").`);
 
-      if (!validArguments.includes(name)) throw new Error('The specified option ("--' + name + '") is invalid.');
+      if (!validArguments.includes(name)) {
+        // Unknown argument given
+        throw new Error(`The specified option ("--${name}") is invalid.`);
+      }
 
-      value = Number.parseInt(columns[1], 10);
+      // Try parse it as a number
+      value = Number.parseInt(rawValue, 10);
 
-      if (isNaN(value)) value = columns[1];
+      // Reset it back to the rawValue if it wasn't a number
+      if (isNaN(value)) value = rawValue;
 
-      if (columns[1] === 'true' || columns[1] === 'false') value = columns[1] === 'true';
+      // Check if the rawValue is a boolean
+      if (rawValue === 'true' || rawValue === 'false') value = rawValue === 'true';
 
-      const defaultArgument = defaultData.arguments[name];
+      const defaultValue = defaultData.arguments[name];
 
-      if (defaultArgument !== null && defaultArgument !== undefined && typeof defaultData.arguments[name] !== typeof value) {
-        throw new Error('Unexpected type "' + typeof value + '" for argument "' + name + '". The argument should be of type "' + typeof defaultData[name] + '".');
+      // Check if the value given is the same type as the default one
+      if (defaultValue !== null && defaultValue !== undefined && typeof defaultValue !== typeof value) {
+        throw new Error(`Unexpected type "${typeof value}" for argument "${name}". The argument should be of type "${typeof defaultValue}".`);
       }
     } else {
       if (!commandFound) {
@@ -84,7 +92,7 @@ export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | (() =>
           continue;
         }
 
-        if (!columns[0].startsWith('--')) commandFound = true;
+        if (!rawName.startsWith('--')) commandFound = true;
       } else {
         result.optionals.push(name);
         continue;
