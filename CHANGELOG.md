@@ -1,10 +1,19 @@
 # Change Log
 
+## 1.37.3
+
+### Fixes
+
+- Fix for broken compatibility of npm versions under v15
+
 ## 1.37.2
 
 ### Changes
 
 - Updated dependencies and dev dependencies
+
+### Fixes
+
 - Bug fix for parameter compatibility for node version 16: [issues-151](https://github.com/chanzo/script-launcher/issues/151) thanks to [@julianess](https://github.com/julianess)
 
 ### New Contributor
