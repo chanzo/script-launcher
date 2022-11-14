@@ -1,13 +1,13 @@
 import * as launcher from '../src/launch';
 import { ConsoleInterceptor, IIntercepted } from './console-interceptor';
 
-async function launch(lifecycle: string, directory: string, processArgv: string[]): Promise<void> {
+async function launch(directory: string, processArgv: string[]): Promise<void> {
   const envVariables = {
     npm_config_loglevel: '0',
     npm_config_directory: directory
   };
 
-  return await launcher.main(lifecycle, ['path/to/node.exe', 'path/to/launch.js', ...processArgv], envVariables, true);
+  return await launcher.main(['path/to/node.exe', 'path/to/launch.js', ...processArgv], envVariables, true);
 }
 
 function NewInterceptor(intercept: boolean): ConsoleInterceptor {
@@ -32,7 +32,7 @@ async function test0001(intercept: boolean = true): Promise<{ result: string[]; 
   const interceptor = NewInterceptor(intercept);
 
   try {
-    await launch('start', 'tests/temp/0001', ['build:production']);
+    await launch('tests/temp/0001', ['build:production']);
   } finally {
     interceptor.close();
   }
@@ -48,7 +48,7 @@ async function test0002(intercept: boolean = true): Promise<{ result: string[]; 
   const interceptor = NewInterceptor(intercept);
 
   try {
-    await launch('start', 'tests/temp/0002', ['build-stuff', 'data1', 'data2']);
+    await launch('tests/temp/0002', ['build-stuff', 'data1', 'data2']);
   } finally {
     interceptor.close();
   }
@@ -79,8 +79,8 @@ async function test0017(intercept: boolean = true): Promise<{ result: string[]; 
   const interceptor = NewInterceptor(intercept);
 
   try {
-    await launch('start', 'tests/temp/0017', []);
-    // await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
+    await launch('tests/temp/0017', []);
+    // await promisify(setImmediate)(); // Process all events in event queue, to flush the out streams.
     // await promisify(setTimeout)(10);
     // await promisify(setImmediate)();
   } finally {
@@ -113,7 +113,7 @@ async function test0018(intercept: boolean = true): Promise<{ result: string[]; 
   const interceptor = NewInterceptor(intercept);
 
   try {
-    await launch('start', 'tests/temp/0018', ['menu']);
+    await launch('tests/temp/0018', ['menu']);
     // await promisify(setImmediate)(); // Process all events in event queue, to flush the out streams.
     // await promisify(setTimeout)(10);
     // await promisify(setImmediate)();

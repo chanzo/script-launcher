@@ -1260,7 +1260,6 @@ Loaded config:  launcher-config.json
 
 Date              : 2019-09-16 10:33:20.628
 Version           : 1.37.3
-Lifecycle event   : undefined
 Launch script     : [ 'build:css', 'build:js' ]
 Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
 

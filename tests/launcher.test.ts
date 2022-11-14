@@ -180,7 +180,7 @@ async function main(): Promise<void> {
                     envVariables['npm_config_' + argumentName.toLowerCase()] = argumentValue;
                   }
 
-                  const result = await testLauncher.launch(item.lifecycle, directory, processArgv, envVariables);
+                  const result = await testLauncher.launch(directory, processArgv, envVariables);
 
                   output = result.all;
                 }

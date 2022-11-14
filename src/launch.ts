@@ -612,7 +612,7 @@ function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] =
   return result;
 }
 
-export async function main(lifecycleEvent: string, processArgv: string[], processEnvVariables: IEnvironmentVariables, testMode: boolean = false): Promise<void> {
+export async function main(processArgv: string[], processEnvVariables: IEnvironmentVariables, testMode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
 
@@ -622,6 +622,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], proces
     const configLoad = Config.load(workingDirectory);
     let config = configLoad.config;
 
+    // Ignoring "--" in processArgv as everything behind is treated as an argument anyway
     const processArgs: string[] = processArgv.slice(2).filter(statement => statement !== '--');
     // These arguments are mainly written from default -> config -> user input as process argument
     const launchArgs = extractArgs<IArgs>(
@@ -696,18 +697,10 @@ export async function main(lifecycleEvent: string, processArgv: string[], proces
     // Just an output which config files were used ...
     showLoadedFiles(configLoad.files);
 
-    let launchScript = lifecycleEvent ? [lifecycleEvent] : [];
-
-    if (commands.unknowns.length === 0) {
-      if (lifecycleEvent === 'start') {
-        launchScript = processArgs[0] ? [processArgs[0]] : [];
-      }
-    } else {
-      launchScript = commands.unknowns;
-    }
+    let launchScript = processArgs[0] ? [processArgs[0]] : [];
 
     // Showing some general process information about script, config, arguments, ...
-    showProcessInformation(config, environment, lifecycleEvent, launchScript, shell, launchArgs);
+    showProcessInformation(config, environment, launchScript, shell, launchArgs);
 
     if (Object.entries(config.scripts.scripts).length === 0) {
       Logger.info();
@@ -850,18 +843,9 @@ export async function main(lifecycleEvent: string, processArgv: string[], proces
       } as IScript;
     }
 
-    if (commands.unknowns.length === 0 && lifecycleEvent === 'start') {
-      const script = Scripts.parse(launchScript[0]).command;
-      processArgs[0] = script;
-      console.error('unknowns=0, ProcessArgs ', processArgs);
-    } else {
-      const currentScriptName = Scripts.parse(launchScript[0]).command;
-      if (processArgs[0] !== currentScriptName) {
-        processArgs.unshift(currentScriptName);
-      }
-      // processArgs.shift();
-      // console.error('unknowns', commands.unknowns, 'Args', processArgs);
-    }
+    const script = Scripts.parse(launchScript[0]).command;
+    processArgs[0] = script;
+    // console.error('launchScript[0]=', processArgs[0]);
 
     if (!scriptInfo.name) {
       scriptInfo.name = launchScript[0];
@@ -897,12 +881,11 @@ export async function main(lifecycleEvent: string, processArgv: string[], proces
   }
 }
 
-function showProcessInformation(config: Config, environment: { [p: string]: string }, lifecycleEvent: string, launchScript: string[], shell: string | boolean, launchArgs: IArgs): void {
+function showProcessInformation(config: Config, environment: { [p: string]: string }, launchScript: string[], shell: string | boolean, launchArgs: IArgs): void {
   Logger.debug('Config: ', stringify(config));
 
   Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
   Logger.info('Version           :', version);
-  Logger.info('Lifecycle event   :', lifecycleEvent);
   Logger.info('Launch script     :', launchScript);
   Logger.debug('Process platform  :', process.platform);
   Logger.debug('Script shell      :', shell);

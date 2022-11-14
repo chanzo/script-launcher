@@ -66,7 +66,7 @@ export class TestLauncher {
     }
   }
 
-  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], envVariables: { [key: string]: string }): Promise<IIntercepted> {
+  public async launch(directory: string, processArgv: string[], envVariables: { [key: string]: string }): Promise<IIntercepted> {
     const testDirectory = path.join(this.tempPath, directory).replace(process.cwd(), '.');
     const interceptor = new ConsoleInterceptor(this.excludes);
 
@@ -77,7 +77,7 @@ export class TestLauncher {
     };
 
     try {
-      await launcher.main(lifecycleEvent, processArgv, envVariables, true);
+      await launcher.main(processArgv, envVariables, true);
 
       // await promisify(setImmediate)(); // Process all events in event queue, to flush the out streams.
       // await promisify(setTimeout)(10);
