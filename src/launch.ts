@@ -1,23 +1,30 @@
-import { Config, ILaunchSetting, IMenu, ISettings } from './config-loader';
+import { Config, IConfig, ILaunchSetting, IMenu, ISettings } from './config-loader';
 import { Logger } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { confirmPrompt, formatTime, parseArgs, showArgsHelp, stringify, Colors } from './common';
+import { confirmPrompt, extractArgs, extractCommands, formatTime, showArgsHelp, stringify, Colors } from './common';
 import { IScript, IScripts, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
 import * as os from 'os';
 import { execSync } from 'child_process';
 
-interface IArgs {
+interface IEnvironmentVariables {
+  [key: string]: string;
+}
+
+interface IInternalCommands {
+  version: boolean;
+  help: boolean;
+  migrate: boolean;
   init: boolean;
   list: boolean;
-  migrate: boolean;
+}
+
+interface IArgs {
   confirm: boolean;
-  help: boolean;
-  version: boolean;
   logLevel: number;
   dry: boolean;
   config: string;
@@ -496,7 +503,7 @@ function updatePackageJson(directory: string): void {
 }
 
 function showHelp(): void {
-  showArgsHelp<IArgs>('launch', {
+  showArgsHelp<IInternalCommands & IArgs>('launch', {
     init: ['', 'Commands:', '  ' + Colors.Cyan + 'init         ' + Colors.Normal + '[template] Create starter config files.'],
     list: '  ' + Colors.Cyan + 'list         ' + Colors.Normal + '[type] List available launcher scripts.',
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
@@ -521,7 +528,7 @@ function disableAnsiColors(): void {
   }
 }
 
-function getEnviromentValues(): { [name: string]: string } {
+function getEnvironmentValues(): { [name: string]: string } {
   const environment = { ...process.env };
 
   for (const [key, value] of Object.entries(Colors)) {
@@ -605,57 +612,62 @@ function getMenuScripts(menu: IMenu | string[] | IScriptTask, result: string[] =
   return result;
 }
 
-export async function main(lifecycleEvent: string, processArgv: string[], npmConfigArgv: string[], testmode: boolean = false): Promise<void> {
+export async function main(lifecycleEvent: string, processArgv: string[], processEnvVariables: IEnvironmentVariables, testMode: boolean = false): Promise<void> {
   let exitCode = 1;
   let startTime = process.hrtime();
 
   try {
-    const commandArgs: string[] = npmConfigArgv || [];
-    const argsString = processArgv.slice(2, processArgv.length - commandArgs.length);
-    const launchArgs = parseArgs<IArgs>(argsString, {
-      arguments: {
-        logLevel: undefined,
-        dry: undefined,
-        init: false,
-        list: false,
-        migrate: false,
+    // TODO: This is just a workaround for early access to the working directory
+    const workingDirectory = processEnvVariables.npm_config_directory || process.cwd();
+    const configLoad = Config.load(workingDirectory);
+    let config = configLoad.config;
+
+    const processArgs: string[] = processArgv.slice(2).filter(statement => statement !== '--');
+    // These arguments are mainly written from default -> config -> user input as process argument
+    const launchArgs = extractArgs<IArgs>(
+      {
+        logLevel: config.options.logLevel,
+        dry: config.options.dry,
         confirm: undefined,
-        help: false,
-        version: false,
         config: null,
         script: null,
         ansi: true,
-        directory: process.cwd(),
-        menuTimeout: undefined,
-        params: undefined,
+        directory: workingDirectory,
+        menuTimeout: config.options.menu.timeout,
+        params: Number.MAX_SAFE_INTEGER,
         concurrent: false,
-        limit: undefined
+        limit: config.options.limit || os.cpus().length || 1
       },
-      optionals: [],
-      unknowns: []
-    });
+      processEnvVariables
+    );
 
-    launchArgs.arguments.directory = path.join(launchArgs.arguments.directory); // remove starting ./
+    launchArgs.directory = path.join(launchArgs.directory); // remove starting ./
 
-    const configLoad = Config.load(launchArgs.arguments.directory);
-    let config = configLoad.config;
+    const commands = extractCommands<IInternalCommands>(
+      {
+        internalCommands: {
+          init: false,
+          list: false,
+          migrate: false,
+          help: false,
+          version: false
+        },
+        optionals: [],
+        unknowns: []
+      },
+      processArgs
+    );
+
     let interactive = false;
 
-    if (launchArgs.arguments.logLevel === undefined) launchArgs.arguments.logLevel = config.options.logLevel;
-    if (launchArgs.arguments.dry === undefined) launchArgs.arguments.dry = config.options.dry;
-    if (launchArgs.arguments.menuTimeout === undefined) launchArgs.arguments.menuTimeout = config.options.menu.timeout;
-    if (argsString.includes('--params') && launchArgs.arguments.params === undefined) launchArgs.arguments.params = 1;
-    if (launchArgs.arguments.params === undefined) launchArgs.arguments.params = Number.MAX_SAFE_INTEGER;
+    if (launchArgs.dry && launchArgs.logLevel < 1) {
+      launchArgs.logLevel = 1;
+    }
 
-    if (launchArgs.arguments.limit === undefined) launchArgs.arguments.limit = config.options.limit;
-    if (launchArgs.arguments.limit === 0) launchArgs.arguments.limit = os.cpus().length;
-    if (launchArgs.arguments.limit < 1) launchArgs.arguments.limit = 1;
+    Logger.level = launchArgs.logLevel;
 
-    if (launchArgs.arguments.dry && launchArgs.arguments.logLevel < 1) launchArgs.arguments.logLevel = 1;
-    Logger.level = launchArgs.arguments.logLevel;
-
-    if (launchArgs.arguments.config) {
-      const fileName = path.join(launchArgs.arguments.directory, launchArgs.arguments.config);
+    if (launchArgs.config) {
+      const fileName = path.join(launchArgs.directory, launchArgs.config);
 
       config = config.merge(fileName);
 
@@ -664,46 +676,38 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
-    if (!launchArgs.arguments.ansi) disableAnsiColors();
+    if (!launchArgs.ansi) disableAnsiColors();
 
-    if (process.platform === 'win32') (Colors as any).Dim = '\x1b[90m';
+    if (process.platform === 'win32') {
+      (Colors as any).Dim = '\x1b[90m';
+    }
 
     const settings = getLaunchSetting(config.settings);
     const environment = {
-      ...getEnviromentValues(),
+      ...getEnvironmentValues(),
       ...settings.values
     };
 
-    if (testmode) environment.launch_time_start = formatTime(new Date('2019-09-16T12:33:20.628').getTime(), 0);
+    // Set a specific time so the test execution can evaluate this in the output and won't break
+    if (testMode) {
+      environment.launch_time_start = formatTime(new Date('2019-09-16T12:33:20.628').getTime(), 0);
+    }
 
+    // Just an output which config files were used ...
     showLoadedFiles(configLoad.files);
 
     let launchScript = lifecycleEvent ? [lifecycleEvent] : [];
-    let scriptId = '';
 
-    if (launchArgs.unknowns.length === 0) {
+    if (commands.unknowns.length === 0) {
       if (lifecycleEvent === 'start') {
-        launchScript = commandArgs[0] ? [commandArgs[0]] : [];
-        scriptId = commandArgs.shift();
+        launchScript = processArgs[0] ? [processArgs[0]] : [];
       }
     } else {
-      launchScript = launchArgs.unknowns;
+      launchScript = commands.unknowns;
     }
 
-    Logger.debug('Config: ', stringify(config));
-
-    Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
-    Logger.info('Version           :', version);
-    Logger.info('Lifecycle event   :', lifecycleEvent);
-    Logger.info('Launch script     :', launchScript);
-    Logger.debug('Process platform  :', process.platform);
-    Logger.debug('Script shell      :', shell);
-
-    if (Logger.level > 2) {
-      Logger.info('Launch arguments  :', launchArgs);
-    } else {
-      Logger.info('Launch arguments  :', argsString);
-    }
+    // Showing some general process information about script, config, arguments, ...
+    showProcessInformation(config, environment, lifecycleEvent, launchScript, shell, launchArgs);
 
     if (Object.entries(config.scripts.scripts).length === 0) {
       Logger.info();
@@ -711,40 +715,48 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       Logger.info();
     }
 
-    if (launchArgs.arguments.version) {
+    if (commands.internalCommands.version) {
       console.log(version);
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.arguments.help) {
+    if (commands.internalCommands.help) {
       showHelp();
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.arguments.init) {
-      const template = launchArgs.optionals[0];
+    if (commands.internalCommands.migrate) {
+      await migratePackageJson(launchArgs.directory, launchArgs.params, launchArgs.confirm, testMode);
+      Logger.log();
+      exitCode = 0;
+
+      return;
+    }
+
+    if (commands.internalCommands.init) {
+      const template = commands.optionals[0];
 
       if (!template) {
         showTemplates();
         return;
       }
 
-      copyTemplateFiles(template, launchArgs.arguments.directory);
+      copyTemplateFiles(template, launchArgs.directory);
 
       console.log();
 
-      updatePackageJson(launchArgs.arguments.directory);
+      updatePackageJson(launchArgs.directory);
       Logger.log();
       exitCode = 0;
       return;
     }
 
-    if (launchArgs.arguments.list) {
-      if (launchArgs.optionals[0] === 'script') {
+    if (commands.internalCommands.list) {
+      if (commands.optionals[0] === 'script') {
         const choices: string[] = Object.keys(configLoad.config.scripts.scripts).sort();
         const unique = [...new Set(choices)];
 
@@ -755,7 +767,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         return;
       }
 
-      if (launchArgs.optionals[0] === 'menu') {
+      if (commands.optionals[0] === 'menu') {
         const choices = getMenuScripts(configLoad.config.menu).sort();
         const unique = [...new Set(choices)];
 
@@ -766,7 +778,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         return;
       }
 
-      if (launchArgs.optionals.length === 0 || launchArgs.optionals[0] === 'complete') {
+      if (commands.optionals.length === 0 || commands.optionals[0] === 'complete') {
         const scripts = Object.keys(configLoad.config.scripts.scripts).filter(item => !item.includes('$'));
         const menu = getMenuScripts(configLoad.config.menu).filter(item => !scripts.includes(item));
         const choices: string[] = [...menu, ...scripts].sort();
@@ -779,24 +791,12 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         return;
       }
 
-      console.error('List option not supported: ' + launchArgs.optionals);
+      console.error('List option not supported: ' + commands.optionals);
       console.error();
       console.error('Use: script, menu or complete');
 
       throw new Error();
     }
-
-    if (launchArgs.arguments.migrate) {
-      await migratePackageJson(launchArgs.arguments.directory, launchArgs.arguments.params, launchArgs.arguments.confirm, testmode);
-      Logger.log();
-      exitCode = 0;
-
-      return;
-    }
-
-    commandArgs.unshift(...getRemaining(argsString));
-
-    if (scriptId) commandArgs.unshift(scriptId);
 
     const scripts = config.scripts.find(...launchScript);
     const defaultScript = config.scripts.find('start');
@@ -805,7 +805,7 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
       if (launchScript[0] === 'menu') {
         interactive = true;
         launchScript = [];
-        commandArgs.shift();
+        processArgs.shift();
         defaultScript.length = 0;
       }
 
@@ -822,14 +822,14 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
         environment,
         settings,
         config,
-        commandArgs,
+        processArgs,
         interactive,
-        launchArgs.arguments.menuTimeout,
+        launchArgs.menuTimeout,
         config.options.menu.confirm,
-        launchArgs.arguments.confirm,
-        launchArgs.arguments.limit,
-        launchArgs.arguments.dry,
-        testmode
+        launchArgs.confirm,
+        launchArgs.limit,
+        launchArgs.dry,
+        testMode
       );
 
       startTime = result.startTime;
@@ -840,27 +840,38 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     const scriptInfo = Scripts.select(scripts);
 
-    if (!scriptInfo) throw new Error('Cannot start launch script ' + JSON.stringify(launchScript, null, 0) + ': No such script available.');
+    if (!scriptInfo) {
+      throw new Error(`Cannot start launch script ${JSON.stringify(launchScript, null, 0)}: No such script available.`);
+    }
 
-    if (scriptInfo.multiple && launchArgs.arguments.concurrent) {
+    if (scriptInfo.multiple && launchArgs.concurrent) {
       scriptInfo.script = {
         concurrent: scriptInfo.script
       } as IScript;
     }
 
-    if (launchArgs.unknowns.length === 0 && lifecycleEvent === 'start') {
-      commandArgs[0] = Scripts.parse(launchScript[0]).command;
+    if (commands.unknowns.length === 0 && lifecycleEvent === 'start') {
+      const script = Scripts.parse(launchScript[0]).command;
+      processArgs[0] = script;
+      console.error('unknowns=0, ProcessArgs ', processArgs);
     } else {
-      commandArgs.unshift(Scripts.parse(launchScript[0]).command);
+      const currentScriptName = Scripts.parse(launchScript[0]).command;
+      if (processArgs[0] !== currentScriptName) {
+        processArgs.unshift(currentScriptName);
+      }
+      // processArgs.shift();
+      // console.error('unknowns', commands.unknowns, 'Args', processArgs);
     }
 
-    if (!scriptInfo.name) scriptInfo.name = launchScript[0];
+    if (!scriptInfo.name) {
+      scriptInfo.name = launchScript[0];
+    }
 
-    scriptInfo.arguments = commandArgs;
+    scriptInfo.arguments = processArgs;
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.arguments.confirm, launchArgs.arguments.limit, launchArgs.arguments.dry, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.confirm, launchArgs.limit, launchArgs.dry, testMode);
 
     startTime = executor.startTime;
 
@@ -878,10 +889,28 @@ export async function main(lifecycleEvent: string, processArgv: string[], npmCon
 
     Logger.info('ExitCode:', exitCode);
 
-    if (testmode) timespan = [0, 237 * 1000 * 1000];
+    if (testMode) timespan = [0, 237 * 1000 * 1000];
 
     Logger.info('Elapsed: ' + prettyTime(timespan, 'ms'));
 
-    if (!testmode) process.exit(exitCode);
+    if (!testMode) process.exit(exitCode);
+  }
+}
+
+function showProcessInformation(config: Config, environment: { [p: string]: string }, lifecycleEvent: string, launchScript: string[], shell: string | boolean, launchArgs: IArgs): void {
+  Logger.debug('Config: ', stringify(config));
+
+  Logger.info(Colors.Bold + 'Date              :', environment.launch_time_start + Colors.Normal);
+  Logger.info('Version           :', version);
+  Logger.info('Lifecycle event   :', lifecycleEvent);
+  Logger.info('Launch script     :', launchScript);
+  Logger.debug('Process platform  :', process.platform);
+  Logger.debug('Script shell      :', shell);
+
+  if (Logger.level > 2) {
+    Logger.info('Launch arguments  :', launchArgs);
+  } else {
+    // Cannot show a real list of arguments anymore as the arguments started with -- are no longer preserved in the processArgv array
+    Logger.info('Launch arguments  :', []);
   }
 }

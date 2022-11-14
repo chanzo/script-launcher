@@ -16,7 +16,7 @@
         {
           "id": "0008-00",
           "lifecycle": "start",
-          "npm-args": "",
+          "processArgv": "",
           "result": [
             "Default script"
           ]
@@ -24,7 +24,7 @@
         {
           "id": "0008-01",
           "lifecycle": "start",
-          "npm-args": "start",
+          "processArgv": "start",
           "result": [
             "Default script"
           ]
@@ -51,7 +51,7 @@
         {
           "id": "0009-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
+          "processArgv": "build-stuff",
           "result": [
             "Command 1",
             "Command 2"
@@ -62,7 +62,7 @@
     {
       "id": "0010",
       "name": "Log output",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -80,8 +80,8 @@
         {
           "id": "0010-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--logLevel=1",
+          "processArgv": "build-stuff",
+          "arguments": "--logLevel=1",
           "result": [
             "Loaded config:  launcher-config.json",
             "",
@@ -89,7 +89,7 @@
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=1' ]",
+            "Launch arguments  : []",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -106,8 +106,8 @@
         {
           "id": "0010-01",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--logLevel=2",
+          "processArgv": "build-stuff",
+          "arguments": "--logLevel=2",
           "result": [
             "Loaded config:  launcher-config.json",
             "",
@@ -115,7 +115,7 @@
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=2' ]",
+            "Launch arguments  : []",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -175,7 +175,7 @@
             "Version           : $version",
             "Lifecycle event   : start",
             "Launch script     : [ 'build-stuff' ]",
-            "Launch arguments  : [ '--directory=./tests/temp/$id', '--logLevel=2' ]",
+            "Launch arguments  : []",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -232,8 +232,11 @@
         {
           "id": "0010-02",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "--logLevel=3",
+          "processArgv": "build-stuff",
+          "arguments": [
+            "--logLevel=3",
+            "--limit=32"
+          ],
           "result": [
             "Loaded config:  launcher-config.json",
             "",
@@ -285,26 +288,17 @@
             "Process platform  : $platform",
             "Script shell      : true",
             "Launch arguments  : {",
-            "  arguments: {",
-            "    logLevel: 3,",
-            "    dry: false,",
-            "    init: false,",
-            "    list: false,",
-            "    migrate: false,",
-            "    confirm: undefined,",
-            "    help: false,",
-            "    version: false,",
-            "    config: null,",
-            "    script: null,",
-            "    ansi: true,",
-            "    directory: 'tests/temp/$id',",
-            "    menuTimeout: 0,",
-            "    params: 9007199254740991,",
-            "    concurrent: false,",
-            "    limit: 32",
-            "  },",
-            "  optionals: [],",
-            "  unknowns: []",
+            "  logLevel: 3,",
+            "  dry: false,",
+            "  confirm: undefined,",
+            "  config: null,",
+            "  script: null,",
+            "  ansi: true,",
+            "  directory: 'tests/temp/$id',",
+            "  menuTimeout: 0,",
+            "  params: 9007199254740991,",
+            "  concurrent: false,",
+            "  limit: 32",
             "}",
             "",
             "Script id       : build-stuff",
@@ -425,24 +419,17 @@
             "Launch script     : [ 'build-stuff' ]",
             "Process platform  : $platform",
             "Script shell      : true",
-            "Launch arguments  : { arguments:",
-            "   { logLevel: 3,",
-            "     init: false,",
-            "     list: false,",
-            "     migrate: false,",
-            "     confirm: undefined,",
-            "     help: false,",
-            "     version: false,",
-            "     config: null,",
-            "     script: null,",
-            "     ansi: true,",
-            "     directory: 'tests\\\\temp\\\\$id',",
-            "     menuTimeout: 0,",
-            "     params: 9007199254740991,",
-            "     concurrent: false,",
-            "     limit: 4 },",
-            "  optionals: [],",
-            "  unknowns: [] }",
+            "Launch arguments  : {",
+            "   logLevel: 3,",
+            "   confirm: undefined,",
+            "   config: null,",
+            "   script: null,",
+            "   ansi: true,",
+            "   directory: 'tests\\\\temp\\\\$id',",
+            "   menuTimeout: 0,",
+            "   params: 9007199254740991,",
+            "   concurrent: false,",
+            "   limit: 4 },",
             "",
             "Script id       : build-stuff",
             "Circular        : false",
@@ -545,7 +532,7 @@
         {
           "id": "0011-00",
           "lifecycle": "start",
-          "npm-args": "assignments",
+          "processArgv": "assignments",
           "result": [
             "value1: A",
             "value2: B",
@@ -560,7 +547,7 @@
         {
           "id": "0011-01",
           "lifecycle": "start",
-          "npm-args": "assignments:B",
+          "processArgv": "assignments:B",
           "result": [
             "value1: B",
             "value2: B",
@@ -590,7 +577,7 @@
         {
           "id": "0012-00",
           "lifecycle": "start",
-          "npm-args": "assignments",
+          "processArgv": "assignments",
           "result": [
             "value1:"
           ]
@@ -598,7 +585,7 @@
         {
           "id": "0012-01",
           "lifecycle": "start",
-          "npm-args": "assignments:B",
+          "processArgv": "assignments:B",
           "result": [
             "value1: B"
           ]
@@ -621,7 +608,7 @@
         {
           "id": "0013-00",
           "lifecycle": "start",
-          "npm-args": "assignments",
+          "processArgv": "assignments",
           "result": [
             "Cannot start launch script [\"assignments\"]: No such script available."
           ]
@@ -629,7 +616,7 @@
         {
           "id": "0013-01",
           "lifecycle": "start",
-          "npm-args": "assignments:B",
+          "processArgv": "assignments:B",
           "result": [
             "value1: B"
           ]
@@ -637,7 +624,7 @@
         {
           "id": "0013-02",
           "lifecycle": "start",
-          "npm-args": "assignments:*",
+          "processArgv": "assignments:*",
           "result": [
             "value1: *"
           ]
@@ -645,7 +632,7 @@
         {
           "id": "0013-03",
           "lifecycle": "start",
-          "npm-args": "assignments:'*'",
+          "processArgv": "assignments:'*'",
           "result": [
             "value1: *"
           ]
@@ -653,7 +640,7 @@
         {
           "id": "0013-04",
           "lifecycle": "start",
-          "npm-args": "assignments:\"*\"",
+          "processArgv": "assignments:\"*\"",
           "result": [
             "value1: *"
           ]
@@ -661,7 +648,7 @@
         {
           "id": "0013-05",
           "lifecycle": "start",
-          "npm-args": "assignments:'\"*\"'",
+          "processArgv": "assignments:'\"*\"'",
           "result": [
             "value1: \"*\""
           ]
@@ -669,7 +656,7 @@
         {
           "id": "0013-06",
           "lifecycle": "start",
-          "npm-args": "assignments:\"'*'\"",
+          "processArgv": "assignments:\"'*'\"",
           "result": [
             "value1: CHANGELOG.md LICENSE README.md debug dist docs jest.config.js launcher-config.json launcher-menu.json node_modules package-lock.json package.json src tests tsconfig.json tslint.json usage-animation.gif"
           ],
@@ -698,7 +685,7 @@
         {
           "id": "0014-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
+          "processArgv": "build-stuff",
           "result": [
             "Circular"
           ]
@@ -719,7 +706,7 @@
         {
           "id": "0015-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -747,7 +734,7 @@
         {
           "id": "0016-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -762,7 +749,7 @@
     {
       "id": "0017",
       "name": "Auto arguments",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -776,7 +763,7 @@
         {
           "id": "0017-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -803,7 +790,7 @@
         {
           "id": "0018-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -829,7 +816,7 @@
         {
           "id": "0019-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -867,7 +854,7 @@
         {
           "id": "0020-00",
           "lifecycle": "start",
-          "npm-args": "nonull-false",
+          "processArgv": "nonull-false",
           "result": [
             "No resolve: [ * ]",
             "No resolve: [  *  ]",
@@ -926,7 +913,7 @@
         {
           "id": "0021-00",
           "lifecycle": "start",
-          "npm-args": "nonull-true",
+          "processArgv": "nonull-true",
           "result": [
             "No resolve: [ * ]",
             "No resolve: [  *  ]",
@@ -979,7 +966,7 @@
         {
           "id": "0022-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build-stuff"
           ],
           "result": [
@@ -1013,7 +1000,7 @@
         {
           "id": "0023-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build-stuff",
             "app",
             "UVA",
@@ -1049,7 +1036,7 @@
         {
           "id": "0024-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build:*",
             "index"
           ],
@@ -1062,7 +1049,7 @@
         {
           "id": "0024-01",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build:all",
             "index"
           ],
@@ -1138,7 +1125,7 @@
         {
           "id": "0025-00",
           "lifecycle": "start",
-          "npm-args": "concurrent",
+          "processArgv": "concurrent",
           "result": [
             "S0-0",
             "S0-1",
@@ -1166,8 +1153,8 @@
         {
           "id": "0025-01",
           "lifecycle": "start",
-          "npm-args": "concurrent",
-          "cmd-args": "--limit=4",
+          "processArgv": "concurrent",
+          "arguments": "--limit=4",
           "result": [
             "S1-0",
             "C0-2",
@@ -1197,7 +1184,7 @@
     {
       "id": "0026",
       "name": "Interactive menu",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -1232,7 +1219,7 @@
     {
       "id": "0027",
       "name": "Interactive menu",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -1272,7 +1259,7 @@
     {
       "id": "0028",
       "name": "Interactive menu",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -1324,7 +1311,7 @@
         {
           "id": "0028-01",
           "lifecycle": "start",
-          "npm-args": "menu",
+          "processArgv": "menu",
           "result": [
             "? Select organization › - Use arrow-keys. Return to submit.",
             "    uva",
@@ -1343,7 +1330,7 @@
     {
       "id": "0029",
       "name": "Interactive menu",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -1396,7 +1383,7 @@
         {
           "id": "0029-01",
           "lifecycle": "start",
-          "npm-args": "menu",
+          "processArgv": "menu",
           "result": [
             "? Select organization › - Use arrow-keys. Return to submit.",
             "❯   uva",
@@ -1431,7 +1418,7 @@
         {
           "id": "0030-00",
           "lifecycle": "start",
-          "npm-args": "menu",
+          "processArgv": "menu",
           "result": [
             "Menu script"
           ]

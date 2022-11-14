@@ -3,4 +3,4 @@
 
 const launcher = require('..');
 
-launcher.main(process.env.npm_lifecycle_event, process.argv, null);
+launcher.main(process.env.npm_lifecycle_event, process.argv, process.env);

@@ -1,5 +1,5 @@
 interface IMatches {
-  seperator?: string;
+  separator?: string;
   value: string;
 }
 
@@ -46,20 +46,20 @@ export class Variables {
     return text;
   }
 
-  private static split(value: string, seperators: string[]): IMatches[] {
+  private static split(value: string, separators: string[]): IMatches[] {
     const result: IMatches[] = [];
     let origin = 0;
     let offset = 0;
 
     while (origin + offset < value.length) {
-      for (const seperator of seperators) {
-        if (value.startsWith(seperator, origin + offset)) {
+      for (const separator of separators) {
+        if (value.startsWith(separator, origin + offset)) {
           result.push({
-            seperator: seperator,
+            separator: separator,
             value: value.substr(origin, offset)
           });
 
-          origin += offset + seperator.length;
+          origin += offset + separator.length;
           offset = 0;
         }
       }
@@ -99,11 +99,11 @@ export class Variables {
 
     if (operator.startsWith('%%')) {
       // ${var%%pattern}	Remove from longest rear (end) pattern
-      const seperators = operator
+      const separators = operator
         .substr(2)
         .split('*')
         .filter(item => item);
-      const matches = Variables.split(value, seperators);
+      const matches = Variables.split(value, separators);
 
       return matches.length > 0 ? matches[0].value : value;
     }
@@ -117,17 +117,17 @@ export class Variables {
     if (operator.startsWith('##')) {
       // ${var%%pattern}	Remove from longest rear (end) pattern
 
-      const seperators = operator
+      const separators = operator
         .substr(2)
         .split('*')
         .filter(item => item);
-      const matches = Variables.split(value, seperators);
+      const matches = Variables.split(value, separators);
 
       return matches.length > 0 ? matches[matches.length - 1].value : value;
     }
 
     if (operator.startsWith('#')) {
-      // ${var#pattern}	Remove from shortest front pattern
+      // ${var#pattern}	Remove from the shortest front pattern
 
       throw new Error('Not implemented');
     }

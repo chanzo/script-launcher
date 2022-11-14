@@ -7,7 +7,7 @@
         {
           "id": "0031-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff"
+          "processArgv": "build-stuff"
         }
       ]
     },
@@ -18,7 +18,7 @@
         {
           "id": "0032-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff"
+          "processArgv": "build-stuff"
         }
       ]
     },
@@ -29,17 +29,17 @@
         {
           "id": "0033-00",
           "lifecycle": "start",
-          "npm-args": "serve"
+          "processArgv": "serve"
         },
         {
           "id": "0033-01",
           "lifecycle": "start",
-          "npm-args": "serve::tst"
+          "processArgv": "serve::tst"
         },
         {
           "id": "0033-02",
           "lifecycle": "start",
-          "npm-args": "serve:hva:prd"
+          "processArgv": "serve:hva:prd"
         }
       ]
     },
@@ -50,19 +50,19 @@
         {
           "id": "0034-00",
           "lifecycle": "start",
-          "npm-args": "deploy:tst"
+          "processArgv": "deploy:tst"
         }
       ]
     },
     {
       "id": "0035",
       "name": "Environment values and special commands",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0035-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
+          "processArgv": "build-stuff",
           "result:win32": [
             "grep example",
             "Version: 1.37.0",
@@ -87,12 +87,12 @@
     {
       "id": "0036",
       "name": "Environment and command line argument values",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0036-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build-stuff",
             "arg1",
             "arg2",
@@ -102,7 +102,7 @@
         {
           "id": "0036-01",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "echo",
             "arg1",
             "arg2",
@@ -114,12 +114,12 @@
     {
       "id": "0037",
       "name": "Environment String Manipulation and Expanding Variables",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0037-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build-stuff",
             "arg1",
             "ARG2",
@@ -135,7 +135,7 @@
         {
           "id": "0038-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff"
+          "processArgv": "build-stuff"
         }
       ]
     },
@@ -146,7 +146,7 @@
         {
           "id": "0039-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "build-stuff:param1:param2",
             "arg1",
             "arg2",
@@ -162,7 +162,7 @@
         {
           "id": "0040-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "escaping",
             "arg1"
           ],
@@ -183,7 +183,7 @@
         {
           "id": "0041-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff"
+          "processArgv": "build-stuff"
         }
       ]
     },
@@ -195,7 +195,7 @@
         {
           "id": "0042-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff"
+          "processArgv": "build-stuff"
         }
       ]
     },
@@ -213,7 +213,7 @@
         {
           "id": "0043-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
+          "processArgv": "build-stuff",
           "result:win32": [
             "'node_modules_test' is not recognized as an internal or external command,\r\noperable program or batch file.",
             "npm install",
@@ -226,25 +226,29 @@
     {
       "id": "0044",
       "name": "Confirmation prompt",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0044-00",
           "lifecycle": "start",
-          "npm-args": "build-stuff",
-          "cmd-args": "confirm"
+          "processArgv": [
+            "confirm",
+            "build-stuff"
+          ]
         },
         {
           "id": "0044-01",
-          "cmd-args": [
+          "processArgv": [
             "build-stuff",
             "confirm"
           ]
         },
         {
           "id": "0044-02",
-          "cmd-args": [
-            "build-stuff",
+          "processArgv": [
+            "build-stuff"
+          ],
+          "arguments": [
             "--confirm=false"
           ]
         }
@@ -257,7 +261,7 @@
         {
           "id": "0045-00",
           "lifecycle": "start",
-          "npm-args": "ping"
+          "processArgv": "ping"
         }
       ]
     },
@@ -268,14 +272,14 @@
         {
           "id": "0046-00",
           "lifecycle": "start",
-          "npm-args": "ping"
+          "processArgv": "ping"
         }
       ]
     },
     {
       "id": "0047",
       "name": "Interactive menu",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-settings": {
           "options": {
@@ -290,7 +294,7 @@
         {
           "id": "0047-00",
           "lifecycle": "start",
-          "npm-args": [
+          "processArgv": [
             "menu",
             "uva:acceptance"
           ]
@@ -298,7 +302,7 @@
         {
           "id": "0047-01",
           "lifecycle": "start",
-          "npm-args": "menu"
+          "processArgv": "menu"
         },
         {
           "id": "0047-02",
@@ -309,7 +313,7 @@
     {
       "id": "0048",
       "name": "Menu save default script",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0048-00",
@@ -324,17 +328,17 @@
         {
           "id": "0049-00",
           "lifecycle": "start",
-          "npm-args": "build:dev"
+          "processArgv": "build:dev"
         },
         {
           "id": "0049-01",
           "lifecycle": "start",
-          "npm-args": "build:acc"
+          "processArgv": "build:acc"
         },
         {
           "id": "0049-02",
           "lifecycle": "start",
-          "npm-args": "build:production"
+          "processArgv": "build:production"
         }
       ]
     },
@@ -345,17 +349,19 @@
         {
           "id": "0050-00",
           "lifecycle": "start",
-          "npm-args": "build:*"
+          "processArgv": "build:*"
         },
         {
           "id": "0050-01",
           "lifecycle": "start",
-          "npm-args": "build:all"
+          "processArgv": "build:all"
         },
         {
           "id": "0050-02",
-          "cmd-args": [
-            "--concurrent",
+          "arguments": [
+            "--concurrent"
+          ],
+          "processArgv": [
             "build:*"
           ]
         }
@@ -364,11 +370,11 @@
     {
       "id": "0051",
       "name": "Launcher arguments",
-      "sanatize": true,
+      "sanitize": true,
       "tests": [
         {
           "id": "0051-00",
-          "cmd-args": [
+          "processArgv": [
             "--help"
           ]
         }
@@ -377,7 +383,7 @@
     {
       "id": "0052",
       "name": "Launcher Options: dry",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -389,10 +395,12 @@
       "tests": [
         {
           "id": "0052-00",
-          "cmd-args": [
-            "build:css",
-            "build:js",
+          "arguments": [
             "--dry"
+          ],
+          "processArgv": [
+            "build:css",
+            "build:js"
           ]
         }
       ]
@@ -400,20 +408,20 @@
     {
       "id": "0053",
       "name": "Launcher Command: init",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "package": {}
       },
       "tests": [
         {
           "id": "0053-00",
-          "cmd-args": [
+          "processArgv": [
             "init"
           ]
         },
         {
           "id": "0053-01",
-          "cmd-args": [
+          "processArgv": [
             "init",
             "basic"
           ]
@@ -423,7 +431,7 @@
     {
       "id": "0054",
       "name": "Launcher Command: migrate",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "package": {
           "scripts": {
@@ -468,8 +476,10 @@
       "tests": [
         {
           "id": "0054-00",
-          "cmd-args": [
-            "migrate",
+          "processArgv": [
+            "migrate"
+          ],
+          "arguments": [
             "--params=1"
           ]
         }
@@ -478,7 +488,7 @@
     {
       "id": "0055",
       "name": "Launcher Command: script",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "launcher-config": {
           "scripts": {
@@ -496,16 +506,18 @@
       "tests": [
         {
           "id": "0055-00",
-          "cmd-args": [
+          "processArgv": [
             "build:css",
             "build:js"
           ]
         },
         {
           "id": "0055-01",
-          "cmd-args": [
+          "processArgv": [
             "build:css",
-            "build:js",
+            "build:js"
+          ],
+          "arguments": [
             "--concurrent"
           ]
         }
@@ -546,21 +558,21 @@
       "tests": [
         {
           "id": "0056-00",
-          "cmd-args": [
+          "processArgv": [
             "list",
             "script"
           ]
         },
         {
           "id": "0056-01",
-          "cmd-args": [
+          "processArgv": [
             "list",
             "menu"
           ]
         },
         {
           "id": "0056-02",
-          "cmd-args": [
+          "processArgv": [
             "list",
             "complete"
           ]

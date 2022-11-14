@@ -732,8 +732,8 @@ ${npm_package_version} : 1.37.3
 
 ```text
 grep example
-Version: 1.37.3
-Platform: linux
+Version: $version
+Platform: $platform
 Time: 2019-09-16 10:33:20.628
 --------------------------------
 Color: Blue
@@ -1226,7 +1226,7 @@ Build script: hva
 
 Use the **help** for a list of available options.
 
-**Run**: `npx launch --help`
+**Run**: `npx launch help`
 
 ```bash
 Usage: launch [command] [options...]

@@ -10,9 +10,9 @@ export interface ITests {
   id: string;
   name: string;
   error?: string;
-  'cmd-args': string[];
-  'npm-args': string[];
-  'cat-args': string[];
+  arguments: string[];
+  processArgv: string[];
+  files: string[];
   lifecycle?: string;
   result?: string[];
   restore: boolean;
@@ -22,20 +22,19 @@ export interface ITests {
 interface ITestsConfigFile {
   name: string;
   error?: string;
-  'cmd-args': string[] | string;
-  'npm-args': string[] | string;
-  'cat-args': string[] | string;
+  arguments: string[] | string;
+  processArgv: string[] | string;
+  files: string[] | string;
   lifecycle?: string;
   restore?: boolean;
   result: string[];
-  // [result: string]: string[] | string;
 }
 
 export type TransformCallback = (name: string, config: IConfig) => IConfig;
 
 export interface ITestConfig {
   id: string;
-  sanatize: boolean;
+  sanitize: boolean;
   name: string;
   type: SectionType;
   transformer?: string;
@@ -50,7 +49,7 @@ export class TestLauncher {
     return Object.entries(this._configs);
   }
 
-  public constructor(private readonly tempPath: string, private readonly defaultArgs: string[], private readonly excludes: string[] = []) {
+  public constructor(private readonly tempPath: string, private readonly excludes: string[] = []) {
     this._configs = {};
 
     fs.mkdirSync(tempPath, {
@@ -67,14 +66,20 @@ export class TestLauncher {
     }
   }
 
-  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], npmConfigArgv: string[] = []): Promise<IIntercepted> {
+  public async launch(lifecycleEvent: string, directory: string, processArgv: string[], envVariables: { [key: string]: string }): Promise<IIntercepted> {
     const testDirectory = path.join(this.tempPath, directory).replace(process.cwd(), '.');
     const interceptor = new ConsoleInterceptor(this.excludes);
 
-    try {
-      await launcher.main(lifecycleEvent, [...this.defaultArgs, '--directory=' + testDirectory, ...processArgv], npmConfigArgv, true);
+    // Expanding environment variables to use
+    envVariables = {
+      ...envVariables,
+      'npm_config_directory': testDirectory
+    };
 
-      // await promisify(setImmediate)(); // Proccess all events in event queue, to flush the out streams.
+    try {
+      await launcher.main(lifecycleEvent, processArgv, envVariables, true);
+
+      // await promisify(setImmediate)(); // Process all events in event queue, to flush the out streams.
       // await promisify(setTimeout)(10);
       // await promisify(setImmediate)();
     } finally {
@@ -127,34 +132,34 @@ export class TestLauncher {
             if (testConfig.tests === undefined) testConfig.tests = [];
 
             for (const test of testConfig.tests as ITestsConfigFile[]) {
-              if (test['cmd-args'] === undefined) test['cmd-args'] = [];
-              if (test['npm-args'] === undefined) test['npm-args'] = [];
-              if (test['cat-args'] === undefined) test['cat-args'] = [];
+              if (test.arguments === undefined) test.arguments = [];
+              if (test.processArgv === undefined) test.processArgv = [];
+              if (test.files === undefined) test.files = [];
               if (test.restore === undefined) test.restore = false;
 
-              if (!Array.isArray(test['cmd-args'])) test['cmd-args'] = [test['cmd-args']];
-              if (!Array.isArray(test['npm-args'])) test['npm-args'] = [test['npm-args']];
-              if (!Array.isArray(test['cat-args'])) test['cat-args'] = [test['cat-args']];
+              if (!Array.isArray(test.arguments)) test.arguments = [test.arguments];
+              if (!Array.isArray(test.processArgv)) test.processArgv = [test.processArgv];
+              if (!Array.isArray(test.files)) test.files = [test.files];
 
-              if (test['cat-args'].length > 0) {
-                if (test.lifecycle !== undefined) test.error = 'cat-args and lifecycle can not be combined';
-                if (test['cmd-args'].length > 0) test.error = 'cat-args and cmd-args can not be combined';
-                if (test['npm-args'].length > 0) test.error = 'cat-args and npm-args can not be combined';
+              if (test.files.length > 0) {
+                if (test.lifecycle !== undefined) test.error = 'files and lifecycle can not be combined';
+                if (test.arguments.length > 0) test.error = 'files and arguments can not be combined';
+                if (test.processArgv.length > 0) test.error = 'files and processArgs can not be combined';
               }
 
               if (!test.name) {
-                test.name = 'npx launch ' + test['cmd-args'].join(' ');
+                test.name = 'npx launch ' + test.arguments.join(' ');
 
                 if (test.lifecycle) {
                   test.name = 'npm ';
 
                   if (test.lifecycle !== 'start') test.name += 'run   ';
 
-                  test.name += (test.lifecycle + ' ' + test['npm-args'].join(' ')).trim();
+                  test.name += (test.lifecycle + ' ' + test.processArgv.join(' ')).trim();
                 }
 
-                if (test['cat-args'].length > 0) {
-                  test.name = 'cat ' + test['cat-args'].join(' ');
+                if (test.files.length > 0) {
+                  test.name = 'files ' + test.files.join(' ');
                 }
               }
             }
@@ -199,13 +204,13 @@ export class TestLauncher {
     const markdownParser = new MarkdownParser(testFiles, exclude);
     const sections = markdownParser.getSectionTests();
     const emptyTest: ITests = {
-      'id': '9999',
-      'name': 'empty',
-      'npm-args': [],
-      'cmd-args': [],
-      'cat-args': [],
-      'restore': false,
-      'empty': true
+      id: '9999',
+      name: 'empty',
+      processArgv: [],
+      arguments: [],
+      files: [],
+      restore: false,
+      empty: true
     };
     let configs = this._configs[category];
 
@@ -220,7 +225,7 @@ export class TestLauncher {
       if (config === undefined) {
         config = {
           id: '9999',
-          sanatize: false,
+          sanitize: false,
           name: section.title,
           type: section.type,
           files: {},
@@ -259,6 +264,7 @@ export class TestLauncher {
         let testIndex = 0;
 
         for (const command of section.commands) {
+          console.error(section);
           const test = config.tests.find(item => item.name === command);
 
           if (!test) {
@@ -369,7 +375,7 @@ export class TestLauncher {
     if (!remove) return text;
 
     text = text.replace(/([^\\]|^)\$\w+/g, '$1');
-    text = text.replace(/([^\\]|^)\$\{\w+\}/g, '$1');
+    text = text.replace(/([^\\]|^)\$\{\w+}/g, '$1');
 
     return text;
   }

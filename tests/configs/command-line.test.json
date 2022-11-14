@@ -7,7 +7,7 @@
       "tests": [
         {
           "id": "0000-00",
-          "cmd-args": "--help",
+          "processArgv": "help",
           "result": [
             "Usage: launch [command] [options...]",
             "",
@@ -33,7 +33,7 @@
         },
         {
           "id": "0000-01",
-          "cmd-args": "--version",
+          "processArgv": "version",
           "result": "$version"
         }
       ]
@@ -41,14 +41,14 @@
     {
       "id": "0001",
       "name": "Init",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "package": {}
       },
       "tests": [
         {
           "id": "0001-00",
-          "cmd-args": [
+          "processArgv": [
             "init",
             "basic"
           ],
@@ -65,7 +65,7 @@
         },
         {
           "id": "0001-01",
-          "cat-args": "launcher-config.json",
+          "files": "launcher-config.json",
           "result": [
             "{",
             "  \"scripts\": {",
@@ -78,7 +78,7 @@
         },
         {
           "id": "0001-02",
-          "cat-args": "launcher-menu.json",
+          "files": "launcher-menu.json",
           "result": [
             "{",
             "  \"menu\": {",
@@ -110,7 +110,7 @@
     {
       "id": "0002",
       "name": "Init",
-      "sanatize": true,
+      "sanitize": true,
       "files": {
         "package": {
           "scripts": {
@@ -121,7 +121,7 @@
       "tests": [
         {
           "id": "0002-00",
-          "cmd-args": [
+          "processArgv": [
             "init",
             "basic"
           ],
@@ -141,12 +141,12 @@
     {
       "id": "0003",
       "name": "Init",
-      "sanatize": true,
+      "sanitize": true,
       "files": {},
       "tests": [
         {
           "id": "0003-00",
-          "cmd-args": [
+          "processArgv": [
             "init",
             "basic"
           ],
@@ -164,7 +164,7 @@
         {
           "id": "0003-01",
           "lifecycle": "start",
-          "npm-args": "serve:dev",
+          "processArgv": "serve:dev",
           "result": [
             "Serve dev command."
           ]
@@ -172,7 +172,7 @@
         {
           "id": "0003-02",
           "lifecycle": "start",
-          "npm-args": "build:production",
+          "processArgv": "build:production",
           "result": [
             "Build production command."
           ]
@@ -181,7 +181,7 @@
     },
     {
       "id": "0004",
-      "sanatize": true,
+      "sanitize": true,
       "name": "Migrate",
       "files": {
         "package": {
@@ -227,7 +227,7 @@
       "tests": [
         {
           "id": "0004-00",
-          "cmd-args": [
+          "processArgv": [
             "migrate"
           ],
           "result": [
@@ -245,7 +245,7 @@
         },
         {
           "id": "0004-01",
-          "cmd-args": [
+          "processArgv": [
             "migrate"
           ],
           "result": [
@@ -256,7 +256,7 @@
         },
         {
           "id": "0004-02",
-          "cat-args": "launcher-config.json",
+          "files": "launcher-config.json",
           "result": [
             "{",
             "  \"scripts\": {",
@@ -338,7 +338,7 @@
         },
         {
           "id": "0004-03",
-          "cat-args": "launcher-menu.json",
+          "files": "launcher-menu.json",
           "result": [
             "{",
             "  \"menu\": {",
@@ -412,7 +412,7 @@
         },
         {
           "id": "0004-04",
-          "cat-args": "package.json",
+          "files": "package.json",
           "result": [
             "{",
             "  \"scripts\": {",
@@ -426,7 +426,7 @@
         {
           "id": "0004-05",
           "lifecycle": "start",
-          "npm-args": "deploy:acc",
+          "processArgv": "deploy:acc",
           "result": [
             "ng build uva --configuration=acc",
             "firebase deploy --public dist/uva --project status-uva-acc",
@@ -437,9 +437,11 @@
         {
           "id": "0004-06",
           "restore": true,
-          "cmd-args": [
-            "migrate",
-            "--params"
+          "arguments": [
+            "--params=1"
+          ],
+          "processArgv": [
+            "migrate"
           ],
           "result": [
             "Migrating: package.json",
@@ -456,7 +458,7 @@
         },
         {
           "id": "0004-07",
-          "cat-args": "launcher-config.json",
+          "files": "launcher-config.json",
           "result": [
             "{",
             "  \"scripts\": {",
@@ -486,7 +488,7 @@
         },
         {
           "id": "0004-08",
-          "cat-args": "launcher-menu.json",
+          "files": "launcher-menu.json",
           "result": [
             "{",
             "  \"menu\": {",

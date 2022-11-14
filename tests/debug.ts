@@ -1,36 +1,5 @@
 import { ISpawnOptions, Process } from '../src/spawn-process';
-import { ConsoleInterceptor } from './console-interceptor';
-import { promisify } from 'util';
 
-/*
-import * as launcher from '../src/launch';
-
-async function main() {
-  const npmConfigArgv1 = JSON.stringify(
-    {
-      remain: [
-      ],
-      cooked: [
-        ''
-      ],
-      original: [
-        ''
-      ]
-    }
-  );
-  const npmConfigArgv2 = JSON.stringify(
-    {
-      remain: []
-    }
-  );
-
-  await launcher.main(undefined, [
-    '', '', '--directory=temp/0016', '--menuTimeout=2' // '--script = deploy: tst'// , '--script = deploy: tst'
-  ], npmConfigArgv2
-    , true);
-}
-
-*/
 async function run(command: string): Promise<void> {
   const args: string[] = [];
   const options: ISpawnOptions = {
@@ -71,4 +40,4 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+void main();
