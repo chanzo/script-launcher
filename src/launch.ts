@@ -93,7 +93,7 @@ function showTemplates(): void {
     console.log(fileName);
   }
   console.log();
-  console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npx launch init basic');
+  console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npm start init basic');
 }
 
 function copyTemplateFiles(template: string, directory: string): void {

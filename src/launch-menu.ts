@@ -66,7 +66,7 @@ export async function launchMenu(
           Colors.Dim +
           '  (Use the menu by running:' +
           Colors.Bold +
-          ' npx launch menu' +
+          ' npm start menu' +
           Colors.Normal +
           Colors.Dim +
           ')' +
@@ -79,7 +79,7 @@ export async function launchMenu(
     const command = getStartCommand(script.script, config.scripts);
 
     if (command) {
-      console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npx launch ' + script.script + Colors.Normal);
+      console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
       console.log();
     }
 
