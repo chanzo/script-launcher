@@ -507,15 +507,13 @@
         {
           "id": "0055-00",
           "processArgv": [
-            "build:css",
-            "build:js"
+            "build:css,build:js"
           ]
         },
         {
           "id": "0055-01",
           "processArgv": [
-            "build:css",
-            "build:js"
+            "build:css,build:js"
           ],
           "arguments": [
             "--concurrent"

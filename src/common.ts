@@ -77,11 +77,11 @@ export function extractCommands<C>(commands: ICommands<C>, argv: string[]): ICom
 
   let commandFound = false;
 
-  for (const rawArgument of argv) {
+  for (const rawCommand of argv) {
     // Everything behind "--" is passed as an argument for the called script
-    if (rawArgument === '--') break;
+    if (rawCommand === '--') break;
 
-    const splitRawArgument = rawArgument.split('=', 2);
+    const splitRawArgument = rawCommand.split('=', 2);
     const [name, value] = splitRawArgument;
 
     // There is at least a value given for the argument

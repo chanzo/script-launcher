@@ -201,7 +201,7 @@ npm run test
 
 Make sure all your repository changes are fully committed so you can undo the changes easily if they do not suit your needs. Remove or rename the start script in your **package.json** file.
 
-Now your are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
+Now you are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
 
 ```bash
 npx launch migrate
@@ -1327,14 +1327,14 @@ Creating: launcher-config.json
 
 Start one or more script directly from the command line sequentially or concurrently
 
-**Run**: `npx launch build:css build:js` to start one or more script in sequence
+**Run**: `npx launch build:css,build:js` to start one or more script in sequence
 
 ```bash
 Building: .css files
 Building: .js files
 ```
 
-**Run**: `npx launch build:css build:js --concurrent` to start one or more script in parallel
+**Run**: `npx launch build:css,build:js --concurrent` to start one or more script in parallel
 
 ```bash
 Building: .css files

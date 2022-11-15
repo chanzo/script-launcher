@@ -303,7 +303,10 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     // Just an output which config files were used ...
     showLoadedFiles(configLoad.files);
 
-    let launchScript = processArgs[0] ? [processArgs[0]] : [];
+    let launchScript = processArgs[0] ? [...processArgs[0].split(',')] : [];
+
+    // console.error('Launch Script:');
+    // console.error(launchScript);
 
     // Showing some general process information about script, config, arguments, ...
     showProcessInformation(config, environment, launchScript, shell, launchArgs);
