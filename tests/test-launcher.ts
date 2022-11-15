@@ -147,8 +147,15 @@ export class TestLauncher {
                 if (test.processArgv.length > 0) test.error = 'files and processArgs can not be combined';
               }
 
+              // Preparing name of the test case
               if (!test.name) {
-                test.name = 'npx launch ' + test.arguments.join(' ');
+                // Concat the launch command with the processArgv given
+                test.name = 'npx launch ' + test.processArgv.join(' ');
+
+                // Concat any additional arguments to the name itself (e.g. --dry, --params, ...)
+                if (test.arguments.length > 0) {
+                  test.name += ' ' + test.arguments.join(' ');
+                }
 
                 if (test.lifecycle) {
                   test.name = 'npm ';
@@ -220,7 +227,7 @@ export class TestLauncher {
     }
 
     for (const section of sections) {
-      let config = configs.find(item => item.name === section.title);
+      let config = configs.find(config => config.name === section.title);
 
       if (config === undefined) {
         config = {
@@ -264,8 +271,7 @@ export class TestLauncher {
         let testIndex = 0;
 
         for (const command of section.commands) {
-          console.error(section);
-          const test = config.tests.find(item => item.name === command);
+          const test = config.tests.find(test => test.name === command);
 
           if (!test) {
             config.tests.push({

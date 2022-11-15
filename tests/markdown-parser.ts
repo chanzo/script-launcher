@@ -41,17 +41,17 @@ export class MarkdownParser {
   }
 
   public getSectionTests(): ISectionTest[] {
-    const result: ISectionTest[] = [];
+    const sectionTests: ISectionTest[] = [];
 
     for (const [title, content] of this.sections) {
       const commands = MarkdownParser.getCommands(content, '^\\*\\*Run\\*\\*\\: ');
       const sections = MarkdownParser.getSections(content, '^\\s*```(.*)');
 
-      result.push(...MarkdownParser.parseSectionJSONTests(sections, title, commands));
-      result.push(...MarkdownParser.parseSectionBashTests(sections, title, commands));
+      sectionTests.push(...MarkdownParser.parseSectionJSONTests(sections, title, commands));
+      sectionTests.push(...MarkdownParser.parseSectionBashTests(sections, title, commands));
     }
 
-    return result;
+    return sectionTests;
   }
 
   private static parseSectionJSONTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
@@ -91,13 +91,13 @@ export class MarkdownParser {
   }
 
   private static parseSectionBashTests(sections: Map<string, string[][]>, title: string, commands: string[]): ISectionTest[] {
-    const result: ISectionTest[] = [];
+    const parsedTests: ISectionTest[] = [];
     const content = sections.get('bash');
     let index = 0;
 
     if (content) {
       for (const item of content) {
-        result.push({
+        parsedTests.push({
           title: title,
           config: null,
           result: [item.map(row => row.replace('\r', ''))],
@@ -108,7 +108,7 @@ export class MarkdownParser {
       }
     }
 
-    return result;
+    return parsedTests;
   }
 
   private static getCommands(content: string[], pattern: string): string[] {

@@ -451,7 +451,7 @@ Use wildcards '\*' to select multiple scripts. Wildcards cannot be used for sele
 }
 ```
 
-**Run**: `npm start build:*` , `npm start build:all` or `npx launch --concurrent build:*`
+**Run**: `npm start build:*` , `npm start build:all` or `npx launch build:* --concurrent`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -901,7 +901,7 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 }
 ```
 
-**Run**: `npm start build-stuff` , `npx launch build-stuff confirm` or `npx launch build-stuff --confirm=false`
+**Run**: `npm start build-stuff` , `npx launch build-stuff --confirm` or `npx launch build-stuff --confirm=false`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -1334,7 +1334,7 @@ Building: .css files
 Building: .js files
 ```
 
-**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
+**Run**: `npx launch build:css build:js --concurrent` to start one or more script in parallel
 
 ```bash
 Building: .css files

@@ -65,7 +65,7 @@
           "processArgv": "build-stuff",
           "result:win32": [
             "grep example",
-            "Version: 1.37.0",
+            "Version: $version",
             "Platform: win32",
             "Time: 2019-09-16 10:33:20.628",
             "--------------------------------",
@@ -168,9 +168,9 @@
           ],
           "result:win32": [
             "\"$1                    \" : arg1",
-            "\"$npm_package_version  \" : 1.37.0",
+            "\"$npm_package_version  \" : $version",
             "\"${1}                  \" : arg1",
-            "${npm_package_version} : 1.37.0"
+            "${npm_package_version} : $version"
           ]
         }
       ]
