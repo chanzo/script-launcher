@@ -131,7 +131,6 @@ async function main(): Promise<void> {
 
         describe(config.name, () => {
           if (config.tests.length === 0) {
-            console.error(config);
             test.todo('test command');
           }
 
