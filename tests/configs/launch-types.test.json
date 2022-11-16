@@ -243,9 +243,7 @@
         {
           "id": "0007-00",
           "processArgv": [
-            "build:*",
-            "test:css",
-            "test:html",
+            "build:*,test:css,test:html",
             "--",
             "file1",
             "file2"

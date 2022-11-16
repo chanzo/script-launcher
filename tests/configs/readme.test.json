@@ -231,26 +231,18 @@
         {
           "id": "0044-00",
           "lifecycle": "start",
-          "processArgv": [
-            "confirm",
-            "build-stuff"
-          ]
+          "processArgv": "build-stuff",
+          "arguments": "--confirm"
         },
         {
           "id": "0044-01",
-          "processArgv": [
-            "build-stuff",
-            "confirm"
-          ]
+          "processArgv": "build-stuff",
+          "arguments": "--confirm"
         },
         {
           "id": "0044-02",
-          "processArgv": [
-            "build-stuff"
-          ],
-          "arguments": [
-            "--confirm=false"
-          ]
+          "processArgv": "build-stuff",
+          "arguments": "--confirm=false"
         }
       ]
     },
@@ -358,12 +350,8 @@
         },
         {
           "id": "0050-02",
-          "arguments": [
-            "--concurrent"
-          ],
-          "processArgv": [
-            "build:*"
-          ]
+          "processArgv": "build:*",
+          "arguments": "--concurrent"
         }
       ]
     },
@@ -374,9 +362,7 @@
       "tests": [
         {
           "id": "0051-00",
-          "processArgv": [
-            "--help"
-          ]
+          "processArgv": "help"
         }
       ]
     },
@@ -395,13 +381,8 @@
       "tests": [
         {
           "id": "0052-00",
-          "arguments": [
-            "--dry"
-          ],
-          "processArgv": [
-            "build:css",
-            "build:js"
-          ]
+          "processArgv": "build:css,build:js",
+          "arguments": "--dry"
         }
       ]
     },
@@ -415,9 +396,7 @@
       "tests": [
         {
           "id": "0053-00",
-          "processArgv": [
-            "init"
-          ]
+          "processArgv": "init"
         },
         {
           "id": "0053-01",
@@ -476,12 +455,8 @@
       "tests": [
         {
           "id": "0054-00",
-          "processArgv": [
-            "migrate"
-          ],
-          "arguments": [
-            "--params=1"
-          ]
+          "processArgv": "migrate",
+          "arguments": "--params=1"
         }
       ]
     },
@@ -506,18 +481,12 @@
       "tests": [
         {
           "id": "0055-00",
-          "processArgv": [
-            "build:css,build:js"
-          ]
+          "processArgv": "build:css,build:js"
         },
         {
           "id": "0055-01",
-          "processArgv": [
-            "build:css,build:js"
-          ],
-          "arguments": [
-            "--concurrent"
-          ]
+          "processArgv": "build:css,build:js",
+          "arguments": "--concurrent"
         }
       ]
     },

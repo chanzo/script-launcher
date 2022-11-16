@@ -1253,7 +1253,7 @@ Options:
 
 ## Launcher Options: dry
 
-**Run**: `npx launch build:css build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
+**Run**: `npx launch build:css,build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
 
 ```bash
 Loaded config:  launcher-config.json
@@ -1261,7 +1261,7 @@ Loaded config:  launcher-config.json
 Date              : 2019-09-16 10:33:20.628
 Version           : 1.37.3
 Launch script     : [ 'build:css', 'build:js' ]
-Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
+Launch arguments  : []
 
 Script id       : build:css
 Circular        : false
