@@ -54,7 +54,7 @@ function showTemplates(): void {
     console.log(fileName);
   }
   console.log();
-  console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npm start init basic');
+  console.log(Colors.Bold + 'Example usage:' + Colors.Normal + ' npx launch init basic');
 }
 
 function copyTemplateFiles(template: string, directory: string): void {
@@ -334,7 +334,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     const scriptInfo = Scripts.select(scripts);
 
     if (!scriptInfo) {
-      throw new Error(`Cannot start launch script ${launchScript.join(',')}: No such script available.`);
+      throw new Error(`Cannot start launch script "${launchScript.join(',')}": No such script available.`);
     }
 
     if (scriptInfo.multiple && options.concurrent) {

@@ -608,7 +608,7 @@
           "lifecycle": "start",
           "processArgv": "assignments",
           "result": [
-            "Cannot start launch script [\"assignments\"]: No such script available."
+            "Cannot start launch script \"assignments\": No such script available."
           ]
         },
         {
