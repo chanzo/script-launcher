@@ -4,7 +4,7 @@ import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
 import * as path from 'path';
-import { extractArgs, extractCommands, formatTime, showArgsHelp, stringify, Colors } from './common';
+import { extractCommands, extractOptions, formatTime, showArgsHelp, stringify, Colors } from './common';
 import { IScript, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
 import prettyTime = require('pretty-time');
@@ -231,7 +231,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     // Ignoring "--" in processArgv as everything behind is treated as an argument anyway
     const processArgs: string[] = processArgv.slice(2).filter(statement => statement !== '--');
     // These arguments are mainly written from default -> config -> user input as process argument
-    const launchArgs = extractArgs<IArgs>(
+    const options = extractOptions<IArgs>(
       {
         logLevel: config.options.logLevel,
         dry: config.options.dry,
@@ -248,33 +248,18 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
       processEnvVariables
     );
 
-    launchArgs.directory = path.join(launchArgs.directory); // remove starting ./
-
-    const commands = extractCommands<IInternalCommands>(
-      {
-        internalCommands: {
-          init: false,
-          list: false,
-          migrate: false,
-          help: false,
-          version: false
-        },
-        optionals: [],
-        unknowns: []
-      },
-      processArgs
-    );
+    options.directory = path.join(options.directory); // remove starting ./
 
     let interactive = false;
 
-    if (launchArgs.dry && launchArgs.logLevel < 1) {
-      launchArgs.logLevel = 1;
+    if (options.dry && options.logLevel < 1) {
+      options.logLevel = 1;
     }
 
-    Logger.level = launchArgs.logLevel;
+    Logger.level = options.logLevel;
 
-    if (launchArgs.config) {
-      const fileName = path.join(launchArgs.directory, launchArgs.config);
+    if (options.config) {
+      const fileName = path.join(options.directory, options.config);
 
       config = config.merge(fileName);
 
@@ -283,7 +268,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     const shell = Config.evaluateShellOption(config.options.script.shell, true);
 
-    if (!launchArgs.ansi) disableAnsiColors();
+    if (!options.ansi) disableAnsiColors();
 
     if (process.platform === 'win32') {
       (Colors as any).Dim = '\x1b[90m';
@@ -305,11 +290,8 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     let launchScript = processArgs[0] ? [...processArgs[0].split(',')] : [];
 
-    // console.error('Launch Script:');
-    // console.error(launchScript);
-
     // Showing some general process information about script, config, arguments, ...
-    showProcessInformation(config, environment, launchScript, shell, launchArgs);
+    showProcessInformation(config, environment, launchScript, shell, options);
 
     if (Object.entries(config.scripts.scripts).length === 0) {
       Logger.info();
@@ -317,87 +299,8 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
       Logger.info();
     }
 
-    if (commands.internalCommands.version) {
-      console.log(version);
-      Logger.log();
-      exitCode = 0;
+    if (await checkAndExecuteInternalCommand(processArgs, options, config, testMode)) {
       return;
-    }
-
-    if (commands.internalCommands.help) {
-      showHelp();
-      Logger.log();
-      exitCode = 0;
-      return;
-    }
-
-    if (commands.internalCommands.migrate) {
-      await migratePackageJson(launchArgs.directory, launchArgs.params, launchArgs.confirm, testMode);
-      Logger.log();
-      exitCode = 0;
-
-      return;
-    }
-
-    if (commands.internalCommands.init) {
-      const template = commands.optionals[0];
-
-      if (!template) {
-        showTemplates();
-        return;
-      }
-
-      copyTemplateFiles(template, launchArgs.directory);
-
-      console.log();
-
-      updatePackageJson(launchArgs.directory);
-      Logger.log();
-      exitCode = 0;
-      return;
-    }
-
-    if (commands.internalCommands.list) {
-      if (commands.optionals[0] === 'script') {
-        const choices: string[] = Object.keys(configLoad.config.scripts.scripts).sort();
-        const unique = [...new Set(choices)];
-
-        for (const item of unique) {
-          console.log(item);
-        }
-
-        return;
-      }
-
-      if (commands.optionals[0] === 'menu') {
-        const choices = getMenuScripts(configLoad.config.menu).sort();
-        const unique = [...new Set(choices)];
-
-        for (const item of unique) {
-          console.log(item);
-        }
-
-        return;
-      }
-
-      if (commands.optionals.length === 0 || commands.optionals[0] === 'complete') {
-        const scripts = Object.keys(configLoad.config.scripts.scripts).filter(item => !item.includes('$'));
-        const menu = getMenuScripts(configLoad.config.menu).filter(item => !scripts.includes(item));
-        const choices: string[] = [...menu, ...scripts].sort();
-        const unique = [...new Set(choices)];
-
-        for (const item of unique) {
-          console.log(item);
-        }
-
-        return;
-      }
-
-      console.error('List option not supported: ' + commands.optionals);
-      console.error();
-      console.error('Use: script, menu or complete');
-
-      throw new Error();
     }
 
     const scripts = config.scripts.find(...launchScript);
@@ -420,19 +323,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     if (launchScript.length === 0) {
       Logger.info();
 
-      const result = await launchMenu(
-        environment,
-        settings,
-        config,
-        processArgs,
-        interactive,
-        launchArgs.menuTimeout,
-        config.options.menu.confirm,
-        launchArgs.confirm,
-        launchArgs.limit,
-        launchArgs.dry,
-        testMode
-      );
+      const result = await launchMenu(environment, settings, config, processArgs, interactive, options.menuTimeout, config.options.menu.confirm, options.confirm, options.limit, options.dry, testMode);
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -443,18 +334,16 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     const scriptInfo = Scripts.select(scripts);
 
     if (!scriptInfo) {
-      throw new Error(`Cannot start launch script ${JSON.stringify(launchScript, null, 0)}: No such script available.`);
+      throw new Error(`Cannot start launch script ${launchScript.join(',')}: No such script available.`);
     }
 
-    if (scriptInfo.multiple && launchArgs.concurrent) {
+    if (scriptInfo.multiple && options.concurrent) {
       scriptInfo.script = {
         concurrent: scriptInfo.script
       } as IScript;
     }
 
-    const script = Scripts.parse(launchScript[0]).command;
-    processArgs[0] = script;
-    // console.error('launchScript[0]=', processArgs[0]);
+    processArgs[0] = Scripts.parse(launchScript[0]).command;
 
     if (!scriptInfo.name) {
       scriptInfo.name = launchScript[0];
@@ -464,7 +353,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, launchArgs.confirm, launchArgs.limit, launchArgs.dry, testMode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, options.confirm, options.limit, options.dry, testMode);
 
     startTime = executor.startTime;
 
@@ -505,4 +394,103 @@ function showProcessInformation(config: Config, environment: { [p: string]: stri
     // Cannot show a real list of arguments anymore as the arguments started with -- are no longer preserved in the processArgv array
     Logger.info('Launch arguments  :', []);
   }
+}
+
+async function checkAndExecuteInternalCommand(processArgs: string[], options: IArgs, config: Config, testMode: boolean): Promise<boolean> {
+  const commands = extractCommands<IInternalCommands>(
+    {
+      init: false,
+      list: false,
+      migrate: false,
+      help: false,
+      version: false
+    },
+    processArgs
+  );
+
+  if (commands.version) {
+    console.log(version);
+    Logger.log();
+    process.exitCode = 0;
+
+    return true;
+  }
+
+  if (commands.help) {
+    showHelp();
+    Logger.log();
+    process.exitCode = 0;
+
+    return true;
+  }
+
+  if (commands.migrate) {
+    await migratePackageJson(options.directory, options.params, options.confirm, testMode);
+    Logger.log();
+    process.exitCode = 0;
+
+    return true;
+  }
+
+  if (commands.init) {
+    const [template, ...unusedArguments] = processArgs.slice(1);
+
+    if (!template) {
+      showTemplates();
+      return true;
+    }
+
+    copyTemplateFiles(template, options.directory);
+
+    console.log();
+
+    updatePackageJson(options.directory);
+    Logger.log();
+    process.exitCode = 0;
+    return true;
+  }
+
+  const showItems = (choices: string[]) => {
+    const uniqueItems = [...new Set(choices)];
+
+    for (const item of uniqueItems) {
+      console.log(item);
+    }
+  };
+
+  if (commands.list) {
+    const [option, ...unusedArguments] = processArgs.slice(1);
+    let choices: string[];
+
+    switch (option) {
+      case 'script':
+        choices = Object.keys(config.scripts.scripts).sort();
+
+        showItems(choices);
+
+        return true;
+      case 'menu':
+        choices = getMenuScripts(config.menu).sort();
+
+        showItems(choices);
+
+        return true;
+      case 'complete':
+      case undefined:
+        const scripts = Object.keys(config.scripts.scripts).filter(item => !item.includes('$'));
+        const menu = getMenuScripts(config.menu).filter(item => !scripts.includes(item));
+        choices = [...menu, ...scripts].sort();
+
+        showItems(choices);
+
+        return true;
+      default:
+        console.error('List option not supported: ' + option);
+        console.error();
+        console.error('Use: script, menu or complete');
+        throw new Error();
+    }
+  }
+
+  return false;
 }

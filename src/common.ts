@@ -35,50 +35,42 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
   });
 }
 
-interface ICommands<C> {
-  internalCommands: C;
-  optionals: string[];
-  unknowns: string[];
-}
-
-export function extractArgs<A extends {}>(internalArguments: A, environmentVariables): A {
-  const validArguments = Object.keys(internalArguments);
-
+export function extractOptions<A extends {}>(knownOptions: A, environmentVariables: {}): A {
   // Reading arguments from process environment variables
-  for (const argumentKey of validArguments) {
-    let argumentName = argumentKey;
+  for (const knownOptionName of Object.keys(knownOptions)) {
+    let optionName = knownOptionName;
 
     // Special treatment for dryRun here as NPM does have an own dry_run flag
     //  which is recognized by various spellings e.g. --dry, --dryRun, --dry-run
-    if (argumentKey === 'dry') {
-      argumentName = 'dry_run';
+    if (knownOptionName === 'dry') {
+      optionName = 'dry_run';
     }
 
-    const argumentValue = environmentVariables['npm_config_' + argumentName.toLowerCase()];
-    const parsedValue = parseValue(argumentValue);
-    const defaultValue = internalArguments[argumentKey];
+    const optionValue = environmentVariables['npm_config_' + optionName.toLowerCase()];
+    const parsedValue = parseValue(optionValue);
+    const defaultValue = knownOptions[knownOptionName];
 
     // Check if the value given is the same type as the default one
     if (defaultValue !== null && defaultValue !== undefined && parsedValue !== null && parsedValue !== undefined && typeof defaultValue !== typeof parsedValue) {
-      throw new Error(`Unexpected type "${typeof parsedValue}" for argument "${argumentKey}". The argument should be of type "${typeof defaultValue}".`);
+      throw new Error(`Unexpected type "${typeof parsedValue}" for option "${knownOptionName}". The option should be of type "${typeof defaultValue}".`);
     }
 
-    // Adding value only if it exists. Otherwise, the default value for the argument (maybe written by config file) would be replaced
-    if (argumentValue !== undefined && argumentValue !== null) {
-      internalArguments[argumentKey] = parsedValue;
+    // Adding value only if it exists. Otherwise, the default value for the option (maybe written by config file) would be replaced
+    if (optionValue !== undefined && optionValue !== null) {
+      knownOptions[knownOptionName] = parsedValue;
     }
   }
 
-  return internalArguments;
+  return knownOptions;
 }
 
-export function extractCommands<C>(commands: ICommands<C>, argv: string[]): ICommands<C> {
-  const internalCommandNames = Object.keys(commands.internalCommands);
+export function extractCommands<C extends {}>(commands: C, argv: string[]): C {
+  const internalCommandNames = Object.keys(commands);
 
   let commandFound = false;
 
   for (const rawCommand of argv) {
-    // Everything behind "--" is passed as an argument for the called script
+    // Everything behind "--" is passed as an argument
     if (rawCommand === '--') break;
 
     const splitRawArgument = rawCommand.split('=', 2);
@@ -91,16 +83,10 @@ export function extractCommands<C>(commands: ICommands<C>, argv: string[]): ICom
       if (!commandFound) {
         // If the command was an internal one (e.g. "help"), add it to the list
         if (internalCommandNames.includes(name)) {
-          commands.internalCommands[name] = true;
-        } else {
-          // Otherwise, the command is a custom one (not internal) and has to be looked up in the launcher-config
-          commands.unknowns.push(name);
+          commands[name] = true;
         }
 
         commandFound = true;
-      } else {
-        // If a command was already found, everything behind without a "--" is another param for the custom script
-        commands.optionals.push(name);
       }
     }
   }
