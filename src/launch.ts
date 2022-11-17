@@ -37,6 +37,12 @@ interface IArgs {
   script?: string;
 }
 
+enum ListOptions {
+  Script = 'script',
+  Menu = 'menu',
+  Complete = 'complete'
+}
+
 function showLoadedFiles(files: string[]): void {
   for (const file of files) {
     Logger.info('Loaded config: ', file);
@@ -223,7 +229,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
   let startTime = process.hrtime();
 
   try {
-    // TODO: This is just a workaround for early access to the working directory
+    // Need the early access to the working directory as the config need to be loaded before the inline options are evaluated
     const workingDirectory = processEnvVariables.npm_config_directory || process.cwd();
     const configLoad = Config.load(workingDirectory);
     let config = configLoad.config;
@@ -288,7 +294,9 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     // Just an output which config files were used ...
     showLoadedFiles(configLoad.files);
 
-    let launchScript = processArgs[0] ? [...processArgs[0].split(',')] : [];
+    // Splitting the string of multiple scripts (e.g. foo:bar,foo:baz) into an array of single script names (-> [foo:bar, foo:baz])
+    // Using regex here as variable transformation (e.g. foo:bar:{var,,}) should not be caught here
+    let launchScript = processArgs[0] ? [...processArgs[0].split(/(\w|\d),(\w|\d)/)] : [];
 
     // Showing some general process information about script, config, arguments, ...
     showProcessInformation(config, environment, launchScript, shell, options);
@@ -463,19 +471,19 @@ async function checkAndExecuteInternalCommand(processArgs: string[], options: IA
     let choices: string[];
 
     switch (option) {
-      case 'script':
+      case ListOptions.Script:
         choices = Object.keys(config.scripts.scripts).sort();
 
         showItems(choices);
 
         return true;
-      case 'menu':
+      case ListOptions.Menu:
         choices = getMenuScripts(config.menu).sort();
 
         showItems(choices);
 
         return true;
-      case 'complete':
+      case ListOptions.Complete:
       case undefined:
         const scripts = Object.keys(config.scripts.scripts).filter(item => !item.includes('$'));
         const menu = getMenuScripts(config.menu).filter(item => !scripts.includes(item));
