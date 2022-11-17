@@ -296,7 +296,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     // Splitting the string of multiple scripts (e.g. foo:bar,foo:baz) into an array of single script names (-> [foo:bar, foo:baz])
     // Using regex here as variable transformation (e.g. foo:bar:{var,,}) should not be caught here
-    let launchScript = processArgs[0] ? [...processArgs[0].split(/(\w|\d),(\w|\d)/)] : [];
+    let launchScript = processArgs[0] ? [...processArgs[0].split(/(?!\w|\d),(?=\w|\d)/g)] : [];
 
     // Showing some general process information about script, config, arguments, ...
     showProcessInformation(config, environment, launchScript, shell, options);
