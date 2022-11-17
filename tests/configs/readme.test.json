@@ -205,7 +205,7 @@
       "files": {
         "launcher-settings": {
           "options": {
-            "logLevel": 0
+            "loglevel": "error"
           }
         }
       },

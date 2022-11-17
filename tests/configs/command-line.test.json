@@ -19,7 +19,7 @@
             "  \u001b[36mversion      \u001b[0mOutputs launcher version.",
             "",
             "Options:",
-            "  \u001b[36mlogLevel=    \u001b[0mSet log level.",
+            "  \u001b[36mloglevel=    \u001b[0mSet log level.",
             "  \u001b[36mdry=         \u001b[0mDo not execute commands.",
             "  \u001b[36mconfig=      \u001b[0mMerge in an extra config file.",
             "  \u001b[36mconfirm=     \u001b[0mAuto value for confirm conditions.",

@@ -9,6 +9,7 @@
   - Now you have to run `npx launch foo:bar,foo:baz`
 - Options have to be set with leading "--" now: e.g. `npx launch foo:bar confirm=false` need to be `npx launch foo:bar --confirm=false`
   or `--confirm` now (true can be left out, but `--confirm=true` does also work)
+- Preventing collision with internal NPM loglevel: Changed the option `--logLevel` to be of type string and hold values according to [NPM docs](https://docs.npmjs.com/cli/v8/using-npm/logging?v=true)
 
 ### Fixes
 

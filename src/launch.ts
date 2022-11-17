@@ -1,5 +1,5 @@
 import { Config, ILaunchSetting, IMenu, ISettings } from './config-loader';
-import { Logger } from './logger';
+import { Logger, LogLevel } from './logger';
 import { Executor } from './executor';
 import { launchMenu } from './launch-menu';
 import * as fs from 'fs';
@@ -7,9 +7,9 @@ import * as path from 'path';
 import { extractCommands, extractOptions, formatTime, showArgsHelp, stringify, Colors } from './common';
 import { IScript, IScriptTask, Scripts } from './scripts';
 import { version } from './package.json';
-import prettyTime = require('pretty-time');
 import * as os from 'os';
 import { migratePackageJson } from './migration';
+import prettyTime = require('pretty-time');
 
 interface IEnvironmentVariables {
   [key: string]: string;
@@ -25,7 +25,7 @@ interface IInternalCommands {
 
 interface IArgs {
   confirm: boolean;
-  logLevel: number;
+  loglevel: LogLevel;
   dry: boolean;
   config: string;
   ansi: boolean;
@@ -129,7 +129,7 @@ function showHelp(): void {
     migrate: '  ' + Colors.Cyan + 'migrate      ' + Colors.Normal + 'Migrate your package.json scripts.',
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
-    logLevel: ['', 'Options:', '  ' + Colors.Cyan + 'logLevel=    ' + Colors.Normal + 'Set log level.'],
+    loglevel: ['', 'Options:', '  ' + Colors.Cyan + 'loglevel=    ' + Colors.Normal + 'Set log level.'],
     dry: '  ' + Colors.Cyan + 'dry=         ' + Colors.Normal + 'Do not execute commands.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
@@ -239,7 +239,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     // These arguments are mainly written from default -> config -> user input as process argument
     const options = extractOptions<IArgs>(
       {
-        logLevel: config.options.logLevel,
+        loglevel: config.options.loglevel,
         dry: config.options.dry,
         confirm: undefined,
         config: null,
@@ -258,11 +258,13 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     let interactive = false;
 
-    if (options.dry && options.logLevel < 1) {
-      options.logLevel = 1;
+    // Using info as default in dry run, otherwise nothing would be printed to the user
+    if (options.dry && options.loglevel === LogLevel.Error) {
+      options.loglevel = LogLevel.Info;
     }
 
-    Logger.level = options.logLevel;
+    // Set the specific loglevel to the static Logger
+    Logger.level = options.loglevel;
 
     if (options.config) {
       const fileName = path.join(options.directory, options.config);
@@ -375,8 +377,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
   } finally {
     let timespan = process.hrtime(startTime);
 
-    if (Logger.level < 2) Logger.info('');
-
+    Logger.info('');
     Logger.info('ExitCode:', exitCode);
 
     if (testMode) timespan = [0, 237 * 1000 * 1000];
@@ -396,7 +397,7 @@ function showProcessInformation(config: Config, environment: { [p: string]: stri
   Logger.debug('Process platform  :', process.platform);
   Logger.debug('Script shell      :', shell);
 
-  if (Logger.level > 2) {
+  if (Logger.isDebugLevelOrLower()) {
     Logger.info('Launch arguments  :', launchArgs);
   } else {
     // Cannot show a real list of arguments anymore as the arguments started with -- are no longer preserved in the processArgv array

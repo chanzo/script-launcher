@@ -33,8 +33,9 @@ export class Process implements IProcess {
   public get stderr(): string {
     return this._stderr;
   }
+
   public static spawn(command: string, args: string[], options: ISpawnOptions): IProcess {
-    if ((Logger.level > 1 || options.testmode) && options) {
+    if ((Logger.isLogLevelOrLower() || options.testmode) && options) {
       options = { ...options };
       options.stdio = ['inherit', 'pipe', 'pipe'];
     }
@@ -74,7 +75,7 @@ export class Process implements IProcess {
 
     this.pid = childProcess.pid;
 
-    if (Logger.level > 1) {
+    if (Logger.isLogLevelOrLower()) {
       if (options.testmode) {
         Logger.log('Process pid     : ' + Colors.Yellow + 11111 + Colors.Normal);
       } else {
@@ -90,7 +91,7 @@ export class Process implements IProcess {
       try {
         childProcess.on('close', (code, signal) => {
           setImmediate(() => {
-            // Proccess all events in event queue, to flush the out streams.
+            // Process all events in event queue, to flush the out streams.
             if (childProcess.stdout) childProcess.stdout.removeAllListeners('data');
             if (childProcess.stderr) childProcess.stderr.removeAllListeners('data');
 

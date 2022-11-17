@@ -4,6 +4,7 @@ import * as deepmerge from 'deepmerge';
 import { IScript, IScripts, Scripts } from './scripts';
 import * as path from 'path';
 import glob = require('fast-glob');
+import { LogLevel } from './logger';
 
 export interface IMenu {
   description?: string;
@@ -11,7 +12,7 @@ export interface IMenu {
 }
 
 interface IOptions {
-  logLevel: number;
+  loglevel: LogLevel;
   dry: boolean;
   limit: number;
   files: string[];
@@ -52,7 +53,7 @@ export class Config {
       description: ''
     },
     options: {
-      logLevel: 0,
+      loglevel: LogLevel.Error,
       limit: 0,
       dry: false,
       files: ['launcher-config.json', 'launcher-scripts.json', 'launcher-settings.json', 'launcher-menu.json', 'launcher-custom.json'],
@@ -163,21 +164,11 @@ export class Config {
     const hash = new Set<string>();
 
     for (const key of Object.keys(scripts)) {
-      const value = key.replace(/\$\w+(\:|$)/g, '$1');
+      const value = key.replace(/\$\w+(:|$)/g, '$1');
 
       if (hash.has(value)) throw new Error("Duplicate object key: '" + key + "'");
 
       hash.add(value);
     }
-  }
-
-  private static loadConfig(file: string): IConfig {
-    const absolutePath = resolve(file);
-
-    if (existsSync(absolutePath)) {
-      return require(absolutePath);
-    }
-
-    return {} as IConfig;
   }
 }

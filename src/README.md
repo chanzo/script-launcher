@@ -959,7 +959,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
     ]
   },
   "options": {
-    "logLevel": 2
+    "loglevel": "notice"
   }
 }
 ```
@@ -1239,7 +1239,7 @@ Commands:
   version      Outputs launcher version.
 
 Options:
-  logLevel=    Set log level.
+  loglevel=    Set log level.
   dry=         Do not execute commands.
   config=      Merge in an extra config file.
   confirm=     Auto value for confirm conditions.
@@ -1578,7 +1578,8 @@ The default value is presented in the following example:
 
 ### Logging
 
-The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled 1=info 2=log 3=debug
+The **loglevel** option is used for configuring the Script Launcher log level, available values are:
+`error, warn, notice (default), info, verbose, silly, silent` according to [NPM docs](https://docs.npmjs.com/cli/v8/using-npm/logging?v=true)
 
 The default value is presented in the following example:
 
@@ -1588,7 +1589,7 @@ The default value is presented in the following example:
     ...
   },
   "options": {
-    "logLevel": 0
+    "loglevel": "error"
   }
 }
 ```
