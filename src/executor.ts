@@ -36,37 +36,18 @@ export class Executor {
 
   public readonly startTime: [number, number];
 
-  private readonly shell: boolean | string;
-  private readonly environment: { [name: string]: string };
-  private readonly settings: ILaunchSetting;
-  private readonly scripts: Scripts;
-  private readonly globOptions: glob.Options;
-  private readonly confirm?: boolean;
-  private readonly testmode: boolean;
-  private readonly limit: number;
-  private readonly dry: boolean;
-
   public constructor(
-    shell: boolean | string,
-    environment: { [name: string]: string },
-    settings: ILaunchSetting,
-    scripts: Scripts,
-    globOptions: glob.Options,
-    confirm: boolean | undefined,
-    limit: number,
-    dry: boolean,
-    testmode: boolean
+    private readonly shell: boolean | string,
+    private readonly environment: { [name: string]: string },
+    private readonly settings: ILaunchSetting,
+    private readonly scripts: Scripts,
+    private readonly globOptions: glob.Options,
+    private readonly confirm: boolean | undefined,
+    private readonly limit: number,
+    private readonly dry: boolean,
+    private readonly testMode: boolean
   ) {
-    this.shell = shell;
-    this.environment = environment;
-    this.settings = settings;
-    this.scripts = scripts;
-    this.globOptions = globOptions;
-    this.confirm = confirm;
-    this.testmode = testmode;
     this.startTime = process.hrtime();
-    this.limit = limit;
-    this.dry = dry;
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -76,7 +57,7 @@ export class Executor {
       env: this.environment,
       shell: this.shell,
       suppress: false,
-      testmode: this.testmode,
+      testmode: this.testMode,
       limit: this.limit,
       dry: this.dry
     };
