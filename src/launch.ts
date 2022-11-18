@@ -26,11 +26,11 @@ interface IInternalCommands {
 interface IArgs {
   confirm: boolean;
   loglevel: LogLevel;
-  dry: boolean;
+  dry_run: boolean;
   config: string;
   ansi: boolean;
   directory: string;
-  menuTimeout: number;
+  menu_timeout: number;
   params: number;
   concurrent: boolean;
   limit: number;
@@ -130,12 +130,12 @@ function showHelp(): void {
     help: '  ' + Colors.Cyan + 'help         ' + Colors.Normal + 'Show this help.',
     version: '  ' + Colors.Cyan + 'version      ' + Colors.Normal + 'Outputs launcher version.',
     loglevel: ['', 'Options:', '  ' + Colors.Cyan + 'loglevel=    ' + Colors.Normal + 'Set log level.'],
-    dry: '  ' + Colors.Cyan + 'dry=         ' + Colors.Normal + 'Do not execute commands.',
+    dry_run: '  ' + Colors.Cyan + 'dry=         ' + Colors.Normal + 'Do not execute commands.',
     config: '  ' + Colors.Cyan + 'config=      ' + Colors.Normal + 'Merge in an extra config file.',
     confirm: '  ' + Colors.Cyan + 'confirm=     ' + Colors.Normal + 'Auto value for confirm conditions.',
     ansi: '  ' + Colors.Cyan + 'ansi=        ' + Colors.Normal + 'Enable or disable ansi color output.',
     directory: '  ' + Colors.Cyan + 'directory=   ' + Colors.Normal + 'The directory from which configuration files are loaded.',
-    menuTimeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
+    menu_timeout: '  ' + Colors.Cyan + 'menuTimeout= ' + Colors.Normal + 'Set menu timeout in seconds.',
     params: '  ' + Colors.Cyan + 'params=      ' + Colors.Normal + 'Set the number of parameters to preserve.',
     concurrent: '  ' + Colors.Cyan + 'concurrent=  ' + Colors.Normal + 'Execute commandline wildcard matches in parallel.',
     limit: '  ' + Colors.Cyan + 'limit=       ' + Colors.Normal + 'Limit the number of commands to execute in parallel.'
@@ -240,13 +240,13 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     const options = extractOptions<IArgs>(
       {
         loglevel: config.options.loglevel,
-        dry: config.options.dry,
+        dry_run: config.options.dry,
         confirm: undefined,
         config: null,
         script: null,
         ansi: true,
         directory: workingDirectory,
-        menuTimeout: config.options.menu.timeout,
+        menu_timeout: config.options.menu.timeout,
         params: Number.MAX_SAFE_INTEGER,
         concurrent: false,
         limit: config.options.limit || os.cpus().length || 1
@@ -259,7 +259,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     let interactive = false;
 
     // Using info as default in dry run, otherwise nothing would be printed to the user
-    if (options.dry && options.loglevel === LogLevel.Error) {
+    if (options.dry_run && options.loglevel === LogLevel.Error) {
       options.loglevel = LogLevel.Info;
     }
 
@@ -333,7 +333,19 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
     if (launchScript.length === 0) {
       Logger.info();
 
-      const result = await launchMenu(environment, settings, config, processArgs, interactive, options.menuTimeout, config.options.menu.confirm, options.confirm, options.limit, options.dry, testMode);
+      const result = await launchMenu(
+        environment,
+        settings,
+        config,
+        processArgs,
+        interactive,
+        options.menu_timeout,
+        config.options.menu.confirm,
+        options.confirm,
+        options.limit,
+        options.dry_run,
+        testMode
+      );
 
       startTime = result.startTime;
       exitCode = result.exitCode;
@@ -363,7 +375,7 @@ export async function main(processArgv: string[], processEnvVariables: IEnvironm
 
     Logger.info();
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, options.confirm, options.limit, options.dry, testMode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, options.confirm, options.limit, options.dry_run, testMode);
 
     startTime = executor.startTime;
 

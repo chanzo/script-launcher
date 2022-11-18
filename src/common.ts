@@ -35,18 +35,16 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
   });
 }
 
-export function extractOptions<A extends {}>(knownOptions: A, environmentVariables: {}): A {
+export function extractOptions<A extends {}>(knownOptions: A, environmentVariables: { [variable: string]: string }): A {
   // Reading arguments from process environment variables
   for (const knownOptionName of Object.keys(knownOptions)) {
-    let optionName = knownOptionName;
+    const optionValue = environmentVariables['npm_config_' + knownOptionName.toLowerCase()];
 
-    // Special treatment for dryRun here as NPM does have an own dry_run flag
-    //  which is recognized by various spellings e.g. --dry, --dryRun, --dry-run
-    if (knownOptionName === 'dry') {
-      optionName = 'dry_run';
+    // Special treatment here for options which exist as environmentVariable on npm_config but are empty string (option is not really set in this case)
+    if (typeof optionValue === 'string' && optionValue.length === 0) {
+      continue;
     }
 
-    const optionValue = environmentVariables['npm_config_' + optionName.toLowerCase()];
     const parsedValue = parseValue(optionValue);
     const defaultValue = knownOptions[knownOptionName];
 
