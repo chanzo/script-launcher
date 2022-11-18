@@ -1,4 +1,3 @@
-import deepmerge = require('deepmerge');
 import { ConfirmPrompt } from 'prompts/lib/elements';
 import { Prompt } from 'prompts/lib/elements';
 import { IOptions } from 'prompts/lib';
@@ -36,82 +35,78 @@ export function stringify(value: any, replacer?: (this: any, key: string, value:
   });
 }
 
-interface IArguments<T> {
-  arguments: T;
-  optionals: string[];
-  unknowns: string[];
-}
+export function extractOptions<A extends {}>(knownOptions: A, environmentVariables: { [variable: string]: string }): A {
+  // Reading arguments from process environment variables
+  for (const knownOptionName of Object.keys(knownOptions)) {
+    const optionValue = environmentVariables['npm_config_' + knownOptionName.toLowerCase()];
 
-export function parseArgs<T>(argv: string[], defaultData: IArguments<T> | null = null): IArguments<T> {
-  const result: IArguments<T> = {
-    arguments: {} as T,
-    optionals: [],
-    unknowns: []
-  };
-
-  const validArguments = Object.keys(defaultData.arguments);
-  let commandFound = false;
-
-  for (const rawArgument of argv) {
-    // Everything behind "--" is passed as an argument for the called command
-    if (rawArgument === '--') break;
-
-    const splittedRawArgument = rawArgument.split('=', 2);
-    const [rawName, rawValue] = splittedRawArgument;
-    const name = rawName.replace(/^--/, '');
-    let value: string | boolean | number = true;
-
-    // There is at least a value given for the argument
-    if (rawValue !== undefined) {
-      if (name === rawName) throw new Error(`Unexpected value for command ("${name}") use option syntax instead ("--${name}=${rawValue}").`);
-
-      if (!validArguments.includes(name)) {
-        // Unknown argument given
-        throw new Error(`The specified option ("--${name}") is invalid.`);
-      }
-
-      // Try parse it as a number
-      value = Number.parseInt(rawValue, 10);
-
-      // Reset it back to the rawValue if it wasn't a number
-      if (isNaN(value)) value = rawValue;
-
-      // Check if the rawValue is a boolean
-      if (rawValue === 'true' || rawValue === 'false') value = rawValue === 'true';
-
-      const defaultValue = defaultData.arguments[name];
-
-      // Check if the value given is the same type as the default one
-      if (defaultValue !== null && defaultValue !== undefined && typeof defaultValue !== typeof value) {
-        throw new Error(`Unexpected type "${typeof value}" for argument "${name}". The argument should be of type "${typeof defaultValue}".`);
-      }
-    } else {
-      if (!commandFound) {
-        if (!validArguments.includes(name)) {
-          result.unknowns.push(name);
-          continue;
-        }
-
-        if (!rawName.startsWith('--')) commandFound = true;
-      } else {
-        result.optionals.push(name);
-        continue;
-      }
+    // Special treatment here for options which exist as environmentVariable on npm_config but are empty string (option is not really set in this case)
+    if (typeof optionValue === 'string' && optionValue.length === 0) {
+      continue;
     }
 
-    result.arguments[name] = value;
+    const parsedValue = parseValue(optionValue);
+    const defaultValue = knownOptions[knownOptionName];
+
+    // Check if the value given is the same type as the default one
+    if (defaultValue !== null && defaultValue !== undefined && parsedValue !== null && parsedValue !== undefined && typeof defaultValue !== typeof parsedValue) {
+      throw new Error(`Unexpected type "${typeof parsedValue}" for option "${knownOptionName}". The option should be of type "${typeof defaultValue}".`);
+    }
+
+    // Adding value only if it exists. Otherwise, the default value for the option (maybe written by config file) would be replaced
+    if (optionValue !== undefined && optionValue !== null) {
+      knownOptions[knownOptionName] = parsedValue;
+    }
   }
 
-  if (result !== null) {
-    if (defaultData === null) return result;
-    if (defaultData instanceof Function) return result;
-    if (typeof defaultData === 'string') return result;
-    if (defaultData instanceof String) return result;
+  return knownOptions;
+}
 
-    return deepmerge(defaultData, result);
+export function extractCommands<C extends {}>(commands: C, argv: string[]): C {
+  const internalCommandNames = Object.keys(commands);
+
+  let commandFound = false;
+
+  for (const rawCommand of argv) {
+    // Everything behind "--" is passed as an argument
+    if (rawCommand === '--') break;
+
+    const splitRawArgument = rawCommand.split('=', 2);
+    const [name, value] = splitRawArgument;
+
+    // There is at least a value given for the argument
+    if (value !== undefined) {
+      throw new Error(`Unexpected value for command ("${name}"). Use option syntax instead for arguments ("--${name}=${value}").`);
+    } else {
+      if (!commandFound) {
+        // If the command was an internal one (e.g. "help"), add it to the list
+        if (internalCommandNames.includes(name)) {
+          commands[name] = true;
+        }
+
+        commandFound = true;
+      }
+    }
   }
 
-  return defaultData;
+  return commands;
+}
+
+function parseValue(rawValue: string | number | boolean): string | number | boolean {
+  // Check if the rawValue is a boolean
+  if (rawValue === 'true' || rawValue === 'false') {
+    return rawValue === 'true';
+  }
+
+  const integer = Number.parseInt(rawValue as string, 10);
+
+  // Try parse it as a number
+  if (!isNaN(integer)) {
+    return integer;
+  }
+
+  // If it is neither a boolean nor a number, it must be a string
+  return rawValue;
 }
 
 export function showArgsHelp<T>(name: string, descriptions: { [P in keyof T]: string | string[] }): void {
@@ -237,18 +232,17 @@ export function stringToArgv(value: string): string[] {
 }
 
 export class Limiter {
-  private resolvers: Array<(value?: number | PromiseLike<number>) => void>;
+  private readonly resolvers: Array<(value?: number | PromiseLike<number>) => void>;
   private currentCount: number;
-  private maximumCount: number;
-  public constructor(maximum: number) {
+
+  public constructor(private readonly maximumCount: number) {
     this.currentCount = 0;
-    this.maximumCount = maximum;
 
     this.resolvers = [];
   }
 
   public async enter(): Promise<number> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       if (this.currentCount < this.maximumCount) {
         this.currentCount++;
 

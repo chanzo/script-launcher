@@ -201,7 +201,7 @@ npm run test
 
 Make sure all your repository changes are fully committed so you can undo the changes easily if they do not suit your needs. Remove or rename the start script in your **package.json** file.
 
-Now your are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
+Now you are ready to migrate your **package.json** scripts to **launcher-config.json** scripts. By executing the command:
 
 ```bash
 npx launch migrate
@@ -451,7 +451,7 @@ Use wildcards '\*' to select multiple scripts. Wildcards cannot be used for sele
 }
 ```
 
-**Run**: `npm start build:*` , `npm start build:all` or `npx launch --concurrent build:*`
+**Run**: `npm start build:*` , `npm start build:all` or `npx launch build:* --concurrent`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -732,8 +732,8 @@ ${npm_package_version} : 1.37.3
 
 ```text
 grep example
-Version: 1.37.3
-Platform: linux
+Version: $version
+Platform: $platform
 Time: 2019-09-16 10:33:20.628
 --------------------------------
 Color: Blue
@@ -901,7 +901,7 @@ Confirmation prompts can be used for asking a confirmation to continue. Use the 
 }
 ```
 
-**Run**: `npm start build-stuff` , `npx launch build-stuff confirm` or `npx launch build-stuff --confirm=false`
+**Run**: `npm start build-stuff` , `npx launch build-stuff --confirm` or `npx launch build-stuff --confirm=false`
 
 <details>
   <summary><strong>Output:</strong></summary>
@@ -959,7 +959,7 @@ The value of the **condition** and **exclusion** statement can be a string or an
     ]
   },
   "options": {
-    "logLevel": 2
+    "loglevel": "notice"
   }
 }
 ```
@@ -1226,7 +1226,7 @@ Build script: hva
 
 Use the **help** for a list of available options.
 
-**Run**: `npx launch --help`
+**Run**: `npx launch help`
 
 ```bash
 Usage: launch [command] [options...]
@@ -1239,7 +1239,7 @@ Commands:
   version      Outputs launcher version.
 
 Options:
-  logLevel=    Set log level.
+  loglevel=    Set log level.
   dry=         Do not execute commands.
   config=      Merge in an extra config file.
   confirm=     Auto value for confirm conditions.
@@ -1253,16 +1253,15 @@ Options:
 
 ## Launcher Options: dry
 
-**Run**: `npx launch build:css build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
+**Run**: `npx launch build:css,build:js --dry` this will execute a dry run on the **build:css** and **build:js** script
 
 ```bash
 Loaded config:  launcher-config.json
 
 Date              : 2019-09-16 10:33:20.628
 Version           : 1.37.3
-Lifecycle event   : undefined
 Launch script     : [ 'build:css', 'build:js' ]
-Launch arguments  : [ '--directory=./tests/temp/0052', 'build:css', 'build:js', '--dry' ]
+Launch arguments  : []
 
 Script id       : build:css
 Circular        : false
@@ -1328,14 +1327,14 @@ Creating: launcher-config.json
 
 Start one or more script directly from the command line sequentially or concurrently
 
-**Run**: `npx launch build:css build:js` to start one or more script in sequence
+**Run**: `npx launch build:css,build:js` to start one or more script in sequence
 
 ```bash
 Building: .css files
 Building: .js files
 ```
 
-**Run**: `npx launch build:css build:js --concurrent` to start one ore more script in parallel
+**Run**: `npx launch build:css,build:js --concurrent` to start one or more script in parallel
 
 ```bash
 Building: .css files
@@ -1579,7 +1578,8 @@ The default value is presented in the following example:
 
 ### Logging
 
-The **logLevel** option is used for configuring the Script Launcher log level, available values are: 0=disabled 1=info 2=log 3=debug
+The **loglevel** option is used for configuring the Script Launcher log level, available values are:
+`error, warn, notice (default), info, verbose, silly, silent` according to [NPM docs](https://docs.npmjs.com/cli/v8/using-npm/logging?v=true)
 
 The default value is presented in the following example:
 
@@ -1589,7 +1589,7 @@ The default value is presented in the following example:
     ...
   },
   "options": {
-    "logLevel": 0
+    "loglevel": "error"
   }
 }
 ```

@@ -56,7 +56,7 @@ npm publish
 
 ```bash
 npx jest --clearCache
-npm start test -- -t "'npx launch --version'"
+npm start test -- -t "'npx launch version'"
 npm start test -- ./tests/debug.test.ts
 ```
 

@@ -36,37 +36,18 @@ export class Executor {
 
   public readonly startTime: [number, number];
 
-  private readonly shell: boolean | string;
-  private readonly environment: { [name: string]: string };
-  private readonly settings: ILaunchSetting;
-  private readonly scripts: Scripts;
-  private readonly globOptions: glob.Options;
-  private readonly confirm?: boolean;
-  private readonly testmode: boolean;
-  private readonly limit: number;
-  private readonly dry: boolean;
-
   public constructor(
-    shell: boolean | string,
-    environment: { [name: string]: string },
-    settings: ILaunchSetting,
-    scripts: Scripts,
-    globOptions: glob.Options,
-    confirm: boolean | undefined,
-    limit: number,
-    dry: boolean,
-    testmode: boolean
+    private readonly shell: boolean | string,
+    private readonly environment: { [name: string]: string },
+    private readonly settings: ILaunchSetting,
+    private readonly scripts: Scripts,
+    private readonly globOptions: glob.Options,
+    private readonly confirm: boolean | undefined,
+    private readonly limit: number,
+    private readonly dry: boolean,
+    private readonly testMode: boolean
   ) {
-    this.shell = shell;
-    this.environment = environment;
-    this.settings = settings;
-    this.scripts = scripts;
-    this.globOptions = globOptions;
-    this.confirm = confirm;
-    this.testmode = testmode;
     this.startTime = process.hrtime();
-    this.limit = limit;
-    this.dry = dry;
   }
 
   public async execute(scriptInfo: IScriptInfo): Promise<number> {
@@ -76,12 +57,12 @@ export class Executor {
       env: this.environment,
       shell: this.shell,
       suppress: false,
-      testmode: this.testmode,
+      testmode: this.testMode,
       limit: this.limit,
       dry: this.dry
     };
 
-    if (Logger.level > 0) {
+    if (Logger.isInfoLevelOrLower()) {
       Logger.info('Script id       :', scriptInfo.name);
       Logger.info('Circular        :', Executor.isCircular([tasks]));
       Logger.info('Script params   :', scriptInfo.parameters);
@@ -92,7 +73,7 @@ export class Executor {
       Logger.log();
     }
 
-    if (Logger.level > 1) {
+    if (Logger.isLogLevelOrLower()) {
       const settings = Object.entries(this.environment).filter(([key, value]) => key.startsWith('launch_setting_'));
 
       Logger.log(Colors.Bold + 'Launcher Settings Values' + Colors.Normal);
@@ -568,17 +549,17 @@ export class Executor {
 
           command = Executor.removeEnvironment(command);
 
-          // Remove environment,argument and glob escapings
+          // Remove environment,argument and glob escaping
           command = command.replace(/\\(.)/g, '$1');
 
           if (process.platform === 'win32') {
             command = Executor.convertSingleQuote(command);
 
-            if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*\"(.*)\"\s*$/g, ' $1');
+            if (command.startsWith('echo')) command = 'echo' + command.replace('echo', '').replace(/^\s*"(.*)"\s*$/g, ' $1');
           }
 
           Logger.log(Colors.Bold + 'Spawn action   ' + Colors.Normal + ' : ' + Colors.Green + "'" + command + "'" + Colors.Normal, info.args);
-          Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', supress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
+          Logger.log('Spawn options   : { order=' + Colors.Cyan + Order[order] + Colors.Normal + ', suppress=' + Colors.Yellow + options.suppress + Colors.Normal + ' }');
 
           await limiter.enter();
 

@@ -5,7 +5,8 @@
   "main": "",
   "scripts": {
     "start": "launch",
-    "prepare": "launch"
+    "prepare": "launch",
+    "prettier": "prettier src --write"
   },
   "repository": {
     "type": "git",

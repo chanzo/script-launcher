@@ -5,6 +5,7 @@
   ],
   "compilerOptions": {
     "types": [],
-    "outDir": "../dist/package" /* Redirect output structure to the directory. */
+    "outDir": "../dist/package" /* Redirect output structure to the directory. */,
+    "target": "ES6"
   }
 }

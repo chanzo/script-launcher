@@ -16,7 +16,7 @@ export async function launchMenu(
   confirm: boolean,
   limit: number,
   dry: boolean,
-  testmode: boolean
+  testMode: boolean
 ): Promise<{ startTime: [number, number]; exitCode: number }> {
   try {
     const defaultChoice = config.options.menu.defaultChoice.split(':');
@@ -78,12 +78,12 @@ export async function launchMenu(
 
     const command = getStartCommand(script.script, config.scripts);
 
-    if (command && environment.npm_lifecycle_event === 'start') {
+    if (command) {
       console.log(Colors.Bold + 'Executing: ' + Colors.Dim + 'npm start ' + script.script + Colors.Normal);
       console.log();
     }
 
-    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, limit, dry, testmode);
+    const executor = new Executor(shell, environment, settings, config.scripts, config.options.glob, confirm, limit, dry, testMode);
 
     script.arguments = args;
 
@@ -119,7 +119,7 @@ function getStartCommand(script: IScript, scripts: Scripts): string {
 }
 
 function getMenuItem(label: string): { name: string; help: string } {
-  const match = label.match(/(.*?)\:(.*)$/);
+  const match = label.match(/(.*?):(.*)$/);
 
   if (match) {
     return {
@@ -182,12 +182,12 @@ function getDefaultScript(menu: IMenu, choices: string[]): IScript {
     const filtered = Object.entries(menu).filter(([key, value]) => key !== 'description' && key !== 'separator' && !!value && Object.entries(value).length > 0);
 
     const choice = choices[index++];
-    let result = filtered.find(([label, value]) => getMenuItem(label).name === choice);
+    let result = filtered.find(([label, _value]) => getMenuItem(label).name === choice);
 
     if (result === undefined) result = filtered[0];
     if (result === undefined) return '';
 
-    const [key, value] = result;
+    const [_key, value] = result;
 
     if (typeof value === 'string') return value;
     if (Array.isArray(value)) return value;
@@ -223,7 +223,7 @@ async function timeoutMenu(menu: IMenu, pageSize: number, defaultChoice: string[
       menuPromise.close();
     }, 1000);
 
-    const listener = (char, key) => {
+    const listener = (_char, _key) => {
       clearTimeout(timeoutId);
 
       if (currentTimeout !== timeout) {

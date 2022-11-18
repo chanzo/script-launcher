@@ -10,9 +10,9 @@ const testFiles = path.join(__dirname, 'configs');
 const tempFiles = path.join(__dirname, 'temp');
 const readmeFile = path.join(__dirname, '..', 'src', 'README.md');
 
-const testLauncher = new TestLauncher(tempFiles, ['', ''], ['\u001b[?25l']);
+const testLauncher = new TestLauncher(tempFiles, ['\u001b[?25l']);
 
-const sanatizeStrings = [
+const sanitizeStrings = [
   '\\u001b\\[0m',
   '\\u001b\\[1m',
   '\\u001b\\[2m',
@@ -33,7 +33,7 @@ const sanatizeStrings = [
 ];
 const excludeStrings = ['ECHO is on.', '\u001b[?25h', '\n'];
 
-function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): ReadonlyArray<string> {
+function sanitizeOutput(content: ReadonlyArray<string>, config: ITestConfig): ReadonlyArray<string> {
   const result = [];
   let previous: string = null;
 
@@ -48,7 +48,7 @@ function sanatizeOutput(content: ReadonlyArray<string>, config: ITestConfig): Re
     item = item.replace(/\»/g, '›');
     item = item.replace(/\>/g, '❯');
 
-    for (const pattern of sanatizeStrings) {
+    for (const pattern of sanitizeStrings) {
       item = item.replace(new RegExp(pattern, 'g'), '');
     }
 
@@ -130,10 +130,12 @@ async function main(): Promise<void> {
         // if (config.name !== 'Environment values and special commands') continue;
 
         describe(config.name, () => {
-          if (config.tests.length === 0) test.todo('test command');
+          if (config.tests.length === 0) {
+            test.todo('test command');
+          }
 
           for (const item of config.tests) {
-            if (((item['cmd-args'].length === 0 && item['npm-args'].length === 0 && item['cat-args'].length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
+            if (((item.arguments.length === 0 && item.processArgv.length === 0 && item.files.length === 0 && item.lifecycle === undefined) || item.result === undefined) && !item.error) {
               test.todo(item.name);
               continue;
             }
@@ -149,10 +151,10 @@ async function main(): Promise<void> {
 
                 let output: ReadonlyArray<string>;
 
-                if (item['cat-args'].length > 0) {
+                if (item.files.length > 0) {
                   const content = [];
 
-                  for (const file of item['cat-args']) {
+                  for (const file of item.files) {
                     const fileName = path.join(tempFiles, directory, file);
                     const buffer = fs.readFileSync(fileName);
 
@@ -161,12 +163,28 @@ async function main(): Promise<void> {
 
                   output = content;
                 } else {
-                  const result = await testLauncher.launch(item.lifecycle, directory, [...item['cmd-args'], ...item['npm-args']], item['npm-args']);
+                  // The first two parts of the array are always the same and not interpreted in any kind
+                  const processArgv = ['path/to/node.exe', 'path/to/launch.js', ...item.processArgv];
+                  const envVariables = {};
+
+                  for (const argument of item.arguments) {
+                    let [argumentName, argumentValue] = argument.split('=');
+
+                    // If no value is given like e.g. --param=value but --param only, the default value is 'true'
+                    argumentValue = argumentValue || 'true';
+                    // Removing the leading '--' from the argument
+                    argumentName = argumentName.replace('--', '');
+                    // SPECIAL CASE: --dry does overlap with native NPM dry, therefore this workaround
+                    argumentName = argumentName === 'dry' ? 'dry_run' : argumentName;
+                    envVariables['npm_config_' + argumentName.toLowerCase()] = argumentValue;
+                  }
+
+                  const result = await testLauncher.launch(directory, processArgv, envVariables);
 
                   output = result.all;
                 }
 
-                if (config.sanatize) output = sanatizeOutput(output, config);
+                if (config.sanitize) output = sanitizeOutput(output, config);
 
                 try {
                   expect(output).toStrictEqual(item.result);
@@ -195,7 +213,7 @@ async function main(): Promise<void> {
     });
   }
 }
-main();
+void main();
 
 afterAll(() => {
   // console.log('afterAll:', new Date().toISOString());

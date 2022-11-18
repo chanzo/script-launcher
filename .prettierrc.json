@@ -8,6 +8,7 @@
   "trailingComma": "none",
   "bracketSpacing": true,
   "arrowParens": "avoid",
+  "endOfLine": "lf",
   "overrides": [
     {
       "files": "*.json",
